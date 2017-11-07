@@ -122,10 +122,21 @@ class Scaffold extends CI_Controller {
 		foreach ($fields as $key => $field) {
 			$field_name = $field->attributes()->name;
 			if($this->check_field($field_name)){
-				$label = ucfirst($this->split_camel($field_name));
+				$label = strtolower(rtrim($this->split_camel($field_name)));
+				$labelword = ucfirst(rtrim($this->split_snake($this->split_camel($field_name))));
 				if($this->check_field($field_name)){
+					$words = include('application/language/english/default.php');
+					if(!isset($words[$label])){
+						$lang_file = fopen('./application/language/english/default.php', "w") or die("Unable to open file!");
+						fwrite($lang_file,"<?php \n return array(\n");
+						foreach ($words as $key => $word) {
+							fwrite($lang_file,"'$key' => '$word',\n");
+						}
+						fwrite($lang_file,"'$label' => '$labelword'\n);");
+						fclose($lang_file);
+					}
 					$dtcolumn .="{\"data\":\"$field_name\"},\n";
-					$table .= "\t\t\t\t<th data-fieldname=\"$field_name\">$label</th>\n";
+					$table .= "\t\t\t\t<th data-fieldname=\"$field_name\">{{words.$label}}</th>\n";
 				}
 			}
 		}
@@ -390,9 +401,11 @@ private function _view_modal_template($tb_name,$fields){
 	foreach ($fields as $key => $field) {
 		$field_name = $field->attributes()->name;
 		if($this->check_field($field_name)){
-			$label = ucfirst($this->split_camel($field_name));
+			$label = strtolower($this->split_camel($field_name));
+			$labelword = ucfirst($this->split_camel($field_name));
+
 			if($this->check_field($field_name)){
-				$table .= "\t\t\t\t<th data-fieldname=\"$field_name\">$label</th>\n";
+				$table .= "\t\t\t\t<th data-fieldname=\"$field_name\">{{words.$label}}</th>\n";
 			}
 		}
 	}
@@ -584,6 +597,10 @@ $template .= "
 	private function camelize($input, $separator = '_')
 	{
 	    return str_replace($separator, '', ucwords($input, $separator));
+	}
+	private function split_snake($input, $separator = '_')
+	{
+	    return str_replace($separator, ' ', ucwords($input, $separator));
 	}
 
 
