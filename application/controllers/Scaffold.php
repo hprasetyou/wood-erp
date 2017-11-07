@@ -125,9 +125,9 @@ class Scaffold extends CI_Controller {
 				$label = strtolower(rtrim($this->split_camel($field_name)));
 				$labelword = ucfirst(rtrim($this->split_snake($this->split_camel($field_name))));
 				if($this->check_field($field_name)){
-					$words = include('application/language/english/default.php');
+					$words = include('application/language/en/default.php');
 					if(!isset($words[$label])){
-						$lang_file = fopen('./application/language/english/default.php', "w") or die("Unable to open file!");
+						$lang_file = fopen('./application/language/en/default.php', "w") or die("Unable to open file!");
 						fwrite($lang_file,"<?php \n return array(\n");
 						foreach ($words as $key => $word) {
 							fwrite($lang_file,"'$key' => '$word',\n");
