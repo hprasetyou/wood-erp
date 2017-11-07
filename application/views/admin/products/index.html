@@ -1,0 +1,55 @@
+
+{% extends "dashboard.html" %}
+{% set title=" Product " %}
+
+{% set breadcrumbs = [
+	{'link':'#','text':' Product '  }]
+%}
+{% block content %}
+	<div class="">
+		<div class="clearfix"></div>
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="box">
+					<div class="box-header">
+						<h3 class="box-title"> Product </h3>
+						<a href="{{base_url}}index.php/manage_products/create" class="btn btn-primary pull-right">Data Baru</a>
+						<div class="clearfix"></div>
+					</div>
+					<div class="box-body">
+						<p class="text-muted font-13 m-b-30"></p>
+							<table data-controller="manage_products" class="table table-striped " id="table_Product">
+		<thead>
+			<tr>
+				<th data-fieldname="name">Name </th>
+				<th data-fieldname="description">Description </th>
+				<th data-fieldname="is_kdn">Is_kdn </th>
+				<th data-fieldname="cost_price">Cost_price </th>
+				<th data-fieldname="list_price">List_price </th>
+				<th data-fieldname="cubic_asb">Cubic_asb </th>
+				<th data-fieldname="cubic_kdn">Cubic_kdn </th>
+				<th data-fieldname="width_asb">Width_asb </th>
+				<th data-fieldname="height_asb">Height_asb </th>
+				<th data-fieldname="depth_asb">Depth_asb </th>
+				<th data-fieldname="width_kdn">Width_kdn </th>
+				<th data-fieldname="height_kdn">Height_kdn </th>
+				<th data-fieldname="depth_kdn">Depth_kdn </th>
+				<th></th>
+			</tr>
+		</thead>
+</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+{% block bottom %}
+<script>
+
+$(document).ready(function(){
+    $('#table_Product').loadTableData()
+  })
+</script>
+{% endblock %}

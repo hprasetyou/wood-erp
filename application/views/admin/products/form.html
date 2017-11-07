@@ -1,0 +1,246 @@
+
+{% extends "dashboard.html" %}
+{% set title=" Product " %}
+{% if products %}
+	 {% set bc_text = products.id  %}
+{% else %}
+	 {% set bc_text = 'Baru' %}
+{% endif %}
+{% set breadcrumbs = [
+	{'link': base_url~'index.php/manage_products','text':' Product '},
+	{'link':'#','text':bc_text  }]
+%}
+{% block content %}
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<form id="form_Product" method="post" action="{{base_url}}index.php/manage_products/write/{{ products.id }}" data-parsley-validate class="form-horizontal form-label-left">
+			<div class="box box-info">
+				<div class="box-header with-border">
+					<h3 class="box-title"> Product </h3>
+					<a href="{{base_url}}index.php/manage_products" class="btn btn-default pull-right">Kembali</a>
+					{% if products %}
+						<a href="#" class="btn btn-danger pull-right" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash-o"></i> Hapus</a>
+						<a href="#" class="btn btn-primary pull-right" id="btn-edit"><i class="fa fa-edit"></i> Edit</a>
+						<a href="#" style="display:none" class="btn btn-primary pull-right" id="btn-canceledit">Batal</a>
+					{% endif %}
+					<button type="submit" {% if products %}style="display:none"{% endif %}  name="button" class="btn btn-success pull-right" id="btn-save"><i class="fa fa-save"></i> Simpan</button>
+					<div class="clearfix"></div>
+				</div>
+				<div class="box-body">
+					
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Name </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="Name" value="{{ products.Name }}"
+							name="Name" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if products %}
+									<p class="control-value">{{ products.Name  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Description </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="Description" value="{{ products.Description }}"
+							name="Description" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if products %}
+									<p class="control-value">{{ products.Description  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Is Kdn </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="IsKdn" value="{{ products.IsKdn }}"
+							name="IsKdn" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if products %}
+									<p class="control-value">{{ products.IsKdn  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Cost Price </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="CostPrice" value="{{ products.CostPrice }}"
+							name="CostPrice" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if products %}
+									<p class="control-value">{{ products.CostPrice  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> List Price </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="ListPrice" value="{{ products.ListPrice }}"
+							name="ListPrice" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if products %}
+									<p class="control-value">{{ products.ListPrice  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Cubic Asb </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="CubicAsb" value="{{ products.CubicAsb }}"
+							name="CubicAsb" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if products %}
+									<p class="control-value">{{ products.CubicAsb  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Cubic Kdn </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="CubicKdn" value="{{ products.CubicKdn }}"
+							name="CubicKdn" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if products %}
+									<p class="control-value">{{ products.CubicKdn  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Width Asb </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="WidthAsb" value="{{ products.WidthAsb }}"
+							name="WidthAsb" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if products %}
+									<p class="control-value">{{ products.WidthAsb  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Height Asb </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="HeightAsb" value="{{ products.HeightAsb }}"
+							name="HeightAsb" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if products %}
+									<p class="control-value">{{ products.HeightAsb  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Depth Asb </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="DepthAsb" value="{{ products.DepthAsb }}"
+							name="DepthAsb" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if products %}
+									<p class="control-value">{{ products.DepthAsb  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Width Kdn </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="WidthKdn" value="{{ products.WidthKdn }}"
+							name="WidthKdn" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if products %}
+									<p class="control-value">{{ products.WidthKdn  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Height Kdn </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="HeightKdn" value="{{ products.HeightKdn }}"
+							name="HeightKdn" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if products %}
+									<p class="control-value">{{ products.HeightKdn  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Depth Kdn </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="DepthKdn" value="{{ products.DepthKdn }}"
+							name="DepthKdn" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if products %}
+									<p class="control-value">{{ products.DepthKdn  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<!-- Modal -->
+
+{% endblock %}
+{% block bottom%}
+<script>
+$('#btn-edit').click(function(){
+	$('#btn-canceledit').show()
+	$('#btn-save').show()
+	$('.input-wrap').show()
+	$('.control-value').hide()
+	$(this).hide()
+})
+$('#btn-canceledit').click(function(){
+	$('#btn-edit').show()
+	$('#btn-save').hide()
+	$('.input-wrap').hide()
+	$('.control-value').show()
+	$(this).hide()
+})
+$(function() {
+	$('.input-date').daterangepicker({
+	singleDatePicker: true,
+	showDropdowns: true,
+	locale: {
+		format: 'YYYY/MM/DD'
+	}
+},function(start, end, label) {
+	});
+$('.input-datetime').daterangepicker({
+	singleDatePicker: true,
+	showDropdowns: true,
+	timePicker: true,
+	timePickerIncrement: 30,
+	locale: {
+		format: 'YYYY/MM/DD hh:mm:ss'
+	}
+},
+function(start, end, label) {
+	});
+});
+</script>
+{% endblock %}

@@ -1,0 +1,198 @@
+
+{% extends "dashboard.html" %}
+{% set title=" Customer " %}
+{% if customers %}
+	 {% set bc_text = customers.id  %}
+{% else %}
+	 {% set bc_text = 'Baru' %}
+{% endif %}
+{% set breadcrumbs = [
+	{'link': base_url~'index.php/manage_customers','text':' Customer '},
+	{'link':'#','text':bc_text  }]
+%}
+{% block content %}
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<form id="form_Customer" method="post" action="{{base_url}}index.php/manage_customers/write/{{ customers.id }}" data-parsley-validate class="form-horizontal form-label-left">
+			<div class="box box-info">
+				<div class="box-header with-border">
+					<h3 class="box-title"> Customer </h3>
+					<a href="{{base_url}}index.php/manage_customers" class="btn btn-default pull-right">Kembali</a>
+					{% if customers %}
+						<a href="#" class="btn btn-danger pull-right" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash-o"></i> Hapus</a>
+						<a href="#" class="btn btn-primary pull-right" id="btn-edit"><i class="fa fa-edit"></i> Edit</a>
+						<a href="#" style="display:none" class="btn btn-primary pull-right" id="btn-canceledit">Batal</a>
+					{% endif %}
+					<button type="submit" {% if customers %}style="display:none"{% endif %}  name="button" class="btn btn-success pull-right" id="btn-save"><i class="fa fa-save"></i> Simpan</button>
+					<div class="clearfix"></div>
+				</div>
+				<div class="box-body">
+					
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Name </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if customers %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="Name" value="{{ customers.Name }}"
+							name="Name" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if customers %}
+									<p class="control-value">{{ customers.Name  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Address </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if customers %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="Address" value="{{ customers.Address }}"
+							name="Address" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if customers %}
+									<p class="control-value">{{ customers.Address  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Phone </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if customers %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="Phone" value="{{ customers.Phone }}"
+							name="Phone" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if customers %}
+									<p class="control-value">{{ customers.Phone  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Website </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if customers %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="Website" value="{{ customers.Website }}"
+							name="Website" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if customers %}
+									<p class="control-value">{{ customers.Website  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Fax </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if customers %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="Fax" value="{{ customers.Fax }}"
+							name="Fax" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if customers %}
+									<p class="control-value">{{ customers.Fax  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Image </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if customers %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="Image" value="{{ customers.Image }}"
+							name="Image" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if customers %}
+									<p class="control-value">{{ customers.Image  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Tax Number </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if customers %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="TaxNumber" value="{{ customers.TaxNumber }}"
+							name="TaxNumber" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if customers %}
+									<p class="control-value">{{ customers.TaxNumber  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Bank Detail </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if customers %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="BankDetail" value="{{ customers.BankDetail }}"
+							name="BankDetail" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if customers %}
+									<p class="control-value">{{ customers.BankDetail  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Company Id </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if customers %}style="display:none"{% endif %} class="input-wrap input-group">
+							<input type="hidden" type="text" id="CompanyId" value="{{ customers.CompanyId }}" name="CompanyId"  >
+							<input type="text" name="displayCompanyId" id="displayCompanyId"  value="{{ customers.Customer }}" class="form-control" />
+							<span class="input-group-btn">
+								<button class="btn btnModal btn-default" id="btnCompanyId"  data-target="ModalCustomer" type="button">Cari</button>
+							</span>
+						</div>
+								{% if customers %}
+									<p class="control-value">{{ customers.Customer.Name  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<!-- Modal -->
+{% include "admin/customers/_modal.html" %}
+
+{% endblock %}
+{% block bottom%}
+<script>
+$('#btn-edit').click(function(){
+	$('#btn-canceledit').show()
+	$('#btn-save').show()
+	$('.input-wrap').show()
+	$('.control-value').hide()
+	$(this).hide()
+})
+$('#btn-canceledit').click(function(){
+	$('#btn-edit').show()
+	$('#btn-save').hide()
+	$('.input-wrap').hide()
+	$('.control-value').show()
+	$(this).hide()
+})
+$(function() {
+	$('.input-date').daterangepicker({
+	singleDatePicker: true,
+	showDropdowns: true,
+	locale: {
+		format: 'YYYY/MM/DD'
+	}
+},function(start, end, label) {
+	});
+$('.input-datetime').daterangepicker({
+	singleDatePicker: true,
+	showDropdowns: true,
+	timePicker: true,
+	timePickerIncrement: 30,
+	locale: {
+		format: 'YYYY/MM/DD hh:mm:ss'
+	}
+},
+function(start, end, label) {
+	});
+});
+</script>
+{% endblock %}

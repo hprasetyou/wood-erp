@@ -1,0 +1,103 @@
+
+{% extends "dashboard.html" %}
+{% set title=" Finishing " %}
+{% if finishings %}
+	 {% set bc_text = finishings.id  %}
+{% else %}
+	 {% set bc_text = 'Baru' %}
+{% endif %}
+{% set breadcrumbs = [
+	{'link': base_url~'index.php/manage_finishings','text':' Finishing '},
+	{'link':'#','text':bc_text  }]
+%}
+{% block content %}
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<form id="form_Finishing" method="post" action="{{base_url}}index.php/manage_finishings/write/{{ finishings.id }}" data-parsley-validate class="form-horizontal form-label-left">
+			<div class="box box-info">
+				<div class="box-header with-border">
+					<h3 class="box-title"> Finishing </h3>
+					<a href="{{base_url}}index.php/manage_finishings" class="btn btn-default pull-right">Kembali</a>
+					{% if finishings %}
+						<a href="#" class="btn btn-danger pull-right" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash-o"></i> Hapus</a>
+						<a href="#" class="btn btn-primary pull-right" id="btn-edit"><i class="fa fa-edit"></i> Edit</a>
+						<a href="#" style="display:none" class="btn btn-primary pull-right" id="btn-canceledit">Batal</a>
+					{% endif %}
+					<button type="submit" {% if finishings %}style="display:none"{% endif %}  name="button" class="btn btn-success pull-right" id="btn-save"><i class="fa fa-save"></i> Simpan</button>
+					<div class="clearfix"></div>
+				</div>
+				<div class="box-body">
+					
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Name </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if finishings %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="Name" value="{{ finishings.Name }}"
+							name="Name" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if finishings %}
+									<p class="control-value">{{ finishings.Name  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Description </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if finishings %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="Description" value="{{ finishings.Description }}"
+							name="Description" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if finishings %}
+									<p class="control-value">{{ finishings.Description  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<!-- Modal -->
+
+{% endblock %}
+{% block bottom%}
+<script>
+$('#btn-edit').click(function(){
+	$('#btn-canceledit').show()
+	$('#btn-save').show()
+	$('.input-wrap').show()
+	$('.control-value').hide()
+	$(this).hide()
+})
+$('#btn-canceledit').click(function(){
+	$('#btn-edit').show()
+	$('#btn-save').hide()
+	$('.input-wrap').hide()
+	$('.control-value').show()
+	$(this).hide()
+})
+$(function() {
+	$('.input-date').daterangepicker({
+	singleDatePicker: true,
+	showDropdowns: true,
+	locale: {
+		format: 'YYYY/MM/DD'
+	}
+},function(start, end, label) {
+	});
+$('.input-datetime').daterangepicker({
+	singleDatePicker: true,
+	showDropdowns: true,
+	timePicker: true,
+	timePickerIncrement: 30,
+	locale: {
+		format: 'YYYY/MM/DD hh:mm:ss'
+	}
+},
+function(start, end, label) {
+	});
+});
+</script>
+{% endblock %}

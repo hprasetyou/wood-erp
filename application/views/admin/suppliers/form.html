@@ -1,0 +1,155 @@
+
+{% extends "dashboard.html" %}
+{% set title=" Supplier " %}
+{% if suppliers %}
+	 {% set bc_text = suppliers.id  %}
+{% else %}
+	 {% set bc_text = 'Baru' %}
+{% endif %}
+{% set breadcrumbs = [
+	{'link': base_url~'index.php/manage_suppliers','text':' Supplier '},
+	{'link':'#','text':bc_text  }]
+%}
+{% block content %}
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<form id="form_Supplier" method="post" action="{{base_url}}index.php/manage_suppliers/write/{{ suppliers.id }}" data-parsley-validate class="form-horizontal form-label-left">
+			<div class="box box-info">
+				<div class="box-header with-border">
+					<h3 class="box-title"> Supplier </h3>
+					<a href="{{base_url}}index.php/manage_suppliers" class="btn btn-default pull-right">Kembali</a>
+					{% if suppliers %}
+						<a href="#" class="btn btn-danger pull-right" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash-o"></i> Hapus</a>
+						<a href="#" class="btn btn-primary pull-right" id="btn-edit"><i class="fa fa-edit"></i> Edit</a>
+						<a href="#" style="display:none" class="btn btn-primary pull-right" id="btn-canceledit">Batal</a>
+					{% endif %}
+					<button type="submit" {% if suppliers %}style="display:none"{% endif %}  name="button" class="btn btn-success pull-right" id="btn-save"><i class="fa fa-save"></i> Simpan</button>
+					<div class="clearfix"></div>
+				</div>
+				<div class="box-body">
+					
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Name </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if suppliers %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="Name" value="{{ suppliers.Name }}"
+							name="Name" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if suppliers %}
+									<p class="control-value">{{ suppliers.Name  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Address </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if suppliers %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="Address" value="{{ suppliers.Address }}"
+							name="Address" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if suppliers %}
+									<p class="control-value">{{ suppliers.Address  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Phone </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if suppliers %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="Phone" value="{{ suppliers.Phone }}"
+							name="Phone" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if suppliers %}
+									<p class="control-value">{{ suppliers.Phone  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Email </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if suppliers %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="Email" value="{{ suppliers.Email }}"
+							name="Email" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if suppliers %}
+									<p class="control-value">{{ suppliers.Email  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Bank Detail </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if suppliers %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="BankDetail" value="{{ suppliers.BankDetail }}"
+							name="BankDetail" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if suppliers %}
+									<p class="control-value">{{ suppliers.BankDetail  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Tax Number </label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if suppliers %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="TaxNumber" value="{{ suppliers.TaxNumber }}"
+							name="TaxNumber" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if suppliers %}
+									<p class="control-value">{{ suppliers.TaxNumber  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<!-- Modal -->
+
+{% endblock %}
+{% block bottom%}
+<script>
+$('#btn-edit').click(function(){
+	$('#btn-canceledit').show()
+	$('#btn-save').show()
+	$('.input-wrap').show()
+	$('.control-value').hide()
+	$(this).hide()
+})
+$('#btn-canceledit').click(function(){
+	$('#btn-edit').show()
+	$('#btn-save').hide()
+	$('.input-wrap').hide()
+	$('.control-value').show()
+	$(this).hide()
+})
+$(function() {
+	$('.input-date').daterangepicker({
+	singleDatePicker: true,
+	showDropdowns: true,
+	locale: {
+		format: 'YYYY/MM/DD'
+	}
+},function(start, end, label) {
+	});
+$('.input-datetime').daterangepicker({
+	singleDatePicker: true,
+	showDropdowns: true,
+	timePicker: true,
+	timePickerIncrement: 30,
+	locale: {
+		format: 'YYYY/MM/DD hh:mm:ss'
+	}
+},
+function(start, end, label) {
+	});
+});
+</script>
+{% endblock %}
