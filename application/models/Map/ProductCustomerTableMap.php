@@ -82,9 +82,9 @@ class ProductCustomerTableMap extends TableMap
     const COL_CODE = 'product_customer.code';
 
     /**
-     * the column name for the customer_id field
+     * the column name for the partner_id field
      */
-    const COL_CUSTOMER_ID = 'product_customer.customer_id';
+    const COL_PARTNER_ID = 'product_customer.partner_id';
 
     /**
      * the column name for the product_id field
@@ -108,10 +108,10 @@ class ProductCustomerTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Code', 'CustomerId', 'ProductId', 'Description', ),
-        self::TYPE_CAMELNAME     => array('id', 'code', 'customerId', 'productId', 'description', ),
-        self::TYPE_COLNAME       => array(ProductCustomerTableMap::COL_ID, ProductCustomerTableMap::COL_CODE, ProductCustomerTableMap::COL_CUSTOMER_ID, ProductCustomerTableMap::COL_PRODUCT_ID, ProductCustomerTableMap::COL_DESCRIPTION, ),
-        self::TYPE_FIELDNAME     => array('id', 'code', 'customer_id', 'product_id', 'description', ),
+        self::TYPE_PHPNAME       => array('Id', 'Code', 'PartnerId', 'ProductId', 'Description', ),
+        self::TYPE_CAMELNAME     => array('id', 'code', 'partnerId', 'productId', 'description', ),
+        self::TYPE_COLNAME       => array(ProductCustomerTableMap::COL_ID, ProductCustomerTableMap::COL_CODE, ProductCustomerTableMap::COL_PARTNER_ID, ProductCustomerTableMap::COL_PRODUCT_ID, ProductCustomerTableMap::COL_DESCRIPTION, ),
+        self::TYPE_FIELDNAME     => array('id', 'code', 'partner_id', 'product_id', 'description', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
@@ -122,10 +122,10 @@ class ProductCustomerTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Code' => 1, 'CustomerId' => 2, 'ProductId' => 3, 'Description' => 4, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'code' => 1, 'customerId' => 2, 'productId' => 3, 'description' => 4, ),
-        self::TYPE_COLNAME       => array(ProductCustomerTableMap::COL_ID => 0, ProductCustomerTableMap::COL_CODE => 1, ProductCustomerTableMap::COL_CUSTOMER_ID => 2, ProductCustomerTableMap::COL_PRODUCT_ID => 3, ProductCustomerTableMap::COL_DESCRIPTION => 4, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'code' => 1, 'customer_id' => 2, 'product_id' => 3, 'description' => 4, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Code' => 1, 'PartnerId' => 2, 'ProductId' => 3, 'Description' => 4, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'code' => 1, 'partnerId' => 2, 'productId' => 3, 'description' => 4, ),
+        self::TYPE_COLNAME       => array(ProductCustomerTableMap::COL_ID => 0, ProductCustomerTableMap::COL_CODE => 1, ProductCustomerTableMap::COL_PARTNER_ID => 2, ProductCustomerTableMap::COL_PRODUCT_ID => 3, ProductCustomerTableMap::COL_DESCRIPTION => 4, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'code' => 1, 'partner_id' => 2, 'product_id' => 3, 'description' => 4, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
@@ -148,7 +148,7 @@ class ProductCustomerTableMap extends TableMap
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('code', 'Code', 'VARCHAR', true, 255, null);
-        $this->addForeignKey('customer_id', 'CustomerId', 'INTEGER', 'customer', 'id', true, null, null);
+        $this->addForeignKey('partner_id', 'PartnerId', 'INTEGER', 'partner', 'id', true, null, null);
         $this->addForeignKey('product_id', 'ProductId', 'INTEGER', 'product', 'id', true, null, null);
         $this->addColumn('description', 'Description', 'LONGVARCHAR', false, null, null);
     } // initialize()
@@ -158,10 +158,10 @@ class ProductCustomerTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Customer', '\\Customer', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('Partner', '\\Partner', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':customer_id',
+    0 => ':partner_id',
     1 => ':id',
   ),
 ), null, null, null, false);
@@ -317,13 +317,13 @@ class ProductCustomerTableMap extends TableMap
         if (null === $alias) {
             $criteria->addSelectColumn(ProductCustomerTableMap::COL_ID);
             $criteria->addSelectColumn(ProductCustomerTableMap::COL_CODE);
-            $criteria->addSelectColumn(ProductCustomerTableMap::COL_CUSTOMER_ID);
+            $criteria->addSelectColumn(ProductCustomerTableMap::COL_PARTNER_ID);
             $criteria->addSelectColumn(ProductCustomerTableMap::COL_PRODUCT_ID);
             $criteria->addSelectColumn(ProductCustomerTableMap::COL_DESCRIPTION);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.code');
-            $criteria->addSelectColumn($alias . '.customer_id');
+            $criteria->addSelectColumn($alias . '.partner_id');
             $criteria->addSelectColumn($alias . '.product_id');
             $criteria->addSelectColumn($alias . '.description');
         }

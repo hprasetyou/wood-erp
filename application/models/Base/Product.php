@@ -2410,10 +2410,10 @@ abstract class Product implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildProductCustomer[] List of ChildProductCustomer objects
      */
-    public function getProductCustomersJoinCustomer(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getProductCustomersJoinPartner(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildProductCustomerQuery::create(null, $criteria);
-        $query->joinWith('Customer', $joinBehavior);
+        $query->joinWith('Partner', $joinBehavior);
 
         return $this->getProductCustomers($query, $con);
     }

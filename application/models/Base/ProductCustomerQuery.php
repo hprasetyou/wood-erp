@@ -22,13 +22,13 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildProductCustomerQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildProductCustomerQuery orderByCode($order = Criteria::ASC) Order by the code column
- * @method     ChildProductCustomerQuery orderByCustomerId($order = Criteria::ASC) Order by the customer_id column
+ * @method     ChildProductCustomerQuery orderByPartnerId($order = Criteria::ASC) Order by the partner_id column
  * @method     ChildProductCustomerQuery orderByProductId($order = Criteria::ASC) Order by the product_id column
  * @method     ChildProductCustomerQuery orderByDescription($order = Criteria::ASC) Order by the description column
  *
  * @method     ChildProductCustomerQuery groupById() Group by the id column
  * @method     ChildProductCustomerQuery groupByCode() Group by the code column
- * @method     ChildProductCustomerQuery groupByCustomerId() Group by the customer_id column
+ * @method     ChildProductCustomerQuery groupByPartnerId() Group by the partner_id column
  * @method     ChildProductCustomerQuery groupByProductId() Group by the product_id column
  * @method     ChildProductCustomerQuery groupByDescription() Group by the description column
  *
@@ -40,15 +40,15 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductCustomerQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildProductCustomerQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildProductCustomerQuery leftJoinCustomer($relationAlias = null) Adds a LEFT JOIN clause to the query using the Customer relation
- * @method     ChildProductCustomerQuery rightJoinCustomer($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Customer relation
- * @method     ChildProductCustomerQuery innerJoinCustomer($relationAlias = null) Adds a INNER JOIN clause to the query using the Customer relation
+ * @method     ChildProductCustomerQuery leftJoinPartner($relationAlias = null) Adds a LEFT JOIN clause to the query using the Partner relation
+ * @method     ChildProductCustomerQuery rightJoinPartner($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Partner relation
+ * @method     ChildProductCustomerQuery innerJoinPartner($relationAlias = null) Adds a INNER JOIN clause to the query using the Partner relation
  *
- * @method     ChildProductCustomerQuery joinWithCustomer($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Customer relation
+ * @method     ChildProductCustomerQuery joinWithPartner($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Partner relation
  *
- * @method     ChildProductCustomerQuery leftJoinWithCustomer() Adds a LEFT JOIN clause and with to the query using the Customer relation
- * @method     ChildProductCustomerQuery rightJoinWithCustomer() Adds a RIGHT JOIN clause and with to the query using the Customer relation
- * @method     ChildProductCustomerQuery innerJoinWithCustomer() Adds a INNER JOIN clause and with to the query using the Customer relation
+ * @method     ChildProductCustomerQuery leftJoinWithPartner() Adds a LEFT JOIN clause and with to the query using the Partner relation
+ * @method     ChildProductCustomerQuery rightJoinWithPartner() Adds a RIGHT JOIN clause and with to the query using the Partner relation
+ * @method     ChildProductCustomerQuery innerJoinWithPartner() Adds a INNER JOIN clause and with to the query using the Partner relation
  *
  * @method     ChildProductCustomerQuery leftJoinProduct($relationAlias = null) Adds a LEFT JOIN clause to the query using the Product relation
  * @method     ChildProductCustomerQuery rightJoinProduct($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Product relation
@@ -60,14 +60,14 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductCustomerQuery rightJoinWithProduct() Adds a RIGHT JOIN clause and with to the query using the Product relation
  * @method     ChildProductCustomerQuery innerJoinWithProduct() Adds a INNER JOIN clause and with to the query using the Product relation
  *
- * @method     \CustomerQuery|\ProductQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \PartnerQuery|\ProductQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildProductCustomer findOne(ConnectionInterface $con = null) Return the first ChildProductCustomer matching the query
  * @method     ChildProductCustomer findOneOrCreate(ConnectionInterface $con = null) Return the first ChildProductCustomer matching the query, or a new ChildProductCustomer object populated from the query conditions when no match is found
  *
  * @method     ChildProductCustomer findOneById(int $id) Return the first ChildProductCustomer filtered by the id column
  * @method     ChildProductCustomer findOneByCode(string $code) Return the first ChildProductCustomer filtered by the code column
- * @method     ChildProductCustomer findOneByCustomerId(int $customer_id) Return the first ChildProductCustomer filtered by the customer_id column
+ * @method     ChildProductCustomer findOneByPartnerId(int $partner_id) Return the first ChildProductCustomer filtered by the partner_id column
  * @method     ChildProductCustomer findOneByProductId(int $product_id) Return the first ChildProductCustomer filtered by the product_id column
  * @method     ChildProductCustomer findOneByDescription(string $description) Return the first ChildProductCustomer filtered by the description column *
 
@@ -76,14 +76,14 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildProductCustomer requireOneById(int $id) Return the first ChildProductCustomer filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductCustomer requireOneByCode(string $code) Return the first ChildProductCustomer filtered by the code column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildProductCustomer requireOneByCustomerId(int $customer_id) Return the first ChildProductCustomer filtered by the customer_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProductCustomer requireOneByPartnerId(int $partner_id) Return the first ChildProductCustomer filtered by the partner_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductCustomer requireOneByProductId(int $product_id) Return the first ChildProductCustomer filtered by the product_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductCustomer requireOneByDescription(string $description) Return the first ChildProductCustomer filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildProductCustomer[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildProductCustomer objects based on current ModelCriteria
  * @method     ChildProductCustomer[]|ObjectCollection findById(int $id) Return ChildProductCustomer objects filtered by the id column
  * @method     ChildProductCustomer[]|ObjectCollection findByCode(string $code) Return ChildProductCustomer objects filtered by the code column
- * @method     ChildProductCustomer[]|ObjectCollection findByCustomerId(int $customer_id) Return ChildProductCustomer objects filtered by the customer_id column
+ * @method     ChildProductCustomer[]|ObjectCollection findByPartnerId(int $partner_id) Return ChildProductCustomer objects filtered by the partner_id column
  * @method     ChildProductCustomer[]|ObjectCollection findByProductId(int $product_id) Return ChildProductCustomer objects filtered by the product_id column
  * @method     ChildProductCustomer[]|ObjectCollection findByDescription(string $description) Return ChildProductCustomer objects filtered by the description column
  * @method     ChildProductCustomer[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -184,7 +184,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, code, customer_id, product_id, description FROM product_customer WHERE id = :p0';
+        $sql = 'SELECT id, code, partner_id, product_id, description FROM product_customer WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -341,18 +341,18 @@ abstract class ProductCustomerQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the customer_id column
+     * Filter the query on the partner_id column
      *
      * Example usage:
      * <code>
-     * $query->filterByCustomerId(1234); // WHERE customer_id = 1234
-     * $query->filterByCustomerId(array(12, 34)); // WHERE customer_id IN (12, 34)
-     * $query->filterByCustomerId(array('min' => 12)); // WHERE customer_id > 12
+     * $query->filterByPartnerId(1234); // WHERE partner_id = 1234
+     * $query->filterByPartnerId(array(12, 34)); // WHERE partner_id IN (12, 34)
+     * $query->filterByPartnerId(array('min' => 12)); // WHERE partner_id > 12
      * </code>
      *
-     * @see       filterByCustomer()
+     * @see       filterByPartner()
      *
-     * @param     mixed $customerId The value to use as filter.
+     * @param     mixed $partnerId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -360,16 +360,16 @@ abstract class ProductCustomerQuery extends ModelCriteria
      *
      * @return $this|ChildProductCustomerQuery The current query, for fluid interface
      */
-    public function filterByCustomerId($customerId = null, $comparison = null)
+    public function filterByPartnerId($partnerId = null, $comparison = null)
     {
-        if (is_array($customerId)) {
+        if (is_array($partnerId)) {
             $useMinMax = false;
-            if (isset($customerId['min'])) {
-                $this->addUsingAlias(ProductCustomerTableMap::COL_CUSTOMER_ID, $customerId['min'], Criteria::GREATER_EQUAL);
+            if (isset($partnerId['min'])) {
+                $this->addUsingAlias(ProductCustomerTableMap::COL_PARTNER_ID, $partnerId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($customerId['max'])) {
-                $this->addUsingAlias(ProductCustomerTableMap::COL_CUSTOMER_ID, $customerId['max'], Criteria::LESS_EQUAL);
+            if (isset($partnerId['max'])) {
+                $this->addUsingAlias(ProductCustomerTableMap::COL_PARTNER_ID, $partnerId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -380,7 +380,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ProductCustomerTableMap::COL_CUSTOMER_ID, $customerId, $comparison);
+        return $this->addUsingAlias(ProductCustomerTableMap::COL_PARTNER_ID, $partnerId, $comparison);
     }
 
     /**
@@ -452,44 +452,44 @@ abstract class ProductCustomerQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \Customer object
+     * Filter the query by a related \Partner object
      *
-     * @param \Customer|ObjectCollection $customer The related object(s) to use as filter
+     * @param \Partner|ObjectCollection $partner The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
      * @return ChildProductCustomerQuery The current query, for fluid interface
      */
-    public function filterByCustomer($customer, $comparison = null)
+    public function filterByPartner($partner, $comparison = null)
     {
-        if ($customer instanceof \Customer) {
+        if ($partner instanceof \Partner) {
             return $this
-                ->addUsingAlias(ProductCustomerTableMap::COL_CUSTOMER_ID, $customer->getId(), $comparison);
-        } elseif ($customer instanceof ObjectCollection) {
+                ->addUsingAlias(ProductCustomerTableMap::COL_PARTNER_ID, $partner->getId(), $comparison);
+        } elseif ($partner instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(ProductCustomerTableMap::COL_CUSTOMER_ID, $customer->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->addUsingAlias(ProductCustomerTableMap::COL_PARTNER_ID, $partner->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
-            throw new PropelException('filterByCustomer() only accepts arguments of type \Customer or Collection');
+            throw new PropelException('filterByPartner() only accepts arguments of type \Partner or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Customer relation
+     * Adds a JOIN clause to the query using the Partner relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildProductCustomerQuery The current query, for fluid interface
      */
-    public function joinCustomer($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinPartner($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Customer');
+        $relationMap = $tableMap->getRelation('Partner');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -504,14 +504,14 @@ abstract class ProductCustomerQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Customer');
+            $this->addJoinObject($join, 'Partner');
         }
 
         return $this;
     }
 
     /**
-     * Use the Customer relation Customer object
+     * Use the Partner relation Partner object
      *
      * @see useQuery()
      *
@@ -519,13 +519,13 @@ abstract class ProductCustomerQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \CustomerQuery A secondary query class using the current class as primary query
+     * @return \PartnerQuery A secondary query class using the current class as primary query
      */
-    public function useCustomerQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function usePartnerQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinCustomer($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Customer', '\CustomerQuery');
+            ->joinPartner($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Partner', '\PartnerQuery');
     }
 
     /**

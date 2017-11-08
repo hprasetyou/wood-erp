@@ -7,7 +7,7 @@
       'link':''
     }]
   },
-  { 
+  {
     'name':'Supplier',
     'icon':'user',
     'menu':[{
@@ -16,7 +16,7 @@
     }]
 
   },
-  { 
+  {
     'name':'Product Template',
     'icon':'cube',
     'menu':[{
@@ -25,7 +25,7 @@
     }]
 
   },
-  { 
+  {
     'name':'Customer',
     'icon':'user',
     'menu':[{
@@ -34,7 +34,7 @@
     }]
 
   }
-  
+
   ]%}
 <!DOCTYPE html>
 <html>
@@ -54,7 +54,7 @@
   <link rel="stylesheet" href="/public/assets/css/AdminLTE.min.css">
     <!-- DataTables -->
     <link rel="stylesheet" href="/public/components/datatables.net-bs/css/dataTables.bootstrap.min.css">
-    
+
   <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
   <link rel="stylesheet" href="/public/assets/css/skins/_all-skins.min.css">
@@ -65,7 +65,7 @@
   <!-- Daterange picker -->
   <link rel="stylesheet" href="/public/components/bootstrap-daterangepicker/daterangepicker.css">
   <link rel="stylesheet" href="/public/components/select2/dist/css/select2.min.css">
-  
+
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
@@ -209,7 +209,7 @@
               <li class="footer"><a href="#">View all</a></li>
             </ul>
           </li>
-        
+
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -397,7 +397,7 @@
  			"data":"id",
  			"render":new Function("data", "type","row","meta", "console.log(meta);return '<a data-id=\"'+data+'\" class=\"btn btn-sm btn-default pulloginl-right btn-select\" href=\"'+meta.settings.ajax.split('get_json')[0]+'detail/'+data+'\"><i class=\"fa fa-search\"></i> Pilih </a>'")
  		})
-		console.log(tt);
+		console.log(base_url);
 		tt.DataTable({
 			"processing": true,
 			"serverSide": true,

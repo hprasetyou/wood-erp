@@ -13,13 +13,15 @@ class Template {
         $this->CI->load->helper('url');
         $pdata = array(
             'base_url'=>base_url(),
-            'lang'=>include('application/language/en/default.php')
+            'res'=>array(
+                'string'=>include('application/language/en/default.php')
+            )
         );
         if($this->CI->session->userdata('is_logged_in')){
             $pdata['user_data'] = MemberQuery::create()->findPK($this->CI->session->userdata('id'));
         }
         $out = array_merge($pdata,$data);
-        
+
         echo $twig->render($tpl.'.html',$out);
     }
 }

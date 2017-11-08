@@ -11,7 +11,7 @@ return [
     'propel' => [
         'paths' => [
             // The directory where Propel expects to find your `schema.xml` file.
-            'schemaDir' => 'C:\wdxerp',
+            'schemaDir' => '/var/www/html/travel',
 
             // The directory where Propel should output generated object model classes.
             'phpDir' => 'application/models',
@@ -21,7 +21,7 @@ return [
             'connections' => [
                 'default' => [
                     'adapter' => 'mysql',
-                    'dsn' => 'mysql:host=localhost;port=3306;dbname=wdxerp',
+                    'dsn' => 'mysql:host=localhost;port=3306;dbname=travel',
                     'user' => 'root',
                     'password' => '',
                     'settings' => [

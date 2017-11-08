@@ -8,7 +8,15 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-  <table name="customer" idMethod="native" phpName="Customer">
+  <table name="finishing" idMethod="native" phpName="Finishing">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
+    <column name="description" phpName="Description" type="LONGVARCHAR"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="partner" idMethod="native" phpName="Partner">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
     <column name="address" phpName="Address" type="LONGVARCHAR"/>
@@ -19,20 +27,11 @@
     <column name="tax_number" phpName="TaxNumber" type="VARCHAR" size="255"/>
     <column name="bank_detail" phpName="BankDetail" type="VARCHAR" size="255"/>
     <column name="company_id" phpName="CompanyId" type="INTEGER"/>
+    <column name="is_customer" phpName="IsCustomer" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
+    <column name="is_supplier" phpName="IsSupplier" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
     <index name="company_id">
       <index-column name="company_id"/>
     </index>
-    <foreign-key foreignTable="customer" skipSql="true" name="product_company_ibfk_2" phpName="Company" phpRefName="CompanyMember">
-      <reference local="company_id" foreign="id"/>
-    </foreign-key>
-    <vendor type="mysql">
-      <parameter name="Engine" value="InnoDB"/>
-    </vendor>
-  </table>
-  <table name="finishing" idMethod="native" phpName="Finishing">
-    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
-    <column name="description" phpName="Description" type="LONGVARCHAR"/>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
@@ -80,17 +79,17 @@
   <table name="product_customer" idMethod="native" phpName="ProductCustomer">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="code" phpName="Code" type="VARCHAR" size="255" required="true"/>
-    <column name="customer_id" phpName="CustomerId" type="INTEGER" required="true"/>
+    <column name="partner_id" phpName="PartnerId" type="INTEGER" required="true"/>
     <column name="product_id" phpName="ProductId" type="INTEGER" required="true"/>
     <column name="description" phpName="Description" type="LONGVARCHAR"/>
-    <foreign-key foreignTable="customer" name="product_customer_ibfk_1">
-      <reference local="customer_id" foreign="id"/>
+    <foreign-key foreignTable="partner" name="product_partner_ibfk_1">
+      <reference local="partner_id" foreign="id"/>
     </foreign-key>
-    <foreign-key foreignTable="product" name="product_customer_ibfk_2">
+    <foreign-key foreignTable="product" name="product_partner_ibfk_2">
       <reference local="product_id" foreign="id"/>
     </foreign-key>
-    <index name="customer_id">
-      <index-column name="customer_id"/>
+    <index name="partner_id">
+      <index-column name="partner_id"/>
     </index>
     <index name="product_id">
       <index-column name="product_id"/>
@@ -115,18 +114,6 @@
     <index name="finishing_id">
       <index-column name="finishing_id"/>
     </index>
-    <vendor type="mysql">
-      <parameter name="Engine" value="InnoDB"/>
-    </vendor>
-  </table>
-  <table name="supplier" idMethod="native" phpName="Supplier">
-    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
-    <column name="address" phpName="Address" type="LONGVARCHAR" required="true"/>
-    <column name="phone" phpName="Phone" type="VARCHAR" size="255" required="true"/>
-    <column name="email" phpName="Email" type="VARCHAR" size="255" required="true"/>
-    <column name="bank_detail" phpName="BankDetail" type="LONGVARCHAR" required="true"/>
-    <column name="tax_number" phpName="TaxNumber" type="VARCHAR" size="255" required="true"/>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>

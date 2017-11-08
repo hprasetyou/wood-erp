@@ -2,8 +2,8 @@
 
 namespace Map;
 
-use \Supplier;
-use \SupplierQuery;
+use \Partner;
+use \PartnerQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'supplier' table.
+ * This class defines the structure of the 'partner' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class SupplierTableMap extends TableMap
+class PartnerTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class SupplierTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.SupplierTableMap';
+    const CLASS_NAME = '.Map.PartnerTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class SupplierTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'supplier';
+    const TABLE_NAME = 'partner';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\Supplier';
+    const OM_CLASS = '\\Partner';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Supplier';
+    const CLASS_DEFAULT = 'Partner';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 12;
 
     /**
      * The number of lazy-loaded columns
@@ -69,42 +69,67 @@ class SupplierTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 12;
 
     /**
      * the column name for the id field
      */
-    const COL_ID = 'supplier.id';
+    const COL_ID = 'partner.id';
 
     /**
      * the column name for the name field
      */
-    const COL_NAME = 'supplier.name';
+    const COL_NAME = 'partner.name';
 
     /**
      * the column name for the address field
      */
-    const COL_ADDRESS = 'supplier.address';
+    const COL_ADDRESS = 'partner.address';
 
     /**
      * the column name for the phone field
      */
-    const COL_PHONE = 'supplier.phone';
+    const COL_PHONE = 'partner.phone';
 
     /**
-     * the column name for the email field
+     * the column name for the website field
      */
-    const COL_EMAIL = 'supplier.email';
+    const COL_WEBSITE = 'partner.website';
 
     /**
-     * the column name for the bank_detail field
+     * the column name for the fax field
      */
-    const COL_BANK_DETAIL = 'supplier.bank_detail';
+    const COL_FAX = 'partner.fax';
+
+    /**
+     * the column name for the image field
+     */
+    const COL_IMAGE = 'partner.image';
 
     /**
      * the column name for the tax_number field
      */
-    const COL_TAX_NUMBER = 'supplier.tax_number';
+    const COL_TAX_NUMBER = 'partner.tax_number';
+
+    /**
+     * the column name for the bank_detail field
+     */
+    const COL_BANK_DETAIL = 'partner.bank_detail';
+
+    /**
+     * the column name for the company_id field
+     */
+    const COL_COMPANY_ID = 'partner.company_id';
+
+    /**
+     * the column name for the is_customer field
+     */
+    const COL_IS_CUSTOMER = 'partner.is_customer';
+
+    /**
+     * the column name for the is_supplier field
+     */
+    const COL_IS_SUPPLIER = 'partner.is_supplier';
 
     /**
      * The default string format for model objects of the related table
@@ -118,11 +143,11 @@ class SupplierTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Address', 'Phone', 'Email', 'BankDetail', 'TaxNumber', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'address', 'phone', 'email', 'bankDetail', 'taxNumber', ),
-        self::TYPE_COLNAME       => array(SupplierTableMap::COL_ID, SupplierTableMap::COL_NAME, SupplierTableMap::COL_ADDRESS, SupplierTableMap::COL_PHONE, SupplierTableMap::COL_EMAIL, SupplierTableMap::COL_BANK_DETAIL, SupplierTableMap::COL_TAX_NUMBER, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'address', 'phone', 'email', 'bank_detail', 'tax_number', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Address', 'Phone', 'Website', 'Fax', 'Image', 'TaxNumber', 'BankDetail', 'CompanyId', 'IsCustomer', 'IsSupplier', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'address', 'phone', 'website', 'fax', 'image', 'taxNumber', 'bankDetail', 'companyId', 'isCustomer', 'isSupplier', ),
+        self::TYPE_COLNAME       => array(PartnerTableMap::COL_ID, PartnerTableMap::COL_NAME, PartnerTableMap::COL_ADDRESS, PartnerTableMap::COL_PHONE, PartnerTableMap::COL_WEBSITE, PartnerTableMap::COL_FAX, PartnerTableMap::COL_IMAGE, PartnerTableMap::COL_TAX_NUMBER, PartnerTableMap::COL_BANK_DETAIL, PartnerTableMap::COL_COMPANY_ID, PartnerTableMap::COL_IS_CUSTOMER, PartnerTableMap::COL_IS_SUPPLIER, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'address', 'phone', 'website', 'fax', 'image', 'tax_number', 'bank_detail', 'company_id', 'is_customer', 'is_supplier', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
     );
 
     /**
@@ -132,11 +157,11 @@ class SupplierTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Address' => 2, 'Phone' => 3, 'Email' => 4, 'BankDetail' => 5, 'TaxNumber' => 6, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'address' => 2, 'phone' => 3, 'email' => 4, 'bankDetail' => 5, 'taxNumber' => 6, ),
-        self::TYPE_COLNAME       => array(SupplierTableMap::COL_ID => 0, SupplierTableMap::COL_NAME => 1, SupplierTableMap::COL_ADDRESS => 2, SupplierTableMap::COL_PHONE => 3, SupplierTableMap::COL_EMAIL => 4, SupplierTableMap::COL_BANK_DETAIL => 5, SupplierTableMap::COL_TAX_NUMBER => 6, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'address' => 2, 'phone' => 3, 'email' => 4, 'bank_detail' => 5, 'tax_number' => 6, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Address' => 2, 'Phone' => 3, 'Website' => 4, 'Fax' => 5, 'Image' => 6, 'TaxNumber' => 7, 'BankDetail' => 8, 'CompanyId' => 9, 'IsCustomer' => 10, 'IsSupplier' => 11, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'address' => 2, 'phone' => 3, 'website' => 4, 'fax' => 5, 'image' => 6, 'taxNumber' => 7, 'bankDetail' => 8, 'companyId' => 9, 'isCustomer' => 10, 'isSupplier' => 11, ),
+        self::TYPE_COLNAME       => array(PartnerTableMap::COL_ID => 0, PartnerTableMap::COL_NAME => 1, PartnerTableMap::COL_ADDRESS => 2, PartnerTableMap::COL_PHONE => 3, PartnerTableMap::COL_WEBSITE => 4, PartnerTableMap::COL_FAX => 5, PartnerTableMap::COL_IMAGE => 6, PartnerTableMap::COL_TAX_NUMBER => 7, PartnerTableMap::COL_BANK_DETAIL => 8, PartnerTableMap::COL_COMPANY_ID => 9, PartnerTableMap::COL_IS_CUSTOMER => 10, PartnerTableMap::COL_IS_SUPPLIER => 11, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'address' => 2, 'phone' => 3, 'website' => 4, 'fax' => 5, 'image' => 6, 'tax_number' => 7, 'bank_detail' => 8, 'company_id' => 9, 'is_customer' => 10, 'is_supplier' => 11, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
     );
 
     /**
@@ -149,20 +174,25 @@ class SupplierTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('supplier');
-        $this->setPhpName('Supplier');
+        $this->setName('partner');
+        $this->setPhpName('Partner');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\Supplier');
+        $this->setClassName('\\Partner');
         $this->setPackage('');
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', true, 255, null);
-        $this->addColumn('address', 'Address', 'LONGVARCHAR', true, null, null);
-        $this->addColumn('phone', 'Phone', 'VARCHAR', true, 255, null);
-        $this->addColumn('email', 'Email', 'VARCHAR', true, 255, null);
-        $this->addColumn('bank_detail', 'BankDetail', 'LONGVARCHAR', true, null, null);
-        $this->addColumn('tax_number', 'TaxNumber', 'VARCHAR', true, 255, null);
+        $this->addColumn('address', 'Address', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('phone', 'Phone', 'VARCHAR', false, 255, null);
+        $this->addColumn('website', 'Website', 'VARCHAR', false, 255, null);
+        $this->addColumn('fax', 'Fax', 'VARCHAR', false, 255, null);
+        $this->addColumn('image', 'Image', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('tax_number', 'TaxNumber', 'VARCHAR', false, 255, null);
+        $this->addColumn('bank_detail', 'BankDetail', 'VARCHAR', false, 255, null);
+        $this->addColumn('company_id', 'CompanyId', 'INTEGER', false, null, null);
+        $this->addColumn('is_customer', 'IsCustomer', 'BOOLEAN', true, 1, false);
+        $this->addColumn('is_supplier', 'IsSupplier', 'BOOLEAN', true, 1, false);
     } // initialize()
 
     /**
@@ -170,6 +200,13 @@ class SupplierTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('ProductCustomer', '\\ProductCustomer', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':partner_id',
+    1 => ':id',
+  ),
+), null, null, 'ProductCustomers', false);
     } // buildRelations()
 
     /**
@@ -229,7 +266,7 @@ class SupplierTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? SupplierTableMap::CLASS_DEFAULT : SupplierTableMap::OM_CLASS;
+        return $withPrefix ? PartnerTableMap::CLASS_DEFAULT : PartnerTableMap::OM_CLASS;
     }
 
     /**
@@ -243,22 +280,22 @@ class SupplierTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Supplier object, last column rank)
+     * @return array           (Partner object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = SupplierTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = SupplierTableMap::getInstanceFromPool($key))) {
+        $key = PartnerTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = PartnerTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + SupplierTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + PartnerTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = SupplierTableMap::OM_CLASS;
-            /** @var Supplier $obj */
+            $cls = PartnerTableMap::OM_CLASS;
+            /** @var Partner $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            SupplierTableMap::addInstanceToPool($obj, $key);
+            PartnerTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -281,18 +318,18 @@ class SupplierTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = SupplierTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = SupplierTableMap::getInstanceFromPool($key))) {
+            $key = PartnerTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = PartnerTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Supplier $obj */
+                /** @var Partner $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                SupplierTableMap::addInstanceToPool($obj, $key);
+                PartnerTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -313,21 +350,31 @@ class SupplierTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(SupplierTableMap::COL_ID);
-            $criteria->addSelectColumn(SupplierTableMap::COL_NAME);
-            $criteria->addSelectColumn(SupplierTableMap::COL_ADDRESS);
-            $criteria->addSelectColumn(SupplierTableMap::COL_PHONE);
-            $criteria->addSelectColumn(SupplierTableMap::COL_EMAIL);
-            $criteria->addSelectColumn(SupplierTableMap::COL_BANK_DETAIL);
-            $criteria->addSelectColumn(SupplierTableMap::COL_TAX_NUMBER);
+            $criteria->addSelectColumn(PartnerTableMap::COL_ID);
+            $criteria->addSelectColumn(PartnerTableMap::COL_NAME);
+            $criteria->addSelectColumn(PartnerTableMap::COL_ADDRESS);
+            $criteria->addSelectColumn(PartnerTableMap::COL_PHONE);
+            $criteria->addSelectColumn(PartnerTableMap::COL_WEBSITE);
+            $criteria->addSelectColumn(PartnerTableMap::COL_FAX);
+            $criteria->addSelectColumn(PartnerTableMap::COL_IMAGE);
+            $criteria->addSelectColumn(PartnerTableMap::COL_TAX_NUMBER);
+            $criteria->addSelectColumn(PartnerTableMap::COL_BANK_DETAIL);
+            $criteria->addSelectColumn(PartnerTableMap::COL_COMPANY_ID);
+            $criteria->addSelectColumn(PartnerTableMap::COL_IS_CUSTOMER);
+            $criteria->addSelectColumn(PartnerTableMap::COL_IS_SUPPLIER);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.name');
             $criteria->addSelectColumn($alias . '.address');
             $criteria->addSelectColumn($alias . '.phone');
-            $criteria->addSelectColumn($alias . '.email');
-            $criteria->addSelectColumn($alias . '.bank_detail');
+            $criteria->addSelectColumn($alias . '.website');
+            $criteria->addSelectColumn($alias . '.fax');
+            $criteria->addSelectColumn($alias . '.image');
             $criteria->addSelectColumn($alias . '.tax_number');
+            $criteria->addSelectColumn($alias . '.bank_detail');
+            $criteria->addSelectColumn($alias . '.company_id');
+            $criteria->addSelectColumn($alias . '.is_customer');
+            $criteria->addSelectColumn($alias . '.is_supplier');
         }
     }
 
@@ -340,7 +387,7 @@ class SupplierTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(SupplierTableMap::DATABASE_NAME)->getTable(SupplierTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(PartnerTableMap::DATABASE_NAME)->getTable(PartnerTableMap::TABLE_NAME);
     }
 
     /**
@@ -348,16 +395,16 @@ class SupplierTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(SupplierTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(SupplierTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new SupplierTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(PartnerTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(PartnerTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new PartnerTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Supplier or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a Partner or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Supplier object or primary key or array of primary keys
+     * @param mixed               $values Criteria or Partner object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -368,27 +415,27 @@ class SupplierTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SupplierTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(PartnerTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \Supplier) { // it's a model object
+        } elseif ($values instanceof \Partner) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(SupplierTableMap::DATABASE_NAME);
-            $criteria->add(SupplierTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(PartnerTableMap::DATABASE_NAME);
+            $criteria->add(PartnerTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
-        $query = SupplierQuery::create()->mergeWith($criteria);
+        $query = PartnerQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            SupplierTableMap::clearInstancePool();
+            PartnerTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                SupplierTableMap::removeInstanceFromPool($singleval);
+                PartnerTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -396,20 +443,20 @@ class SupplierTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the supplier table.
+     * Deletes all rows from the partner table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return SupplierQuery::create()->doDeleteAll($con);
+        return PartnerQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Supplier or Criteria object.
+     * Performs an INSERT on the database, given a Partner or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Supplier object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or Partner object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -418,22 +465,22 @@ class SupplierTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SupplierTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(PartnerTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Supplier object
+            $criteria = $criteria->buildCriteria(); // build Criteria from Partner object
         }
 
-        if ($criteria->containsKey(SupplierTableMap::COL_ID) && $criteria->keyContainsValue(SupplierTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.SupplierTableMap::COL_ID.')');
+        if ($criteria->containsKey(PartnerTableMap::COL_ID) && $criteria->keyContainsValue(PartnerTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.PartnerTableMap::COL_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = SupplierQuery::create()->mergeWith($criteria);
+        $query = PartnerQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -442,7 +489,7 @@ class SupplierTableMap extends TableMap
         });
     }
 
-} // SupplierTableMap
+} // PartnerTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-SupplierTableMap::buildTableMap();
+PartnerTableMap::buildTableMap();

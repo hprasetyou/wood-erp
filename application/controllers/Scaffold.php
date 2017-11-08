@@ -136,7 +136,7 @@ class Scaffold extends CI_Controller {
 						fclose($lang_file);
 					}
 					$dtcolumn .="{\"data\":\"$field_name\"},\n";
-					$table .= "\t\t\t\t<th data-fieldname=\"$field_name\">{{words.$label}}</th>\n";
+					$table .= "\t\t\t\t<th data-fieldname=\"$field_name\">{{res.string.$label}}</th>\n";
 				}
 			}
 		}
@@ -202,7 +202,7 @@ $(document).ready(function(){
 		$header = false;
 		foreach ($fields as $field) {
 
-			$field_name = $field->attributes()->phpName;
+			$field_name = $field->attributes()->name;
 			$field_type = $field->attributes()->type;
 			$field_name_lower = strtolower($field_name);
 			if(!$header){
@@ -210,11 +210,13 @@ $(document).ready(function(){
 					$header = "$field_name";
 				}
 			}
-			$label = ucfirst($this->split_camel($field_name));
+			$label = strtolower(ltrim(rtrim($this->split_camel($field_name))));
+			$labelword = ucfirst(ltrim(rtrim($this->split_snake($this->split_camel($field_name)))));
+
 			if($this->check_field($field_name)){
 			$form_field .= "
 \t\t\t\t\t<div class=\"form-group\">
-\t\t\t\t\t\t<label class=\"control-label col-md-3 col-sm-3 col-xs-12\" for=\"first-name\">$label</label>
+\t\t\t\t\t\t<label class=\"control-label col-md-3 col-sm-3 col-xs-12\" for=\"first-name\">{{res.string.$label}}</label>
 \t\t\t\t\t\t<div class=\"col-md-6 col-sm-6 col-xs-12\">";
 			$i=0;
 			$display_val = "$tb_name_lower.$field_name";
@@ -262,6 +264,9 @@ $(document).ready(function(){
 			if($i>=count($fk)){
 				$ex_attr = "";
 				$field_dateformat = "";
+				$input_type = "text";
+				echo $field_type."\n===========================";
+
 				switch ($field_type) {
 					case 'DATE':
 						$ex_attr = "input-date";
@@ -283,14 +288,27 @@ $(document).ready(function(){
 						$field_dateformat = " | date('Y/m/d h:i:s') ";
 						$value_dateformat = " | date('d M Y h:i:s') ";
 						break;
+					case 'BOOLEAN':
+						$input_type = "checkbox";
+						break;
+						# code...
+					case 'FLOAT':
+						$input_type = "number";
+						break;
+						# code...
+					case 'INTEGER':
+						$input_type = "number";
+						# code...
+						break;
 
 					default:
 						$ex_attr = "";
 						break;
 				}
+
 				$form_field .= "
 \t\t\t\t\t\t<div {% if $tb_name_lower %}style=\"display:none\"{% endif %} class=\"input-wrap\">
-\t\t\t\t\t\t\t<input type=\"text\" id=\"$field_name\" value=\"{{ $tb_name_lower.$field_name $field_dateformat}}\"
+\t\t\t\t\t\t\t<input type=\"$input_type\" id=\"$field_name\" value=\"{{ $tb_name_lower.$field_name $field_dateformat}}\"
 \t\t\t\t\t\t\tname=\"$field_name\" required=\"required\" class=\"form-control $ex_attr col-md-7 col-xs-12\">
 \t\t\t\t\t\t</div>";
 			}
@@ -397,7 +415,7 @@ private function _view_modal_template($tb_name,$fields){
 	$table .= "\t\t<thead>\n";
 	$table .= "\t\t\t<tr>\n";
 	$table .= "\t\t\t\t<th></th>\n";
-	
+
 	foreach ($fields as $key => $field) {
 		$field_name = $field->attributes()->name;
 		if($this->check_field($field_name)){
@@ -405,14 +423,14 @@ private function _view_modal_template($tb_name,$fields){
 			$labelword = ucfirst($this->split_camel($field_name));
 
 			if($this->check_field($field_name)){
-				$table .= "\t\t\t\t<th data-fieldname=\"$field_name\">{{words.$label}}</th>\n";
+				$table .= "\t\t\t\t<th data-fieldname=\"$field_name\">{{res.string.$label}}</th>\n";
 			}
 		}
 	}
 	$table .= "\t\t\t</tr>\n";
 	$table .= "\t\t</thead>\n";
 	$table .= "\t</table>\n";
-	
+
 
 	return "
 	<div class=\"modal fade\" id=\"Modal$tb_name\" data-init=\"0\" data-controller=\"manage_$tb_name_lower\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\">
@@ -512,8 +530,7 @@ class Manage_$var extends CI_Controller{
 		if(\$this->input->get('search[value]')){\n$get_json_filter";
 			if(!$get_json_filter == ""){
 			$template .= "
-			\$$var$dash>where(array($get_json_filter_cond),'or');
-      \$$var$dash>find();";
+			\$$var$dash>where(array($get_json_filter_cond),'or');";
 			}
 			$template .= "
     }

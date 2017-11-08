@@ -1,0 +1,220 @@
+
+{% extends "dashboard.html" %}
+{% set title=" Partner " %}
+{% if partners %}
+	 {% set bc_text = partners.name %}
+{% else %}
+	 {% set bc_text = 'Baru' %}
+{% endif %}
+{% set breadcrumbs = [
+	{'link': base_url~'index.php/manage_partners','text':' Partner '},
+	{'link':'#','text':bc_text  }]
+%}
+{% block content %}
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<form id="form_Partner" method="post" action="{{base_url}}index.php/manage_partners/write/{{ partners.id }}" data-parsley-validate class="form-horizontal form-label-left">
+			<div class="box box-info">
+				<div class="box-header with-border">
+					<h3 class="box-title"> Partner </h3>
+					<a href="{{base_url}}index.php/manage_partners" class="btn btn-default pull-right">Kembali</a>
+					{% if partners %}
+						<a href="#" class="btn btn-danger pull-right" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash-o"></i> Hapus</a>
+						<a href="#" class="btn btn-primary pull-right" id="btn-edit"><i class="fa fa-edit"></i> Edit</a>
+						<a href="#" style="display:none" class="btn btn-primary pull-right" id="btn-canceledit">Batal</a>
+					{% endif %}
+					<button type="submit" {% if partners %}style="display:none"{% endif %}  name="button" class="btn btn-success pull-right" id="btn-save"><i class="fa fa-save"></i> Simpan</button>
+					<div class="clearfix"></div>
+				</div>
+				<div class="box-body">
+					
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="name" value="{{ partners.name }}"
+							name="name" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if partners %}
+									<p class="control-value">{{ partners.name  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.address}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="address" value="{{ partners.address }}"
+							name="address" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if partners %}
+									<p class="control-value">{{ partners.address  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.phone}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="phone" value="{{ partners.phone }}"
+							name="phone" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if partners %}
+									<p class="control-value">{{ partners.phone  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.website}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="website" value="{{ partners.website }}"
+							name="website" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if partners %}
+									<p class="control-value">{{ partners.website  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.fax}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="fax" value="{{ partners.fax }}"
+							name="fax" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if partners %}
+									<p class="control-value">{{ partners.fax  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.image}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="image" value="{{ partners.image }}"
+							name="image" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if partners %}
+									<p class="control-value">{{ partners.image  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.tax_number}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="tax_number" value="{{ partners.tax_number }}"
+							name="tax_number" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if partners %}
+									<p class="control-value">{{ partners.tax_number  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.bank_detail}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" id="bank_detail" value="{{ partners.bank_detail }}"
+							name="bank_detail" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if partners %}
+									<p class="control-value">{{ partners.bank_detail  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.company_id}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
+							<input type="number" id="company_id" value="{{ partners.company_id }}"
+							name="company_id" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if partners %}
+									<p class="control-value">{{ partners.company_id  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.is_customer}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
+							<input type="checkbox" id="is_customer" value="{{ partners.is_customer }}"
+							name="is_customer" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if partners %}
+									<p class="control-value">{{ partners.is_customer  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.is_supplier}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
+							<input type="checkbox" id="is_supplier" value="{{ partners.is_supplier }}"
+							name="is_supplier" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if partners %}
+									<p class="control-value">{{ partners.is_supplier  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<!-- Modal -->
+
+{% endblock %}
+{% block bottom%}
+<script>
+$('#btn-edit').click(function(){
+	$('#btn-canceledit').show()
+	$('#btn-save').show()
+	$('.input-wrap').show()
+	$('.control-value').hide()
+	$(this).hide()
+})
+$('#btn-canceledit').click(function(){
+	$('#btn-edit').show()
+	$('#btn-save').hide()
+	$('.input-wrap').hide()
+	$('.control-value').show()
+	$(this).hide()
+})
+$(function() {
+	$('.input-date').daterangepicker({
+	singleDatePicker: true,
+	showDropdowns: true,
+	locale: {
+		format: 'YYYY/MM/DD'
+	}
+},function(start, end, label) {
+	});
+$('.input-datetime').daterangepicker({
+	singleDatePicker: true,
+	showDropdowns: true,
+	timePicker: true,
+	timePickerIncrement: 30,
+	locale: {
+		format: 'YYYY/MM/DD hh:mm:ss'
+	}
+},
+function(start, end, label) {
+	});
+});
+</script>
+{% endblock %}

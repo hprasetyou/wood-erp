@@ -2,8 +2,8 @@
 
 namespace Base;
 
-use \Customer as ChildCustomer;
-use \CustomerQuery as ChildCustomerQuery;
+use \Partner as ChildPartner;
+use \PartnerQuery as ChildPartnerQuery;
 use \Product as ChildProduct;
 use \ProductCustomerQuery as ChildProductCustomerQuery;
 use \ProductQuery as ChildProductQuery;
@@ -78,11 +78,11 @@ abstract class ProductCustomer implements ActiveRecordInterface
     protected $code;
 
     /**
-     * The value for the customer_id field.
+     * The value for the partner_id field.
      *
      * @var        int
      */
-    protected $customer_id;
+    protected $partner_id;
 
     /**
      * The value for the product_id field.
@@ -99,9 +99,9 @@ abstract class ProductCustomer implements ActiveRecordInterface
     protected $description;
 
     /**
-     * @var        ChildCustomer
+     * @var        ChildPartner
      */
-    protected $aCustomer;
+    protected $aPartner;
 
     /**
      * @var        ChildProduct
@@ -362,13 +362,13 @@ abstract class ProductCustomer implements ActiveRecordInterface
     }
 
     /**
-     * Get the [customer_id] column value.
+     * Get the [partner_id] column value.
      *
      * @return int
      */
-    public function getCustomerId()
+    public function getPartnerId()
     {
-        return $this->customer_id;
+        return $this->partner_id;
     }
 
     /**
@@ -432,28 +432,28 @@ abstract class ProductCustomer implements ActiveRecordInterface
     } // setCode()
 
     /**
-     * Set the value of [customer_id] column.
+     * Set the value of [partner_id] column.
      *
      * @param int $v new value
      * @return $this|\ProductCustomer The current object (for fluent API support)
      */
-    public function setCustomerId($v)
+    public function setPartnerId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->customer_id !== $v) {
-            $this->customer_id = $v;
-            $this->modifiedColumns[ProductCustomerTableMap::COL_CUSTOMER_ID] = true;
+        if ($this->partner_id !== $v) {
+            $this->partner_id = $v;
+            $this->modifiedColumns[ProductCustomerTableMap::COL_PARTNER_ID] = true;
         }
 
-        if ($this->aCustomer !== null && $this->aCustomer->getId() !== $v) {
-            $this->aCustomer = null;
+        if ($this->aPartner !== null && $this->aPartner->getId() !== $v) {
+            $this->aPartner = null;
         }
 
         return $this;
-    } // setCustomerId()
+    } // setPartnerId()
 
     /**
      * Set the value of [product_id] column.
@@ -541,8 +541,8 @@ abstract class ProductCustomer implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProductCustomerTableMap::translateFieldName('Code', TableMap::TYPE_PHPNAME, $indexType)];
             $this->code = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProductCustomerTableMap::translateFieldName('CustomerId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->customer_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProductCustomerTableMap::translateFieldName('PartnerId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->partner_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProductCustomerTableMap::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->product_id = (null !== $col) ? (int) $col : null;
@@ -579,8 +579,8 @@ abstract class ProductCustomer implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aCustomer !== null && $this->customer_id !== $this->aCustomer->getId()) {
-            $this->aCustomer = null;
+        if ($this->aPartner !== null && $this->partner_id !== $this->aPartner->getId()) {
+            $this->aPartner = null;
         }
         if ($this->aProduct !== null && $this->product_id !== $this->aProduct->getId()) {
             $this->aProduct = null;
@@ -624,7 +624,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aCustomer = null;
+            $this->aPartner = null;
             $this->aProduct = null;
         } // if (deep)
     }
@@ -734,11 +734,11 @@ abstract class ProductCustomer implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aCustomer !== null) {
-                if ($this->aCustomer->isModified() || $this->aCustomer->isNew()) {
-                    $affectedRows += $this->aCustomer->save($con);
+            if ($this->aPartner !== null) {
+                if ($this->aPartner->isModified() || $this->aPartner->isNew()) {
+                    $affectedRows += $this->aPartner->save($con);
                 }
-                $this->setCustomer($this->aCustomer);
+                $this->setPartner($this->aPartner);
             }
 
             if ($this->aProduct !== null) {
@@ -791,8 +791,8 @@ abstract class ProductCustomer implements ActiveRecordInterface
         if ($this->isColumnModified(ProductCustomerTableMap::COL_CODE)) {
             $modifiedColumns[':p' . $index++]  = 'code';
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_CUSTOMER_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'customer_id';
+        if ($this->isColumnModified(ProductCustomerTableMap::COL_PARTNER_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'partner_id';
         }
         if ($this->isColumnModified(ProductCustomerTableMap::COL_PRODUCT_ID)) {
             $modifiedColumns[':p' . $index++]  = 'product_id';
@@ -817,8 +817,8 @@ abstract class ProductCustomer implements ActiveRecordInterface
                     case 'code':
                         $stmt->bindValue($identifier, $this->code, PDO::PARAM_STR);
                         break;
-                    case 'customer_id':
-                        $stmt->bindValue($identifier, $this->customer_id, PDO::PARAM_INT);
+                    case 'partner_id':
+                        $stmt->bindValue($identifier, $this->partner_id, PDO::PARAM_INT);
                         break;
                     case 'product_id':
                         $stmt->bindValue($identifier, $this->product_id, PDO::PARAM_INT);
@@ -895,7 +895,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
                 return $this->getCode();
                 break;
             case 2:
-                return $this->getCustomerId();
+                return $this->getPartnerId();
                 break;
             case 3:
                 return $this->getProductId();
@@ -935,7 +935,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getCode(),
-            $keys[2] => $this->getCustomerId(),
+            $keys[2] => $this->getPartnerId(),
             $keys[3] => $this->getProductId(),
             $keys[4] => $this->getDescription(),
         );
@@ -945,20 +945,20 @@ abstract class ProductCustomer implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aCustomer) {
+            if (null !== $this->aPartner) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'customer';
+                        $key = 'partner';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'customer';
+                        $key = 'partner';
                         break;
                     default:
-                        $key = 'Customer';
+                        $key = 'Partner';
                 }
 
-                $result[$key] = $this->aCustomer->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aPartner->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->aProduct) {
 
@@ -1016,7 +1016,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
                 $this->setCode($value);
                 break;
             case 2:
-                $this->setCustomerId($value);
+                $this->setPartnerId($value);
                 break;
             case 3:
                 $this->setProductId($value);
@@ -1057,7 +1057,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
             $this->setCode($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setCustomerId($arr[$keys[2]]);
+            $this->setPartnerId($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
             $this->setProductId($arr[$keys[3]]);
@@ -1112,8 +1112,8 @@ abstract class ProductCustomer implements ActiveRecordInterface
         if ($this->isColumnModified(ProductCustomerTableMap::COL_CODE)) {
             $criteria->add(ProductCustomerTableMap::COL_CODE, $this->code);
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_CUSTOMER_ID)) {
-            $criteria->add(ProductCustomerTableMap::COL_CUSTOMER_ID, $this->customer_id);
+        if ($this->isColumnModified(ProductCustomerTableMap::COL_PARTNER_ID)) {
+            $criteria->add(ProductCustomerTableMap::COL_PARTNER_ID, $this->partner_id);
         }
         if ($this->isColumnModified(ProductCustomerTableMap::COL_PRODUCT_ID)) {
             $criteria->add(ProductCustomerTableMap::COL_PRODUCT_ID, $this->product_id);
@@ -1208,7 +1208,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setCode($this->getCode());
-        $copyObj->setCustomerId($this->getCustomerId());
+        $copyObj->setPartnerId($this->getPartnerId());
         $copyObj->setProductId($this->getProductId());
         $copyObj->setDescription($this->getDescription());
         if ($makeNew) {
@@ -1240,24 +1240,24 @@ abstract class ProductCustomer implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildCustomer object.
+     * Declares an association between this object and a ChildPartner object.
      *
-     * @param  ChildCustomer $v
+     * @param  ChildPartner $v
      * @return $this|\ProductCustomer The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setCustomer(ChildCustomer $v = null)
+    public function setPartner(ChildPartner $v = null)
     {
         if ($v === null) {
-            $this->setCustomerId(NULL);
+            $this->setPartnerId(NULL);
         } else {
-            $this->setCustomerId($v->getId());
+            $this->setPartnerId($v->getId());
         }
 
-        $this->aCustomer = $v;
+        $this->aPartner = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildCustomer object, it will not be re-added.
+        // If this object has already been added to the ChildPartner object, it will not be re-added.
         if ($v !== null) {
             $v->addProductCustomer($this);
         }
@@ -1268,26 +1268,26 @@ abstract class ProductCustomer implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildCustomer object
+     * Get the associated ChildPartner object
      *
      * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildCustomer The associated ChildCustomer object.
+     * @return ChildPartner The associated ChildPartner object.
      * @throws PropelException
      */
-    public function getCustomer(ConnectionInterface $con = null)
+    public function getPartner(ConnectionInterface $con = null)
     {
-        if ($this->aCustomer === null && ($this->customer_id != 0)) {
-            $this->aCustomer = ChildCustomerQuery::create()->findPk($this->customer_id, $con);
+        if ($this->aPartner === null && ($this->partner_id != 0)) {
+            $this->aPartner = ChildPartnerQuery::create()->findPk($this->partner_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aCustomer->addProductCustomers($this);
+                $this->aPartner->addProductCustomers($this);
              */
         }
 
-        return $this->aCustomer;
+        return $this->aPartner;
     }
 
     /**
@@ -1348,15 +1348,15 @@ abstract class ProductCustomer implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aCustomer) {
-            $this->aCustomer->removeProductCustomer($this);
+        if (null !== $this->aPartner) {
+            $this->aPartner->removeProductCustomer($this);
         }
         if (null !== $this->aProduct) {
             $this->aProduct->removeProductCustomer($this);
         }
         $this->id = null;
         $this->code = null;
-        $this->customer_id = null;
+        $this->partner_id = null;
         $this->product_id = null;
         $this->description = null;
         $this->alreadyInSave = false;
@@ -1379,7 +1379,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aCustomer = null;
+        $this->aPartner = null;
         $this->aProduct = null;
     }
 
