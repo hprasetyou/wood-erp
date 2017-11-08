@@ -201,6 +201,10 @@ $(document).ready(function(){
 		$modals = "";
 		$header = false;
 		foreach ($fields as $field) {
+			$required = "";
+			if($field->attributes()->required){
+				$required = "required=\"required\"";
+			}
 
 			$field_name = $field->attributes()->name;
 			$field_type = $field->attributes()->type;
@@ -232,7 +236,7 @@ $(document).ready(function(){
 					$form_field .= "
 \t\t\t\t\t\t<div {% if $tb_name_lower %}style=\"display:none\"{% endif %} class=\"input-wrap input-group\">
 \t\t\t\t\t\t\t<input type=\"hidden\" type=\"text\" id=\"$field_name\" value=\"{{ $tb_name_lower.$field_name }}\" name=\"$field_name\"  >
-\t\t\t\t\t\t\t<input type=\"text\" name=\"display$field_name\" id=\"display$field_name\"  value=\"{{ $tb_name_lower.$theirphpmodel }}\" class=\"form-control\" />
+\t\t\t\t\t\t\t<input type=\"text\" $required name=\"display$field_name\" id=\"display$field_name\"  value=\"{{ $tb_name_lower.$theirphpmodel }}\" class=\"form-control\" />
 \t\t\t\t\t\t\t<span class=\"input-group-btn\">
 \t\t\t\t\t\t\t\t<button class=\"btn btnModal btn-default\" id=\"btn$field_name\"  data-target=\"Modal$theirphpmodel\" type=\"button\">Cari</button>
 \t\t\t\t\t\t\t</span>
@@ -249,7 +253,7 @@ $(document).ready(function(){
 				// $field_name_singular = Inflector::singularize($field_name);
 				$form_field .= "
 \t\t\t\t\t\t<div {% if $tb_name_lower %}style=\"display:none\"{% endif %} class=\"input-wrap\">
-\t\t\t\t\t\t\t<select  id=\"$field_name\" value=\"{{ $tb_name_lower.$field_name }}\" name=\"$field_name\" required=\"required\" class=\"form-control form-select col-md-7 col-xs-12\">\n";
+\t\t\t\t\t\t\t<select  id=\"$field_name\" value=\"{{ $tb_name_lower.$field_name }}\" name=\"$field_name\" $required class=\"form-control form-select col-md-7 col-xs-12\">\n";
 				foreach ($enums as $enum) {
 				$form_field .="\t\t\t\t\t\t\t\t<option  {% if $tb_name_lower.$field_name == $enum %}selected=\"selected\"{% endif %} value=\"$enum\">$enum</option>\n";
 				}
@@ -309,7 +313,7 @@ $(document).ready(function(){
 				$form_field .= "
 \t\t\t\t\t\t<div {% if $tb_name_lower %}style=\"display:none\"{% endif %} class=\"input-wrap\">
 \t\t\t\t\t\t\t<input type=\"$input_type\" id=\"$field_name\" value=\"{{ $tb_name_lower.$field_name $field_dateformat}}\"
-\t\t\t\t\t\t\tname=\"$field_name\" required=\"required\" class=\"form-control $ex_attr col-md-7 col-xs-12\">
+\t\t\t\t\t\t\tname=\"$field_name\" $required class=\"form-control $ex_attr col-md-7 col-xs-12\">
 \t\t\t\t\t\t</div>";
 			}
 

@@ -135,6 +135,14 @@ abstract class Partner implements ActiveRecordInterface
     protected $company_id;
 
     /**
+     * The value for the is_employee field.
+     *
+     * Note: this column has a database default value of: false
+     * @var        boolean
+     */
+    protected $is_employee;
+
+    /**
      * The value for the is_customer field.
      *
      * Note: this column has a database default value of: false
@@ -178,6 +186,7 @@ abstract class Partner implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
+        $this->is_employee = false;
         $this->is_customer = false;
         $this->is_supplier = false;
     }
@@ -510,6 +519,26 @@ abstract class Partner implements ActiveRecordInterface
     }
 
     /**
+     * Get the [is_employee] column value.
+     *
+     * @return boolean
+     */
+    public function getIsEmployee()
+    {
+        return $this->is_employee;
+    }
+
+    /**
+     * Get the [is_employee] column value.
+     *
+     * @return boolean
+     */
+    public function isEmployee()
+    {
+        return $this->getIsEmployee();
+    }
+
+    /**
      * Get the [is_customer] column value.
      *
      * @return boolean
@@ -750,6 +779,34 @@ abstract class Partner implements ActiveRecordInterface
     } // setCompanyId()
 
     /**
+     * Sets the value of the [is_employee] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     *
+     * @param  boolean|integer|string $v The new value
+     * @return $this|\Partner The current object (for fluent API support)
+     */
+    public function setIsEmployee($v)
+    {
+        if ($v !== null) {
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
+        }
+
+        if ($this->is_employee !== $v) {
+            $this->is_employee = $v;
+            $this->modifiedColumns[PartnerTableMap::COL_IS_EMPLOYEE] = true;
+        }
+
+        return $this;
+    } // setIsEmployee()
+
+    /**
      * Sets the value of the [is_customer] column.
      * Non-boolean arguments are converted using the following rules:
      *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
@@ -815,6 +872,10 @@ abstract class Partner implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->is_employee !== false) {
+                return false;
+            }
+
             if ($this->is_customer !== false) {
                 return false;
             }
@@ -879,10 +940,13 @@ abstract class Partner implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PartnerTableMap::translateFieldName('CompanyId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->company_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PartnerTableMap::translateFieldName('IsCustomer', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PartnerTableMap::translateFieldName('IsEmployee', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->is_employee = (null !== $col) ? (boolean) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : PartnerTableMap::translateFieldName('IsCustomer', TableMap::TYPE_PHPNAME, $indexType)];
             $this->is_customer = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : PartnerTableMap::translateFieldName('IsSupplier', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : PartnerTableMap::translateFieldName('IsSupplier', TableMap::TYPE_PHPNAME, $indexType)];
             $this->is_supplier = (null !== $col) ? (boolean) $col : null;
             $this->resetModified();
 
@@ -892,7 +956,7 @@ abstract class Partner implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 12; // 12 = PartnerTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 13; // 13 = PartnerTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Partner'), 0, $e);
@@ -1142,6 +1206,9 @@ abstract class Partner implements ActiveRecordInterface
         if ($this->isColumnModified(PartnerTableMap::COL_COMPANY_ID)) {
             $modifiedColumns[':p' . $index++]  = 'company_id';
         }
+        if ($this->isColumnModified(PartnerTableMap::COL_IS_EMPLOYEE)) {
+            $modifiedColumns[':p' . $index++]  = 'is_employee';
+        }
         if ($this->isColumnModified(PartnerTableMap::COL_IS_CUSTOMER)) {
             $modifiedColumns[':p' . $index++]  = 'is_customer';
         }
@@ -1188,6 +1255,9 @@ abstract class Partner implements ActiveRecordInterface
                         break;
                     case 'company_id':
                         $stmt->bindValue($identifier, $this->company_id, PDO::PARAM_INT);
+                        break;
+                    case 'is_employee':
+                        $stmt->bindValue($identifier, (int) $this->is_employee, PDO::PARAM_INT);
                         break;
                     case 'is_customer':
                         $stmt->bindValue($identifier, (int) $this->is_customer, PDO::PARAM_INT);
@@ -1288,9 +1358,12 @@ abstract class Partner implements ActiveRecordInterface
                 return $this->getCompanyId();
                 break;
             case 10:
-                return $this->getIsCustomer();
+                return $this->getIsEmployee();
                 break;
             case 11:
+                return $this->getIsCustomer();
+                break;
+            case 12:
                 return $this->getIsSupplier();
                 break;
             default:
@@ -1333,8 +1406,9 @@ abstract class Partner implements ActiveRecordInterface
             $keys[7] => $this->getTaxNumber(),
             $keys[8] => $this->getBankDetail(),
             $keys[9] => $this->getCompanyId(),
-            $keys[10] => $this->getIsCustomer(),
-            $keys[11] => $this->getIsSupplier(),
+            $keys[10] => $this->getIsEmployee(),
+            $keys[11] => $this->getIsCustomer(),
+            $keys[12] => $this->getIsSupplier(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1422,9 +1496,12 @@ abstract class Partner implements ActiveRecordInterface
                 $this->setCompanyId($value);
                 break;
             case 10:
-                $this->setIsCustomer($value);
+                $this->setIsEmployee($value);
                 break;
             case 11:
+                $this->setIsCustomer($value);
+                break;
+            case 12:
                 $this->setIsSupplier($value);
                 break;
         } // switch()
@@ -1484,10 +1561,13 @@ abstract class Partner implements ActiveRecordInterface
             $this->setCompanyId($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setIsCustomer($arr[$keys[10]]);
+            $this->setIsEmployee($arr[$keys[10]]);
         }
         if (array_key_exists($keys[11], $arr)) {
-            $this->setIsSupplier($arr[$keys[11]]);
+            $this->setIsCustomer($arr[$keys[11]]);
+        }
+        if (array_key_exists($keys[12], $arr)) {
+            $this->setIsSupplier($arr[$keys[12]]);
         }
     }
 
@@ -1559,6 +1639,9 @@ abstract class Partner implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PartnerTableMap::COL_COMPANY_ID)) {
             $criteria->add(PartnerTableMap::COL_COMPANY_ID, $this->company_id);
+        }
+        if ($this->isColumnModified(PartnerTableMap::COL_IS_EMPLOYEE)) {
+            $criteria->add(PartnerTableMap::COL_IS_EMPLOYEE, $this->is_employee);
         }
         if ($this->isColumnModified(PartnerTableMap::COL_IS_CUSTOMER)) {
             $criteria->add(PartnerTableMap::COL_IS_CUSTOMER, $this->is_customer);
@@ -1661,6 +1744,7 @@ abstract class Partner implements ActiveRecordInterface
         $copyObj->setTaxNumber($this->getTaxNumber());
         $copyObj->setBankDetail($this->getBankDetail());
         $copyObj->setCompanyId($this->getCompanyId());
+        $copyObj->setIsEmployee($this->getIsEmployee());
         $copyObj->setIsCustomer($this->getIsCustomer());
         $copyObj->setIsSupplier($this->getIsSupplier());
 
@@ -1989,6 +2073,7 @@ abstract class Partner implements ActiveRecordInterface
         $this->tax_number = null;
         $this->bank_detail = null;
         $this->company_id = null;
+        $this->is_employee = null;
         $this->is_customer = null;
         $this->is_supplier = null;
         $this->alreadyInSave = false;

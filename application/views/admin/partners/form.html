@@ -46,7 +46,7 @@
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
 							<input type="text" id="address" value="{{ partners.address }}"
-							name="address" required="required" class="form-control  col-md-7 col-xs-12">
+							name="address"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
 									<p class="control-value">{{ partners.address  }}</p>
@@ -59,7 +59,7 @@
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
 							<input type="text" id="phone" value="{{ partners.phone }}"
-							name="phone" required="required" class="form-control  col-md-7 col-xs-12">
+							name="phone"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
 									<p class="control-value">{{ partners.phone  }}</p>
@@ -72,7 +72,7 @@
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
 							<input type="text" id="website" value="{{ partners.website }}"
-							name="website" required="required" class="form-control  col-md-7 col-xs-12">
+							name="website"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
 									<p class="control-value">{{ partners.website  }}</p>
@@ -85,7 +85,7 @@
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
 							<input type="text" id="fax" value="{{ partners.fax }}"
-							name="fax" required="required" class="form-control  col-md-7 col-xs-12">
+							name="fax"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
 									<p class="control-value">{{ partners.fax  }}</p>
@@ -98,7 +98,7 @@
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
 							<input type="text" id="image" value="{{ partners.image }}"
-							name="image" required="required" class="form-control  col-md-7 col-xs-12">
+							name="image"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
 									<p class="control-value">{{ partners.image  }}</p>
@@ -111,7 +111,7 @@
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
 							<input type="text" id="tax_number" value="{{ partners.tax_number }}"
-							name="tax_number" required="required" class="form-control  col-md-7 col-xs-12">
+							name="tax_number"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
 									<p class="control-value">{{ partners.tax_number  }}</p>
@@ -124,7 +124,7 @@
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
 							<input type="text" id="bank_detail" value="{{ partners.bank_detail }}"
-							name="bank_detail" required="required" class="form-control  col-md-7 col-xs-12">
+							name="bank_detail"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
 									<p class="control-value">{{ partners.bank_detail  }}</p>
@@ -137,10 +137,23 @@
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
 							<input type="number" id="company_id" value="{{ partners.company_id }}"
-							name="company_id" required="required" class="form-control  col-md-7 col-xs-12">
+							name="company_id"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
 									<p class="control-value">{{ partners.company_id  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.is_employee}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
+							<input type="checkbox" id="is_employee" value="{{ partners.is_employee }}"
+							name="is_employee" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if partners %}
+									<p class="control-value">{{ partners.is_employee  }}</p>
 								{% endif %}
 							</div>
 						</div>

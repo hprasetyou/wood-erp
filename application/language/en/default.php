@@ -1,4 +1,4 @@
-<?php 
+<?php
  return array(
 'bank' => 'Bank',
 'name' => 'Name',
@@ -8,21 +8,22 @@
 'bank_detail' => 'Bank Detail',
 'tax_number' => 'Tax Number',
 'description' => 'Description',
-'is_kdn' => 'Is Kdn',
+'is_kdn' => 'Is Knockdown',
 'cost_price' => 'Cost Price',
 'list_price' => 'List Price',
-'cubic_asb' => 'Cubic Asb',
-'cubic_kdn' => 'Cubic Kdn',
-'width_asb' => 'Width Asb',
-'height_asb' => 'Height Asb',
-'depth_asb' => 'Depth Asb',
-'width_kdn' => 'Width Kdn',
-'height_kdn' => 'Height Kdn',
-'depth_kdn' => 'Depth Kdn',
+'cubic_asb' => 'Cubic Assembled',
+'cubic_kdn' => 'Cubic Knockdown',
+'width_asb' => 'Width Assembled',
+'height_asb' => 'Height Assembled',
+'depth_asb' => 'Depth Assembled',
+'width_kdn' => 'Width Knockdown',
+'height_kdn' => 'Height Knockdown',
+'depth_kdn' => 'Depth Knockdown',
 'website' => 'Website',
 'fax' => 'Fax',
 'image' => 'Image',
 'company_id' => 'Company Id',
 'is_customer' => 'Is Customer',
-'is_supplier' => 'Is Supplier'
+'is_supplier' => 'Is Supplier',
+'is_employee' => 'Is Employee'
 );

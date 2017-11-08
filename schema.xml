@@ -27,6 +27,7 @@
     <column name="tax_number" phpName="TaxNumber" type="VARCHAR" size="255"/>
     <column name="bank_detail" phpName="BankDetail" type="VARCHAR" size="255"/>
     <column name="company_id" phpName="CompanyId" type="INTEGER"/>
+    <column name="is_employee" phpName="IsEmployee" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
     <column name="is_customer" phpName="IsCustomer" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
     <column name="is_supplier" phpName="IsSupplier" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
     <index name="company_id">

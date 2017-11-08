@@ -30,6 +30,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery orderByTaxNumber($order = Criteria::ASC) Order by the tax_number column
  * @method     ChildPartnerQuery orderByBankDetail($order = Criteria::ASC) Order by the bank_detail column
  * @method     ChildPartnerQuery orderByCompanyId($order = Criteria::ASC) Order by the company_id column
+ * @method     ChildPartnerQuery orderByIsEmployee($order = Criteria::ASC) Order by the is_employee column
  * @method     ChildPartnerQuery orderByIsCustomer($order = Criteria::ASC) Order by the is_customer column
  * @method     ChildPartnerQuery orderByIsSupplier($order = Criteria::ASC) Order by the is_supplier column
  *
@@ -43,6 +44,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery groupByTaxNumber() Group by the tax_number column
  * @method     ChildPartnerQuery groupByBankDetail() Group by the bank_detail column
  * @method     ChildPartnerQuery groupByCompanyId() Group by the company_id column
+ * @method     ChildPartnerQuery groupByIsEmployee() Group by the is_employee column
  * @method     ChildPartnerQuery groupByIsCustomer() Group by the is_customer column
  * @method     ChildPartnerQuery groupByIsSupplier() Group by the is_supplier column
  *
@@ -79,6 +81,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner findOneByTaxNumber(string $tax_number) Return the first ChildPartner filtered by the tax_number column
  * @method     ChildPartner findOneByBankDetail(string $bank_detail) Return the first ChildPartner filtered by the bank_detail column
  * @method     ChildPartner findOneByCompanyId(int $company_id) Return the first ChildPartner filtered by the company_id column
+ * @method     ChildPartner findOneByIsEmployee(boolean $is_employee) Return the first ChildPartner filtered by the is_employee column
  * @method     ChildPartner findOneByIsCustomer(boolean $is_customer) Return the first ChildPartner filtered by the is_customer column
  * @method     ChildPartner findOneByIsSupplier(boolean $is_supplier) Return the first ChildPartner filtered by the is_supplier column *
 
@@ -95,6 +98,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner requireOneByTaxNumber(string $tax_number) Return the first ChildPartner filtered by the tax_number column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByBankDetail(string $bank_detail) Return the first ChildPartner filtered by the bank_detail column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByCompanyId(int $company_id) Return the first ChildPartner filtered by the company_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPartner requireOneByIsEmployee(boolean $is_employee) Return the first ChildPartner filtered by the is_employee column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByIsCustomer(boolean $is_customer) Return the first ChildPartner filtered by the is_customer column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByIsSupplier(boolean $is_supplier) Return the first ChildPartner filtered by the is_supplier column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -109,6 +113,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner[]|ObjectCollection findByTaxNumber(string $tax_number) Return ChildPartner objects filtered by the tax_number column
  * @method     ChildPartner[]|ObjectCollection findByBankDetail(string $bank_detail) Return ChildPartner objects filtered by the bank_detail column
  * @method     ChildPartner[]|ObjectCollection findByCompanyId(int $company_id) Return ChildPartner objects filtered by the company_id column
+ * @method     ChildPartner[]|ObjectCollection findByIsEmployee(boolean $is_employee) Return ChildPartner objects filtered by the is_employee column
  * @method     ChildPartner[]|ObjectCollection findByIsCustomer(boolean $is_customer) Return ChildPartner objects filtered by the is_customer column
  * @method     ChildPartner[]|ObjectCollection findByIsSupplier(boolean $is_supplier) Return ChildPartner objects filtered by the is_supplier column
  * @method     ChildPartner[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -209,7 +214,7 @@ abstract class PartnerQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, address, phone, website, fax, image, tax_number, bank_detail, company_id, is_customer, is_supplier FROM partner WHERE id = :p0';
+        $sql = 'SELECT id, name, address, phone, website, fax, image, tax_number, bank_detail, company_id, is_employee, is_customer, is_supplier FROM partner WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -579,6 +584,33 @@ abstract class PartnerQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PartnerTableMap::COL_COMPANY_ID, $companyId, $comparison);
+    }
+
+    /**
+     * Filter the query on the is_employee column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIsEmployee(true); // WHERE is_employee = true
+     * $query->filterByIsEmployee('yes'); // WHERE is_employee = true
+     * </code>
+     *
+     * @param     boolean|string $isEmployee The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPartnerQuery The current query, for fluid interface
+     */
+    public function filterByIsEmployee($isEmployee = null, $comparison = null)
+    {
+        if (is_string($isEmployee)) {
+            $isEmployee = in_array(strtolower($isEmployee), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(PartnerTableMap::COL_IS_EMPLOYEE, $isEmployee, $comparison);
     }
 
     /**

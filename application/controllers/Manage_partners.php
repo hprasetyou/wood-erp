@@ -8,16 +8,33 @@ class Manage_partners extends CI_Controller{
     parent::__construct();
    // $this->authorization->check_authorization('manage_partners');
   }
-  function index($type){
+  function index($type='employee'){
       $this->template->render('admin/partners/index');
   }
 
-	function get_json($type==false){
+	function get_json(){
+    $type = $this->input->get('type');
     if(!$type){
       $type='employee';
     }
-		$partners = PartnerQuery::create();
-    $partners->filterByType($type);
+		$partners = PartnerQuery::create()->filterByCompanyId();
+    switch ($type) {
+      case 'employee':
+        # code...
+        $partners->filterByIsEmployee(true);
+        break;
+      case 'customer':
+        # code...
+        $partners->filterByIsCustomer(true);
+        break;
+      case 'supplier':
+        # code...
+        $partners->filterByIsSupplier(true);
+        break;
+      default:
+        # code...
+        break;
+    }
 		$maxPerPage = $this->input->get('length');
 		if($this->input->get('search[value]')){
 			$partners->condition('cond1' ,'Partner.name LIKE ?', "%".$this->input->get('search[value]')."%");

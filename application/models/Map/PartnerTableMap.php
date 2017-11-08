@@ -59,7 +59,7 @@ class PartnerTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 12;
+    const NUM_COLUMNS = 13;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class PartnerTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 12;
+    const NUM_HYDRATE_COLUMNS = 13;
 
     /**
      * the column name for the id field
@@ -122,6 +122,11 @@ class PartnerTableMap extends TableMap
     const COL_COMPANY_ID = 'partner.company_id';
 
     /**
+     * the column name for the is_employee field
+     */
+    const COL_IS_EMPLOYEE = 'partner.is_employee';
+
+    /**
      * the column name for the is_customer field
      */
     const COL_IS_CUSTOMER = 'partner.is_customer';
@@ -143,11 +148,11 @@ class PartnerTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Address', 'Phone', 'Website', 'Fax', 'Image', 'TaxNumber', 'BankDetail', 'CompanyId', 'IsCustomer', 'IsSupplier', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'address', 'phone', 'website', 'fax', 'image', 'taxNumber', 'bankDetail', 'companyId', 'isCustomer', 'isSupplier', ),
-        self::TYPE_COLNAME       => array(PartnerTableMap::COL_ID, PartnerTableMap::COL_NAME, PartnerTableMap::COL_ADDRESS, PartnerTableMap::COL_PHONE, PartnerTableMap::COL_WEBSITE, PartnerTableMap::COL_FAX, PartnerTableMap::COL_IMAGE, PartnerTableMap::COL_TAX_NUMBER, PartnerTableMap::COL_BANK_DETAIL, PartnerTableMap::COL_COMPANY_ID, PartnerTableMap::COL_IS_CUSTOMER, PartnerTableMap::COL_IS_SUPPLIER, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'address', 'phone', 'website', 'fax', 'image', 'tax_number', 'bank_detail', 'company_id', 'is_customer', 'is_supplier', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Address', 'Phone', 'Website', 'Fax', 'Image', 'TaxNumber', 'BankDetail', 'CompanyId', 'IsEmployee', 'IsCustomer', 'IsSupplier', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'address', 'phone', 'website', 'fax', 'image', 'taxNumber', 'bankDetail', 'companyId', 'isEmployee', 'isCustomer', 'isSupplier', ),
+        self::TYPE_COLNAME       => array(PartnerTableMap::COL_ID, PartnerTableMap::COL_NAME, PartnerTableMap::COL_ADDRESS, PartnerTableMap::COL_PHONE, PartnerTableMap::COL_WEBSITE, PartnerTableMap::COL_FAX, PartnerTableMap::COL_IMAGE, PartnerTableMap::COL_TAX_NUMBER, PartnerTableMap::COL_BANK_DETAIL, PartnerTableMap::COL_COMPANY_ID, PartnerTableMap::COL_IS_EMPLOYEE, PartnerTableMap::COL_IS_CUSTOMER, PartnerTableMap::COL_IS_SUPPLIER, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'address', 'phone', 'website', 'fax', 'image', 'tax_number', 'bank_detail', 'company_id', 'is_employee', 'is_customer', 'is_supplier', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, )
     );
 
     /**
@@ -157,11 +162,11 @@ class PartnerTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Address' => 2, 'Phone' => 3, 'Website' => 4, 'Fax' => 5, 'Image' => 6, 'TaxNumber' => 7, 'BankDetail' => 8, 'CompanyId' => 9, 'IsCustomer' => 10, 'IsSupplier' => 11, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'address' => 2, 'phone' => 3, 'website' => 4, 'fax' => 5, 'image' => 6, 'taxNumber' => 7, 'bankDetail' => 8, 'companyId' => 9, 'isCustomer' => 10, 'isSupplier' => 11, ),
-        self::TYPE_COLNAME       => array(PartnerTableMap::COL_ID => 0, PartnerTableMap::COL_NAME => 1, PartnerTableMap::COL_ADDRESS => 2, PartnerTableMap::COL_PHONE => 3, PartnerTableMap::COL_WEBSITE => 4, PartnerTableMap::COL_FAX => 5, PartnerTableMap::COL_IMAGE => 6, PartnerTableMap::COL_TAX_NUMBER => 7, PartnerTableMap::COL_BANK_DETAIL => 8, PartnerTableMap::COL_COMPANY_ID => 9, PartnerTableMap::COL_IS_CUSTOMER => 10, PartnerTableMap::COL_IS_SUPPLIER => 11, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'address' => 2, 'phone' => 3, 'website' => 4, 'fax' => 5, 'image' => 6, 'tax_number' => 7, 'bank_detail' => 8, 'company_id' => 9, 'is_customer' => 10, 'is_supplier' => 11, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Address' => 2, 'Phone' => 3, 'Website' => 4, 'Fax' => 5, 'Image' => 6, 'TaxNumber' => 7, 'BankDetail' => 8, 'CompanyId' => 9, 'IsEmployee' => 10, 'IsCustomer' => 11, 'IsSupplier' => 12, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'address' => 2, 'phone' => 3, 'website' => 4, 'fax' => 5, 'image' => 6, 'taxNumber' => 7, 'bankDetail' => 8, 'companyId' => 9, 'isEmployee' => 10, 'isCustomer' => 11, 'isSupplier' => 12, ),
+        self::TYPE_COLNAME       => array(PartnerTableMap::COL_ID => 0, PartnerTableMap::COL_NAME => 1, PartnerTableMap::COL_ADDRESS => 2, PartnerTableMap::COL_PHONE => 3, PartnerTableMap::COL_WEBSITE => 4, PartnerTableMap::COL_FAX => 5, PartnerTableMap::COL_IMAGE => 6, PartnerTableMap::COL_TAX_NUMBER => 7, PartnerTableMap::COL_BANK_DETAIL => 8, PartnerTableMap::COL_COMPANY_ID => 9, PartnerTableMap::COL_IS_EMPLOYEE => 10, PartnerTableMap::COL_IS_CUSTOMER => 11, PartnerTableMap::COL_IS_SUPPLIER => 12, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'address' => 2, 'phone' => 3, 'website' => 4, 'fax' => 5, 'image' => 6, 'tax_number' => 7, 'bank_detail' => 8, 'company_id' => 9, 'is_employee' => 10, 'is_customer' => 11, 'is_supplier' => 12, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, )
     );
 
     /**
@@ -191,6 +196,7 @@ class PartnerTableMap extends TableMap
         $this->addColumn('tax_number', 'TaxNumber', 'VARCHAR', false, 255, null);
         $this->addColumn('bank_detail', 'BankDetail', 'VARCHAR', false, 255, null);
         $this->addColumn('company_id', 'CompanyId', 'INTEGER', false, null, null);
+        $this->addColumn('is_employee', 'IsEmployee', 'BOOLEAN', true, 1, false);
         $this->addColumn('is_customer', 'IsCustomer', 'BOOLEAN', true, 1, false);
         $this->addColumn('is_supplier', 'IsSupplier', 'BOOLEAN', true, 1, false);
     } // initialize()
@@ -360,6 +366,7 @@ class PartnerTableMap extends TableMap
             $criteria->addSelectColumn(PartnerTableMap::COL_TAX_NUMBER);
             $criteria->addSelectColumn(PartnerTableMap::COL_BANK_DETAIL);
             $criteria->addSelectColumn(PartnerTableMap::COL_COMPANY_ID);
+            $criteria->addSelectColumn(PartnerTableMap::COL_IS_EMPLOYEE);
             $criteria->addSelectColumn(PartnerTableMap::COL_IS_CUSTOMER);
             $criteria->addSelectColumn(PartnerTableMap::COL_IS_SUPPLIER);
         } else {
@@ -373,6 +380,7 @@ class PartnerTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.tax_number');
             $criteria->addSelectColumn($alias . '.bank_detail');
             $criteria->addSelectColumn($alias . '.company_id');
+            $criteria->addSelectColumn($alias . '.is_employee');
             $criteria->addSelectColumn($alias . '.is_customer');
             $criteria->addSelectColumn($alias . '.is_supplier');
         }
