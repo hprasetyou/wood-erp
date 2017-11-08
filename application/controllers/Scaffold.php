@@ -1,4 +1,4 @@
-\t\t<?php
+{{res.string.edit_data}}\t\t<?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 use Doctrine\Common\Inflector\Inflector;
 
@@ -169,7 +169,7 @@ class Scaffold extends CI_Controller {
 \t\t\t\t<div class=\"box\">
 \t\t\t\t\t<div class=\"box-header\">
 \t\t\t\t\t\t<h3 class=\"box-title\">$humanize_tb_name</h3>
-\t\t\t\t\t\t<a href=\"{{base_url}}index.php/manage_$tb_name_lower/create\" class=\"btn btn-primary pull-right\">Data Baru</a>
+\t\t\t\t\t\t<a href=\"{{base_url}}index.php/manage_$tb_name_lower/create\" class=\"btn btn-primary pull-right\">{{res.string.new_data}}</a>
 \t\t\t\t\t\t<div class=\"clearfix\"></div>
 \t\t\t\t\t</div>
 \t\t\t\t\t<div class=\"box-body\">
@@ -206,7 +206,7 @@ $(document).ready(function(){
 				$required = "required=\"required\"";
 			}
 
-			$field_name = $field->attributes()->name;
+			$field_name = $field->attributes()->phpName;
 			$field_type = $field->attributes()->type;
 			$field_name_lower = strtolower($field_name);
 			if(!$header){
@@ -214,7 +214,7 @@ $(document).ready(function(){
 					$header = "$field_name";
 				}
 			}
-			$label = strtolower(ltrim(rtrim($this->split_camel($field_name))));
+			$label = strtolower(ltrim(rtrim($this->split_camel($field->attributes()->name))));
 			$labelword = ucfirst(ltrim(rtrim($this->split_snake($this->split_camel($field_name)))));
 
 			if($this->check_field($field_name)){
@@ -353,9 +353,9 @@ echo "=========================";
 \t\t\t\t\t<h3 class=\"box-title\">$humanize_tb_name</h3>
 \t\t\t\t\t<a href=\"{{base_url}}index.php/manage_$tb_name_lower\" class=\"btn btn-default pull-right\">Kembali</a>
 \t\t\t\t\t{% if $tb_name_lower %}
-\t\t\t\t\t\t<a href=\"#\" class=\"btn btn-danger pull-right\" data-toggle=\"modal\" data-target=\"#deleteModal\"><i class=\"fa fa-trash-o\"></i> Hapus</a>
-\t\t\t\t\t\t<a href=\"#\" class=\"btn btn-primary pull-right\" id=\"btn-edit\"><i class=\"fa fa-edit\"></i> Edit</a>
-\t\t\t\t\t\t<a href=\"#\" style=\"display:none\" class=\"btn btn-primary pull-right\" id=\"btn-canceledit\">Batal</a>
+\t\t\t\t\t\t<a href=\"#\" class=\"btn btn-danger pull-right\" data-toggle=\"modal\" data-target=\"#deleteModal\"><i class=\"fa fa-trash-o\"></i> {{res.string.delete}}</a>
+\t\t\t\t\t\t<a href=\"#\" class=\"btn btn-primary pull-right\" id=\"btn-edit\"><i class=\"fa fa-edit\"></i> {{res.string.edit_data}}</a>
+\t\t\t\t\t\t<a href=\"#\" style=\"display:none\" class=\"btn btn-primary pull-right\" id=\"btn-canceledit\">{{res.string.cancel}}</a>
 \t\t\t\t\t{% endif %}
 \t\t\t\t\t<button type=\"submit\" {% if $tb_name_lower %}style=\"display:none\"{% endif %}  name=\"button\" class=\"btn btn-success pull-right\" id=\"btn-save\"><i class=\"fa fa-save\"></i> Simpan</button>
 \t\t\t\t\t<div class=\"clearfix\"></div>
@@ -371,43 +371,7 @@ echo "=========================";
 $modals
 {% endblock %}
 {% block bottom%}
-<script>
-\$('#btn-edit').click(function(){
-\t\$('#btn-canceledit').show()
-\t\$('#btn-save').show()
-\t\$('.input-wrap').show()
-\t\$('.control-value').hide()
-\t\$(this).hide()
-})
-\$('#btn-canceledit').click(function(){
-\t\$('#btn-edit').show()
-\t\$('#btn-save').hide()
-\t\$('.input-wrap').hide()
-\t\$('.control-value').show()
-\t\$(this).hide()
-})
-\$(function() {
-\t\$('.input-date').daterangepicker({
-\tsingleDatePicker: true,
-\tshowDropdowns: true,
-\tlocale: {
-\t\tformat: 'YYYY/MM/DD'
-\t}
-},function(start, end, label) {
-\t});
-\$('.input-datetime').daterangepicker({
-\tsingleDatePicker: true,
-\tshowDropdowns: true,
-\ttimePicker: true,
-\ttimePickerIncrement: 30,
-\tlocale: {
-\t\tformat: 'YYYY/MM/DD hh:mm:ss'
-\t}
-},
-function(start, end, label) {
-\t});
-});
-</script>
+
 {% endblock %}
 ";
 	}

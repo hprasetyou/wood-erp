@@ -2,7 +2,7 @@
 {% extends "dashboard.html" %}
 {% set title=" Partner " %}
 {% if partners %}
-	 {% set bc_text = partners.name %}
+	 {% set bc_text = partners.id  %}
 {% else %}
 	 {% set bc_text = 'Baru' %}
 {% endif %}
@@ -17,13 +17,13 @@
 			<div class="box box-info">
 				<div class="box-header with-border">
 					<h3 class="box-title"> Partner </h3>
-					<a href="{{base_url}}index.php/manage_partners" class="btn btn-default pull-right">Kembali</a>
+					<a href="{{base_url}}index.php/manage_partners" class="btn btn-default pull-right">{{res.string.back}}</a>
 					{% if partners %}
-						<a href="#" class="btn btn-danger pull-right" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash-o"></i> Hapus</a>
-						<a href="#" class="btn btn-primary pull-right" id="btn-edit"><i class="fa fa-edit"></i> Edit</a>
-						<a href="#" style="display:none" class="btn btn-primary pull-right" id="btn-canceledit">Batal</a>
+						<a href="#" class="btn btn-danger pull-right" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash-o"></i> {{res.string.delete}}</a>
+						<a href="#" class="btn btn-primary pull-right" id="btn-edit"><i class="fa fa-edit"></i> {{res.string.edit}}</a>
+						<a href="#" style="display:none" class="btn btn-primary pull-right" id="btn-canceledit">{{res.string.cancel}}</a>
 					{% endif %}
-					<button type="submit" {% if partners %}style="display:none"{% endif %}  name="button" class="btn btn-success pull-right" id="btn-save"><i class="fa fa-save"></i> Simpan</button>
+					<button type="submit" {% if partners %}style="display:none"{% endif %}  name="button" class="btn btn-success pull-right" id="btn-save"><i class="fa fa-save"></i> {{res.string.save}}</button>
 					<div class="clearfix"></div>
 				</div>
 				<div class="box-body">
@@ -32,11 +32,11 @@
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" id="name" value="{{ partners.name }}"
-							name="name" required="required" class="form-control  col-md-7 col-xs-12">
+							<input type="text" id="Name" value="{{ partners.Name }}"
+							name="Name" required="required" class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
-									<p class="control-value">{{ partners.name  }}</p>
+									<p class="control-value">{{ partners.Name  }}</p>
 								{% endif %}
 							</div>
 						</div>
@@ -45,11 +45,11 @@
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.address}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" id="address" value="{{ partners.address }}"
-							name="address"  class="form-control  col-md-7 col-xs-12">
+							<input type="text" id="Address" value="{{ partners.Address }}"
+							name="Address"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
-									<p class="control-value">{{ partners.address  }}</p>
+									<p class="control-value">{{ partners.Address  }}</p>
 								{% endif %}
 							</div>
 						</div>
@@ -58,11 +58,11 @@
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.phone}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" id="phone" value="{{ partners.phone }}"
-							name="phone"  class="form-control  col-md-7 col-xs-12">
+							<input type="text" id="Phone" value="{{ partners.Phone }}"
+							name="Phone"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
-									<p class="control-value">{{ partners.phone  }}</p>
+									<p class="control-value">{{ partners.Phone  }}</p>
 								{% endif %}
 							</div>
 						</div>
@@ -71,11 +71,11 @@
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.website}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" id="website" value="{{ partners.website }}"
-							name="website"  class="form-control  col-md-7 col-xs-12">
+							<input type="text" id="Website" value="{{ partners.Website }}"
+							name="Website"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
-									<p class="control-value">{{ partners.website  }}</p>
+									<p class="control-value">{{ partners.Website  }}</p>
 								{% endif %}
 							</div>
 						</div>
@@ -84,11 +84,11 @@
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.fax}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" id="fax" value="{{ partners.fax }}"
-							name="fax"  class="form-control  col-md-7 col-xs-12">
+							<input type="text" id="Fax" value="{{ partners.Fax }}"
+							name="Fax"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
-									<p class="control-value">{{ partners.fax  }}</p>
+									<p class="control-value">{{ partners.Fax  }}</p>
 								{% endif %}
 							</div>
 						</div>
@@ -97,11 +97,11 @@
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.image}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" id="image" value="{{ partners.image }}"
-							name="image"  class="form-control  col-md-7 col-xs-12">
+							<input type="text" id="Image" value="{{ partners.Image }}"
+							name="Image"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
-									<p class="control-value">{{ partners.image  }}</p>
+									<p class="control-value">{{ partners.Image  }}</p>
 								{% endif %}
 							</div>
 						</div>
@@ -110,11 +110,11 @@
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.tax_number}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" id="tax_number" value="{{ partners.tax_number }}"
-							name="tax_number"  class="form-control  col-md-7 col-xs-12">
+							<input type="text" id="TaxNumber" value="{{ partners.TaxNumber }}"
+							name="TaxNumber"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
-									<p class="control-value">{{ partners.tax_number  }}</p>
+									<p class="control-value">{{ partners.TaxNumber  }}</p>
 								{% endif %}
 							</div>
 						</div>
@@ -123,11 +123,11 @@
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.bank_detail}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" id="bank_detail" value="{{ partners.bank_detail }}"
-							name="bank_detail"  class="form-control  col-md-7 col-xs-12">
+							<input type="text" id="BankDetail" value="{{ partners.BankDetail }}"
+							name="BankDetail"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
-									<p class="control-value">{{ partners.bank_detail  }}</p>
+									<p class="control-value">{{ partners.BankDetail  }}</p>
 								{% endif %}
 							</div>
 						</div>
@@ -136,11 +136,11 @@
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.company_id}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
-							<input type="number" id="company_id" value="{{ partners.company_id }}"
-							name="company_id"  class="form-control  col-md-7 col-xs-12">
+							<input type="number" id="CompanyId" value="{{ partners.CompanyId }}"
+							name="CompanyId"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
-									<p class="control-value">{{ partners.company_id  }}</p>
+									<p class="control-value">{{ partners.CompanyId  }}</p>
 								{% endif %}
 							</div>
 						</div>
@@ -149,11 +149,11 @@
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.is_employee}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
-							<input type="checkbox" id="is_employee" value="{{ partners.is_employee }}"
-							name="is_employee" required="required" class="form-control  col-md-7 col-xs-12">
+							<input type="checkbox" id="IsEmployee" value="{{ partners.IsEmployee }}"
+							name="IsEmployee" required="required" class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
-									<p class="control-value">{{ partners.is_employee  }}</p>
+									<p class="control-value">{{ partners.IsEmployee  }}</p>
 								{% endif %}
 							</div>
 						</div>
@@ -162,11 +162,11 @@
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.is_customer}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
-							<input type="checkbox" id="is_customer" value="{{ partners.is_customer }}"
-							name="is_customer" required="required" class="form-control  col-md-7 col-xs-12">
+							<input type="checkbox" id="IsCustomer" value="{{ partners.IsCustomer }}"
+							name="IsCustomer" required="required" class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
-									<p class="control-value">{{ partners.is_customer  }}</p>
+									<p class="control-value">{{ partners.IsCustomer  }}</p>
 								{% endif %}
 							</div>
 						</div>
@@ -175,11 +175,11 @@
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.is_supplier}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partners %}style="display:none"{% endif %} class="input-wrap">
-							<input type="checkbox" id="is_supplier" value="{{ partners.is_supplier }}"
-							name="is_supplier" required="required" class="form-control  col-md-7 col-xs-12">
+							<input type="checkbox" id="IsSupplier" value="{{ partners.IsSupplier }}"
+							name="IsSupplier" required="required" class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partners %}
-									<p class="control-value">{{ partners.is_supplier  }}</p>
+									<p class="control-value">{{ partners.IsSupplier  }}</p>
 								{% endif %}
 							</div>
 						</div>

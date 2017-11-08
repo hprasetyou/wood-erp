@@ -25,5 +25,11 @@
 'company_id' => 'Company Id',
 'is_customer' => 'Is Customer',
 'is_supplier' => 'Is Supplier',
-'is_employee' => 'Is Employee'
+'is_employee' => 'Is Employee',
+'delete'=>'Delete',
+'edit'=>'Edit',
+'new_data'=>'New Data',
+'back'=>'Back',
+'save'=>'Save',
+'cancel'=>'Cancel'
 );

@@ -48,8 +48,6 @@
   <link rel="stylesheet" href="/public/components/bootstrap/dist/css/bootstrap.min.css">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="/public/components/font-awesome/css/font-awesome.min.css">
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="/public/components/Ionicons/css/ionicons.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="/public/assets/css/AdminLTE.min.css">
     <!-- DataTables -->
@@ -58,14 +56,12 @@
   <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
   <link rel="stylesheet" href="/public/assets/css/skins/_all-skins.min.css">
-  <!-- Morris chart -->
-  <link rel="stylesheet" href="/public/components/morris.js/morris.css">
-  <!-- Date Picker -->
-  <link rel="stylesheet" href="/public/components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+
   <!-- Daterange picker -->
   <link rel="stylesheet" href="/public/components/bootstrap-daterangepicker/daterangepicker.css">
   <link rel="stylesheet" href="/public/components/select2/dist/css/select2.min.css">
 
+  <link rel="stylesheet" href="/public/assets/css/custom.css">
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
@@ -355,18 +351,13 @@
 </script>
 <!-- Bootstrap 3.3.7 -->
 <script src="/public/components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- Morris.js charts -->
-<script src="/public/components/raphael/raphael.min.js"></script>
-<script src="/public/components/morris.js/morris.min.js"></script>
+
 <!-- Sparkline -->
 <script src="/public/components/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
 <!-- jQuery Knob Chart -->
 <!-- daterangepicker -->
 <script src="/public/components/moment/min/moment.min.js"></script>
 <script src="/public/components/bootstrap-daterangepicker/daterangepicker.js"></script>
-<!-- datepicker -->
-<script src="/public/components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-<!-- Bootstrap WYSIHTML5 -->
 <!-- Slimscroll -->
 <script src="/public/components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 <!-- FastClick -->
@@ -482,6 +473,41 @@
     $('.select2').css('width','100%');
 })
 $('.form-select').select2()
+$('#btn-edit').click(function(){
+	$('#btn-canceledit').show()
+	$('#btn-save').show()
+	$('.input-wrap').show()
+	$('.control-value').hide()
+	$(this).hide()
+})
+$('#btn-canceledit').click(function(){
+	$('#btn-edit').show()
+	$('#btn-save').hide()
+	$('.input-wrap').hide()
+	$('.control-value').show()
+	$(this).hide()
+})
+$(function() {
+	$('.input-date').daterangepicker({
+	singleDatePicker: true,
+	showDropdowns: true,
+	locale: {
+		format: 'YYYY/MM/DD'
+	}
+},function(start, end, label) {
+	});
+$('.input-datetime').daterangepicker({
+	singleDatePicker: true,
+	showDropdowns: true,
+	timePicker: true,
+	timePickerIncrement: 30,
+	locale: {
+		format: 'YYYY/MM/DD hh:mm:ss'
+	}
+},
+function(start, end, label) {
+	});
+});
 </script>
 {% block bottom %}
 {% endblock %}

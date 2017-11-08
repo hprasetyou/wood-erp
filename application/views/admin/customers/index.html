@@ -1,9 +1,9 @@
 
 {% extends "dashboard.html" %}
-{% set title=" Customer " %}
+{% set title=" Partner " %}
 
 {% set breadcrumbs = [
-	{'link':'#','text':' Customer '  }]
+	{'link':'#','text':' Partner '  }]
 %}
 {% block content %}
 	<div class="">
@@ -12,24 +12,22 @@
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<div class="box">
 					<div class="box-header">
-						<h3 class="box-title"> Customer </h3>
-						<a href="{{base_url}}index.php/manage_customers/create" class="btn btn-primary pull-right">Data Baru</a>
+						<h3 class="box-title"> Partner </h3>
+						<a href="{{base_url}}index.php/manage_partners/create" class="btn btn-primary pull-right">{{res.string.new_data}}</a>
 						<div class="clearfix"></div>
 					</div>
 					<div class="box-body">
 						<p class="text-muted font-13 m-b-30"></p>
-							<table data-controller="manage_customers" class="table table-striped " id="table_Customer">
+							<table data-controller="manage_customers" class="table table-striped " id="table_Partner">
 		<thead>
 			<tr>
-				<th data-fieldname="name">Name </th>
-				<th data-fieldname="address">Address </th>
-				<th data-fieldname="phone">Phone </th>
-				<th data-fieldname="website">Website </th>
-				<th data-fieldname="fax">Fax </th>
-				<th data-fieldname="image">Image </th>
-				<th data-fieldname="tax_number">Tax_number </th>
-				<th data-fieldname="bank_detail">{{lang.bank}} </th>
-				<th data-fieldname="company_id">Company_id </th>
+				<th data-fieldname="name">{{res.string.name}}</th>
+				<th data-fieldname="address">{{res.string.address}}</th>
+				<th data-fieldname="phone">{{res.string.phone}}</th>
+				<th data-fieldname="website">{{res.string.website}}</th>
+				<th data-fieldname="fax">{{res.string.fax}}</th>
+				<th data-fieldname="tax_number">{{res.string.tax_number}}</th>
+				<th data-fieldname="bank_detail">{{res.string.bank_detail}}</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -45,7 +43,7 @@
 <script>
 
 $(document).ready(function(){
-    $('#table_Customer').loadTableData()
+    $('#table_Partner').loadTableData()
   })
 </script>
 {% endblock %}

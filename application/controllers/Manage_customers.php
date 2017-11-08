@@ -13,15 +13,16 @@ class Manage_customers extends CI_Controller{
   }
 
 	function get_json(){
-		$customers = CustomerQuery::create();
+		$customers = PartnerQuery::create()->filterByIsCustomer(true);
 		$maxPerPage = $this->input->get('length');
+
 		if($this->input->get('search[value]')){
-			$customers->condition('cond1' ,'Customer.name LIKE ?', "%".$this->input->get('search[value]')."%");
-			$customers->condition('cond2' ,'Customer.phone LIKE ?', "%".$this->input->get('search[value]')."%");
-			$customers->condition('cond3' ,'Customer.website LIKE ?', "%".$this->input->get('search[value]')."%");
-			$customers->condition('cond4' ,'Customer.fax LIKE ?', "%".$this->input->get('search[value]')."%");
-			$customers->condition('cond5' ,'Customer.tax_number LIKE ?', "%".$this->input->get('search[value]')."%");
-			$customers->condition('cond6' ,'Customer.bank_detail LIKE ?', "%".$this->input->get('search[value]')."%");
+			$customers->condition('cond1' ,'Partner.name LIKE ?', "%".$this->input->get('search[value]')."%");
+			$customers->condition('cond2' ,'Partner.phone LIKE ?', "%".$this->input->get('search[value]')."%");
+			$customers->condition('cond3' ,'Partner.website LIKE ?', "%".$this->input->get('search[value]')."%");
+			$customers->condition('cond4' ,'Partner.fax LIKE ?', "%".$this->input->get('search[value]')."%");
+			$customers->condition('cond5' ,'Partner.tax_number LIKE ?', "%".$this->input->get('search[value]')."%");
+			$customers->condition('cond6' ,'Partner.bank_detail LIKE ?', "%".$this->input->get('search[value]')."%");
 
 			$customers->where(array('cond1','cond2','cond3','cond4','cond5','cond6',),'or');
       $customers->find();
@@ -44,7 +45,14 @@ class Manage_customers extends CI_Controller{
 				$o['data'][$i]['image'] = $customer->getImage();
 				$o['data'][$i]['tax_number'] = $customer->getTaxNumber();
 				$o['data'][$i]['bank_detail'] = $customer->getBankDetail();
-				$o['data'][$i]['company_id'] = $customer->getCustomer()->getName();
+        $o['data'][$i]['tax_number'] = $customer->getTaxNumber();
+        $o['data'][$i]['bank_detail'] = $customer->getBankDetail();
+        $o['data'][$i]['company_id'] = $customer->getCompanyId();
+        $o['data'][$i]['is_employee'] = $customer->getIsEmployee();
+        $o['data'][$i]['is_customer'] = $customer->getIsCustomer();
+        $o['data'][$i]['is_supplier'] = $customer->getIsSupplier();
+
+				$o['data'][$i]['company_id'] = $customer->getCompany()?$customer->getCompany()->getName():'';
 
 				$i++;
     }
@@ -52,29 +60,25 @@ class Manage_customers extends CI_Controller{
 	}
 
   function create(){
-		
-		$customers = CustomerQuery::create()->find();
-			
+
 		$this->template->render('admin/customers/form',array(
-		'customers'=> $customers,
 			));
   }
 
   function detail($id){
-		
-		$customers = CustomerQuery::create()->find();
-			
-		$customer = CustomerQuery::create()->findPK($id);
-		$this->template->render('admin/customers/form',array('customers'=>$customer,
-		'customers'=> $customers,
+
+
+		$customer = PartnerQuery::create()->findPK($id);
+		$this->template->render('admin/customers/form',
+    array('customers'=>$customer
 			));
   }
 
   function write($id=null){
 		if($id){
-			$customer = CustomerQuery::create()->findPK($id);
+			$customer = PartnerQuery::create()->findPK($id);
 		}else{
-			$customer = new Customer;
+			$customer = new Partner;
 		}
 		$customer->setName($this->input->post('Name'));
 		$customer->setAddress($this->input->post('Address'));
@@ -84,8 +88,7 @@ class Manage_customers extends CI_Controller{
 		$customer->setImage($this->input->post('Image'));
 		$customer->setTaxNumber($this->input->post('TaxNumber'));
 		$customer->setBankDetail($this->input->post('BankDetail'));
-		$customer->setCompanyId($this->input->post('CompanyId'));
-
+    $customer->setIsCustomer(true);
 		$customer->save();
 		//$this->loging->add_entry('customers',$customer->getId(),($id?'melakukan perubahan pada data':'membuat data baru'));
 		redirect('manage_customers/detail/'.$customer->getId());
@@ -93,11 +96,10 @@ class Manage_customers extends CI_Controller{
 
   function delete($id){
 		if($this->input->post('confirm') == 'Ya'){
-			$customer = CustomerQuery::create()->findPK($id);
+			$customer = PartnerQuery::create()->findPK($id);
 			$customer->delete();
 		}
 		redirect('manage_customers');
   }
 
 }
-    

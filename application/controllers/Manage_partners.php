@@ -8,33 +8,12 @@ class Manage_partners extends CI_Controller{
     parent::__construct();
    // $this->authorization->check_authorization('manage_partners');
   }
-  function index($type='employee'){
+  function index(){
       $this->template->render('admin/partners/index');
   }
 
 	function get_json(){
-    $type = $this->input->get('type');
-    if(!$type){
-      $type='employee';
-    }
-		$partners = PartnerQuery::create()->filterByCompanyId();
-    switch ($type) {
-      case 'employee':
-        # code...
-        $partners->filterByIsEmployee(true);
-        break;
-      case 'customer':
-        # code...
-        $partners->filterByIsCustomer(true);
-        break;
-      case 'supplier':
-        # code...
-        $partners->filterByIsSupplier(true);
-        break;
-      default:
-        # code...
-        break;
-    }
+		$partners = PartnerQuery::create();
 		$maxPerPage = $this->input->get('length');
 		if($this->input->get('search[value]')){
 			$partners->condition('cond1' ,'Partner.name LIKE ?', "%".$this->input->get('search[value]')."%");
@@ -65,6 +44,7 @@ class Manage_partners extends CI_Controller{
 				$o['data'][$i]['tax_number'] = $partner->getTaxNumber();
 				$o['data'][$i]['bank_detail'] = $partner->getBankDetail();
 				$o['data'][$i]['company_id'] = $partner->getCompanyId();
+				$o['data'][$i]['is_employee'] = $partner->getIsEmployee();
 				$o['data'][$i]['is_customer'] = $partner->getIsCustomer();
 				$o['data'][$i]['is_supplier'] = $partner->getIsSupplier();
 
@@ -74,12 +54,12 @@ class Manage_partners extends CI_Controller{
 	}
 
   function create(){
-
+		
 		$this->template->render('admin/partners/form',array());
   }
 
   function detail($id){
-
+		
 		$partner = PartnerQuery::create()->findPK($id);
 		$this->template->render('admin/partners/form',array('partners'=>$partner,));
   }
@@ -99,6 +79,7 @@ class Manage_partners extends CI_Controller{
 		$partner->setTaxNumber($this->input->post('TaxNumber'));
 		$partner->setBankDetail($this->input->post('BankDetail'));
 		$partner->setCompanyId($this->input->post('CompanyId'));
+		$partner->setIsEmployee($this->input->post('IsEmployee'));
 		$partner->setIsCustomer($this->input->post('IsCustomer'));
 		$partner->setIsSupplier($this->input->post('IsSupplier'));
 
@@ -116,3 +97,4 @@ class Manage_partners extends CI_Controller{
   }
 
 }
+    

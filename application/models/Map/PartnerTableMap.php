@@ -195,7 +195,7 @@ class PartnerTableMap extends TableMap
         $this->addColumn('image', 'Image', 'LONGVARCHAR', false, null, null);
         $this->addColumn('tax_number', 'TaxNumber', 'VARCHAR', false, 255, null);
         $this->addColumn('bank_detail', 'BankDetail', 'VARCHAR', false, 255, null);
-        $this->addColumn('company_id', 'CompanyId', 'INTEGER', false, null, null);
+        $this->addForeignKey('company_id', 'CompanyId', 'INTEGER', 'partner', 'id', false, null, null);
         $this->addColumn('is_employee', 'IsEmployee', 'BOOLEAN', true, 1, false);
         $this->addColumn('is_customer', 'IsCustomer', 'BOOLEAN', true, 1, false);
         $this->addColumn('is_supplier', 'IsSupplier', 'BOOLEAN', true, 1, false);
@@ -206,6 +206,20 @@ class PartnerTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('Company', '\\Partner', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':company_id',
+    1 => ':id',
+  ),
+), null, null, null, false);
+        $this->addRelation('PartnerRelatedById', '\\Partner', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':company_id',
+    1 => ':id',
+  ),
+), null, null, 'PartnersRelatedById', false);
         $this->addRelation('ProductCustomer', '\\ProductCustomer', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (

@@ -33,6 +33,9 @@
     <index name="company_id">
       <index-column name="company_id"/>
     </index>
+    <foreign-key foreignTable="partner" phpName="Company" phpRefName="CompanyMember" skipSql="true" name="product_company_ibfk_2">
+      <reference local="company_id" foreign="id"/>
+    </foreign-key>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>

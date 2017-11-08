@@ -159,6 +159,17 @@ abstract class Partner implements ActiveRecordInterface
     protected $is_supplier;
 
     /**
+     * @var        ChildPartner
+     */
+    protected $aCompany;
+
+    /**
+     * @var        ObjectCollection|ChildPartner[] Collection to store aggregation of ChildPartner objects.
+     */
+    protected $collPartnersRelatedById;
+    protected $collPartnersRelatedByIdPartial;
+
+    /**
      * @var        ObjectCollection|ChildProductCustomer[] Collection to store aggregation of ChildProductCustomer objects.
      */
     protected $collProductCustomers;
@@ -171,6 +182,12 @@ abstract class Partner implements ActiveRecordInterface
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildPartner[]
+     */
+    protected $partnersRelatedByIdScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -775,6 +792,10 @@ abstract class Partner implements ActiveRecordInterface
             $this->modifiedColumns[PartnerTableMap::COL_COMPANY_ID] = true;
         }
 
+        if ($this->aCompany !== null && $this->aCompany->getId() !== $v) {
+            $this->aCompany = null;
+        }
+
         return $this;
     } // setCompanyId()
 
@@ -978,6 +999,9 @@ abstract class Partner implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aCompany !== null && $this->company_id !== $this->aCompany->getId()) {
+            $this->aCompany = null;
+        }
     } // ensureConsistency
 
     /**
@@ -1016,6 +1040,9 @@ abstract class Partner implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
+
+            $this->aCompany = null;
+            $this->collPartnersRelatedById = null;
 
             $this->collProductCustomers = null;
 
@@ -1122,6 +1149,18 @@ abstract class Partner implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aCompany !== null) {
+                if ($this->aCompany->isModified() || $this->aCompany->isNew()) {
+                    $affectedRows += $this->aCompany->save($con);
+                }
+                $this->setCompany($this->aCompany);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -1131,6 +1170,24 @@ abstract class Partner implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
+            }
+
+            if ($this->partnersRelatedByIdScheduledForDeletion !== null) {
+                if (!$this->partnersRelatedByIdScheduledForDeletion->isEmpty()) {
+                    foreach ($this->partnersRelatedByIdScheduledForDeletion as $partnerRelatedById) {
+                        // need to save related object because we set the relation to null
+                        $partnerRelatedById->save($con);
+                    }
+                    $this->partnersRelatedByIdScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collPartnersRelatedById !== null) {
+                foreach ($this->collPartnersRelatedById as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             if ($this->productCustomersScheduledForDeletion !== null) {
@@ -1416,6 +1473,36 @@ abstract class Partner implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
+            if (null !== $this->aCompany) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'partner';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'partner';
+                        break;
+                    default:
+                        $key = 'Company';
+                }
+
+                $result[$key] = $this->aCompany->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collPartnersRelatedById) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'partners';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'partners';
+                        break;
+                    default:
+                        $key = 'Partners';
+                }
+
+                $result[$key] = $this->collPartnersRelatedById->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
             if (null !== $this->collProductCustomers) {
 
                 switch ($keyType) {
@@ -1753,6 +1840,12 @@ abstract class Partner implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
+            foreach ($this->getPartnersRelatedById() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addPartnerRelatedById($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getProductCustomers() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addProductCustomer($relObj->copy($deepCopy));
@@ -1789,6 +1882,57 @@ abstract class Partner implements ActiveRecordInterface
         return $copyObj;
     }
 
+    /**
+     * Declares an association between this object and a ChildPartner object.
+     *
+     * @param  ChildPartner $v
+     * @return $this|\Partner The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setCompany(ChildPartner $v = null)
+    {
+        if ($v === null) {
+            $this->setCompanyId(NULL);
+        } else {
+            $this->setCompanyId($v->getId());
+        }
+
+        $this->aCompany = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildPartner object, it will not be re-added.
+        if ($v !== null) {
+            $v->addPartnerRelatedById($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildPartner object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildPartner The associated ChildPartner object.
+     * @throws PropelException
+     */
+    public function getCompany(ConnectionInterface $con = null)
+    {
+        if ($this->aCompany === null && ($this->company_id != 0)) {
+            $this->aCompany = ChildPartnerQuery::create()->findPk($this->company_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aCompany->addPartnersRelatedById($this);
+             */
+        }
+
+        return $this->aCompany;
+    }
+
 
     /**
      * Initializes a collection based on the name of a relation.
@@ -1800,10 +1944,239 @@ abstract class Partner implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
+        if ('PartnerRelatedById' == $relationName) {
+            $this->initPartnersRelatedById();
+            return;
+        }
         if ('ProductCustomer' == $relationName) {
             $this->initProductCustomers();
             return;
         }
+    }
+
+    /**
+     * Clears out the collPartnersRelatedById collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addPartnersRelatedById()
+     */
+    public function clearPartnersRelatedById()
+    {
+        $this->collPartnersRelatedById = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collPartnersRelatedById collection loaded partially.
+     */
+    public function resetPartialPartnersRelatedById($v = true)
+    {
+        $this->collPartnersRelatedByIdPartial = $v;
+    }
+
+    /**
+     * Initializes the collPartnersRelatedById collection.
+     *
+     * By default this just sets the collPartnersRelatedById collection to an empty array (like clearcollPartnersRelatedById());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initPartnersRelatedById($overrideExisting = true)
+    {
+        if (null !== $this->collPartnersRelatedById && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = PartnerTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collPartnersRelatedById = new $collectionClassName;
+        $this->collPartnersRelatedById->setModel('\Partner');
+    }
+
+    /**
+     * Gets an array of ChildPartner objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPartner is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildPartner[] List of ChildPartner objects
+     * @throws PropelException
+     */
+    public function getPartnersRelatedById(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPartnersRelatedByIdPartial && !$this->isNew();
+        if (null === $this->collPartnersRelatedById || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collPartnersRelatedById) {
+                // return empty collection
+                $this->initPartnersRelatedById();
+            } else {
+                $collPartnersRelatedById = ChildPartnerQuery::create(null, $criteria)
+                    ->filterByCompany($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collPartnersRelatedByIdPartial && count($collPartnersRelatedById)) {
+                        $this->initPartnersRelatedById(false);
+
+                        foreach ($collPartnersRelatedById as $obj) {
+                            if (false == $this->collPartnersRelatedById->contains($obj)) {
+                                $this->collPartnersRelatedById->append($obj);
+                            }
+                        }
+
+                        $this->collPartnersRelatedByIdPartial = true;
+                    }
+
+                    return $collPartnersRelatedById;
+                }
+
+                if ($partial && $this->collPartnersRelatedById) {
+                    foreach ($this->collPartnersRelatedById as $obj) {
+                        if ($obj->isNew()) {
+                            $collPartnersRelatedById[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collPartnersRelatedById = $collPartnersRelatedById;
+                $this->collPartnersRelatedByIdPartial = false;
+            }
+        }
+
+        return $this->collPartnersRelatedById;
+    }
+
+    /**
+     * Sets a collection of ChildPartner objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $partnersRelatedById A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildPartner The current object (for fluent API support)
+     */
+    public function setPartnersRelatedById(Collection $partnersRelatedById, ConnectionInterface $con = null)
+    {
+        /** @var ChildPartner[] $partnersRelatedByIdToDelete */
+        $partnersRelatedByIdToDelete = $this->getPartnersRelatedById(new Criteria(), $con)->diff($partnersRelatedById);
+
+
+        $this->partnersRelatedByIdScheduledForDeletion = $partnersRelatedByIdToDelete;
+
+        foreach ($partnersRelatedByIdToDelete as $partnerRelatedByIdRemoved) {
+            $partnerRelatedByIdRemoved->setCompany(null);
+        }
+
+        $this->collPartnersRelatedById = null;
+        foreach ($partnersRelatedById as $partnerRelatedById) {
+            $this->addPartnerRelatedById($partnerRelatedById);
+        }
+
+        $this->collPartnersRelatedById = $partnersRelatedById;
+        $this->collPartnersRelatedByIdPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Partner objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Partner objects.
+     * @throws PropelException
+     */
+    public function countPartnersRelatedById(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPartnersRelatedByIdPartial && !$this->isNew();
+        if (null === $this->collPartnersRelatedById || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collPartnersRelatedById) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getPartnersRelatedById());
+            }
+
+            $query = ChildPartnerQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByCompany($this)
+                ->count($con);
+        }
+
+        return count($this->collPartnersRelatedById);
+    }
+
+    /**
+     * Method called to associate a ChildPartner object to this object
+     * through the ChildPartner foreign key attribute.
+     *
+     * @param  ChildPartner $l ChildPartner
+     * @return $this|\Partner The current object (for fluent API support)
+     */
+    public function addPartnerRelatedById(ChildPartner $l)
+    {
+        if ($this->collPartnersRelatedById === null) {
+            $this->initPartnersRelatedById();
+            $this->collPartnersRelatedByIdPartial = true;
+        }
+
+        if (!$this->collPartnersRelatedById->contains($l)) {
+            $this->doAddPartnerRelatedById($l);
+
+            if ($this->partnersRelatedByIdScheduledForDeletion and $this->partnersRelatedByIdScheduledForDeletion->contains($l)) {
+                $this->partnersRelatedByIdScheduledForDeletion->remove($this->partnersRelatedByIdScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildPartner $partnerRelatedById The ChildPartner object to add.
+     */
+    protected function doAddPartnerRelatedById(ChildPartner $partnerRelatedById)
+    {
+        $this->collPartnersRelatedById[]= $partnerRelatedById;
+        $partnerRelatedById->setCompany($this);
+    }
+
+    /**
+     * @param  ChildPartner $partnerRelatedById The ChildPartner object to remove.
+     * @return $this|ChildPartner The current object (for fluent API support)
+     */
+    public function removePartnerRelatedById(ChildPartner $partnerRelatedById)
+    {
+        if ($this->getPartnersRelatedById()->contains($partnerRelatedById)) {
+            $pos = $this->collPartnersRelatedById->search($partnerRelatedById);
+            $this->collPartnersRelatedById->remove($pos);
+            if (null === $this->partnersRelatedByIdScheduledForDeletion) {
+                $this->partnersRelatedByIdScheduledForDeletion = clone $this->collPartnersRelatedById;
+                $this->partnersRelatedByIdScheduledForDeletion->clear();
+            }
+            $this->partnersRelatedByIdScheduledForDeletion[]= $partnerRelatedById;
+            $partnerRelatedById->setCompany(null);
+        }
+
+        return $this;
     }
 
     /**
@@ -2063,6 +2436,9 @@ abstract class Partner implements ActiveRecordInterface
      */
     public function clear()
     {
+        if (null !== $this->aCompany) {
+            $this->aCompany->removePartnerRelatedById($this);
+        }
         $this->id = null;
         $this->name = null;
         $this->address = null;
@@ -2095,6 +2471,11 @@ abstract class Partner implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collPartnersRelatedById) {
+                foreach ($this->collPartnersRelatedById as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collProductCustomers) {
                 foreach ($this->collProductCustomers as $o) {
                     $o->clearAllReferences($deep);
@@ -2102,7 +2483,9 @@ abstract class Partner implements ActiveRecordInterface
             }
         } // if ($deep)
 
+        $this->collPartnersRelatedById = null;
         $this->collProductCustomers = null;
+        $this->aCompany = null;
     }
 
     /**

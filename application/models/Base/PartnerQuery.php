@@ -56,6 +56,26 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildPartnerQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
+ * @method     ChildPartnerQuery leftJoinCompany($relationAlias = null) Adds a LEFT JOIN clause to the query using the Company relation
+ * @method     ChildPartnerQuery rightJoinCompany($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Company relation
+ * @method     ChildPartnerQuery innerJoinCompany($relationAlias = null) Adds a INNER JOIN clause to the query using the Company relation
+ *
+ * @method     ChildPartnerQuery joinWithCompany($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Company relation
+ *
+ * @method     ChildPartnerQuery leftJoinWithCompany() Adds a LEFT JOIN clause and with to the query using the Company relation
+ * @method     ChildPartnerQuery rightJoinWithCompany() Adds a RIGHT JOIN clause and with to the query using the Company relation
+ * @method     ChildPartnerQuery innerJoinWithCompany() Adds a INNER JOIN clause and with to the query using the Company relation
+ *
+ * @method     ChildPartnerQuery leftJoinPartnerRelatedById($relationAlias = null) Adds a LEFT JOIN clause to the query using the PartnerRelatedById relation
+ * @method     ChildPartnerQuery rightJoinPartnerRelatedById($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PartnerRelatedById relation
+ * @method     ChildPartnerQuery innerJoinPartnerRelatedById($relationAlias = null) Adds a INNER JOIN clause to the query using the PartnerRelatedById relation
+ *
+ * @method     ChildPartnerQuery joinWithPartnerRelatedById($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the PartnerRelatedById relation
+ *
+ * @method     ChildPartnerQuery leftJoinWithPartnerRelatedById() Adds a LEFT JOIN clause and with to the query using the PartnerRelatedById relation
+ * @method     ChildPartnerQuery rightJoinWithPartnerRelatedById() Adds a RIGHT JOIN clause and with to the query using the PartnerRelatedById relation
+ * @method     ChildPartnerQuery innerJoinWithPartnerRelatedById() Adds a INNER JOIN clause and with to the query using the PartnerRelatedById relation
+ *
  * @method     ChildPartnerQuery leftJoinProductCustomer($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProductCustomer relation
  * @method     ChildPartnerQuery rightJoinProductCustomer($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProductCustomer relation
  * @method     ChildPartnerQuery innerJoinProductCustomer($relationAlias = null) Adds a INNER JOIN clause to the query using the ProductCustomer relation
@@ -66,7 +86,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery rightJoinWithProductCustomer() Adds a RIGHT JOIN clause and with to the query using the ProductCustomer relation
  * @method     ChildPartnerQuery innerJoinWithProductCustomer() Adds a INNER JOIN clause and with to the query using the ProductCustomer relation
  *
- * @method     \ProductCustomerQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \PartnerQuery|\ProductCustomerQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildPartner findOne(ConnectionInterface $con = null) Return the first ChildPartner matching the query
  * @method     ChildPartner findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPartner matching the query, or a new ChildPartner object populated from the query conditions when no match is found
@@ -555,6 +575,8 @@ abstract class PartnerQuery extends ModelCriteria
      * $query->filterByCompanyId(array('min' => 12)); // WHERE company_id > 12
      * </code>
      *
+     * @see       filterByCompany()
+     *
      * @param     mixed $companyId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
@@ -665,6 +687,156 @@ abstract class PartnerQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PartnerTableMap::COL_IS_SUPPLIER, $isSupplier, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \Partner object
+     *
+     * @param \Partner|ObjectCollection $partner The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildPartnerQuery The current query, for fluid interface
+     */
+    public function filterByCompany($partner, $comparison = null)
+    {
+        if ($partner instanceof \Partner) {
+            return $this
+                ->addUsingAlias(PartnerTableMap::COL_COMPANY_ID, $partner->getId(), $comparison);
+        } elseif ($partner instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(PartnerTableMap::COL_COMPANY_ID, $partner->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByCompany() only accepts arguments of type \Partner or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Company relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildPartnerQuery The current query, for fluid interface
+     */
+    public function joinCompany($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Company');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Company');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Company relation Partner object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \PartnerQuery A secondary query class using the current class as primary query
+     */
+    public function useCompanyQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinCompany($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Company', '\PartnerQuery');
+    }
+
+    /**
+     * Filter the query by a related \Partner object
+     *
+     * @param \Partner|ObjectCollection $partner the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildPartnerQuery The current query, for fluid interface
+     */
+    public function filterByPartnerRelatedById($partner, $comparison = null)
+    {
+        if ($partner instanceof \Partner) {
+            return $this
+                ->addUsingAlias(PartnerTableMap::COL_ID, $partner->getCompanyId(), $comparison);
+        } elseif ($partner instanceof ObjectCollection) {
+            return $this
+                ->usePartnerRelatedByIdQuery()
+                ->filterByPrimaryKeys($partner->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByPartnerRelatedById() only accepts arguments of type \Partner or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the PartnerRelatedById relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildPartnerQuery The current query, for fluid interface
+     */
+    public function joinPartnerRelatedById($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('PartnerRelatedById');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'PartnerRelatedById');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the PartnerRelatedById relation Partner object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \PartnerQuery A secondary query class using the current class as primary query
+     */
+    public function usePartnerRelatedByIdQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinPartnerRelatedById($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'PartnerRelatedById', '\PartnerQuery');
     }
 
     /**
