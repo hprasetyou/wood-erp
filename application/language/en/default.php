@@ -13,6 +13,7 @@
 'list_price' => 'List Price',
 'cubic_asb' => 'Cubic Assembled',
 'cubic_kdn' => 'Cubic Knockdown',
+'customer'=>'Customer',
 'width_asb' => 'Width Assembled',
 'height_asb' => 'Height Assembled',
 'depth_asb' => 'Depth Assembled',
@@ -31,5 +32,6 @@
 'new_data'=>'New Data',
 'back'=>'Back',
 'save'=>'Save',
-'cancel'=>'Cancel'
+'cancel'=>'Cancel',
+'contact_person'=>'Contact Person'
 );

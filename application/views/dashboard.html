@@ -367,8 +367,18 @@
 <script src="/public/assets/js/adminlte.js"></script>
 
 <!-- DataTables -->
-<script src="/public/components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="/public/components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="{{base_url}}public/components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="{{base_url}}public/components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="{{base_url}}public/components/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="{{base_url}}public/components/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="{{base_url}}public/components/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="{{base_url}}public/components/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="{{base_url}}public/components/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="{{base_url}}public/components/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+    <script src="{{base_url}}public/components/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+    <script src="{{base_url}}public/components/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="{{base_url}}public/components/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="{{base_url}}public/components/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script>
   var base_url = window.location.href.split('index.php');
@@ -376,6 +386,7 @@
   jQuery.fn.loadTableData = function(){
     var tt = $(this)
     var c = tt.data('controller')
+    var bdm = tt.data('domain')
 		var fl = []
 		 tt.find('th').each(function(){
 			 if($(this).data('fieldname')){
@@ -388,13 +399,28 @@
  			"data":"id",
  			"render":new Function("data", "type","row","meta", "console.log(meta);return '<a data-id=\"'+data+'\" class=\"btn btn-sm btn-default pulloginl-right btn-select\" href=\"'+meta.settings.ajax.split('get_json')[0]+'detail/'+data+'\"><i class=\"fa fa-search\"></i> Pilih </a>'")
  		})
-		console.log(base_url);
+    var params = ''
+    if(bdm){
+      var z = 0
+      for (var prop in bdm) {
+        // d.cond = []
+        if (bdm.hasOwnProperty(prop)) {
+          if(z>0){
+           params += '&'
+        }else{
+           params += '?'
+        }
+          params += prop+'='+bdm[prop]
+        }
+        z++
+      }
+    }
 		tt.DataTable({
 			"processing": true,
 			"serverSide": true,
 			"searchDelay": 1000,
 			"ordering": false,
-			"ajax": base_url[0]+"index.php/"+c+"/get_json",
+      "ajax": base_url[0]+"index.php/"+c+"/get_json"+params,
 			"columns": fl
 		});
   }

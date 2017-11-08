@@ -14,6 +14,9 @@ class Manage_customers extends CI_Controller{
 
 	function get_json(){
 		$customers = PartnerQuery::create()->filterByIsCustomer(true);
+    if($this->input->get('company_id')){
+      $customers->filterByCompanyId($this->input->get('company_id'));
+    }
 		$maxPerPage = $this->input->get('length');
 
 		if($this->input->get('search[value]')){
@@ -60,7 +63,6 @@ class Manage_customers extends CI_Controller{
 	}
 
   function create(){
-
 		$this->template->render('admin/customers/form',array(
 			));
   }
@@ -88,6 +90,7 @@ class Manage_customers extends CI_Controller{
 		$customer->setImage($this->input->post('Image'));
 		$customer->setTaxNumber($this->input->post('TaxNumber'));
 		$customer->setBankDetail($this->input->post('BankDetail'));
+		$customer->setCompanyId($this->input->post('CompanyId'));
     $customer->setIsCustomer(true);
 		$customer->save();
 		//$this->loging->add_entry('customers',$customer->getId(),($id?'melakukan perubahan pada data':'membuat data baru'));

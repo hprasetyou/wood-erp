@@ -14,7 +14,8 @@ class Template {
         $pdata = array(
             'base_url'=>base_url(),
             'res'=>array(
-                'string'=>include('application/language/en/default.php')
+                'string'=>include('application/language/en/default.php'),
+                'query_params'=>$this->CI->input->get()
             )
         );
         if($this->CI->session->userdata('is_logged_in')){
