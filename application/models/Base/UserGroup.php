@@ -2,15 +2,14 @@
 
 namespace Base;
 
-use \Component as ChildComponent;
-use \ComponentQuery as ChildComponentQuery;
-use \Product as ChildProduct;
-use \ProductComponentQuery as ChildProductComponentQuery;
-use \ProductQuery as ChildProductQuery;
-use \DateTime;
+use \Group as ChildGroup;
+use \GroupQuery as ChildGroupQuery;
+use \User as ChildUser;
+use \UserGroupQuery as ChildUserGroupQuery;
+use \UserQuery as ChildUserQuery;
 use \Exception;
 use \PDO;
-use Map\ProductComponentTableMap;
+use Map\UserGroupTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -22,21 +21,20 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
-use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'product_component' table.
+ * Base class that represents a row from the 'user_group' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class ProductComponent implements ActiveRecordInterface
+abstract class UserGroup implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Map\\ProductComponentTableMap';
+    const TABLE_MAP = '\\Map\\UserGroupTableMap';
 
 
     /**
@@ -66,58 +64,28 @@ abstract class ProductComponent implements ActiveRecordInterface
     protected $virtualColumns = array();
 
     /**
-     * The value for the id field.
+     * The value for the user_id field.
      *
      * @var        int
      */
-    protected $id;
+    protected $user_id;
 
     /**
-     * The value for the product_id field.
+     * The value for the group_id field.
      *
      * @var        int
      */
-    protected $product_id;
+    protected $group_id;
 
     /**
-     * The value for the component_id field.
-     *
-     * @var        int
+     * @var        ChildUser
      */
-    protected $component_id;
+    protected $aUser;
 
     /**
-     * The value for the qty field.
-     *
-     * @var        int
+     * @var        ChildGroup
      */
-    protected $qty;
-
-    /**
-     * The value for the created_at field.
-     *
-     * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
-     * @var        DateTime
-     */
-    protected $created_at;
-
-    /**
-     * The value for the updated_at field.
-     *
-     * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-     * @var        DateTime
-     */
-    protected $updated_at;
-
-    /**
-     * @var        ChildProduct
-     */
-    protected $aProduct;
-
-    /**
-     * @var        ChildComponent
-     */
-    protected $aComponent;
+    protected $aGroup;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -128,22 +96,10 @@ abstract class ProductComponent implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * Applies default values to this object.
-     * This method should be called from the object's constructor (or
-     * equivalent initialization method).
-     * @see __construct()
-     */
-    public function applyDefaultValues()
-    {
-    }
-
-    /**
-     * Initializes internal state of Base\ProductComponent object.
-     * @see applyDefaults()
+     * Initializes internal state of Base\UserGroup object.
      */
     public function __construct()
     {
-        $this->applyDefaultValues();
     }
 
     /**
@@ -235,9 +191,9 @@ abstract class ProductComponent implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>ProductComponent</code> instance.  If
-     * <code>obj</code> is an instance of <code>ProductComponent</code>, delegates to
-     * <code>equals(ProductComponent)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>UserGroup</code> instance.  If
+     * <code>obj</code> is an instance of <code>UserGroup</code>, delegates to
+     * <code>equals(UserGroup)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -303,7 +259,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|ProductComponent The current object, for fluid interface
+     * @return $this|UserGroup The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -365,212 +321,72 @@ abstract class ProductComponent implements ActiveRecordInterface
     }
 
     /**
-     * Get the [id] column value.
+     * Get the [user_id] column value.
      *
      * @return int
      */
-    public function getId()
+    public function getUserId()
     {
-        return $this->id;
+        return $this->user_id;
     }
 
     /**
-     * Get the [product_id] column value.
+     * Get the [group_id] column value.
      *
      * @return int
      */
-    public function getProductId()
+    public function getGroupId()
     {
-        return $this->product_id;
+        return $this->group_id;
     }
 
     /**
-     * Get the [component_id] column value.
-     *
-     * @return int
-     */
-    public function getComponentId()
-    {
-        return $this->component_id;
-    }
-
-    /**
-     * Get the [qty] column value.
-     *
-     * @return int
-     */
-    public function getQty()
-    {
-        return $this->qty;
-    }
-
-    /**
-     * Get the [optionally formatted] temporal [created_at] column value.
-     *
-     *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw DateTime object will be returned.
-     *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
-     *
-     * @throws PropelException - if unable to parse/validate the date/time value.
-     */
-    public function getCreatedAt($format = NULL)
-    {
-        if ($format === null) {
-            return $this->created_at;
-        } else {
-            return $this->created_at instanceof \DateTimeInterface ? $this->created_at->format($format) : null;
-        }
-    }
-
-    /**
-     * Get the [optionally formatted] temporal [updated_at] column value.
-     *
-     *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw DateTime object will be returned.
-     *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
-     *
-     * @throws PropelException - if unable to parse/validate the date/time value.
-     */
-    public function getUpdatedAt($format = NULL)
-    {
-        if ($format === null) {
-            return $this->updated_at;
-        } else {
-            return $this->updated_at instanceof \DateTimeInterface ? $this->updated_at->format($format) : null;
-        }
-    }
-
-    /**
-     * Set the value of [id] column.
+     * Set the value of [user_id] column.
      *
      * @param int $v new value
-     * @return $this|\ProductComponent The current object (for fluent API support)
+     * @return $this|\UserGroup The current object (for fluent API support)
      */
-    public function setId($v)
+    public function setUserId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->id !== $v) {
-            $this->id = $v;
-            $this->modifiedColumns[ProductComponentTableMap::COL_ID] = true;
+        if ($this->user_id !== $v) {
+            $this->user_id = $v;
+            $this->modifiedColumns[UserGroupTableMap::COL_USER_ID] = true;
+        }
+
+        if ($this->aUser !== null && $this->aUser->getId() !== $v) {
+            $this->aUser = null;
         }
 
         return $this;
-    } // setId()
+    } // setUserId()
 
     /**
-     * Set the value of [product_id] column.
+     * Set the value of [group_id] column.
      *
      * @param int $v new value
-     * @return $this|\ProductComponent The current object (for fluent API support)
+     * @return $this|\UserGroup The current object (for fluent API support)
      */
-    public function setProductId($v)
+    public function setGroupId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->product_id !== $v) {
-            $this->product_id = $v;
-            $this->modifiedColumns[ProductComponentTableMap::COL_PRODUCT_ID] = true;
+        if ($this->group_id !== $v) {
+            $this->group_id = $v;
+            $this->modifiedColumns[UserGroupTableMap::COL_GROUP_ID] = true;
         }
 
-        if ($this->aProduct !== null && $this->aProduct->getId() !== $v) {
-            $this->aProduct = null;
-        }
-
-        return $this;
-    } // setProductId()
-
-    /**
-     * Set the value of [component_id] column.
-     *
-     * @param int $v new value
-     * @return $this|\ProductComponent The current object (for fluent API support)
-     */
-    public function setComponentId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->component_id !== $v) {
-            $this->component_id = $v;
-            $this->modifiedColumns[ProductComponentTableMap::COL_COMPONENT_ID] = true;
-        }
-
-        if ($this->aComponent !== null && $this->aComponent->getId() !== $v) {
-            $this->aComponent = null;
+        if ($this->aGroup !== null && $this->aGroup->getId() !== $v) {
+            $this->aGroup = null;
         }
 
         return $this;
-    } // setComponentId()
-
-    /**
-     * Set the value of [qty] column.
-     *
-     * @param int $v new value
-     * @return $this|\ProductComponent The current object (for fluent API support)
-     */
-    public function setQty($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->qty !== $v) {
-            $this->qty = $v;
-            $this->modifiedColumns[ProductComponentTableMap::COL_QTY] = true;
-        }
-
-        return $this;
-    } // setQty()
-
-    /**
-     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
-     *
-     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
-     *               Empty strings are treated as NULL.
-     * @return $this|\ProductComponent The current object (for fluent API support)
-     */
-    public function setCreatedAt($v)
-    {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->created_at !== null || $dt !== null) {
-            if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_at->format("Y-m-d H:i:s.u")) {
-                $this->created_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[ProductComponentTableMap::COL_CREATED_AT] = true;
-            }
-        } // if either are not null
-
-        return $this;
-    } // setCreatedAt()
-
-    /**
-     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
-     *
-     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
-     *               Empty strings are treated as NULL.
-     * @return $this|\ProductComponent The current object (for fluent API support)
-     */
-    public function setUpdatedAt($v)
-    {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->updated_at !== null || $dt !== null) {
-            if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated_at->format("Y-m-d H:i:s.u")) {
-                $this->updated_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[ProductComponentTableMap::COL_UPDATED_AT] = true;
-            }
-        } // if either are not null
-
-        return $this;
-    } // setUpdatedAt()
+    } // setGroupId()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -608,29 +424,11 @@ abstract class ProductComponent implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProductComponentTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : UserGroupTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->user_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProductComponentTableMap::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->product_id = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProductComponentTableMap::translateFieldName('ComponentId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->component_id = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProductComponentTableMap::translateFieldName('Qty', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->qty = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProductComponentTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
-            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ProductComponentTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
-            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : UserGroupTableMap::translateFieldName('GroupId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->group_id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -639,10 +437,10 @@ abstract class ProductComponent implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 6; // 6 = ProductComponentTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 2; // 2 = UserGroupTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\ProductComponent'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\UserGroup'), 0, $e);
         }
     }
 
@@ -661,11 +459,11 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aProduct !== null && $this->product_id !== $this->aProduct->getId()) {
-            $this->aProduct = null;
+        if ($this->aUser !== null && $this->user_id !== $this->aUser->getId()) {
+            $this->aUser = null;
         }
-        if ($this->aComponent !== null && $this->component_id !== $this->aComponent->getId()) {
-            $this->aComponent = null;
+        if ($this->aGroup !== null && $this->group_id !== $this->aGroup->getId()) {
+            $this->aGroup = null;
         }
     } // ensureConsistency
 
@@ -690,13 +488,13 @@ abstract class ProductComponent implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(ProductComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(UserGroupTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildProductComponentQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildUserGroupQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -706,8 +504,8 @@ abstract class ProductComponent implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aProduct = null;
-            $this->aComponent = null;
+            $this->aUser = null;
+            $this->aGroup = null;
         } // if (deep)
     }
 
@@ -717,8 +515,8 @@ abstract class ProductComponent implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see ProductComponent::setDeleted()
-     * @see ProductComponent::isDeleted()
+     * @see UserGroup::setDeleted()
+     * @see UserGroup::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -727,11 +525,11 @@ abstract class ProductComponent implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UserGroupTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildProductComponentQuery::create()
+            $deleteQuery = ChildUserGroupQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -766,7 +564,7 @@ abstract class ProductComponent implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UserGroupTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -785,7 +583,7 @@ abstract class ProductComponent implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                ProductComponentTableMap::addInstanceToPool($this);
+                UserGroupTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -816,18 +614,18 @@ abstract class ProductComponent implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aProduct !== null) {
-                if ($this->aProduct->isModified() || $this->aProduct->isNew()) {
-                    $affectedRows += $this->aProduct->save($con);
+            if ($this->aUser !== null) {
+                if ($this->aUser->isModified() || $this->aUser->isNew()) {
+                    $affectedRows += $this->aUser->save($con);
                 }
-                $this->setProduct($this->aProduct);
+                $this->setUser($this->aUser);
             }
 
-            if ($this->aComponent !== null) {
-                if ($this->aComponent->isModified() || $this->aComponent->isNew()) {
-                    $affectedRows += $this->aComponent->save($con);
+            if ($this->aGroup !== null) {
+                if ($this->aGroup->isModified() || $this->aGroup->isNew()) {
+                    $affectedRows += $this->aGroup->save($con);
                 }
-                $this->setComponent($this->aComponent);
+                $this->setGroup($this->aGroup);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -861,33 +659,17 @@ abstract class ProductComponent implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[ProductComponentTableMap::COL_ID] = true;
-        if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ProductComponentTableMap::COL_ID . ')');
-        }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(ProductComponentTableMap::COL_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'id';
+        if ($this->isColumnModified(UserGroupTableMap::COL_USER_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'user_id';
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_PRODUCT_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'product_id';
-        }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_COMPONENT_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'component_id';
-        }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_QTY)) {
-            $modifiedColumns[':p' . $index++]  = 'qty';
-        }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_CREATED_AT)) {
-            $modifiedColumns[':p' . $index++]  = 'created_at';
-        }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_UPDATED_AT)) {
-            $modifiedColumns[':p' . $index++]  = 'updated_at';
+        if ($this->isColumnModified(UserGroupTableMap::COL_GROUP_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'group_id';
         }
 
         $sql = sprintf(
-            'INSERT INTO product_component (%s) VALUES (%s)',
+            'INSERT INTO user_group (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -896,23 +678,11 @@ abstract class ProductComponent implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'id':
-                        $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+                    case 'user_id':
+                        $stmt->bindValue($identifier, $this->user_id, PDO::PARAM_INT);
                         break;
-                    case 'product_id':
-                        $stmt->bindValue($identifier, $this->product_id, PDO::PARAM_INT);
-                        break;
-                    case 'component_id':
-                        $stmt->bindValue($identifier, $this->component_id, PDO::PARAM_INT);
-                        break;
-                    case 'qty':
-                        $stmt->bindValue($identifier, $this->qty, PDO::PARAM_INT);
-                        break;
-                    case 'created_at':
-                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
-                        break;
-                    case 'updated_at':
-                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                    case 'group_id':
+                        $stmt->bindValue($identifier, $this->group_id, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -921,13 +691,6 @@ abstract class ProductComponent implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
-
-        try {
-            $pk = $con->lastInsertId();
-        } catch (Exception $e) {
-            throw new PropelException('Unable to get autoincrement id.', 0, $e);
-        }
-        $this->setId($pk);
 
         $this->setNew(false);
     }
@@ -960,7 +723,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = ProductComponentTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = UserGroupTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -977,22 +740,10 @@ abstract class ProductComponent implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getId();
+                return $this->getUserId();
                 break;
             case 1:
-                return $this->getProductId();
-                break;
-            case 2:
-                return $this->getComponentId();
-                break;
-            case 3:
-                return $this->getQty();
-                break;
-            case 4:
-                return $this->getCreatedAt();
-                break;
-            case 5:
-                return $this->getUpdatedAt();
+                return $this->getGroupId();
                 break;
             default:
                 return null;
@@ -1018,62 +769,50 @@ abstract class ProductComponent implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['ProductComponent'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['UserGroup'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['ProductComponent'][$this->hashCode()] = true;
-        $keys = ProductComponentTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['UserGroup'][$this->hashCode()] = true;
+        $keys = UserGroupTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getId(),
-            $keys[1] => $this->getProductId(),
-            $keys[2] => $this->getComponentId(),
-            $keys[3] => $this->getQty(),
-            $keys[4] => $this->getCreatedAt(),
-            $keys[5] => $this->getUpdatedAt(),
+            $keys[0] => $this->getUserId(),
+            $keys[1] => $this->getGroupId(),
         );
-        if ($result[$keys[4]] instanceof \DateTimeInterface) {
-            $result[$keys[4]] = $result[$keys[4]]->format('c');
-        }
-
-        if ($result[$keys[5]] instanceof \DateTimeInterface) {
-            $result[$keys[5]] = $result[$keys[5]]->format('c');
-        }
-
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aProduct) {
+            if (null !== $this->aUser) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'product';
+                        $key = 'user';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'product';
+                        $key = 'user';
                         break;
                     default:
-                        $key = 'Product';
+                        $key = 'User';
                 }
 
-                $result[$key] = $this->aProduct->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->aComponent) {
+            if (null !== $this->aGroup) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'component';
+                        $key = 'group';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'component';
+                        $key = 'group';
                         break;
                     default:
-                        $key = 'Component';
+                        $key = 'Group';
                 }
 
-                $result[$key] = $this->aComponent->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aGroup->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -1089,11 +828,11 @@ abstract class ProductComponent implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\ProductComponent
+     * @return $this|\UserGroup
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = ProductComponentTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = UserGroupTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1104,28 +843,16 @@ abstract class ProductComponent implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\ProductComponent
+     * @return $this|\UserGroup
      */
     public function setByPosition($pos, $value)
     {
         switch ($pos) {
             case 0:
-                $this->setId($value);
+                $this->setUserId($value);
                 break;
             case 1:
-                $this->setProductId($value);
-                break;
-            case 2:
-                $this->setComponentId($value);
-                break;
-            case 3:
-                $this->setQty($value);
-                break;
-            case 4:
-                $this->setCreatedAt($value);
-                break;
-            case 5:
-                $this->setUpdatedAt($value);
+                $this->setGroupId($value);
                 break;
         } // switch()
 
@@ -1151,25 +878,13 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = ProductComponentTableMap::getFieldNames($keyType);
+        $keys = UserGroupTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
-            $this->setId($arr[$keys[0]]);
+            $this->setUserId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setProductId($arr[$keys[1]]);
-        }
-        if (array_key_exists($keys[2], $arr)) {
-            $this->setComponentId($arr[$keys[2]]);
-        }
-        if (array_key_exists($keys[3], $arr)) {
-            $this->setQty($arr[$keys[3]]);
-        }
-        if (array_key_exists($keys[4], $arr)) {
-            $this->setCreatedAt($arr[$keys[4]]);
-        }
-        if (array_key_exists($keys[5], $arr)) {
-            $this->setUpdatedAt($arr[$keys[5]]);
+            $this->setGroupId($arr[$keys[1]]);
         }
     }
 
@@ -1190,7 +905,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\ProductComponent The current object, for fluid interface
+     * @return $this|\UserGroup The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1210,25 +925,13 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(ProductComponentTableMap::DATABASE_NAME);
+        $criteria = new Criteria(UserGroupTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(ProductComponentTableMap::COL_ID)) {
-            $criteria->add(ProductComponentTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(UserGroupTableMap::COL_USER_ID)) {
+            $criteria->add(UserGroupTableMap::COL_USER_ID, $this->user_id);
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_PRODUCT_ID)) {
-            $criteria->add(ProductComponentTableMap::COL_PRODUCT_ID, $this->product_id);
-        }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_COMPONENT_ID)) {
-            $criteria->add(ProductComponentTableMap::COL_COMPONENT_ID, $this->component_id);
-        }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_QTY)) {
-            $criteria->add(ProductComponentTableMap::COL_QTY, $this->qty);
-        }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_CREATED_AT)) {
-            $criteria->add(ProductComponentTableMap::COL_CREATED_AT, $this->created_at);
-        }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_UPDATED_AT)) {
-            $criteria->add(ProductComponentTableMap::COL_UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(UserGroupTableMap::COL_GROUP_ID)) {
+            $criteria->add(UserGroupTableMap::COL_GROUP_ID, $this->group_id);
         }
 
         return $criteria;
@@ -1246,8 +949,9 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildProductComponentQuery::create();
-        $criteria->add(ProductComponentTableMap::COL_ID, $this->id);
+        $criteria = ChildUserGroupQuery::create();
+        $criteria->add(UserGroupTableMap::COL_USER_ID, $this->user_id);
+        $criteria->add(UserGroupTableMap::COL_GROUP_ID, $this->group_id);
 
         return $criteria;
     }
@@ -1260,10 +964,25 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getId();
+        $validPk = null !== $this->getUserId() &&
+            null !== $this->getGroupId();
 
-        $validPrimaryKeyFKs = 0;
+        $validPrimaryKeyFKs = 2;
         $primaryKeyFKs = [];
+
+        //relation user_group_fk_29554a to table user
+        if ($this->aUser && $hash = spl_object_hash($this->aUser)) {
+            $primaryKeyFKs[] = $hash;
+        } else {
+            $validPrimaryKeyFKs = false;
+        }
+
+        //relation user_group_fk_0278b4 to table group
+        if ($this->aGroup && $hash = spl_object_hash($this->aGroup)) {
+            $primaryKeyFKs[] = $hash;
+        } else {
+            $validPrimaryKeyFKs = false;
+        }
 
         if ($validPk) {
             return crc32(json_encode($this->getPrimaryKey(), JSON_UNESCAPED_UNICODE));
@@ -1275,23 +994,29 @@ abstract class ProductComponent implements ActiveRecordInterface
     }
 
     /**
-     * Returns the primary key for this object (row).
-     * @return int
+     * Returns the composite primary key for this object.
+     * The array elements will be in same order as specified in XML.
+     * @return array
      */
     public function getPrimaryKey()
     {
-        return $this->getId();
+        $pks = array();
+        $pks[0] = $this->getUserId();
+        $pks[1] = $this->getGroupId();
+
+        return $pks;
     }
 
     /**
-     * Generic method to set the primary key (id column).
+     * Set the [composite] primary key.
      *
-     * @param       int $key Primary key.
+     * @param      array $keys The elements of the composite key (order must match the order in XML file).
      * @return void
      */
-    public function setPrimaryKey($key)
+    public function setPrimaryKey($keys)
     {
-        $this->setId($key);
+        $this->setUserId($keys[0]);
+        $this->setGroupId($keys[1]);
     }
 
     /**
@@ -1300,7 +1025,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return null === $this->getId();
+        return (null === $this->getUserId()) && (null === $this->getGroupId());
     }
 
     /**
@@ -1309,21 +1034,17 @@ abstract class ProductComponent implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \ProductComponent (or compatible) type.
+     * @param      object $copyObj An object of \UserGroup (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setProductId($this->getProductId());
-        $copyObj->setComponentId($this->getComponentId());
-        $copyObj->setQty($this->getQty());
-        $copyObj->setCreatedAt($this->getCreatedAt());
-        $copyObj->setUpdatedAt($this->getUpdatedAt());
+        $copyObj->setUserId($this->getUserId());
+        $copyObj->setGroupId($this->getGroupId());
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1336,7 +1057,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \ProductComponent Clone of current object.
+     * @return \UserGroup Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1350,26 +1071,26 @@ abstract class ProductComponent implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildProduct object.
+     * Declares an association between this object and a ChildUser object.
      *
-     * @param  ChildProduct $v
-     * @return $this|\ProductComponent The current object (for fluent API support)
+     * @param  ChildUser $v
+     * @return $this|\UserGroup The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setProduct(ChildProduct $v = null)
+    public function setUser(ChildUser $v = null)
     {
         if ($v === null) {
-            $this->setProductId(NULL);
+            $this->setUserId(NULL);
         } else {
-            $this->setProductId($v->getId());
+            $this->setUserId($v->getId());
         }
 
-        $this->aProduct = $v;
+        $this->aUser = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildProduct object, it will not be re-added.
+        // If this object has already been added to the ChildUser object, it will not be re-added.
         if ($v !== null) {
-            $v->addProductComponent($this);
+            $v->addUserGroup($this);
         }
 
 
@@ -1378,49 +1099,49 @@ abstract class ProductComponent implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildProduct object
+     * Get the associated ChildUser object
      *
      * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildProduct The associated ChildProduct object.
+     * @return ChildUser The associated ChildUser object.
      * @throws PropelException
      */
-    public function getProduct(ConnectionInterface $con = null)
+    public function getUser(ConnectionInterface $con = null)
     {
-        if ($this->aProduct === null && ($this->product_id != 0)) {
-            $this->aProduct = ChildProductQuery::create()->findPk($this->product_id, $con);
+        if ($this->aUser === null && ($this->user_id != 0)) {
+            $this->aUser = ChildUserQuery::create()->findPk($this->user_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aProduct->addProductComponents($this);
+                $this->aUser->addUserGroups($this);
              */
         }
 
-        return $this->aProduct;
+        return $this->aUser;
     }
 
     /**
-     * Declares an association between this object and a ChildComponent object.
+     * Declares an association between this object and a ChildGroup object.
      *
-     * @param  ChildComponent $v
-     * @return $this|\ProductComponent The current object (for fluent API support)
+     * @param  ChildGroup $v
+     * @return $this|\UserGroup The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setComponent(ChildComponent $v = null)
+    public function setGroup(ChildGroup $v = null)
     {
         if ($v === null) {
-            $this->setComponentId(NULL);
+            $this->setGroupId(NULL);
         } else {
-            $this->setComponentId($v->getId());
+            $this->setGroupId($v->getId());
         }
 
-        $this->aComponent = $v;
+        $this->aGroup = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildComponent object, it will not be re-added.
+        // If this object has already been added to the ChildGroup object, it will not be re-added.
         if ($v !== null) {
-            $v->addProductComponent($this);
+            $v->addUserGroup($this);
         }
 
 
@@ -1429,26 +1150,26 @@ abstract class ProductComponent implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildComponent object
+     * Get the associated ChildGroup object
      *
      * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildComponent The associated ChildComponent object.
+     * @return ChildGroup The associated ChildGroup object.
      * @throws PropelException
      */
-    public function getComponent(ConnectionInterface $con = null)
+    public function getGroup(ConnectionInterface $con = null)
     {
-        if ($this->aComponent === null && ($this->component_id != 0)) {
-            $this->aComponent = ChildComponentQuery::create()->findPk($this->component_id, $con);
+        if ($this->aGroup === null && ($this->group_id != 0)) {
+            $this->aGroup = ChildGroupQuery::create()->findPk($this->group_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aComponent->addProductComponents($this);
+                $this->aGroup->addUserGroups($this);
              */
         }
 
-        return $this->aComponent;
+        return $this->aGroup;
     }
 
     /**
@@ -1458,21 +1179,16 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aProduct) {
-            $this->aProduct->removeProductComponent($this);
+        if (null !== $this->aUser) {
+            $this->aUser->removeUserGroup($this);
         }
-        if (null !== $this->aComponent) {
-            $this->aComponent->removeProductComponent($this);
+        if (null !== $this->aGroup) {
+            $this->aGroup->removeUserGroup($this);
         }
-        $this->id = null;
-        $this->product_id = null;
-        $this->component_id = null;
-        $this->qty = null;
-        $this->created_at = null;
-        $this->updated_at = null;
+        $this->user_id = null;
+        $this->group_id = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
-        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
@@ -1491,8 +1207,8 @@ abstract class ProductComponent implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aProduct = null;
-        $this->aComponent = null;
+        $this->aUser = null;
+        $this->aGroup = null;
     }
 
     /**
@@ -1502,7 +1218,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(ProductComponentTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(UserGroupTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

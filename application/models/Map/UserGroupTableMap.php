@@ -2,8 +2,8 @@
 
 namespace Map;
 
-use \ProductComponent;
-use \ProductComponentQuery;
+use \UserGroup;
+use \UserGroupQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'product_component' table.
+ * This class defines the structure of the 'user_group' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class ProductComponentTableMap extends TableMap
+class UserGroupTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class ProductComponentTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.ProductComponentTableMap';
+    const CLASS_NAME = '.Map.UserGroupTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class ProductComponentTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'product_component';
+    const TABLE_NAME = 'user_group';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\ProductComponent';
+    const OM_CLASS = '\\UserGroup';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'ProductComponent';
+    const CLASS_DEFAULT = 'UserGroup';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 6;
+    const NUM_COLUMNS = 2;
 
     /**
      * The number of lazy-loaded columns
@@ -69,37 +69,17 @@ class ProductComponentTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 6;
+    const NUM_HYDRATE_COLUMNS = 2;
 
     /**
-     * the column name for the id field
+     * the column name for the user_id field
      */
-    const COL_ID = 'product_component.id';
+    const COL_USER_ID = 'user_group.user_id';
 
     /**
-     * the column name for the product_id field
+     * the column name for the group_id field
      */
-    const COL_PRODUCT_ID = 'product_component.product_id';
-
-    /**
-     * the column name for the component_id field
-     */
-    const COL_COMPONENT_ID = 'product_component.component_id';
-
-    /**
-     * the column name for the qty field
-     */
-    const COL_QTY = 'product_component.qty';
-
-    /**
-     * the column name for the created_at field
-     */
-    const COL_CREATED_AT = 'product_component.created_at';
-
-    /**
-     * the column name for the updated_at field
-     */
-    const COL_UPDATED_AT = 'product_component.updated_at';
+    const COL_GROUP_ID = 'user_group.group_id';
 
     /**
      * The default string format for model objects of the related table
@@ -113,11 +93,11 @@ class ProductComponentTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'ProductId', 'ComponentId', 'Qty', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'productId', 'componentId', 'qty', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ProductComponentTableMap::COL_ID, ProductComponentTableMap::COL_PRODUCT_ID, ProductComponentTableMap::COL_COMPONENT_ID, ProductComponentTableMap::COL_QTY, ProductComponentTableMap::COL_CREATED_AT, ProductComponentTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'product_id', 'component_id', 'qty', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('UserId', 'GroupId', ),
+        self::TYPE_CAMELNAME     => array('userId', 'groupId', ),
+        self::TYPE_COLNAME       => array(UserGroupTableMap::COL_USER_ID, UserGroupTableMap::COL_GROUP_ID, ),
+        self::TYPE_FIELDNAME     => array('user_id', 'group_id', ),
+        self::TYPE_NUM           => array(0, 1, )
     );
 
     /**
@@ -127,11 +107,11 @@ class ProductComponentTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'ProductId' => 1, 'ComponentId' => 2, 'Qty' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'productId' => 1, 'componentId' => 2, 'qty' => 3, 'createdAt' => 4, 'updatedAt' => 5, ),
-        self::TYPE_COLNAME       => array(ProductComponentTableMap::COL_ID => 0, ProductComponentTableMap::COL_PRODUCT_ID => 1, ProductComponentTableMap::COL_COMPONENT_ID => 2, ProductComponentTableMap::COL_QTY => 3, ProductComponentTableMap::COL_CREATED_AT => 4, ProductComponentTableMap::COL_UPDATED_AT => 5, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'product_id' => 1, 'component_id' => 2, 'qty' => 3, 'created_at' => 4, 'updated_at' => 5, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('UserId' => 0, 'GroupId' => 1, ),
+        self::TYPE_CAMELNAME     => array('userId' => 0, 'groupId' => 1, ),
+        self::TYPE_COLNAME       => array(UserGroupTableMap::COL_USER_ID => 0, UserGroupTableMap::COL_GROUP_ID => 1, ),
+        self::TYPE_FIELDNAME     => array('user_id' => 0, 'group_id' => 1, ),
+        self::TYPE_NUM           => array(0, 1, )
     );
 
     /**
@@ -144,19 +124,16 @@ class ProductComponentTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('product_component');
-        $this->setPhpName('ProductComponent');
+        $this->setName('user_group');
+        $this->setPhpName('UserGroup');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\ProductComponent');
+        $this->setClassName('\\UserGroup');
         $this->setPackage('');
-        $this->setUseIdGenerator(true);
+        $this->setUseIdGenerator(false);
+        $this->setIsCrossRef(true);
         // columns
-        $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addForeignKey('product_id', 'ProductId', 'INTEGER', 'product', 'id', true, null, null);
-        $this->addForeignKey('component_id', 'ComponentId', 'INTEGER', 'component', 'id', true, null, null);
-        $this->addColumn('qty', 'Qty', 'INTEGER', true, null, null);
-        $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
-        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
+        $this->addForeignPrimaryKey('user_id', 'UserId', 'INTEGER' , 'user', 'id', true, null, null);
+        $this->addForeignPrimaryKey('group_id', 'GroupId', 'INTEGER' , 'group', 'id', true, null, null);
     } // initialize()
 
     /**
@@ -164,21 +141,74 @@ class ProductComponentTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Product', '\\Product', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('User', '\\User', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':product_id',
+    0 => ':user_id',
     1 => ':id',
   ),
 ), null, null, null, false);
-        $this->addRelation('Component', '\\Component', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('Group', '\\Group', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':component_id',
+    0 => ':group_id',
     1 => ':id',
   ),
 ), null, null, null, false);
     } // buildRelations()
+
+    /**
+     * Adds an object to the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database. In some cases you may need to explicitly add objects
+     * to the cache in order to ensure that the same objects are always returned by find*()
+     * and findPk*() calls.
+     *
+     * @param \UserGroup $obj A \UserGroup object.
+     * @param string $key             (optional) key to use for instance map (for performance boost if key was already calculated externally).
+     */
+    public static function addInstanceToPool($obj, $key = null)
+    {
+        if (Propel::isInstancePoolingEnabled()) {
+            if (null === $key) {
+                $key = serialize([(null === $obj->getUserId() || is_scalar($obj->getUserId()) || is_callable([$obj->getUserId(), '__toString']) ? (string) $obj->getUserId() : $obj->getUserId()), (null === $obj->getGroupId() || is_scalar($obj->getGroupId()) || is_callable([$obj->getGroupId(), '__toString']) ? (string) $obj->getGroupId() : $obj->getGroupId())]);
+            } // if key === null
+            self::$instances[$key] = $obj;
+        }
+    }
+
+    /**
+     * Removes an object from the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database.  In some cases -- especially when you override doDelete
+     * methods in your stub classes -- you may need to explicitly remove objects
+     * from the cache in order to prevent returning objects that no longer exist.
+     *
+     * @param mixed $value A \UserGroup object or a primary key value.
+     */
+    public static function removeInstanceFromPool($value)
+    {
+        if (Propel::isInstancePoolingEnabled() && null !== $value) {
+            if (is_object($value) && $value instanceof \UserGroup) {
+                $key = serialize([(null === $value->getUserId() || is_scalar($value->getUserId()) || is_callable([$value->getUserId(), '__toString']) ? (string) $value->getUserId() : $value->getUserId()), (null === $value->getGroupId() || is_scalar($value->getGroupId()) || is_callable([$value->getGroupId(), '__toString']) ? (string) $value->getGroupId() : $value->getGroupId())]);
+
+            } elseif (is_array($value) && count($value) === 2) {
+                // assume we've been passed a primary key";
+                $key = serialize([(null === $value[0] || is_scalar($value[0]) || is_callable([$value[0], '__toString']) ? (string) $value[0] : $value[0]), (null === $value[1] || is_scalar($value[1]) || is_callable([$value[1], '__toString']) ? (string) $value[1] : $value[1])]);
+            } elseif ($value instanceof Criteria) {
+                self::$instances = [];
+
+                return;
+            } else {
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \UserGroup object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
+                throw $e;
+            }
+
+            unset(self::$instances[$key]);
+        }
+    }
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -196,11 +226,11 @@ class ProductComponentTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('GroupId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('GroupId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('GroupId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('GroupId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('GroupId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('GroupId', TableMap::TYPE_PHPNAME, $indexType)])]);
     }
 
     /**
@@ -217,11 +247,20 @@ class ProductComponentTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return (int) $row[
+            $pks = [];
+
+        $pks[] = (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
-                : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)
         ];
+        $pks[] = (int) $row[
+            $indexType == TableMap::TYPE_NUM
+                ? 1 + $offset
+                : self::translateFieldName('GroupId', TableMap::TYPE_PHPNAME, $indexType)
+        ];
+
+        return $pks;
     }
 
     /**
@@ -237,7 +276,7 @@ class ProductComponentTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? ProductComponentTableMap::CLASS_DEFAULT : ProductComponentTableMap::OM_CLASS;
+        return $withPrefix ? UserGroupTableMap::CLASS_DEFAULT : UserGroupTableMap::OM_CLASS;
     }
 
     /**
@@ -251,22 +290,22 @@ class ProductComponentTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (ProductComponent object, last column rank)
+     * @return array           (UserGroup object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = ProductComponentTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = ProductComponentTableMap::getInstanceFromPool($key))) {
+        $key = UserGroupTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = UserGroupTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + ProductComponentTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + UserGroupTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = ProductComponentTableMap::OM_CLASS;
-            /** @var ProductComponent $obj */
+            $cls = UserGroupTableMap::OM_CLASS;
+            /** @var UserGroup $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            ProductComponentTableMap::addInstanceToPool($obj, $key);
+            UserGroupTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -289,18 +328,18 @@ class ProductComponentTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = ProductComponentTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = ProductComponentTableMap::getInstanceFromPool($key))) {
+            $key = UserGroupTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = UserGroupTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var ProductComponent $obj */
+                /** @var UserGroup $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                ProductComponentTableMap::addInstanceToPool($obj, $key);
+                UserGroupTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -321,19 +360,11 @@ class ProductComponentTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(ProductComponentTableMap::COL_ID);
-            $criteria->addSelectColumn(ProductComponentTableMap::COL_PRODUCT_ID);
-            $criteria->addSelectColumn(ProductComponentTableMap::COL_COMPONENT_ID);
-            $criteria->addSelectColumn(ProductComponentTableMap::COL_QTY);
-            $criteria->addSelectColumn(ProductComponentTableMap::COL_CREATED_AT);
-            $criteria->addSelectColumn(ProductComponentTableMap::COL_UPDATED_AT);
+            $criteria->addSelectColumn(UserGroupTableMap::COL_USER_ID);
+            $criteria->addSelectColumn(UserGroupTableMap::COL_GROUP_ID);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.product_id');
-            $criteria->addSelectColumn($alias . '.component_id');
-            $criteria->addSelectColumn($alias . '.qty');
-            $criteria->addSelectColumn($alias . '.created_at');
-            $criteria->addSelectColumn($alias . '.updated_at');
+            $criteria->addSelectColumn($alias . '.user_id');
+            $criteria->addSelectColumn($alias . '.group_id');
         }
     }
 
@@ -346,7 +377,7 @@ class ProductComponentTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(ProductComponentTableMap::DATABASE_NAME)->getTable(ProductComponentTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(UserGroupTableMap::DATABASE_NAME)->getTable(UserGroupTableMap::TABLE_NAME);
     }
 
     /**
@@ -354,16 +385,16 @@ class ProductComponentTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(ProductComponentTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(ProductComponentTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new ProductComponentTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(UserGroupTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(UserGroupTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new UserGroupTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a ProductComponent or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a UserGroup or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or ProductComponent object or primary key or array of primary keys
+     * @param mixed               $values Criteria or UserGroup object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -374,27 +405,37 @@ class ProductComponentTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UserGroupTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \ProductComponent) { // it's a model object
+        } elseif ($values instanceof \UserGroup) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(ProductComponentTableMap::DATABASE_NAME);
-            $criteria->add(ProductComponentTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(UserGroupTableMap::DATABASE_NAME);
+            // primary key is composite; we therefore, expect
+            // the primary key passed to be an array of pkey values
+            if (count($values) == count($values, COUNT_RECURSIVE)) {
+                // array is not multi-dimensional
+                $values = array($values);
+            }
+            foreach ($values as $value) {
+                $criterion = $criteria->getNewCriterion(UserGroupTableMap::COL_USER_ID, $value[0]);
+                $criterion->addAnd($criteria->getNewCriterion(UserGroupTableMap::COL_GROUP_ID, $value[1]));
+                $criteria->addOr($criterion);
+            }
         }
 
-        $query = ProductComponentQuery::create()->mergeWith($criteria);
+        $query = UserGroupQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            ProductComponentTableMap::clearInstancePool();
+            UserGroupTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                ProductComponentTableMap::removeInstanceFromPool($singleval);
+                UserGroupTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -402,20 +443,20 @@ class ProductComponentTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the product_component table.
+     * Deletes all rows from the user_group table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return ProductComponentQuery::create()->doDeleteAll($con);
+        return UserGroupQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a ProductComponent or Criteria object.
+     * Performs an INSERT on the database, given a UserGroup or Criteria object.
      *
-     * @param mixed               $criteria Criteria or ProductComponent object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or UserGroup object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -424,22 +465,18 @@ class ProductComponentTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UserGroupTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from ProductComponent object
-        }
-
-        if ($criteria->containsKey(ProductComponentTableMap::COL_ID) && $criteria->keyContainsValue(ProductComponentTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.ProductComponentTableMap::COL_ID.')');
+            $criteria = $criteria->buildCriteria(); // build Criteria from UserGroup object
         }
 
 
         // Set the correct dbName
-        $query = ProductComponentQuery::create()->mergeWith($criteria);
+        $query = UserGroupQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -448,7 +485,7 @@ class ProductComponentTableMap extends TableMap
         });
     }
 
-} // ProductComponentTableMap
+} // UserGroupTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-ProductComponentTableMap::buildTableMap();
+UserGroupTableMap::buildTableMap();

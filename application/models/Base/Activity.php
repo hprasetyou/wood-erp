@@ -2,15 +2,13 @@
 
 namespace Base;
 
-use \Component as ChildComponent;
-use \ComponentQuery as ChildComponentQuery;
-use \Product as ChildProduct;
-use \ProductComponentQuery as ChildProductComponentQuery;
-use \ProductQuery as ChildProductQuery;
+use \ActivityQuery as ChildActivityQuery;
+use \User as ChildUser;
+use \UserQuery as ChildUserQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
-use Map\ProductComponentTableMap;
+use Map\ActivityTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -25,18 +23,18 @@ use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'product_component' table.
+ * Base class that represents a row from the 'activity' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class ProductComponent implements ActiveRecordInterface
+abstract class Activity implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Map\\ProductComponentTableMap';
+    const TABLE_MAP = '\\Map\\ActivityTableMap';
 
 
     /**
@@ -66,32 +64,39 @@ abstract class ProductComponent implements ActiveRecordInterface
     protected $virtualColumns = array();
 
     /**
-     * The value for the id field.
+     * The value for the uuid field.
      *
-     * @var        int
+     * @var        string
      */
-    protected $id;
+    protected $uuid;
 
     /**
-     * The value for the product_id field.
+     * The value for the user_id field.
      *
      * @var        int
      */
-    protected $product_id;
+    protected $user_id;
 
     /**
-     * The value for the component_id field.
+     * The value for the object field.
      *
-     * @var        int
+     * @var        string
      */
-    protected $component_id;
+    protected $object;
 
     /**
-     * The value for the qty field.
+     * The value for the object_id field.
      *
      * @var        int
      */
-    protected $qty;
+    protected $object_id;
+
+    /**
+     * The value for the description field.
+     *
+     * @var        string
+     */
+    protected $description;
 
     /**
      * The value for the created_at field.
@@ -110,14 +115,9 @@ abstract class ProductComponent implements ActiveRecordInterface
     protected $updated_at;
 
     /**
-     * @var        ChildProduct
+     * @var        ChildUser
      */
-    protected $aProduct;
-
-    /**
-     * @var        ChildComponent
-     */
-    protected $aComponent;
+    protected $aUser;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -138,7 +138,7 @@ abstract class ProductComponent implements ActiveRecordInterface
     }
 
     /**
-     * Initializes internal state of Base\ProductComponent object.
+     * Initializes internal state of Base\Activity object.
      * @see applyDefaults()
      */
     public function __construct()
@@ -235,9 +235,9 @@ abstract class ProductComponent implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>ProductComponent</code> instance.  If
-     * <code>obj</code> is an instance of <code>ProductComponent</code>, delegates to
-     * <code>equals(ProductComponent)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>Activity</code> instance.  If
+     * <code>obj</code> is an instance of <code>Activity</code>, delegates to
+     * <code>equals(Activity)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -303,7 +303,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|ProductComponent The current object, for fluid interface
+     * @return $this|Activity The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -365,43 +365,53 @@ abstract class ProductComponent implements ActiveRecordInterface
     }
 
     /**
-     * Get the [id] column value.
+     * Get the [uuid] column value.
      *
-     * @return int
+     * @return string
      */
-    public function getId()
+    public function getUuid()
     {
-        return $this->id;
+        return $this->uuid;
     }
 
     /**
-     * Get the [product_id] column value.
+     * Get the [user_id] column value.
      *
      * @return int
      */
-    public function getProductId()
+    public function getUserId()
     {
-        return $this->product_id;
+        return $this->user_id;
     }
 
     /**
-     * Get the [component_id] column value.
+     * Get the [object] column value.
      *
-     * @return int
+     * @return string
      */
-    public function getComponentId()
+    public function getObject()
     {
-        return $this->component_id;
+        return $this->object;
     }
 
     /**
-     * Get the [qty] column value.
+     * Get the [object_id] column value.
      *
      * @return int
      */
-    public function getQty()
+    public function getObjectId()
     {
-        return $this->qty;
+        return $this->object_id;
+    }
+
+    /**
+     * Get the [description] column value.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 
     /**
@@ -445,99 +455,115 @@ abstract class ProductComponent implements ActiveRecordInterface
     }
 
     /**
-     * Set the value of [id] column.
+     * Set the value of [uuid] column.
      *
-     * @param int $v new value
-     * @return $this|\ProductComponent The current object (for fluent API support)
+     * @param string $v new value
+     * @return $this|\Activity The current object (for fluent API support)
      */
-    public function setId($v)
+    public function setUuid($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            $v = (string) $v;
         }
 
-        if ($this->id !== $v) {
-            $this->id = $v;
-            $this->modifiedColumns[ProductComponentTableMap::COL_ID] = true;
+        if ($this->uuid !== $v) {
+            $this->uuid = $v;
+            $this->modifiedColumns[ActivityTableMap::COL_UUID] = true;
         }
 
         return $this;
-    } // setId()
+    } // setUuid()
 
     /**
-     * Set the value of [product_id] column.
+     * Set the value of [user_id] column.
      *
      * @param int $v new value
-     * @return $this|\ProductComponent The current object (for fluent API support)
+     * @return $this|\Activity The current object (for fluent API support)
      */
-    public function setProductId($v)
+    public function setUserId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->product_id !== $v) {
-            $this->product_id = $v;
-            $this->modifiedColumns[ProductComponentTableMap::COL_PRODUCT_ID] = true;
+        if ($this->user_id !== $v) {
+            $this->user_id = $v;
+            $this->modifiedColumns[ActivityTableMap::COL_USER_ID] = true;
         }
 
-        if ($this->aProduct !== null && $this->aProduct->getId() !== $v) {
-            $this->aProduct = null;
+        if ($this->aUser !== null && $this->aUser->getId() !== $v) {
+            $this->aUser = null;
         }
 
         return $this;
-    } // setProductId()
+    } // setUserId()
 
     /**
-     * Set the value of [component_id] column.
+     * Set the value of [object] column.
      *
-     * @param int $v new value
-     * @return $this|\ProductComponent The current object (for fluent API support)
+     * @param string $v new value
+     * @return $this|\Activity The current object (for fluent API support)
      */
-    public function setComponentId($v)
+    public function setObject($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            $v = (string) $v;
         }
 
-        if ($this->component_id !== $v) {
-            $this->component_id = $v;
-            $this->modifiedColumns[ProductComponentTableMap::COL_COMPONENT_ID] = true;
-        }
-
-        if ($this->aComponent !== null && $this->aComponent->getId() !== $v) {
-            $this->aComponent = null;
+        if ($this->object !== $v) {
+            $this->object = $v;
+            $this->modifiedColumns[ActivityTableMap::COL_OBJECT] = true;
         }
 
         return $this;
-    } // setComponentId()
+    } // setObject()
 
     /**
-     * Set the value of [qty] column.
+     * Set the value of [object_id] column.
      *
      * @param int $v new value
-     * @return $this|\ProductComponent The current object (for fluent API support)
+     * @return $this|\Activity The current object (for fluent API support)
      */
-    public function setQty($v)
+    public function setObjectId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->qty !== $v) {
-            $this->qty = $v;
-            $this->modifiedColumns[ProductComponentTableMap::COL_QTY] = true;
+        if ($this->object_id !== $v) {
+            $this->object_id = $v;
+            $this->modifiedColumns[ActivityTableMap::COL_OBJECT_ID] = true;
         }
 
         return $this;
-    } // setQty()
+    } // setObjectId()
+
+    /**
+     * Set the value of [description] column.
+     *
+     * @param string $v new value
+     * @return $this|\Activity The current object (for fluent API support)
+     */
+    public function setDescription($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->description !== $v) {
+            $this->description = $v;
+            $this->modifiedColumns[ActivityTableMap::COL_DESCRIPTION] = true;
+        }
+
+        return $this;
+    } // setDescription()
 
     /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\ProductComponent The current object (for fluent API support)
+     * @return $this|\Activity The current object (for fluent API support)
      */
     public function setCreatedAt($v)
     {
@@ -545,7 +571,7 @@ abstract class ProductComponent implements ActiveRecordInterface
         if ($this->created_at !== null || $dt !== null) {
             if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_at->format("Y-m-d H:i:s.u")) {
                 $this->created_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[ProductComponentTableMap::COL_CREATED_AT] = true;
+                $this->modifiedColumns[ActivityTableMap::COL_CREATED_AT] = true;
             }
         } // if either are not null
 
@@ -557,7 +583,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\ProductComponent The current object (for fluent API support)
+     * @return $this|\Activity The current object (for fluent API support)
      */
     public function setUpdatedAt($v)
     {
@@ -565,7 +591,7 @@ abstract class ProductComponent implements ActiveRecordInterface
         if ($this->updated_at !== null || $dt !== null) {
             if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated_at->format("Y-m-d H:i:s.u")) {
                 $this->updated_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[ProductComponentTableMap::COL_UPDATED_AT] = true;
+                $this->modifiedColumns[ActivityTableMap::COL_UPDATED_AT] = true;
             }
         } // if either are not null
 
@@ -608,25 +634,28 @@ abstract class ProductComponent implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProductComponentTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ActivityTableMap::translateFieldName('Uuid', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->uuid = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProductComponentTableMap::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->product_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ActivityTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->user_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProductComponentTableMap::translateFieldName('ComponentId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->component_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ActivityTableMap::translateFieldName('Object', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->object = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProductComponentTableMap::translateFieldName('Qty', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->qty = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ActivityTableMap::translateFieldName('ObjectId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->object_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProductComponentTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ActivityTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->description = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ActivityTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ProductComponentTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ActivityTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -639,10 +668,10 @@ abstract class ProductComponent implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 6; // 6 = ProductComponentTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = ActivityTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\ProductComponent'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\Activity'), 0, $e);
         }
     }
 
@@ -661,11 +690,8 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aProduct !== null && $this->product_id !== $this->aProduct->getId()) {
-            $this->aProduct = null;
-        }
-        if ($this->aComponent !== null && $this->component_id !== $this->aComponent->getId()) {
-            $this->aComponent = null;
+        if ($this->aUser !== null && $this->user_id !== $this->aUser->getId()) {
+            $this->aUser = null;
         }
     } // ensureConsistency
 
@@ -690,13 +716,13 @@ abstract class ProductComponent implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(ProductComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(ActivityTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildProductComponentQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildActivityQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -706,8 +732,7 @@ abstract class ProductComponent implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aProduct = null;
-            $this->aComponent = null;
+            $this->aUser = null;
         } // if (deep)
     }
 
@@ -717,8 +742,8 @@ abstract class ProductComponent implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see ProductComponent::setDeleted()
-     * @see ProductComponent::isDeleted()
+     * @see Activity::setDeleted()
+     * @see Activity::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -727,11 +752,11 @@ abstract class ProductComponent implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ActivityTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildProductComponentQuery::create()
+            $deleteQuery = ChildActivityQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -766,7 +791,7 @@ abstract class ProductComponent implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ActivityTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -785,7 +810,7 @@ abstract class ProductComponent implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                ProductComponentTableMap::addInstanceToPool($this);
+                ActivityTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -816,18 +841,11 @@ abstract class ProductComponent implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aProduct !== null) {
-                if ($this->aProduct->isModified() || $this->aProduct->isNew()) {
-                    $affectedRows += $this->aProduct->save($con);
+            if ($this->aUser !== null) {
+                if ($this->aUser->isModified() || $this->aUser->isNew()) {
+                    $affectedRows += $this->aUser->save($con);
                 }
-                $this->setProduct($this->aProduct);
-            }
-
-            if ($this->aComponent !== null) {
-                if ($this->aComponent->isModified() || $this->aComponent->isNew()) {
-                    $affectedRows += $this->aComponent->save($con);
-                }
-                $this->setComponent($this->aComponent);
+                $this->setUser($this->aUser);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -861,33 +879,32 @@ abstract class ProductComponent implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[ProductComponentTableMap::COL_ID] = true;
-        if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ProductComponentTableMap::COL_ID . ')');
-        }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(ProductComponentTableMap::COL_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'id';
+        if ($this->isColumnModified(ActivityTableMap::COL_UUID)) {
+            $modifiedColumns[':p' . $index++]  = 'uuid';
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_PRODUCT_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'product_id';
+        if ($this->isColumnModified(ActivityTableMap::COL_USER_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'user_id';
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_COMPONENT_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'component_id';
+        if ($this->isColumnModified(ActivityTableMap::COL_OBJECT)) {
+            $modifiedColumns[':p' . $index++]  = 'object';
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_QTY)) {
-            $modifiedColumns[':p' . $index++]  = 'qty';
+        if ($this->isColumnModified(ActivityTableMap::COL_OBJECT_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'object_id';
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_CREATED_AT)) {
+        if ($this->isColumnModified(ActivityTableMap::COL_DESCRIPTION)) {
+            $modifiedColumns[':p' . $index++]  = 'description';
+        }
+        if ($this->isColumnModified(ActivityTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_UPDATED_AT)) {
+        if ($this->isColumnModified(ActivityTableMap::COL_UPDATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'updated_at';
         }
 
         $sql = sprintf(
-            'INSERT INTO product_component (%s) VALUES (%s)',
+            'INSERT INTO activity (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -896,17 +913,20 @@ abstract class ProductComponent implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'id':
-                        $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+                    case 'uuid':
+                        $stmt->bindValue($identifier, $this->uuid, PDO::PARAM_STR);
                         break;
-                    case 'product_id':
-                        $stmt->bindValue($identifier, $this->product_id, PDO::PARAM_INT);
+                    case 'user_id':
+                        $stmt->bindValue($identifier, $this->user_id, PDO::PARAM_INT);
                         break;
-                    case 'component_id':
-                        $stmt->bindValue($identifier, $this->component_id, PDO::PARAM_INT);
+                    case 'object':
+                        $stmt->bindValue($identifier, $this->object, PDO::PARAM_STR);
                         break;
-                    case 'qty':
-                        $stmt->bindValue($identifier, $this->qty, PDO::PARAM_INT);
+                    case 'object_id':
+                        $stmt->bindValue($identifier, $this->object_id, PDO::PARAM_INT);
+                        break;
+                    case 'description':
+                        $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -921,13 +941,6 @@ abstract class ProductComponent implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
-
-        try {
-            $pk = $con->lastInsertId();
-        } catch (Exception $e) {
-            throw new PropelException('Unable to get autoincrement id.', 0, $e);
-        }
-        $this->setId($pk);
 
         $this->setNew(false);
     }
@@ -960,7 +973,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = ProductComponentTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = ActivityTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -977,21 +990,24 @@ abstract class ProductComponent implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getId();
+                return $this->getUuid();
                 break;
             case 1:
-                return $this->getProductId();
+                return $this->getUserId();
                 break;
             case 2:
-                return $this->getComponentId();
+                return $this->getObject();
                 break;
             case 3:
-                return $this->getQty();
+                return $this->getObjectId();
                 break;
             case 4:
-                return $this->getCreatedAt();
+                return $this->getDescription();
                 break;
             case 5:
+                return $this->getCreatedAt();
+                break;
+            case 6:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1018,25 +1034,26 @@ abstract class ProductComponent implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['ProductComponent'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['Activity'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['ProductComponent'][$this->hashCode()] = true;
-        $keys = ProductComponentTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['Activity'][$this->hashCode()] = true;
+        $keys = ActivityTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getId(),
-            $keys[1] => $this->getProductId(),
-            $keys[2] => $this->getComponentId(),
-            $keys[3] => $this->getQty(),
-            $keys[4] => $this->getCreatedAt(),
-            $keys[5] => $this->getUpdatedAt(),
+            $keys[0] => $this->getUuid(),
+            $keys[1] => $this->getUserId(),
+            $keys[2] => $this->getObject(),
+            $keys[3] => $this->getObjectId(),
+            $keys[4] => $this->getDescription(),
+            $keys[5] => $this->getCreatedAt(),
+            $keys[6] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[4]] instanceof \DateTimeInterface) {
-            $result[$keys[4]] = $result[$keys[4]]->format('c');
-        }
-
         if ($result[$keys[5]] instanceof \DateTimeInterface) {
             $result[$keys[5]] = $result[$keys[5]]->format('c');
+        }
+
+        if ($result[$keys[6]] instanceof \DateTimeInterface) {
+            $result[$keys[6]] = $result[$keys[6]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1045,35 +1062,20 @@ abstract class ProductComponent implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aProduct) {
+            if (null !== $this->aUser) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'product';
+                        $key = 'user';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'product';
+                        $key = 'user';
                         break;
                     default:
-                        $key = 'Product';
+                        $key = 'User';
                 }
 
-                $result[$key] = $this->aProduct->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->aComponent) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'component';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'component';
-                        break;
-                    default:
-                        $key = 'Component';
-                }
-
-                $result[$key] = $this->aComponent->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -1089,11 +1091,11 @@ abstract class ProductComponent implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\ProductComponent
+     * @return $this|\Activity
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = ProductComponentTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = ActivityTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1104,27 +1106,30 @@ abstract class ProductComponent implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\ProductComponent
+     * @return $this|\Activity
      */
     public function setByPosition($pos, $value)
     {
         switch ($pos) {
             case 0:
-                $this->setId($value);
+                $this->setUuid($value);
                 break;
             case 1:
-                $this->setProductId($value);
+                $this->setUserId($value);
                 break;
             case 2:
-                $this->setComponentId($value);
+                $this->setObject($value);
                 break;
             case 3:
-                $this->setQty($value);
+                $this->setObjectId($value);
                 break;
             case 4:
-                $this->setCreatedAt($value);
+                $this->setDescription($value);
                 break;
             case 5:
+                $this->setCreatedAt($value);
+                break;
+            case 6:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1151,25 +1156,28 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = ProductComponentTableMap::getFieldNames($keyType);
+        $keys = ActivityTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
-            $this->setId($arr[$keys[0]]);
+            $this->setUuid($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setProductId($arr[$keys[1]]);
+            $this->setUserId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setComponentId($arr[$keys[2]]);
+            $this->setObject($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setQty($arr[$keys[3]]);
+            $this->setObjectId($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setCreatedAt($arr[$keys[4]]);
+            $this->setDescription($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setUpdatedAt($arr[$keys[5]]);
+            $this->setCreatedAt($arr[$keys[5]]);
+        }
+        if (array_key_exists($keys[6], $arr)) {
+            $this->setUpdatedAt($arr[$keys[6]]);
         }
     }
 
@@ -1190,7 +1198,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\ProductComponent The current object, for fluid interface
+     * @return $this|\Activity The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1210,25 +1218,28 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(ProductComponentTableMap::DATABASE_NAME);
+        $criteria = new Criteria(ActivityTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(ProductComponentTableMap::COL_ID)) {
-            $criteria->add(ProductComponentTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(ActivityTableMap::COL_UUID)) {
+            $criteria->add(ActivityTableMap::COL_UUID, $this->uuid);
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_PRODUCT_ID)) {
-            $criteria->add(ProductComponentTableMap::COL_PRODUCT_ID, $this->product_id);
+        if ($this->isColumnModified(ActivityTableMap::COL_USER_ID)) {
+            $criteria->add(ActivityTableMap::COL_USER_ID, $this->user_id);
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_COMPONENT_ID)) {
-            $criteria->add(ProductComponentTableMap::COL_COMPONENT_ID, $this->component_id);
+        if ($this->isColumnModified(ActivityTableMap::COL_OBJECT)) {
+            $criteria->add(ActivityTableMap::COL_OBJECT, $this->object);
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_QTY)) {
-            $criteria->add(ProductComponentTableMap::COL_QTY, $this->qty);
+        if ($this->isColumnModified(ActivityTableMap::COL_OBJECT_ID)) {
+            $criteria->add(ActivityTableMap::COL_OBJECT_ID, $this->object_id);
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_CREATED_AT)) {
-            $criteria->add(ProductComponentTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(ActivityTableMap::COL_DESCRIPTION)) {
+            $criteria->add(ActivityTableMap::COL_DESCRIPTION, $this->description);
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_UPDATED_AT)) {
-            $criteria->add(ProductComponentTableMap::COL_UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(ActivityTableMap::COL_CREATED_AT)) {
+            $criteria->add(ActivityTableMap::COL_CREATED_AT, $this->created_at);
+        }
+        if ($this->isColumnModified(ActivityTableMap::COL_UPDATED_AT)) {
+            $criteria->add(ActivityTableMap::COL_UPDATED_AT, $this->updated_at);
         }
 
         return $criteria;
@@ -1246,8 +1257,8 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildProductComponentQuery::create();
-        $criteria->add(ProductComponentTableMap::COL_ID, $this->id);
+        $criteria = ChildActivityQuery::create();
+        $criteria->add(ActivityTableMap::COL_UUID, $this->uuid);
 
         return $criteria;
     }
@@ -1260,7 +1271,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getId();
+        $validPk = null !== $this->getUuid();
 
         $validPrimaryKeyFKs = 0;
         $primaryKeyFKs = [];
@@ -1276,22 +1287,22 @@ abstract class ProductComponent implements ActiveRecordInterface
 
     /**
      * Returns the primary key for this object (row).
-     * @return int
+     * @return string
      */
     public function getPrimaryKey()
     {
-        return $this->getId();
+        return $this->getUuid();
     }
 
     /**
-     * Generic method to set the primary key (id column).
+     * Generic method to set the primary key (uuid column).
      *
-     * @param       int $key Primary key.
+     * @param       string $key Primary key.
      * @return void
      */
     public function setPrimaryKey($key)
     {
-        $this->setId($key);
+        $this->setUuid($key);
     }
 
     /**
@@ -1300,7 +1311,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return null === $this->getId();
+        return null === $this->getUuid();
     }
 
     /**
@@ -1309,21 +1320,22 @@ abstract class ProductComponent implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \ProductComponent (or compatible) type.
+     * @param      object $copyObj An object of \Activity (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setProductId($this->getProductId());
-        $copyObj->setComponentId($this->getComponentId());
-        $copyObj->setQty($this->getQty());
+        $copyObj->setUuid($this->getUuid());
+        $copyObj->setUserId($this->getUserId());
+        $copyObj->setObject($this->getObject());
+        $copyObj->setObjectId($this->getObjectId());
+        $copyObj->setDescription($this->getDescription());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1336,7 +1348,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \ProductComponent Clone of current object.
+     * @return \Activity Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1350,26 +1362,26 @@ abstract class ProductComponent implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildProduct object.
+     * Declares an association between this object and a ChildUser object.
      *
-     * @param  ChildProduct $v
-     * @return $this|\ProductComponent The current object (for fluent API support)
+     * @param  ChildUser $v
+     * @return $this|\Activity The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setProduct(ChildProduct $v = null)
+    public function setUser(ChildUser $v = null)
     {
         if ($v === null) {
-            $this->setProductId(NULL);
+            $this->setUserId(NULL);
         } else {
-            $this->setProductId($v->getId());
+            $this->setUserId($v->getId());
         }
 
-        $this->aProduct = $v;
+        $this->aUser = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildProduct object, it will not be re-added.
+        // If this object has already been added to the ChildUser object, it will not be re-added.
         if ($v !== null) {
-            $v->addProductComponent($this);
+            $v->addActivity($this);
         }
 
 
@@ -1378,77 +1390,26 @@ abstract class ProductComponent implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildProduct object
+     * Get the associated ChildUser object
      *
      * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildProduct The associated ChildProduct object.
+     * @return ChildUser The associated ChildUser object.
      * @throws PropelException
      */
-    public function getProduct(ConnectionInterface $con = null)
+    public function getUser(ConnectionInterface $con = null)
     {
-        if ($this->aProduct === null && ($this->product_id != 0)) {
-            $this->aProduct = ChildProductQuery::create()->findPk($this->product_id, $con);
+        if ($this->aUser === null && ($this->user_id != 0)) {
+            $this->aUser = ChildUserQuery::create()->findPk($this->user_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aProduct->addProductComponents($this);
+                $this->aUser->addActivities($this);
              */
         }
 
-        return $this->aProduct;
-    }
-
-    /**
-     * Declares an association between this object and a ChildComponent object.
-     *
-     * @param  ChildComponent $v
-     * @return $this|\ProductComponent The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setComponent(ChildComponent $v = null)
-    {
-        if ($v === null) {
-            $this->setComponentId(NULL);
-        } else {
-            $this->setComponentId($v->getId());
-        }
-
-        $this->aComponent = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildComponent object, it will not be re-added.
-        if ($v !== null) {
-            $v->addProductComponent($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildComponent object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildComponent The associated ChildComponent object.
-     * @throws PropelException
-     */
-    public function getComponent(ConnectionInterface $con = null)
-    {
-        if ($this->aComponent === null && ($this->component_id != 0)) {
-            $this->aComponent = ChildComponentQuery::create()->findPk($this->component_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aComponent->addProductComponents($this);
-             */
-        }
-
-        return $this->aComponent;
+        return $this->aUser;
     }
 
     /**
@@ -1458,16 +1419,14 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aProduct) {
-            $this->aProduct->removeProductComponent($this);
+        if (null !== $this->aUser) {
+            $this->aUser->removeActivity($this);
         }
-        if (null !== $this->aComponent) {
-            $this->aComponent->removeProductComponent($this);
-        }
-        $this->id = null;
-        $this->product_id = null;
-        $this->component_id = null;
-        $this->qty = null;
+        $this->uuid = null;
+        $this->user_id = null;
+        $this->object = null;
+        $this->object_id = null;
+        $this->description = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;
@@ -1491,8 +1450,7 @@ abstract class ProductComponent implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aProduct = null;
-        $this->aComponent = null;
+        $this->aUser = null;
     }
 
     /**
@@ -1502,7 +1460,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(ProductComponentTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(ActivityTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

@@ -6,10 +6,14 @@ use \Partner as ChildPartner;
 use \PartnerQuery as ChildPartnerQuery;
 use \ProductCustomer as ChildProductCustomer;
 use \ProductCustomerQuery as ChildProductCustomerQuery;
+use \User as ChildUser;
+use \UserQuery as ChildUserQuery;
+use \DateTime;
 use \Exception;
 use \PDO;
 use Map\PartnerTableMap;
 use Map\ProductCustomerTableMap;
+use Map\UserTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -22,6 +26,7 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 /**
  * Base class that represents a row from the 'partner' table.
@@ -77,6 +82,13 @@ abstract class Partner implements ActiveRecordInterface
      * @var        string
      */
     protected $name;
+
+    /**
+     * The value for the email field.
+     *
+     * @var        string
+     */
+    protected $email;
 
     /**
      * The value for the address field.
@@ -159,6 +171,22 @@ abstract class Partner implements ActiveRecordInterface
     protected $is_supplier;
 
     /**
+     * The value for the created_at field.
+     *
+     * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
+     * @var        DateTime
+     */
+    protected $created_at;
+
+    /**
+     * The value for the updated_at field.
+     *
+     * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+     * @var        DateTime
+     */
+    protected $updated_at;
+
+    /**
      * @var        ChildPartner
      */
     protected $aCompany;
@@ -174,6 +202,12 @@ abstract class Partner implements ActiveRecordInterface
      */
     protected $collProductCustomers;
     protected $collProductCustomersPartial;
+
+    /**
+     * @var        ObjectCollection|ChildUser[] Collection to store aggregation of ChildUser objects.
+     */
+    protected $collUsers;
+    protected $collUsersPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -194,6 +228,12 @@ abstract class Partner implements ActiveRecordInterface
      * @var ObjectCollection|ChildProductCustomer[]
      */
     protected $productCustomersScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildUser[]
+     */
+    protected $usersScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -456,6 +496,16 @@ abstract class Partner implements ActiveRecordInterface
     }
 
     /**
+     * Get the [email] column value.
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
      * Get the [address] column value.
      *
      * @return string
@@ -596,6 +646,46 @@ abstract class Partner implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [created_at] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTimeInterface ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated_at] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTimeInterface ? $this->updated_at->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v new value
@@ -634,6 +724,26 @@ abstract class Partner implements ActiveRecordInterface
 
         return $this;
     } // setName()
+
+    /**
+     * Set the value of [email] column.
+     *
+     * @param string $v new value
+     * @return $this|\Partner The current object (for fluent API support)
+     */
+    public function setEmail($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->email !== $v) {
+            $this->email = $v;
+            $this->modifiedColumns[PartnerTableMap::COL_EMAIL] = true;
+        }
+
+        return $this;
+    } // setEmail()
 
     /**
      * Set the value of [address] column.
@@ -884,6 +994,46 @@ abstract class Partner implements ActiveRecordInterface
     } // setIsSupplier()
 
     /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\Partner The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_at->format("Y-m-d H:i:s.u")) {
+                $this->created_at = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[PartnerTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setCreatedAt()
+
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\Partner The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated_at->format("Y-m-d H:i:s.u")) {
+                $this->updated_at = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[PartnerTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setUpdatedAt()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -937,38 +1087,53 @@ abstract class Partner implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : PartnerTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : PartnerTableMap::translateFieldName('Address', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : PartnerTableMap::translateFieldName('Email', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->email = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : PartnerTableMap::translateFieldName('Address', TableMap::TYPE_PHPNAME, $indexType)];
             $this->address = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : PartnerTableMap::translateFieldName('Phone', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : PartnerTableMap::translateFieldName('Phone', TableMap::TYPE_PHPNAME, $indexType)];
             $this->phone = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : PartnerTableMap::translateFieldName('Website', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : PartnerTableMap::translateFieldName('Website', TableMap::TYPE_PHPNAME, $indexType)];
             $this->website = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : PartnerTableMap::translateFieldName('Fax', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PartnerTableMap::translateFieldName('Fax', TableMap::TYPE_PHPNAME, $indexType)];
             $this->fax = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PartnerTableMap::translateFieldName('Image', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PartnerTableMap::translateFieldName('Image', TableMap::TYPE_PHPNAME, $indexType)];
             $this->image = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PartnerTableMap::translateFieldName('TaxNumber', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PartnerTableMap::translateFieldName('TaxNumber', TableMap::TYPE_PHPNAME, $indexType)];
             $this->tax_number = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PartnerTableMap::translateFieldName('BankDetail', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PartnerTableMap::translateFieldName('BankDetail', TableMap::TYPE_PHPNAME, $indexType)];
             $this->bank_detail = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PartnerTableMap::translateFieldName('CompanyId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PartnerTableMap::translateFieldName('CompanyId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->company_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PartnerTableMap::translateFieldName('IsEmployee', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : PartnerTableMap::translateFieldName('IsEmployee', TableMap::TYPE_PHPNAME, $indexType)];
             $this->is_employee = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : PartnerTableMap::translateFieldName('IsCustomer', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : PartnerTableMap::translateFieldName('IsCustomer', TableMap::TYPE_PHPNAME, $indexType)];
             $this->is_customer = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : PartnerTableMap::translateFieldName('IsSupplier', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : PartnerTableMap::translateFieldName('IsSupplier', TableMap::TYPE_PHPNAME, $indexType)];
             $this->is_supplier = (null !== $col) ? (boolean) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : PartnerTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : PartnerTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -977,7 +1142,7 @@ abstract class Partner implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 13; // 13 = PartnerTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 16; // 16 = PartnerTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Partner'), 0, $e);
@@ -1045,6 +1210,8 @@ abstract class Partner implements ActiveRecordInterface
             $this->collPartnersRelatedById = null;
 
             $this->collProductCustomers = null;
+
+            $this->collUsers = null;
 
         } // if (deep)
     }
@@ -1207,6 +1374,23 @@ abstract class Partner implements ActiveRecordInterface
                 }
             }
 
+            if ($this->usersScheduledForDeletion !== null) {
+                if (!$this->usersScheduledForDeletion->isEmpty()) {
+                    \UserQuery::create()
+                        ->filterByPrimaryKeys($this->usersScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->usersScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collUsers !== null) {
+                foreach ($this->collUsers as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -1238,6 +1422,9 @@ abstract class Partner implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PartnerTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'name';
+        }
+        if ($this->isColumnModified(PartnerTableMap::COL_EMAIL)) {
+            $modifiedColumns[':p' . $index++]  = 'email';
         }
         if ($this->isColumnModified(PartnerTableMap::COL_ADDRESS)) {
             $modifiedColumns[':p' . $index++]  = 'address';
@@ -1272,6 +1459,12 @@ abstract class Partner implements ActiveRecordInterface
         if ($this->isColumnModified(PartnerTableMap::COL_IS_SUPPLIER)) {
             $modifiedColumns[':p' . $index++]  = 'is_supplier';
         }
+        if ($this->isColumnModified(PartnerTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'created_at';
+        }
+        if ($this->isColumnModified(PartnerTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'updated_at';
+        }
 
         $sql = sprintf(
             'INSERT INTO partner (%s) VALUES (%s)',
@@ -1288,6 +1481,9 @@ abstract class Partner implements ActiveRecordInterface
                         break;
                     case 'name':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+                        break;
+                    case 'email':
+                        $stmt->bindValue($identifier, $this->email, PDO::PARAM_STR);
                         break;
                     case 'address':
                         $stmt->bindValue($identifier, $this->address, PDO::PARAM_STR);
@@ -1321,6 +1517,12 @@ abstract class Partner implements ActiveRecordInterface
                         break;
                     case 'is_supplier':
                         $stmt->bindValue($identifier, (int) $this->is_supplier, PDO::PARAM_INT);
+                        break;
+                    case 'created_at':
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                        break;
+                    case 'updated_at':
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1391,37 +1593,46 @@ abstract class Partner implements ActiveRecordInterface
                 return $this->getName();
                 break;
             case 2:
-                return $this->getAddress();
+                return $this->getEmail();
                 break;
             case 3:
-                return $this->getPhone();
+                return $this->getAddress();
                 break;
             case 4:
-                return $this->getWebsite();
+                return $this->getPhone();
                 break;
             case 5:
-                return $this->getFax();
+                return $this->getWebsite();
                 break;
             case 6:
-                return $this->getImage();
+                return $this->getFax();
                 break;
             case 7:
-                return $this->getTaxNumber();
+                return $this->getImage();
                 break;
             case 8:
-                return $this->getBankDetail();
+                return $this->getTaxNumber();
                 break;
             case 9:
-                return $this->getCompanyId();
+                return $this->getBankDetail();
                 break;
             case 10:
-                return $this->getIsEmployee();
+                return $this->getCompanyId();
                 break;
             case 11:
-                return $this->getIsCustomer();
+                return $this->getIsEmployee();
                 break;
             case 12:
+                return $this->getIsCustomer();
+                break;
+            case 13:
                 return $this->getIsSupplier();
+                break;
+            case 14:
+                return $this->getCreatedAt();
+                break;
+            case 15:
+                return $this->getUpdatedAt();
                 break;
             default:
                 return null;
@@ -1455,18 +1666,29 @@ abstract class Partner implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
-            $keys[2] => $this->getAddress(),
-            $keys[3] => $this->getPhone(),
-            $keys[4] => $this->getWebsite(),
-            $keys[5] => $this->getFax(),
-            $keys[6] => $this->getImage(),
-            $keys[7] => $this->getTaxNumber(),
-            $keys[8] => $this->getBankDetail(),
-            $keys[9] => $this->getCompanyId(),
-            $keys[10] => $this->getIsEmployee(),
-            $keys[11] => $this->getIsCustomer(),
-            $keys[12] => $this->getIsSupplier(),
+            $keys[2] => $this->getEmail(),
+            $keys[3] => $this->getAddress(),
+            $keys[4] => $this->getPhone(),
+            $keys[5] => $this->getWebsite(),
+            $keys[6] => $this->getFax(),
+            $keys[7] => $this->getImage(),
+            $keys[8] => $this->getTaxNumber(),
+            $keys[9] => $this->getBankDetail(),
+            $keys[10] => $this->getCompanyId(),
+            $keys[11] => $this->getIsEmployee(),
+            $keys[12] => $this->getIsCustomer(),
+            $keys[13] => $this->getIsSupplier(),
+            $keys[14] => $this->getCreatedAt(),
+            $keys[15] => $this->getUpdatedAt(),
         );
+        if ($result[$keys[14]] instanceof \DateTimeInterface) {
+            $result[$keys[14]] = $result[$keys[14]]->format('c');
+        }
+
+        if ($result[$keys[15]] instanceof \DateTimeInterface) {
+            $result[$keys[15]] = $result[$keys[15]]->format('c');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
@@ -1518,6 +1740,21 @@ abstract class Partner implements ActiveRecordInterface
 
                 $result[$key] = $this->collProductCustomers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
+            if (null !== $this->collUsers) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'users';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'users';
+                        break;
+                    default:
+                        $key = 'Users';
+                }
+
+                $result[$key] = $this->collUsers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
         }
 
         return $result;
@@ -1559,37 +1796,46 @@ abstract class Partner implements ActiveRecordInterface
                 $this->setName($value);
                 break;
             case 2:
-                $this->setAddress($value);
+                $this->setEmail($value);
                 break;
             case 3:
-                $this->setPhone($value);
+                $this->setAddress($value);
                 break;
             case 4:
-                $this->setWebsite($value);
+                $this->setPhone($value);
                 break;
             case 5:
-                $this->setFax($value);
+                $this->setWebsite($value);
                 break;
             case 6:
-                $this->setImage($value);
+                $this->setFax($value);
                 break;
             case 7:
-                $this->setTaxNumber($value);
+                $this->setImage($value);
                 break;
             case 8:
-                $this->setBankDetail($value);
+                $this->setTaxNumber($value);
                 break;
             case 9:
-                $this->setCompanyId($value);
+                $this->setBankDetail($value);
                 break;
             case 10:
-                $this->setIsEmployee($value);
+                $this->setCompanyId($value);
                 break;
             case 11:
-                $this->setIsCustomer($value);
+                $this->setIsEmployee($value);
                 break;
             case 12:
+                $this->setIsCustomer($value);
+                break;
+            case 13:
                 $this->setIsSupplier($value);
+                break;
+            case 14:
+                $this->setCreatedAt($value);
+                break;
+            case 15:
+                $this->setUpdatedAt($value);
                 break;
         } // switch()
 
@@ -1624,37 +1870,46 @@ abstract class Partner implements ActiveRecordInterface
             $this->setName($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setAddress($arr[$keys[2]]);
+            $this->setEmail($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setPhone($arr[$keys[3]]);
+            $this->setAddress($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setWebsite($arr[$keys[4]]);
+            $this->setPhone($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setFax($arr[$keys[5]]);
+            $this->setWebsite($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setImage($arr[$keys[6]]);
+            $this->setFax($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setTaxNumber($arr[$keys[7]]);
+            $this->setImage($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setBankDetail($arr[$keys[8]]);
+            $this->setTaxNumber($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setCompanyId($arr[$keys[9]]);
+            $this->setBankDetail($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setIsEmployee($arr[$keys[10]]);
+            $this->setCompanyId($arr[$keys[10]]);
         }
         if (array_key_exists($keys[11], $arr)) {
-            $this->setIsCustomer($arr[$keys[11]]);
+            $this->setIsEmployee($arr[$keys[11]]);
         }
         if (array_key_exists($keys[12], $arr)) {
-            $this->setIsSupplier($arr[$keys[12]]);
+            $this->setIsCustomer($arr[$keys[12]]);
+        }
+        if (array_key_exists($keys[13], $arr)) {
+            $this->setIsSupplier($arr[$keys[13]]);
+        }
+        if (array_key_exists($keys[14], $arr)) {
+            $this->setCreatedAt($arr[$keys[14]]);
+        }
+        if (array_key_exists($keys[15], $arr)) {
+            $this->setUpdatedAt($arr[$keys[15]]);
         }
     }
 
@@ -1703,6 +1958,9 @@ abstract class Partner implements ActiveRecordInterface
         if ($this->isColumnModified(PartnerTableMap::COL_NAME)) {
             $criteria->add(PartnerTableMap::COL_NAME, $this->name);
         }
+        if ($this->isColumnModified(PartnerTableMap::COL_EMAIL)) {
+            $criteria->add(PartnerTableMap::COL_EMAIL, $this->email);
+        }
         if ($this->isColumnModified(PartnerTableMap::COL_ADDRESS)) {
             $criteria->add(PartnerTableMap::COL_ADDRESS, $this->address);
         }
@@ -1735,6 +1993,12 @@ abstract class Partner implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PartnerTableMap::COL_IS_SUPPLIER)) {
             $criteria->add(PartnerTableMap::COL_IS_SUPPLIER, $this->is_supplier);
+        }
+        if ($this->isColumnModified(PartnerTableMap::COL_CREATED_AT)) {
+            $criteria->add(PartnerTableMap::COL_CREATED_AT, $this->created_at);
+        }
+        if ($this->isColumnModified(PartnerTableMap::COL_UPDATED_AT)) {
+            $criteria->add(PartnerTableMap::COL_UPDATED_AT, $this->updated_at);
         }
 
         return $criteria;
@@ -1823,6 +2087,7 @@ abstract class Partner implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setName($this->getName());
+        $copyObj->setEmail($this->getEmail());
         $copyObj->setAddress($this->getAddress());
         $copyObj->setPhone($this->getPhone());
         $copyObj->setWebsite($this->getWebsite());
@@ -1834,6 +2099,8 @@ abstract class Partner implements ActiveRecordInterface
         $copyObj->setIsEmployee($this->getIsEmployee());
         $copyObj->setIsCustomer($this->getIsCustomer());
         $copyObj->setIsSupplier($this->getIsSupplier());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1849,6 +2116,12 @@ abstract class Partner implements ActiveRecordInterface
             foreach ($this->getProductCustomers() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addProductCustomer($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getUsers() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addUser($relObj->copy($deepCopy));
                 }
             }
 
@@ -1950,6 +2223,10 @@ abstract class Partner implements ActiveRecordInterface
         }
         if ('ProductCustomer' == $relationName) {
             $this->initProductCustomers();
+            return;
+        }
+        if ('User' == $relationName) {
+            $this->initUsers();
             return;
         }
     }
@@ -2430,6 +2707,231 @@ abstract class Partner implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collUsers collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addUsers()
+     */
+    public function clearUsers()
+    {
+        $this->collUsers = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collUsers collection loaded partially.
+     */
+    public function resetPartialUsers($v = true)
+    {
+        $this->collUsersPartial = $v;
+    }
+
+    /**
+     * Initializes the collUsers collection.
+     *
+     * By default this just sets the collUsers collection to an empty array (like clearcollUsers());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initUsers($overrideExisting = true)
+    {
+        if (null !== $this->collUsers && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = UserTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collUsers = new $collectionClassName;
+        $this->collUsers->setModel('\User');
+    }
+
+    /**
+     * Gets an array of ChildUser objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPartner is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildUser[] List of ChildUser objects
+     * @throws PropelException
+     */
+    public function getUsers(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collUsersPartial && !$this->isNew();
+        if (null === $this->collUsers || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collUsers) {
+                // return empty collection
+                $this->initUsers();
+            } else {
+                $collUsers = ChildUserQuery::create(null, $criteria)
+                    ->filterByPartner($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collUsersPartial && count($collUsers)) {
+                        $this->initUsers(false);
+
+                        foreach ($collUsers as $obj) {
+                            if (false == $this->collUsers->contains($obj)) {
+                                $this->collUsers->append($obj);
+                            }
+                        }
+
+                        $this->collUsersPartial = true;
+                    }
+
+                    return $collUsers;
+                }
+
+                if ($partial && $this->collUsers) {
+                    foreach ($this->collUsers as $obj) {
+                        if ($obj->isNew()) {
+                            $collUsers[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collUsers = $collUsers;
+                $this->collUsersPartial = false;
+            }
+        }
+
+        return $this->collUsers;
+    }
+
+    /**
+     * Sets a collection of ChildUser objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $users A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildPartner The current object (for fluent API support)
+     */
+    public function setUsers(Collection $users, ConnectionInterface $con = null)
+    {
+        /** @var ChildUser[] $usersToDelete */
+        $usersToDelete = $this->getUsers(new Criteria(), $con)->diff($users);
+
+
+        $this->usersScheduledForDeletion = $usersToDelete;
+
+        foreach ($usersToDelete as $userRemoved) {
+            $userRemoved->setPartner(null);
+        }
+
+        $this->collUsers = null;
+        foreach ($users as $user) {
+            $this->addUser($user);
+        }
+
+        $this->collUsers = $users;
+        $this->collUsersPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related User objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related User objects.
+     * @throws PropelException
+     */
+    public function countUsers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collUsersPartial && !$this->isNew();
+        if (null === $this->collUsers || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collUsers) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getUsers());
+            }
+
+            $query = ChildUserQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByPartner($this)
+                ->count($con);
+        }
+
+        return count($this->collUsers);
+    }
+
+    /**
+     * Method called to associate a ChildUser object to this object
+     * through the ChildUser foreign key attribute.
+     *
+     * @param  ChildUser $l ChildUser
+     * @return $this|\Partner The current object (for fluent API support)
+     */
+    public function addUser(ChildUser $l)
+    {
+        if ($this->collUsers === null) {
+            $this->initUsers();
+            $this->collUsersPartial = true;
+        }
+
+        if (!$this->collUsers->contains($l)) {
+            $this->doAddUser($l);
+
+            if ($this->usersScheduledForDeletion and $this->usersScheduledForDeletion->contains($l)) {
+                $this->usersScheduledForDeletion->remove($this->usersScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildUser $user The ChildUser object to add.
+     */
+    protected function doAddUser(ChildUser $user)
+    {
+        $this->collUsers[]= $user;
+        $user->setPartner($this);
+    }
+
+    /**
+     * @param  ChildUser $user The ChildUser object to remove.
+     * @return $this|ChildPartner The current object (for fluent API support)
+     */
+    public function removeUser(ChildUser $user)
+    {
+        if ($this->getUsers()->contains($user)) {
+            $pos = $this->collUsers->search($user);
+            $this->collUsers->remove($pos);
+            if (null === $this->usersScheduledForDeletion) {
+                $this->usersScheduledForDeletion = clone $this->collUsers;
+                $this->usersScheduledForDeletion->clear();
+            }
+            $this->usersScheduledForDeletion[]= clone $user;
+            $user->setPartner(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -2441,6 +2943,7 @@ abstract class Partner implements ActiveRecordInterface
         }
         $this->id = null;
         $this->name = null;
+        $this->email = null;
         $this->address = null;
         $this->phone = null;
         $this->website = null;
@@ -2452,6 +2955,8 @@ abstract class Partner implements ActiveRecordInterface
         $this->is_employee = null;
         $this->is_customer = null;
         $this->is_supplier = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -2481,10 +2986,16 @@ abstract class Partner implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collUsers) {
+                foreach ($this->collUsers as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         $this->collPartnersRelatedById = null;
         $this->collProductCustomers = null;
+        $this->collUsers = null;
         $this->aCompany = null;
     }
 

@@ -59,7 +59,7 @@ class ProductTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 14;
+    const NUM_COLUMNS = 16;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class ProductTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 14;
+    const NUM_HYDRATE_COLUMNS = 16;
 
     /**
      * the column name for the id field
@@ -142,6 +142,16 @@ class ProductTableMap extends TableMap
     const COL_DEPTH_KDN = 'product.depth_kdn';
 
     /**
+     * the column name for the created_at field
+     */
+    const COL_CREATED_AT = 'product.created_at';
+
+    /**
+     * the column name for the updated_at field
+     */
+    const COL_UPDATED_AT = 'product.updated_at';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -153,11 +163,11 @@ class ProductTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Description', 'IsKdn', 'CostPrice', 'ListPrice', 'CubicAsb', 'CubicKdn', 'WidthAsb', 'HeightAsb', 'DepthAsb', 'WidthKdn', 'HeightKdn', 'DepthKdn', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'description', 'isKdn', 'costPrice', 'listPrice', 'cubicAsb', 'cubicKdn', 'widthAsb', 'heightAsb', 'depthAsb', 'widthKdn', 'heightKdn', 'depthKdn', ),
-        self::TYPE_COLNAME       => array(ProductTableMap::COL_ID, ProductTableMap::COL_NAME, ProductTableMap::COL_DESCRIPTION, ProductTableMap::COL_IS_KDN, ProductTableMap::COL_COST_PRICE, ProductTableMap::COL_LIST_PRICE, ProductTableMap::COL_CUBIC_ASB, ProductTableMap::COL_CUBIC_KDN, ProductTableMap::COL_WIDTH_ASB, ProductTableMap::COL_HEIGHT_ASB, ProductTableMap::COL_DEPTH_ASB, ProductTableMap::COL_WIDTH_KDN, ProductTableMap::COL_HEIGHT_KDN, ProductTableMap::COL_DEPTH_KDN, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'description', 'is_kdn', 'cost_price', 'list_price', 'cubic_asb', 'cubic_kdn', 'width_asb', 'height_asb', 'depth_asb', 'width_kdn', 'height_kdn', 'depth_kdn', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Description', 'IsKdn', 'CostPrice', 'ListPrice', 'CubicAsb', 'CubicKdn', 'WidthAsb', 'HeightAsb', 'DepthAsb', 'WidthKdn', 'HeightKdn', 'DepthKdn', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'description', 'isKdn', 'costPrice', 'listPrice', 'cubicAsb', 'cubicKdn', 'widthAsb', 'heightAsb', 'depthAsb', 'widthKdn', 'heightKdn', 'depthKdn', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ProductTableMap::COL_ID, ProductTableMap::COL_NAME, ProductTableMap::COL_DESCRIPTION, ProductTableMap::COL_IS_KDN, ProductTableMap::COL_COST_PRICE, ProductTableMap::COL_LIST_PRICE, ProductTableMap::COL_CUBIC_ASB, ProductTableMap::COL_CUBIC_KDN, ProductTableMap::COL_WIDTH_ASB, ProductTableMap::COL_HEIGHT_ASB, ProductTableMap::COL_DEPTH_ASB, ProductTableMap::COL_WIDTH_KDN, ProductTableMap::COL_HEIGHT_KDN, ProductTableMap::COL_DEPTH_KDN, ProductTableMap::COL_CREATED_AT, ProductTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'description', 'is_kdn', 'cost_price', 'list_price', 'cubic_asb', 'cubic_kdn', 'width_asb', 'height_asb', 'depth_asb', 'width_kdn', 'height_kdn', 'depth_kdn', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
     );
 
     /**
@@ -167,11 +177,11 @@ class ProductTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Description' => 2, 'IsKdn' => 3, 'CostPrice' => 4, 'ListPrice' => 5, 'CubicAsb' => 6, 'CubicKdn' => 7, 'WidthAsb' => 8, 'HeightAsb' => 9, 'DepthAsb' => 10, 'WidthKdn' => 11, 'HeightKdn' => 12, 'DepthKdn' => 13, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'isKdn' => 3, 'costPrice' => 4, 'listPrice' => 5, 'cubicAsb' => 6, 'cubicKdn' => 7, 'widthAsb' => 8, 'heightAsb' => 9, 'depthAsb' => 10, 'widthKdn' => 11, 'heightKdn' => 12, 'depthKdn' => 13, ),
-        self::TYPE_COLNAME       => array(ProductTableMap::COL_ID => 0, ProductTableMap::COL_NAME => 1, ProductTableMap::COL_DESCRIPTION => 2, ProductTableMap::COL_IS_KDN => 3, ProductTableMap::COL_COST_PRICE => 4, ProductTableMap::COL_LIST_PRICE => 5, ProductTableMap::COL_CUBIC_ASB => 6, ProductTableMap::COL_CUBIC_KDN => 7, ProductTableMap::COL_WIDTH_ASB => 8, ProductTableMap::COL_HEIGHT_ASB => 9, ProductTableMap::COL_DEPTH_ASB => 10, ProductTableMap::COL_WIDTH_KDN => 11, ProductTableMap::COL_HEIGHT_KDN => 12, ProductTableMap::COL_DEPTH_KDN => 13, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'is_kdn' => 3, 'cost_price' => 4, 'list_price' => 5, 'cubic_asb' => 6, 'cubic_kdn' => 7, 'width_asb' => 8, 'height_asb' => 9, 'depth_asb' => 10, 'width_kdn' => 11, 'height_kdn' => 12, 'depth_kdn' => 13, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Description' => 2, 'IsKdn' => 3, 'CostPrice' => 4, 'ListPrice' => 5, 'CubicAsb' => 6, 'CubicKdn' => 7, 'WidthAsb' => 8, 'HeightAsb' => 9, 'DepthAsb' => 10, 'WidthKdn' => 11, 'HeightKdn' => 12, 'DepthKdn' => 13, 'CreatedAt' => 14, 'UpdatedAt' => 15, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'isKdn' => 3, 'costPrice' => 4, 'listPrice' => 5, 'cubicAsb' => 6, 'cubicKdn' => 7, 'widthAsb' => 8, 'heightAsb' => 9, 'depthAsb' => 10, 'widthKdn' => 11, 'heightKdn' => 12, 'depthKdn' => 13, 'createdAt' => 14, 'updatedAt' => 15, ),
+        self::TYPE_COLNAME       => array(ProductTableMap::COL_ID => 0, ProductTableMap::COL_NAME => 1, ProductTableMap::COL_DESCRIPTION => 2, ProductTableMap::COL_IS_KDN => 3, ProductTableMap::COL_COST_PRICE => 4, ProductTableMap::COL_LIST_PRICE => 5, ProductTableMap::COL_CUBIC_ASB => 6, ProductTableMap::COL_CUBIC_KDN => 7, ProductTableMap::COL_WIDTH_ASB => 8, ProductTableMap::COL_HEIGHT_ASB => 9, ProductTableMap::COL_DEPTH_ASB => 10, ProductTableMap::COL_WIDTH_KDN => 11, ProductTableMap::COL_HEIGHT_KDN => 12, ProductTableMap::COL_DEPTH_KDN => 13, ProductTableMap::COL_CREATED_AT => 14, ProductTableMap::COL_UPDATED_AT => 15, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'is_kdn' => 3, 'cost_price' => 4, 'list_price' => 5, 'cubic_asb' => 6, 'cubic_kdn' => 7, 'width_asb' => 8, 'height_asb' => 9, 'depth_asb' => 10, 'width_kdn' => 11, 'height_kdn' => 12, 'depth_kdn' => 13, 'created_at' => 14, 'updated_at' => 15, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
     );
 
     /**
@@ -205,6 +215,8 @@ class ProductTableMap extends TableMap
         $this->addColumn('width_kdn', 'WidthKdn', 'FLOAT', true, null, null);
         $this->addColumn('height_kdn', 'HeightKdn', 'FLOAT', true, null, null);
         $this->addColumn('depth_kdn', 'DepthKdn', 'FLOAT', true, null, null);
+        $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
+        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
 
     /**
@@ -390,6 +402,8 @@ class ProductTableMap extends TableMap
             $criteria->addSelectColumn(ProductTableMap::COL_WIDTH_KDN);
             $criteria->addSelectColumn(ProductTableMap::COL_HEIGHT_KDN);
             $criteria->addSelectColumn(ProductTableMap::COL_DEPTH_KDN);
+            $criteria->addSelectColumn(ProductTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(ProductTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.name');
@@ -405,6 +419,8 @@ class ProductTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.width_kdn');
             $criteria->addSelectColumn($alias . '.height_kdn');
             $criteria->addSelectColumn($alias . '.depth_kdn');
+            $criteria->addSelectColumn($alias . '.created_at');
+            $criteria->addSelectColumn($alias . '.updated_at');
         }
     }
 

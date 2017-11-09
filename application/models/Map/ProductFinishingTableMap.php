@@ -59,7 +59,7 @@ class ProductFinishingTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 3;
+    const NUM_COLUMNS = 5;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class ProductFinishingTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 3;
+    const NUM_HYDRATE_COLUMNS = 5;
 
     /**
      * the column name for the id field
@@ -87,6 +87,16 @@ class ProductFinishingTableMap extends TableMap
     const COL_FINISHING_ID = 'product_finishing.finishing_id';
 
     /**
+     * the column name for the created_at field
+     */
+    const COL_CREATED_AT = 'product_finishing.created_at';
+
+    /**
+     * the column name for the updated_at field
+     */
+    const COL_UPDATED_AT = 'product_finishing.updated_at';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -98,11 +108,11 @@ class ProductFinishingTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'ProductId', 'FinishingId', ),
-        self::TYPE_CAMELNAME     => array('id', 'productId', 'finishingId', ),
-        self::TYPE_COLNAME       => array(ProductFinishingTableMap::COL_ID, ProductFinishingTableMap::COL_PRODUCT_ID, ProductFinishingTableMap::COL_FINISHING_ID, ),
-        self::TYPE_FIELDNAME     => array('id', 'product_id', 'finishing_id', ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id', 'ProductId', 'FinishingId', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'productId', 'finishingId', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ProductFinishingTableMap::COL_ID, ProductFinishingTableMap::COL_PRODUCT_ID, ProductFinishingTableMap::COL_FINISHING_ID, ProductFinishingTableMap::COL_CREATED_AT, ProductFinishingTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'product_id', 'finishing_id', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -112,11 +122,11 @@ class ProductFinishingTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'ProductId' => 1, 'FinishingId' => 2, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'productId' => 1, 'finishingId' => 2, ),
-        self::TYPE_COLNAME       => array(ProductFinishingTableMap::COL_ID => 0, ProductFinishingTableMap::COL_PRODUCT_ID => 1, ProductFinishingTableMap::COL_FINISHING_ID => 2, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'product_id' => 1, 'finishing_id' => 2, ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'ProductId' => 1, 'FinishingId' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'productId' => 1, 'finishingId' => 2, 'createdAt' => 3, 'updatedAt' => 4, ),
+        self::TYPE_COLNAME       => array(ProductFinishingTableMap::COL_ID => 0, ProductFinishingTableMap::COL_PRODUCT_ID => 1, ProductFinishingTableMap::COL_FINISHING_ID => 2, ProductFinishingTableMap::COL_CREATED_AT => 3, ProductFinishingTableMap::COL_UPDATED_AT => 4, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'product_id' => 1, 'finishing_id' => 2, 'created_at' => 3, 'updated_at' => 4, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -139,6 +149,8 @@ class ProductFinishingTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addForeignKey('product_id', 'ProductId', 'INTEGER', 'product', 'id', true, null, null);
         $this->addForeignKey('finishing_id', 'FinishingId', 'INTEGER', 'finishing', 'id', true, null, null);
+        $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
+        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
 
     /**
@@ -306,10 +318,14 @@ class ProductFinishingTableMap extends TableMap
             $criteria->addSelectColumn(ProductFinishingTableMap::COL_ID);
             $criteria->addSelectColumn(ProductFinishingTableMap::COL_PRODUCT_ID);
             $criteria->addSelectColumn(ProductFinishingTableMap::COL_FINISHING_ID);
+            $criteria->addSelectColumn(ProductFinishingTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(ProductFinishingTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.product_id');
             $criteria->addSelectColumn($alias . '.finishing_id');
+            $criteria->addSelectColumn($alias . '.created_at');
+            $criteria->addSelectColumn($alias . '.updated_at');
         }
     }
 

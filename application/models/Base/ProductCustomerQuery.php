@@ -25,12 +25,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductCustomerQuery orderByPartnerId($order = Criteria::ASC) Order by the partner_id column
  * @method     ChildProductCustomerQuery orderByProductId($order = Criteria::ASC) Order by the product_id column
  * @method     ChildProductCustomerQuery orderByDescription($order = Criteria::ASC) Order by the description column
+ * @method     ChildProductCustomerQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildProductCustomerQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildProductCustomerQuery groupById() Group by the id column
  * @method     ChildProductCustomerQuery groupByCode() Group by the code column
  * @method     ChildProductCustomerQuery groupByPartnerId() Group by the partner_id column
  * @method     ChildProductCustomerQuery groupByProductId() Group by the product_id column
  * @method     ChildProductCustomerQuery groupByDescription() Group by the description column
+ * @method     ChildProductCustomerQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildProductCustomerQuery groupByUpdatedAt() Group by the updated_at column
  *
  * @method     ChildProductCustomerQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildProductCustomerQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -69,7 +73,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductCustomer findOneByCode(string $code) Return the first ChildProductCustomer filtered by the code column
  * @method     ChildProductCustomer findOneByPartnerId(int $partner_id) Return the first ChildProductCustomer filtered by the partner_id column
  * @method     ChildProductCustomer findOneByProductId(int $product_id) Return the first ChildProductCustomer filtered by the product_id column
- * @method     ChildProductCustomer findOneByDescription(string $description) Return the first ChildProductCustomer filtered by the description column *
+ * @method     ChildProductCustomer findOneByDescription(string $description) Return the first ChildProductCustomer filtered by the description column
+ * @method     ChildProductCustomer findOneByCreatedAt(string $created_at) Return the first ChildProductCustomer filtered by the created_at column
+ * @method     ChildProductCustomer findOneByUpdatedAt(string $updated_at) Return the first ChildProductCustomer filtered by the updated_at column *
 
  * @method     ChildProductCustomer requirePk($key, ConnectionInterface $con = null) Return the ChildProductCustomer by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductCustomer requireOne(ConnectionInterface $con = null) Return the first ChildProductCustomer matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -79,6 +85,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductCustomer requireOneByPartnerId(int $partner_id) Return the first ChildProductCustomer filtered by the partner_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductCustomer requireOneByProductId(int $product_id) Return the first ChildProductCustomer filtered by the product_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductCustomer requireOneByDescription(string $description) Return the first ChildProductCustomer filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProductCustomer requireOneByCreatedAt(string $created_at) Return the first ChildProductCustomer filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProductCustomer requireOneByUpdatedAt(string $updated_at) Return the first ChildProductCustomer filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildProductCustomer[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildProductCustomer objects based on current ModelCriteria
  * @method     ChildProductCustomer[]|ObjectCollection findById(int $id) Return ChildProductCustomer objects filtered by the id column
@@ -86,6 +94,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductCustomer[]|ObjectCollection findByPartnerId(int $partner_id) Return ChildProductCustomer objects filtered by the partner_id column
  * @method     ChildProductCustomer[]|ObjectCollection findByProductId(int $product_id) Return ChildProductCustomer objects filtered by the product_id column
  * @method     ChildProductCustomer[]|ObjectCollection findByDescription(string $description) Return ChildProductCustomer objects filtered by the description column
+ * @method     ChildProductCustomer[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildProductCustomer objects filtered by the created_at column
+ * @method     ChildProductCustomer[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildProductCustomer objects filtered by the updated_at column
  * @method     ChildProductCustomer[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -184,7 +194,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, code, partner_id, product_id, description FROM product_customer WHERE id = :p0';
+        $sql = 'SELECT id, code, partner_id, product_id, description, created_at, updated_at FROM product_customer WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -449,6 +459,92 @@ abstract class ProductCustomerQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProductCustomerTableMap::COL_DESCRIPTION, $description, $comparison);
+    }
+
+    /**
+     * Filter the query on the created_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $createdAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProductCustomerQuery The current query, for fluid interface
+     */
+    public function filterByCreatedAt($createdAt = null, $comparison = null)
+    {
+        if (is_array($createdAt)) {
+            $useMinMax = false;
+            if (isset($createdAt['min'])) {
+                $this->addUsingAlias(ProductCustomerTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($createdAt['max'])) {
+                $this->addUsingAlias(ProductCustomerTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProductCustomerTableMap::COL_CREATED_AT, $createdAt, $comparison);
+    }
+
+    /**
+     * Filter the query on the updated_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updatedAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProductCustomerQuery The current query, for fluid interface
+     */
+    public function filterByUpdatedAt($updatedAt = null, $comparison = null)
+    {
+        if (is_array($updatedAt)) {
+            $useMinMax = false;
+            if (isset($updatedAt['min'])) {
+                $this->addUsingAlias(ProductCustomerTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updatedAt['max'])) {
+                $this->addUsingAlias(ProductCustomerTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProductCustomerTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
     }
 
     /**

@@ -2,15 +2,22 @@
 
 namespace Base;
 
-use \Finishing as ChildFinishing;
-use \FinishingQuery as ChildFinishingQuery;
-use \ProductFinishing as ChildProductFinishing;
-use \ProductFinishingQuery as ChildProductFinishingQuery;
+use \Group as ChildGroup;
+use \GroupQuery as ChildGroupQuery;
+use \Menu as ChildMenu;
+use \MenuGroup as ChildMenuGroup;
+use \MenuGroupQuery as ChildMenuGroupQuery;
+use \MenuQuery as ChildMenuQuery;
+use \User as ChildUser;
+use \UserGroup as ChildUserGroup;
+use \UserGroupQuery as ChildUserGroupQuery;
+use \UserQuery as ChildUserQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
-use Map\FinishingTableMap;
-use Map\ProductFinishingTableMap;
+use Map\GroupTableMap;
+use Map\MenuGroupTableMap;
+use Map\UserGroupTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -26,18 +33,18 @@ use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'finishing' table.
+ * Base class that represents a row from the 'group' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class Finishing implements ActiveRecordInterface
+abstract class Group implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Map\\FinishingTableMap';
+    const TABLE_MAP = '\\Map\\GroupTableMap';
 
 
     /**
@@ -104,10 +111,36 @@ abstract class Finishing implements ActiveRecordInterface
     protected $updated_at;
 
     /**
-     * @var        ObjectCollection|ChildProductFinishing[] Collection to store aggregation of ChildProductFinishing objects.
+     * @var        ObjectCollection|ChildUserGroup[] Collection to store aggregation of ChildUserGroup objects.
      */
-    protected $collProductFinishings;
-    protected $collProductFinishingsPartial;
+    protected $collUserGroups;
+    protected $collUserGroupsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildMenuGroup[] Collection to store aggregation of ChildMenuGroup objects.
+     */
+    protected $collMenuGroups;
+    protected $collMenuGroupsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildUser[] Cross Collection to store aggregation of ChildUser objects.
+     */
+    protected $collUsers;
+
+    /**
+     * @var bool
+     */
+    protected $collUsersPartial;
+
+    /**
+     * @var        ObjectCollection|ChildMenu[] Cross Collection to store aggregation of ChildMenu objects.
+     */
+    protected $collMenus;
+
+    /**
+     * @var bool
+     */
+    protected $collMenusPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -119,9 +152,27 @@ abstract class Finishing implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildProductFinishing[]
+     * @var ObjectCollection|ChildUser[]
      */
-    protected $productFinishingsScheduledForDeletion = null;
+    protected $usersScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildMenu[]
+     */
+    protected $menusScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildUserGroup[]
+     */
+    protected $userGroupsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildMenuGroup[]
+     */
+    protected $menuGroupsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -134,7 +185,7 @@ abstract class Finishing implements ActiveRecordInterface
     }
 
     /**
-     * Initializes internal state of Base\Finishing object.
+     * Initializes internal state of Base\Group object.
      * @see applyDefaults()
      */
     public function __construct()
@@ -231,9 +282,9 @@ abstract class Finishing implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Finishing</code> instance.  If
-     * <code>obj</code> is an instance of <code>Finishing</code>, delegates to
-     * <code>equals(Finishing)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>Group</code> instance.  If
+     * <code>obj</code> is an instance of <code>Group</code>, delegates to
+     * <code>equals(Group)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -299,7 +350,7 @@ abstract class Finishing implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|Finishing The current object, for fluid interface
+     * @return $this|Group The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -434,7 +485,7 @@ abstract class Finishing implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param int $v new value
-     * @return $this|\Finishing The current object (for fluent API support)
+     * @return $this|\Group The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -444,7 +495,7 @@ abstract class Finishing implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[FinishingTableMap::COL_ID] = true;
+            $this->modifiedColumns[GroupTableMap::COL_ID] = true;
         }
 
         return $this;
@@ -454,7 +505,7 @@ abstract class Finishing implements ActiveRecordInterface
      * Set the value of [name] column.
      *
      * @param string $v new value
-     * @return $this|\Finishing The current object (for fluent API support)
+     * @return $this|\Group The current object (for fluent API support)
      */
     public function setName($v)
     {
@@ -464,7 +515,7 @@ abstract class Finishing implements ActiveRecordInterface
 
         if ($this->name !== $v) {
             $this->name = $v;
-            $this->modifiedColumns[FinishingTableMap::COL_NAME] = true;
+            $this->modifiedColumns[GroupTableMap::COL_NAME] = true;
         }
 
         return $this;
@@ -474,7 +525,7 @@ abstract class Finishing implements ActiveRecordInterface
      * Set the value of [description] column.
      *
      * @param string $v new value
-     * @return $this|\Finishing The current object (for fluent API support)
+     * @return $this|\Group The current object (for fluent API support)
      */
     public function setDescription($v)
     {
@@ -484,7 +535,7 @@ abstract class Finishing implements ActiveRecordInterface
 
         if ($this->description !== $v) {
             $this->description = $v;
-            $this->modifiedColumns[FinishingTableMap::COL_DESCRIPTION] = true;
+            $this->modifiedColumns[GroupTableMap::COL_DESCRIPTION] = true;
         }
 
         return $this;
@@ -495,7 +546,7 @@ abstract class Finishing implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\Finishing The current object (for fluent API support)
+     * @return $this|\Group The current object (for fluent API support)
      */
     public function setCreatedAt($v)
     {
@@ -503,7 +554,7 @@ abstract class Finishing implements ActiveRecordInterface
         if ($this->created_at !== null || $dt !== null) {
             if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_at->format("Y-m-d H:i:s.u")) {
                 $this->created_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[FinishingTableMap::COL_CREATED_AT] = true;
+                $this->modifiedColumns[GroupTableMap::COL_CREATED_AT] = true;
             }
         } // if either are not null
 
@@ -515,7 +566,7 @@ abstract class Finishing implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\Finishing The current object (for fluent API support)
+     * @return $this|\Group The current object (for fluent API support)
      */
     public function setUpdatedAt($v)
     {
@@ -523,7 +574,7 @@ abstract class Finishing implements ActiveRecordInterface
         if ($this->updated_at !== null || $dt !== null) {
             if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated_at->format("Y-m-d H:i:s.u")) {
                 $this->updated_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[FinishingTableMap::COL_UPDATED_AT] = true;
+                $this->modifiedColumns[GroupTableMap::COL_UPDATED_AT] = true;
             }
         } // if either are not null
 
@@ -566,22 +617,22 @@ abstract class Finishing implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : FinishingTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : GroupTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : FinishingTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : GroupTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : FinishingTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : GroupTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
             $this->description = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : FinishingTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : GroupTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : FinishingTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : GroupTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -594,10 +645,10 @@ abstract class Finishing implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = FinishingTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = GroupTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\Finishing'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\Group'), 0, $e);
         }
     }
 
@@ -639,13 +690,13 @@ abstract class Finishing implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(FinishingTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(GroupTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildFinishingQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildGroupQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -655,8 +706,12 @@ abstract class Finishing implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collProductFinishings = null;
+            $this->collUserGroups = null;
 
+            $this->collMenuGroups = null;
+
+            $this->collUsers = null;
+            $this->collMenus = null;
         } // if (deep)
     }
 
@@ -666,8 +721,8 @@ abstract class Finishing implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Finishing::setDeleted()
-     * @see Finishing::isDeleted()
+     * @see Group::setDeleted()
+     * @see Group::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -676,11 +731,11 @@ abstract class Finishing implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(FinishingTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(GroupTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildFinishingQuery::create()
+            $deleteQuery = ChildGroupQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -715,7 +770,7 @@ abstract class Finishing implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(FinishingTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(GroupTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -734,7 +789,7 @@ abstract class Finishing implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                FinishingTableMap::addInstanceToPool($this);
+                GroupTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -771,17 +826,92 @@ abstract class Finishing implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->productFinishingsScheduledForDeletion !== null) {
-                if (!$this->productFinishingsScheduledForDeletion->isEmpty()) {
-                    \ProductFinishingQuery::create()
-                        ->filterByPrimaryKeys($this->productFinishingsScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->usersScheduledForDeletion !== null) {
+                if (!$this->usersScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->usersScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \UserGroupQuery::create()
+                        ->filterByPrimaryKeys($pks)
                         ->delete($con);
-                    $this->productFinishingsScheduledForDeletion = null;
+
+                    $this->usersScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collUsers) {
+                foreach ($this->collUsers as $user) {
+                    if (!$user->isDeleted() && ($user->isNew() || $user->isModified())) {
+                        $user->save($con);
+                    }
                 }
             }
 
-            if ($this->collProductFinishings !== null) {
-                foreach ($this->collProductFinishings as $referrerFK) {
+
+            if ($this->menusScheduledForDeletion !== null) {
+                if (!$this->menusScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->menusScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \MenuGroupQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->menusScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collMenus) {
+                foreach ($this->collMenus as $menu) {
+                    if (!$menu->isDeleted() && ($menu->isNew() || $menu->isModified())) {
+                        $menu->save($con);
+                    }
+                }
+            }
+
+
+            if ($this->userGroupsScheduledForDeletion !== null) {
+                if (!$this->userGroupsScheduledForDeletion->isEmpty()) {
+                    \UserGroupQuery::create()
+                        ->filterByPrimaryKeys($this->userGroupsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->userGroupsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collUserGroups !== null) {
+                foreach ($this->collUserGroups as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->menuGroupsScheduledForDeletion !== null) {
+                if (!$this->menuGroupsScheduledForDeletion->isEmpty()) {
+                    \MenuGroupQuery::create()
+                        ->filterByPrimaryKeys($this->menuGroupsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->menuGroupsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collMenuGroups !== null) {
+                foreach ($this->collMenuGroups as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -808,30 +938,30 @@ abstract class Finishing implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[FinishingTableMap::COL_ID] = true;
+        $this->modifiedColumns[GroupTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . FinishingTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . GroupTableMap::COL_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(FinishingTableMap::COL_ID)) {
+        if ($this->isColumnModified(GroupTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(FinishingTableMap::COL_NAME)) {
+        if ($this->isColumnModified(GroupTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'name';
         }
-        if ($this->isColumnModified(FinishingTableMap::COL_DESCRIPTION)) {
+        if ($this->isColumnModified(GroupTableMap::COL_DESCRIPTION)) {
             $modifiedColumns[':p' . $index++]  = 'description';
         }
-        if ($this->isColumnModified(FinishingTableMap::COL_CREATED_AT)) {
+        if ($this->isColumnModified(GroupTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
-        if ($this->isColumnModified(FinishingTableMap::COL_UPDATED_AT)) {
+        if ($this->isColumnModified(GroupTableMap::COL_UPDATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'updated_at';
         }
 
         $sql = sprintf(
-            'INSERT INTO finishing (%s) VALUES (%s)',
+            'INSERT INTO group (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -901,7 +1031,7 @@ abstract class Finishing implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = FinishingTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = GroupTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -956,11 +1086,11 @@ abstract class Finishing implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['Finishing'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['Group'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Finishing'][$this->hashCode()] = true;
-        $keys = FinishingTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['Group'][$this->hashCode()] = true;
+        $keys = GroupTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
@@ -982,20 +1112,35 @@ abstract class Finishing implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->collProductFinishings) {
+            if (null !== $this->collUserGroups) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'productFinishings';
+                        $key = 'userGroups';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'product_finishings';
+                        $key = 'user_groups';
                         break;
                     default:
-                        $key = 'ProductFinishings';
+                        $key = 'UserGroups';
                 }
 
-                $result[$key] = $this->collProductFinishings->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collUserGroups->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collMenuGroups) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'menuGroups';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'menu_groups';
+                        break;
+                    default:
+                        $key = 'MenuGroups';
+                }
+
+                $result[$key] = $this->collMenuGroups->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1011,11 +1156,11 @@ abstract class Finishing implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\Finishing
+     * @return $this|\Group
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = FinishingTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = GroupTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1026,7 +1171,7 @@ abstract class Finishing implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\Finishing
+     * @return $this|\Group
      */
     public function setByPosition($pos, $value)
     {
@@ -1070,7 +1215,7 @@ abstract class Finishing implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = FinishingTableMap::getFieldNames($keyType);
+        $keys = GroupTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setId($arr[$keys[0]]);
@@ -1106,7 +1251,7 @@ abstract class Finishing implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\Finishing The current object, for fluid interface
+     * @return $this|\Group The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1126,22 +1271,22 @@ abstract class Finishing implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(FinishingTableMap::DATABASE_NAME);
+        $criteria = new Criteria(GroupTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(FinishingTableMap::COL_ID)) {
-            $criteria->add(FinishingTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(GroupTableMap::COL_ID)) {
+            $criteria->add(GroupTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(FinishingTableMap::COL_NAME)) {
-            $criteria->add(FinishingTableMap::COL_NAME, $this->name);
+        if ($this->isColumnModified(GroupTableMap::COL_NAME)) {
+            $criteria->add(GroupTableMap::COL_NAME, $this->name);
         }
-        if ($this->isColumnModified(FinishingTableMap::COL_DESCRIPTION)) {
-            $criteria->add(FinishingTableMap::COL_DESCRIPTION, $this->description);
+        if ($this->isColumnModified(GroupTableMap::COL_DESCRIPTION)) {
+            $criteria->add(GroupTableMap::COL_DESCRIPTION, $this->description);
         }
-        if ($this->isColumnModified(FinishingTableMap::COL_CREATED_AT)) {
-            $criteria->add(FinishingTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(GroupTableMap::COL_CREATED_AT)) {
+            $criteria->add(GroupTableMap::COL_CREATED_AT, $this->created_at);
         }
-        if ($this->isColumnModified(FinishingTableMap::COL_UPDATED_AT)) {
-            $criteria->add(FinishingTableMap::COL_UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(GroupTableMap::COL_UPDATED_AT)) {
+            $criteria->add(GroupTableMap::COL_UPDATED_AT, $this->updated_at);
         }
 
         return $criteria;
@@ -1159,8 +1304,8 @@ abstract class Finishing implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildFinishingQuery::create();
-        $criteria->add(FinishingTableMap::COL_ID, $this->id);
+        $criteria = ChildGroupQuery::create();
+        $criteria->add(GroupTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1222,7 +1367,7 @@ abstract class Finishing implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Finishing (or compatible) type.
+     * @param      object $copyObj An object of \Group (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1239,9 +1384,15 @@ abstract class Finishing implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getProductFinishings() as $relObj) {
+            foreach ($this->getUserGroups() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addProductFinishing($relObj->copy($deepCopy));
+                    $copyObj->addUserGroup($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getMenuGroups() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addMenuGroup($relObj->copy($deepCopy));
                 }
             }
 
@@ -1262,7 +1413,7 @@ abstract class Finishing implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \Finishing Clone of current object.
+     * @return \Group Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1286,38 +1437,42 @@ abstract class Finishing implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('ProductFinishing' == $relationName) {
-            $this->initProductFinishings();
+        if ('UserGroup' == $relationName) {
+            $this->initUserGroups();
+            return;
+        }
+        if ('MenuGroup' == $relationName) {
+            $this->initMenuGroups();
             return;
         }
     }
 
     /**
-     * Clears out the collProductFinishings collection
+     * Clears out the collUserGroups collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addProductFinishings()
+     * @see        addUserGroups()
      */
-    public function clearProductFinishings()
+    public function clearUserGroups()
     {
-        $this->collProductFinishings = null; // important to set this to NULL since that means it is uninitialized
+        $this->collUserGroups = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collProductFinishings collection loaded partially.
+     * Reset is the collUserGroups collection loaded partially.
      */
-    public function resetPartialProductFinishings($v = true)
+    public function resetPartialUserGroups($v = true)
     {
-        $this->collProductFinishingsPartial = $v;
+        $this->collUserGroupsPartial = $v;
     }
 
     /**
-     * Initializes the collProductFinishings collection.
+     * Initializes the collUserGroups collection.
      *
-     * By default this just sets the collProductFinishings collection to an empty array (like clearcollProductFinishings());
+     * By default this just sets the collUserGroups collection to an empty array (like clearcollUserGroups());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1326,162 +1481,165 @@ abstract class Finishing implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initProductFinishings($overrideExisting = true)
+    public function initUserGroups($overrideExisting = true)
     {
-        if (null !== $this->collProductFinishings && !$overrideExisting) {
+        if (null !== $this->collUserGroups && !$overrideExisting) {
             return;
         }
 
-        $collectionClassName = ProductFinishingTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = UserGroupTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collProductFinishings = new $collectionClassName;
-        $this->collProductFinishings->setModel('\ProductFinishing');
+        $this->collUserGroups = new $collectionClassName;
+        $this->collUserGroups->setModel('\UserGroup');
     }
 
     /**
-     * Gets an array of ChildProductFinishing objects which contain a foreign key that references this object.
+     * Gets an array of ChildUserGroup objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildFinishing is new, it will return
+     * If this ChildGroup is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildProductFinishing[] List of ChildProductFinishing objects
+     * @return ObjectCollection|ChildUserGroup[] List of ChildUserGroup objects
      * @throws PropelException
      */
-    public function getProductFinishings(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getUserGroups(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collProductFinishingsPartial && !$this->isNew();
-        if (null === $this->collProductFinishings || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collProductFinishings) {
+        $partial = $this->collUserGroupsPartial && !$this->isNew();
+        if (null === $this->collUserGroups || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collUserGroups) {
                 // return empty collection
-                $this->initProductFinishings();
+                $this->initUserGroups();
             } else {
-                $collProductFinishings = ChildProductFinishingQuery::create(null, $criteria)
-                    ->filterByFinishing($this)
+                $collUserGroups = ChildUserGroupQuery::create(null, $criteria)
+                    ->filterByGroup($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collProductFinishingsPartial && count($collProductFinishings)) {
-                        $this->initProductFinishings(false);
+                    if (false !== $this->collUserGroupsPartial && count($collUserGroups)) {
+                        $this->initUserGroups(false);
 
-                        foreach ($collProductFinishings as $obj) {
-                            if (false == $this->collProductFinishings->contains($obj)) {
-                                $this->collProductFinishings->append($obj);
+                        foreach ($collUserGroups as $obj) {
+                            if (false == $this->collUserGroups->contains($obj)) {
+                                $this->collUserGroups->append($obj);
                             }
                         }
 
-                        $this->collProductFinishingsPartial = true;
+                        $this->collUserGroupsPartial = true;
                     }
 
-                    return $collProductFinishings;
+                    return $collUserGroups;
                 }
 
-                if ($partial && $this->collProductFinishings) {
-                    foreach ($this->collProductFinishings as $obj) {
+                if ($partial && $this->collUserGroups) {
+                    foreach ($this->collUserGroups as $obj) {
                         if ($obj->isNew()) {
-                            $collProductFinishings[] = $obj;
+                            $collUserGroups[] = $obj;
                         }
                     }
                 }
 
-                $this->collProductFinishings = $collProductFinishings;
-                $this->collProductFinishingsPartial = false;
+                $this->collUserGroups = $collUserGroups;
+                $this->collUserGroupsPartial = false;
             }
         }
 
-        return $this->collProductFinishings;
+        return $this->collUserGroups;
     }
 
     /**
-     * Sets a collection of ChildProductFinishing objects related by a one-to-many relationship
+     * Sets a collection of ChildUserGroup objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $productFinishings A Propel collection.
+     * @param      Collection $userGroups A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildFinishing The current object (for fluent API support)
+     * @return $this|ChildGroup The current object (for fluent API support)
      */
-    public function setProductFinishings(Collection $productFinishings, ConnectionInterface $con = null)
+    public function setUserGroups(Collection $userGroups, ConnectionInterface $con = null)
     {
-        /** @var ChildProductFinishing[] $productFinishingsToDelete */
-        $productFinishingsToDelete = $this->getProductFinishings(new Criteria(), $con)->diff($productFinishings);
+        /** @var ChildUserGroup[] $userGroupsToDelete */
+        $userGroupsToDelete = $this->getUserGroups(new Criteria(), $con)->diff($userGroups);
 
 
-        $this->productFinishingsScheduledForDeletion = $productFinishingsToDelete;
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->userGroupsScheduledForDeletion = clone $userGroupsToDelete;
 
-        foreach ($productFinishingsToDelete as $productFinishingRemoved) {
-            $productFinishingRemoved->setFinishing(null);
+        foreach ($userGroupsToDelete as $userGroupRemoved) {
+            $userGroupRemoved->setGroup(null);
         }
 
-        $this->collProductFinishings = null;
-        foreach ($productFinishings as $productFinishing) {
-            $this->addProductFinishing($productFinishing);
+        $this->collUserGroups = null;
+        foreach ($userGroups as $userGroup) {
+            $this->addUserGroup($userGroup);
         }
 
-        $this->collProductFinishings = $productFinishings;
-        $this->collProductFinishingsPartial = false;
+        $this->collUserGroups = $userGroups;
+        $this->collUserGroupsPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related ProductFinishing objects.
+     * Returns the number of related UserGroup objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related ProductFinishing objects.
+     * @return int             Count of related UserGroup objects.
      * @throws PropelException
      */
-    public function countProductFinishings(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countUserGroups(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collProductFinishingsPartial && !$this->isNew();
-        if (null === $this->collProductFinishings || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collProductFinishings) {
+        $partial = $this->collUserGroupsPartial && !$this->isNew();
+        if (null === $this->collUserGroups || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collUserGroups) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getProductFinishings());
+                return count($this->getUserGroups());
             }
 
-            $query = ChildProductFinishingQuery::create(null, $criteria);
+            $query = ChildUserGroupQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
 
             return $query
-                ->filterByFinishing($this)
+                ->filterByGroup($this)
                 ->count($con);
         }
 
-        return count($this->collProductFinishings);
+        return count($this->collUserGroups);
     }
 
     /**
-     * Method called to associate a ChildProductFinishing object to this object
-     * through the ChildProductFinishing foreign key attribute.
+     * Method called to associate a ChildUserGroup object to this object
+     * through the ChildUserGroup foreign key attribute.
      *
-     * @param  ChildProductFinishing $l ChildProductFinishing
-     * @return $this|\Finishing The current object (for fluent API support)
+     * @param  ChildUserGroup $l ChildUserGroup
+     * @return $this|\Group The current object (for fluent API support)
      */
-    public function addProductFinishing(ChildProductFinishing $l)
+    public function addUserGroup(ChildUserGroup $l)
     {
-        if ($this->collProductFinishings === null) {
-            $this->initProductFinishings();
-            $this->collProductFinishingsPartial = true;
+        if ($this->collUserGroups === null) {
+            $this->initUserGroups();
+            $this->collUserGroupsPartial = true;
         }
 
-        if (!$this->collProductFinishings->contains($l)) {
-            $this->doAddProductFinishing($l);
+        if (!$this->collUserGroups->contains($l)) {
+            $this->doAddUserGroup($l);
 
-            if ($this->productFinishingsScheduledForDeletion and $this->productFinishingsScheduledForDeletion->contains($l)) {
-                $this->productFinishingsScheduledForDeletion->remove($this->productFinishingsScheduledForDeletion->search($l));
+            if ($this->userGroupsScheduledForDeletion and $this->userGroupsScheduledForDeletion->contains($l)) {
+                $this->userGroupsScheduledForDeletion->remove($this->userGroupsScheduledForDeletion->search($l));
             }
         }
 
@@ -1489,29 +1647,29 @@ abstract class Finishing implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildProductFinishing $productFinishing The ChildProductFinishing object to add.
+     * @param ChildUserGroup $userGroup The ChildUserGroup object to add.
      */
-    protected function doAddProductFinishing(ChildProductFinishing $productFinishing)
+    protected function doAddUserGroup(ChildUserGroup $userGroup)
     {
-        $this->collProductFinishings[]= $productFinishing;
-        $productFinishing->setFinishing($this);
+        $this->collUserGroups[]= $userGroup;
+        $userGroup->setGroup($this);
     }
 
     /**
-     * @param  ChildProductFinishing $productFinishing The ChildProductFinishing object to remove.
-     * @return $this|ChildFinishing The current object (for fluent API support)
+     * @param  ChildUserGroup $userGroup The ChildUserGroup object to remove.
+     * @return $this|ChildGroup The current object (for fluent API support)
      */
-    public function removeProductFinishing(ChildProductFinishing $productFinishing)
+    public function removeUserGroup(ChildUserGroup $userGroup)
     {
-        if ($this->getProductFinishings()->contains($productFinishing)) {
-            $pos = $this->collProductFinishings->search($productFinishing);
-            $this->collProductFinishings->remove($pos);
-            if (null === $this->productFinishingsScheduledForDeletion) {
-                $this->productFinishingsScheduledForDeletion = clone $this->collProductFinishings;
-                $this->productFinishingsScheduledForDeletion->clear();
+        if ($this->getUserGroups()->contains($userGroup)) {
+            $pos = $this->collUserGroups->search($userGroup);
+            $this->collUserGroups->remove($pos);
+            if (null === $this->userGroupsScheduledForDeletion) {
+                $this->userGroupsScheduledForDeletion = clone $this->collUserGroups;
+                $this->userGroupsScheduledForDeletion->clear();
             }
-            $this->productFinishingsScheduledForDeletion[]= clone $productFinishing;
-            $productFinishing->setFinishing(null);
+            $this->userGroupsScheduledForDeletion[]= clone $userGroup;
+            $userGroup->setGroup(null);
         }
 
         return $this;
@@ -1521,25 +1679,764 @@ abstract class Finishing implements ActiveRecordInterface
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this Finishing is new, it will return
-     * an empty collection; or if this Finishing has previously
-     * been saved, it will retrieve related ProductFinishings from storage.
+     * Otherwise if this Group is new, it will return
+     * an empty collection; or if this Group has previously
+     * been saved, it will retrieve related UserGroups from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in Finishing.
+     * actually need in Group.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildProductFinishing[] List of ChildProductFinishing objects
+     * @return ObjectCollection|ChildUserGroup[] List of ChildUserGroup objects
      */
-    public function getProductFinishingsJoinProduct(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getUserGroupsJoinUser(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildProductFinishingQuery::create(null, $criteria);
-        $query->joinWith('Product', $joinBehavior);
+        $query = ChildUserGroupQuery::create(null, $criteria);
+        $query->joinWith('User', $joinBehavior);
 
-        return $this->getProductFinishings($query, $con);
+        return $this->getUserGroups($query, $con);
+    }
+
+    /**
+     * Clears out the collMenuGroups collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addMenuGroups()
+     */
+    public function clearMenuGroups()
+    {
+        $this->collMenuGroups = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collMenuGroups collection loaded partially.
+     */
+    public function resetPartialMenuGroups($v = true)
+    {
+        $this->collMenuGroupsPartial = $v;
+    }
+
+    /**
+     * Initializes the collMenuGroups collection.
+     *
+     * By default this just sets the collMenuGroups collection to an empty array (like clearcollMenuGroups());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initMenuGroups($overrideExisting = true)
+    {
+        if (null !== $this->collMenuGroups && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = MenuGroupTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collMenuGroups = new $collectionClassName;
+        $this->collMenuGroups->setModel('\MenuGroup');
+    }
+
+    /**
+     * Gets an array of ChildMenuGroup objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildGroup is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildMenuGroup[] List of ChildMenuGroup objects
+     * @throws PropelException
+     */
+    public function getMenuGroups(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collMenuGroupsPartial && !$this->isNew();
+        if (null === $this->collMenuGroups || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collMenuGroups) {
+                // return empty collection
+                $this->initMenuGroups();
+            } else {
+                $collMenuGroups = ChildMenuGroupQuery::create(null, $criteria)
+                    ->filterByGroup($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collMenuGroupsPartial && count($collMenuGroups)) {
+                        $this->initMenuGroups(false);
+
+                        foreach ($collMenuGroups as $obj) {
+                            if (false == $this->collMenuGroups->contains($obj)) {
+                                $this->collMenuGroups->append($obj);
+                            }
+                        }
+
+                        $this->collMenuGroupsPartial = true;
+                    }
+
+                    return $collMenuGroups;
+                }
+
+                if ($partial && $this->collMenuGroups) {
+                    foreach ($this->collMenuGroups as $obj) {
+                        if ($obj->isNew()) {
+                            $collMenuGroups[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collMenuGroups = $collMenuGroups;
+                $this->collMenuGroupsPartial = false;
+            }
+        }
+
+        return $this->collMenuGroups;
+    }
+
+    /**
+     * Sets a collection of ChildMenuGroup objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $menuGroups A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildGroup The current object (for fluent API support)
+     */
+    public function setMenuGroups(Collection $menuGroups, ConnectionInterface $con = null)
+    {
+        /** @var ChildMenuGroup[] $menuGroupsToDelete */
+        $menuGroupsToDelete = $this->getMenuGroups(new Criteria(), $con)->diff($menuGroups);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->menuGroupsScheduledForDeletion = clone $menuGroupsToDelete;
+
+        foreach ($menuGroupsToDelete as $menuGroupRemoved) {
+            $menuGroupRemoved->setGroup(null);
+        }
+
+        $this->collMenuGroups = null;
+        foreach ($menuGroups as $menuGroup) {
+            $this->addMenuGroup($menuGroup);
+        }
+
+        $this->collMenuGroups = $menuGroups;
+        $this->collMenuGroupsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related MenuGroup objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related MenuGroup objects.
+     * @throws PropelException
+     */
+    public function countMenuGroups(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collMenuGroupsPartial && !$this->isNew();
+        if (null === $this->collMenuGroups || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collMenuGroups) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getMenuGroups());
+            }
+
+            $query = ChildMenuGroupQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByGroup($this)
+                ->count($con);
+        }
+
+        return count($this->collMenuGroups);
+    }
+
+    /**
+     * Method called to associate a ChildMenuGroup object to this object
+     * through the ChildMenuGroup foreign key attribute.
+     *
+     * @param  ChildMenuGroup $l ChildMenuGroup
+     * @return $this|\Group The current object (for fluent API support)
+     */
+    public function addMenuGroup(ChildMenuGroup $l)
+    {
+        if ($this->collMenuGroups === null) {
+            $this->initMenuGroups();
+            $this->collMenuGroupsPartial = true;
+        }
+
+        if (!$this->collMenuGroups->contains($l)) {
+            $this->doAddMenuGroup($l);
+
+            if ($this->menuGroupsScheduledForDeletion and $this->menuGroupsScheduledForDeletion->contains($l)) {
+                $this->menuGroupsScheduledForDeletion->remove($this->menuGroupsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildMenuGroup $menuGroup The ChildMenuGroup object to add.
+     */
+    protected function doAddMenuGroup(ChildMenuGroup $menuGroup)
+    {
+        $this->collMenuGroups[]= $menuGroup;
+        $menuGroup->setGroup($this);
+    }
+
+    /**
+     * @param  ChildMenuGroup $menuGroup The ChildMenuGroup object to remove.
+     * @return $this|ChildGroup The current object (for fluent API support)
+     */
+    public function removeMenuGroup(ChildMenuGroup $menuGroup)
+    {
+        if ($this->getMenuGroups()->contains($menuGroup)) {
+            $pos = $this->collMenuGroups->search($menuGroup);
+            $this->collMenuGroups->remove($pos);
+            if (null === $this->menuGroupsScheduledForDeletion) {
+                $this->menuGroupsScheduledForDeletion = clone $this->collMenuGroups;
+                $this->menuGroupsScheduledForDeletion->clear();
+            }
+            $this->menuGroupsScheduledForDeletion[]= clone $menuGroup;
+            $menuGroup->setGroup(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Group is new, it will return
+     * an empty collection; or if this Group has previously
+     * been saved, it will retrieve related MenuGroups from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Group.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildMenuGroup[] List of ChildMenuGroup objects
+     */
+    public function getMenuGroupsJoinMenu(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildMenuGroupQuery::create(null, $criteria);
+        $query->joinWith('Menu', $joinBehavior);
+
+        return $this->getMenuGroups($query, $con);
+    }
+
+    /**
+     * Clears out the collUsers collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addUsers()
+     */
+    public function clearUsers()
+    {
+        $this->collUsers = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collUsers crossRef collection.
+     *
+     * By default this just sets the collUsers collection to an empty collection (like clearUsers());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initUsers()
+    {
+        $collectionClassName = UserGroupTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collUsers = new $collectionClassName;
+        $this->collUsersPartial = true;
+        $this->collUsers->setModel('\User');
+    }
+
+    /**
+     * Checks if the collUsers collection is loaded.
+     *
+     * @return bool
+     */
+    public function isUsersLoaded()
+    {
+        return null !== $this->collUsers;
+    }
+
+    /**
+     * Gets a collection of ChildUser objects related by a many-to-many relationship
+     * to the current object by way of the user_group cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildGroup is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildUser[] List of ChildUser objects
+     */
+    public function getUsers(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collUsersPartial && !$this->isNew();
+        if (null === $this->collUsers || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collUsers) {
+                    $this->initUsers();
+                }
+            } else {
+
+                $query = ChildUserQuery::create(null, $criteria)
+                    ->filterByGroup($this);
+                $collUsers = $query->find($con);
+                if (null !== $criteria) {
+                    return $collUsers;
+                }
+
+                if ($partial && $this->collUsers) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collUsers as $obj) {
+                        if (!$collUsers->contains($obj)) {
+                            $collUsers[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collUsers = $collUsers;
+                $this->collUsersPartial = false;
+            }
+        }
+
+        return $this->collUsers;
+    }
+
+    /**
+     * Sets a collection of User objects related by a many-to-many relationship
+     * to the current object by way of the user_group cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $users A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildGroup The current object (for fluent API support)
+     */
+    public function setUsers(Collection $users, ConnectionInterface $con = null)
+    {
+        $this->clearUsers();
+        $currentUsers = $this->getUsers();
+
+        $usersScheduledForDeletion = $currentUsers->diff($users);
+
+        foreach ($usersScheduledForDeletion as $toDelete) {
+            $this->removeUser($toDelete);
+        }
+
+        foreach ($users as $user) {
+            if (!$currentUsers->contains($user)) {
+                $this->doAddUser($user);
+            }
+        }
+
+        $this->collUsersPartial = false;
+        $this->collUsers = $users;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of User objects related by a many-to-many relationship
+     * to the current object by way of the user_group cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related User objects
+     */
+    public function countUsers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collUsersPartial && !$this->isNew();
+        if (null === $this->collUsers || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collUsers) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getUsers());
+                }
+
+                $query = ChildUserQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByGroup($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collUsers);
+        }
+    }
+
+    /**
+     * Associate a ChildUser to this object
+     * through the user_group cross reference table.
+     *
+     * @param ChildUser $user
+     * @return ChildGroup The current object (for fluent API support)
+     */
+    public function addUser(ChildUser $user)
+    {
+        if ($this->collUsers === null) {
+            $this->initUsers();
+        }
+
+        if (!$this->getUsers()->contains($user)) {
+            // only add it if the **same** object is not already associated
+            $this->collUsers->push($user);
+            $this->doAddUser($user);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildUser $user
+     */
+    protected function doAddUser(ChildUser $user)
+    {
+        $userGroup = new ChildUserGroup();
+
+        $userGroup->setUser($user);
+
+        $userGroup->setGroup($this);
+
+        $this->addUserGroup($userGroup);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$user->isGroupsLoaded()) {
+            $user->initGroups();
+            $user->getGroups()->push($this);
+        } elseif (!$user->getGroups()->contains($this)) {
+            $user->getGroups()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove user of this object
+     * through the user_group cross reference table.
+     *
+     * @param ChildUser $user
+     * @return ChildGroup The current object (for fluent API support)
+     */
+    public function removeUser(ChildUser $user)
+    {
+        if ($this->getUsers()->contains($user)) {
+            $userGroup = new ChildUserGroup();
+            $userGroup->setUser($user);
+            if ($user->isGroupsLoaded()) {
+                //remove the back reference if available
+                $user->getGroups()->removeObject($this);
+            }
+
+            $userGroup->setGroup($this);
+            $this->removeUserGroup(clone $userGroup);
+            $userGroup->clear();
+
+            $this->collUsers->remove($this->collUsers->search($user));
+
+            if (null === $this->usersScheduledForDeletion) {
+                $this->usersScheduledForDeletion = clone $this->collUsers;
+                $this->usersScheduledForDeletion->clear();
+            }
+
+            $this->usersScheduledForDeletion->push($user);
+        }
+
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collMenus collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addMenus()
+     */
+    public function clearMenus()
+    {
+        $this->collMenus = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collMenus crossRef collection.
+     *
+     * By default this just sets the collMenus collection to an empty collection (like clearMenus());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initMenus()
+    {
+        $collectionClassName = MenuGroupTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collMenus = new $collectionClassName;
+        $this->collMenusPartial = true;
+        $this->collMenus->setModel('\Menu');
+    }
+
+    /**
+     * Checks if the collMenus collection is loaded.
+     *
+     * @return bool
+     */
+    public function isMenusLoaded()
+    {
+        return null !== $this->collMenus;
+    }
+
+    /**
+     * Gets a collection of ChildMenu objects related by a many-to-many relationship
+     * to the current object by way of the menu_group cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildGroup is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildMenu[] List of ChildMenu objects
+     */
+    public function getMenus(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collMenusPartial && !$this->isNew();
+        if (null === $this->collMenus || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collMenus) {
+                    $this->initMenus();
+                }
+            } else {
+
+                $query = ChildMenuQuery::create(null, $criteria)
+                    ->filterByGroup($this);
+                $collMenus = $query->find($con);
+                if (null !== $criteria) {
+                    return $collMenus;
+                }
+
+                if ($partial && $this->collMenus) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collMenus as $obj) {
+                        if (!$collMenus->contains($obj)) {
+                            $collMenus[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collMenus = $collMenus;
+                $this->collMenusPartial = false;
+            }
+        }
+
+        return $this->collMenus;
+    }
+
+    /**
+     * Sets a collection of Menu objects related by a many-to-many relationship
+     * to the current object by way of the menu_group cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $menus A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildGroup The current object (for fluent API support)
+     */
+    public function setMenus(Collection $menus, ConnectionInterface $con = null)
+    {
+        $this->clearMenus();
+        $currentMenus = $this->getMenus();
+
+        $menusScheduledForDeletion = $currentMenus->diff($menus);
+
+        foreach ($menusScheduledForDeletion as $toDelete) {
+            $this->removeMenu($toDelete);
+        }
+
+        foreach ($menus as $menu) {
+            if (!$currentMenus->contains($menu)) {
+                $this->doAddMenu($menu);
+            }
+        }
+
+        $this->collMenusPartial = false;
+        $this->collMenus = $menus;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Menu objects related by a many-to-many relationship
+     * to the current object by way of the menu_group cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Menu objects
+     */
+    public function countMenus(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collMenusPartial && !$this->isNew();
+        if (null === $this->collMenus || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collMenus) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getMenus());
+                }
+
+                $query = ChildMenuQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByGroup($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collMenus);
+        }
+    }
+
+    /**
+     * Associate a ChildMenu to this object
+     * through the menu_group cross reference table.
+     *
+     * @param ChildMenu $menu
+     * @return ChildGroup The current object (for fluent API support)
+     */
+    public function addMenu(ChildMenu $menu)
+    {
+        if ($this->collMenus === null) {
+            $this->initMenus();
+        }
+
+        if (!$this->getMenus()->contains($menu)) {
+            // only add it if the **same** object is not already associated
+            $this->collMenus->push($menu);
+            $this->doAddMenu($menu);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildMenu $menu
+     */
+    protected function doAddMenu(ChildMenu $menu)
+    {
+        $menuGroup = new ChildMenuGroup();
+
+        $menuGroup->setMenu($menu);
+
+        $menuGroup->setGroup($this);
+
+        $this->addMenuGroup($menuGroup);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$menu->isGroupsLoaded()) {
+            $menu->initGroups();
+            $menu->getGroups()->push($this);
+        } elseif (!$menu->getGroups()->contains($this)) {
+            $menu->getGroups()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove menu of this object
+     * through the menu_group cross reference table.
+     *
+     * @param ChildMenu $menu
+     * @return ChildGroup The current object (for fluent API support)
+     */
+    public function removeMenu(ChildMenu $menu)
+    {
+        if ($this->getMenus()->contains($menu)) {
+            $menuGroup = new ChildMenuGroup();
+            $menuGroup->setMenu($menu);
+            if ($menu->isGroupsLoaded()) {
+                //remove the back reference if available
+                $menu->getGroups()->removeObject($this);
+            }
+
+            $menuGroup->setGroup($this);
+            $this->removeMenuGroup(clone $menuGroup);
+            $menuGroup->clear();
+
+            $this->collMenus->remove($this->collMenus->search($menu));
+
+            if (null === $this->menusScheduledForDeletion) {
+                $this->menusScheduledForDeletion = clone $this->collMenus;
+                $this->menusScheduledForDeletion->clear();
+            }
+
+            $this->menusScheduledForDeletion->push($menu);
+        }
+
+
+        return $this;
     }
 
     /**
@@ -1573,14 +2470,32 @@ abstract class Finishing implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collProductFinishings) {
-                foreach ($this->collProductFinishings as $o) {
+            if ($this->collUserGroups) {
+                foreach ($this->collUserGroups as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collMenuGroups) {
+                foreach ($this->collMenuGroups as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collUsers) {
+                foreach ($this->collUsers as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collMenus) {
+                foreach ($this->collMenus as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
         } // if ($deep)
 
-        $this->collProductFinishings = null;
+        $this->collUserGroups = null;
+        $this->collMenuGroups = null;
+        $this->collUsers = null;
+        $this->collMenus = null;
     }
 
     /**
@@ -1590,7 +2505,7 @@ abstract class Finishing implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(FinishingTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(GroupTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

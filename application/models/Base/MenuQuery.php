@@ -2,11 +2,11 @@
 
 namespace Base;
 
-use \Component as ChildComponent;
-use \ComponentQuery as ChildComponentQuery;
+use \Menu as ChildMenu;
+use \MenuQuery as ChildMenuQuery;
 use \Exception;
 use \PDO;
-use Map\ComponentTableMap;
+use Map\MenuTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -16,99 +16,104 @@ use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
 
 /**
- * Base class that represents a query for the 'component' table.
+ * Base class that represents a query for the 'menu' table.
  *
  *
  *
- * @method     ChildComponentQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildComponentQuery orderByName($order = Criteria::ASC) Order by the name column
- * @method     ChildComponentQuery orderByDescription($order = Criteria::ASC) Order by the description column
- * @method     ChildComponentQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
- * @method     ChildComponentQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
+ * @method     ChildMenuQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     ChildMenuQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method     ChildMenuQuery orderByUrl($order = Criteria::ASC) Order by the url column
+ * @method     ChildMenuQuery orderByController($order = Criteria::ASC) Order by the controller column
+ * @method     ChildMenuQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildMenuQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
- * @method     ChildComponentQuery groupById() Group by the id column
- * @method     ChildComponentQuery groupByName() Group by the name column
- * @method     ChildComponentQuery groupByDescription() Group by the description column
- * @method     ChildComponentQuery groupByCreatedAt() Group by the created_at column
- * @method     ChildComponentQuery groupByUpdatedAt() Group by the updated_at column
+ * @method     ChildMenuQuery groupById() Group by the id column
+ * @method     ChildMenuQuery groupByName() Group by the name column
+ * @method     ChildMenuQuery groupByUrl() Group by the url column
+ * @method     ChildMenuQuery groupByController() Group by the controller column
+ * @method     ChildMenuQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildMenuQuery groupByUpdatedAt() Group by the updated_at column
  *
- * @method     ChildComponentQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     ChildComponentQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     ChildComponentQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     ChildMenuQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     ChildMenuQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     ChildMenuQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildComponentQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildComponentQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildComponentQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ * @method     ChildMenuQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildMenuQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildMenuQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildComponentQuery leftJoinProductComponent($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProductComponent relation
- * @method     ChildComponentQuery rightJoinProductComponent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProductComponent relation
- * @method     ChildComponentQuery innerJoinProductComponent($relationAlias = null) Adds a INNER JOIN clause to the query using the ProductComponent relation
+ * @method     ChildMenuQuery leftJoinMenuGroup($relationAlias = null) Adds a LEFT JOIN clause to the query using the MenuGroup relation
+ * @method     ChildMenuQuery rightJoinMenuGroup($relationAlias = null) Adds a RIGHT JOIN clause to the query using the MenuGroup relation
+ * @method     ChildMenuQuery innerJoinMenuGroup($relationAlias = null) Adds a INNER JOIN clause to the query using the MenuGroup relation
  *
- * @method     ChildComponentQuery joinWithProductComponent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ProductComponent relation
+ * @method     ChildMenuQuery joinWithMenuGroup($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the MenuGroup relation
  *
- * @method     ChildComponentQuery leftJoinWithProductComponent() Adds a LEFT JOIN clause and with to the query using the ProductComponent relation
- * @method     ChildComponentQuery rightJoinWithProductComponent() Adds a RIGHT JOIN clause and with to the query using the ProductComponent relation
- * @method     ChildComponentQuery innerJoinWithProductComponent() Adds a INNER JOIN clause and with to the query using the ProductComponent relation
+ * @method     ChildMenuQuery leftJoinWithMenuGroup() Adds a LEFT JOIN clause and with to the query using the MenuGroup relation
+ * @method     ChildMenuQuery rightJoinWithMenuGroup() Adds a RIGHT JOIN clause and with to the query using the MenuGroup relation
+ * @method     ChildMenuQuery innerJoinWithMenuGroup() Adds a INNER JOIN clause and with to the query using the MenuGroup relation
  *
- * @method     \ProductComponentQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \MenuGroupQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
- * @method     ChildComponent findOne(ConnectionInterface $con = null) Return the first ChildComponent matching the query
- * @method     ChildComponent findOneOrCreate(ConnectionInterface $con = null) Return the first ChildComponent matching the query, or a new ChildComponent object populated from the query conditions when no match is found
+ * @method     ChildMenu findOne(ConnectionInterface $con = null) Return the first ChildMenu matching the query
+ * @method     ChildMenu findOneOrCreate(ConnectionInterface $con = null) Return the first ChildMenu matching the query, or a new ChildMenu object populated from the query conditions when no match is found
  *
- * @method     ChildComponent findOneById(int $id) Return the first ChildComponent filtered by the id column
- * @method     ChildComponent findOneByName(string $name) Return the first ChildComponent filtered by the name column
- * @method     ChildComponent findOneByDescription(string $description) Return the first ChildComponent filtered by the description column
- * @method     ChildComponent findOneByCreatedAt(string $created_at) Return the first ChildComponent filtered by the created_at column
- * @method     ChildComponent findOneByUpdatedAt(string $updated_at) Return the first ChildComponent filtered by the updated_at column *
+ * @method     ChildMenu findOneById(int $id) Return the first ChildMenu filtered by the id column
+ * @method     ChildMenu findOneByName(string $name) Return the first ChildMenu filtered by the name column
+ * @method     ChildMenu findOneByUrl(string $url) Return the first ChildMenu filtered by the url column
+ * @method     ChildMenu findOneByController(string $controller) Return the first ChildMenu filtered by the controller column
+ * @method     ChildMenu findOneByCreatedAt(string $created_at) Return the first ChildMenu filtered by the created_at column
+ * @method     ChildMenu findOneByUpdatedAt(string $updated_at) Return the first ChildMenu filtered by the updated_at column *
 
- * @method     ChildComponent requirePk($key, ConnectionInterface $con = null) Return the ChildComponent by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildComponent requireOne(ConnectionInterface $con = null) Return the first ChildComponent matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildMenu requirePk($key, ConnectionInterface $con = null) Return the ChildMenu by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildMenu requireOne(ConnectionInterface $con = null) Return the first ChildMenu matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildComponent requireOneById(int $id) Return the first ChildComponent filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildComponent requireOneByName(string $name) Return the first ChildComponent filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildComponent requireOneByDescription(string $description) Return the first ChildComponent filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildComponent requireOneByCreatedAt(string $created_at) Return the first ChildComponent filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildComponent requireOneByUpdatedAt(string $updated_at) Return the first ChildComponent filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildMenu requireOneById(int $id) Return the first ChildMenu filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildMenu requireOneByName(string $name) Return the first ChildMenu filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildMenu requireOneByUrl(string $url) Return the first ChildMenu filtered by the url column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildMenu requireOneByController(string $controller) Return the first ChildMenu filtered by the controller column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildMenu requireOneByCreatedAt(string $created_at) Return the first ChildMenu filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildMenu requireOneByUpdatedAt(string $updated_at) Return the first ChildMenu filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildComponent[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildComponent objects based on current ModelCriteria
- * @method     ChildComponent[]|ObjectCollection findById(int $id) Return ChildComponent objects filtered by the id column
- * @method     ChildComponent[]|ObjectCollection findByName(string $name) Return ChildComponent objects filtered by the name column
- * @method     ChildComponent[]|ObjectCollection findByDescription(string $description) Return ChildComponent objects filtered by the description column
- * @method     ChildComponent[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildComponent objects filtered by the created_at column
- * @method     ChildComponent[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildComponent objects filtered by the updated_at column
- * @method     ChildComponent[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
+ * @method     ChildMenu[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildMenu objects based on current ModelCriteria
+ * @method     ChildMenu[]|ObjectCollection findById(int $id) Return ChildMenu objects filtered by the id column
+ * @method     ChildMenu[]|ObjectCollection findByName(string $name) Return ChildMenu objects filtered by the name column
+ * @method     ChildMenu[]|ObjectCollection findByUrl(string $url) Return ChildMenu objects filtered by the url column
+ * @method     ChildMenu[]|ObjectCollection findByController(string $controller) Return ChildMenu objects filtered by the controller column
+ * @method     ChildMenu[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildMenu objects filtered by the created_at column
+ * @method     ChildMenu[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildMenu objects filtered by the updated_at column
+ * @method     ChildMenu[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
-abstract class ComponentQuery extends ModelCriteria
+abstract class MenuQuery extends ModelCriteria
 {
     protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
-     * Initializes internal state of \Base\ComponentQuery object.
+     * Initializes internal state of \Base\MenuQuery object.
      *
      * @param     string $dbName The database name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'default', $modelName = '\\Component', $modelAlias = null)
+    public function __construct($dbName = 'default', $modelName = '\\Menu', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
-     * Returns a new ChildComponentQuery object.
+     * Returns a new ChildMenuQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
      * @param     Criteria $criteria Optional Criteria to build the query from
      *
-     * @return ChildComponentQuery
+     * @return ChildMenuQuery
      */
     public static function create($modelAlias = null, Criteria $criteria = null)
     {
-        if ($criteria instanceof ChildComponentQuery) {
+        if ($criteria instanceof ChildMenuQuery) {
             return $criteria;
         }
-        $query = new ChildComponentQuery();
+        $query = new ChildMenuQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -131,7 +136,7 @@ abstract class ComponentQuery extends ModelCriteria
      * @param mixed $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
-     * @return ChildComponent|array|mixed the result, formatted by the current formatter
+     * @return ChildMenu|array|mixed the result, formatted by the current formatter
      */
     public function findPk($key, ConnectionInterface $con = null)
     {
@@ -140,7 +145,7 @@ abstract class ComponentQuery extends ModelCriteria
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(ComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(MenuTableMap::DATABASE_NAME);
         }
 
         $this->basePreSelect($con);
@@ -153,7 +158,7 @@ abstract class ComponentQuery extends ModelCriteria
             return $this->findPkComplex($key, $con);
         }
 
-        if ((null !== ($obj = ComponentTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+        if ((null !== ($obj = MenuTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -170,11 +175,11 @@ abstract class ComponentQuery extends ModelCriteria
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildComponent A model object, or null if the key is not found
+     * @return ChildMenu A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, description, created_at, updated_at FROM component WHERE id = :p0';
+        $sql = 'SELECT id, name, url, controller, created_at, updated_at FROM menu WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -185,10 +190,10 @@ abstract class ComponentQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-            /** @var ChildComponent $obj */
-            $obj = new ChildComponent();
+            /** @var ChildMenu $obj */
+            $obj = new ChildMenu();
             $obj->hydrate($row);
-            ComponentTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            MenuTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -201,7 +206,7 @@ abstract class ComponentQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return ChildComponent|array|mixed the result, formatted by the current formatter
+     * @return ChildMenu|array|mixed the result, formatted by the current formatter
      */
     protected function findPkComplex($key, ConnectionInterface $con)
     {
@@ -243,12 +248,12 @@ abstract class ComponentQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return $this|ChildComponentQuery The current query, for fluid interface
+     * @return $this|ChildMenuQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
 
-        return $this->addUsingAlias(ComponentTableMap::COL_ID, $key, Criteria::EQUAL);
+        return $this->addUsingAlias(MenuTableMap::COL_ID, $key, Criteria::EQUAL);
     }
 
     /**
@@ -256,12 +261,12 @@ abstract class ComponentQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return $this|ChildComponentQuery The current query, for fluid interface
+     * @return $this|ChildMenuQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
 
-        return $this->addUsingAlias(ComponentTableMap::COL_ID, $keys, Criteria::IN);
+        return $this->addUsingAlias(MenuTableMap::COL_ID, $keys, Criteria::IN);
     }
 
     /**
@@ -280,18 +285,18 @@ abstract class ComponentQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildComponentQuery The current query, for fluid interface
+     * @return $this|ChildMenuQuery The current query, for fluid interface
      */
     public function filterById($id = null, $comparison = null)
     {
         if (is_array($id)) {
             $useMinMax = false;
             if (isset($id['min'])) {
-                $this->addUsingAlias(ComponentTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(MenuTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($id['max'])) {
-                $this->addUsingAlias(ComponentTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(MenuTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -302,7 +307,7 @@ abstract class ComponentQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ComponentTableMap::COL_ID, $id, $comparison);
+        return $this->addUsingAlias(MenuTableMap::COL_ID, $id, $comparison);
     }
 
     /**
@@ -317,7 +322,7 @@ abstract class ComponentQuery extends ModelCriteria
      * @param     string $name The value to use as filter.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildComponentQuery The current query, for fluid interface
+     * @return $this|ChildMenuQuery The current query, for fluid interface
      */
     public function filterByName($name = null, $comparison = null)
     {
@@ -327,32 +332,57 @@ abstract class ComponentQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ComponentTableMap::COL_NAME, $name, $comparison);
+        return $this->addUsingAlias(MenuTableMap::COL_NAME, $name, $comparison);
     }
 
     /**
-     * Filter the query on the description column
+     * Filter the query on the url column
      *
      * Example usage:
      * <code>
-     * $query->filterByDescription('fooValue');   // WHERE description = 'fooValue'
-     * $query->filterByDescription('%fooValue%', Criteria::LIKE); // WHERE description LIKE '%fooValue%'
+     * $query->filterByUrl('fooValue');   // WHERE url = 'fooValue'
+     * $query->filterByUrl('%fooValue%', Criteria::LIKE); // WHERE url LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $description The value to use as filter.
+     * @param     string $url The value to use as filter.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildComponentQuery The current query, for fluid interface
+     * @return $this|ChildMenuQuery The current query, for fluid interface
      */
-    public function filterByDescription($description = null, $comparison = null)
+    public function filterByUrl($url = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($description)) {
+            if (is_array($url)) {
                 $comparison = Criteria::IN;
             }
         }
 
-        return $this->addUsingAlias(ComponentTableMap::COL_DESCRIPTION, $description, $comparison);
+        return $this->addUsingAlias(MenuTableMap::COL_URL, $url, $comparison);
+    }
+
+    /**
+     * Filter the query on the controller column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByController('fooValue');   // WHERE controller = 'fooValue'
+     * $query->filterByController('%fooValue%', Criteria::LIKE); // WHERE controller LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $controller The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildMenuQuery The current query, for fluid interface
+     */
+    public function filterByController($controller = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($controller)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(MenuTableMap::COL_CONTROLLER, $controller, $comparison);
     }
 
     /**
@@ -373,18 +403,18 @@ abstract class ComponentQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildComponentQuery The current query, for fluid interface
+     * @return $this|ChildMenuQuery The current query, for fluid interface
      */
     public function filterByCreatedAt($createdAt = null, $comparison = null)
     {
         if (is_array($createdAt)) {
             $useMinMax = false;
             if (isset($createdAt['min'])) {
-                $this->addUsingAlias(ComponentTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(MenuTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($createdAt['max'])) {
-                $this->addUsingAlias(ComponentTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(MenuTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -395,7 +425,7 @@ abstract class ComponentQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ComponentTableMap::COL_CREATED_AT, $createdAt, $comparison);
+        return $this->addUsingAlias(MenuTableMap::COL_CREATED_AT, $createdAt, $comparison);
     }
 
     /**
@@ -416,18 +446,18 @@ abstract class ComponentQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildComponentQuery The current query, for fluid interface
+     * @return $this|ChildMenuQuery The current query, for fluid interface
      */
     public function filterByUpdatedAt($updatedAt = null, $comparison = null)
     {
         if (is_array($updatedAt)) {
             $useMinMax = false;
             if (isset($updatedAt['min'])) {
-                $this->addUsingAlias(ComponentTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(MenuTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($updatedAt['max'])) {
-                $this->addUsingAlias(ComponentTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(MenuTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -438,44 +468,44 @@ abstract class ComponentQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ComponentTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
+        return $this->addUsingAlias(MenuTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
     }
 
     /**
-     * Filter the query by a related \ProductComponent object
+     * Filter the query by a related \MenuGroup object
      *
-     * @param \ProductComponent|ObjectCollection $productComponent the related object to use as filter
+     * @param \MenuGroup|ObjectCollection $menuGroup the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildComponentQuery The current query, for fluid interface
+     * @return ChildMenuQuery The current query, for fluid interface
      */
-    public function filterByProductComponent($productComponent, $comparison = null)
+    public function filterByMenuGroup($menuGroup, $comparison = null)
     {
-        if ($productComponent instanceof \ProductComponent) {
+        if ($menuGroup instanceof \MenuGroup) {
             return $this
-                ->addUsingAlias(ComponentTableMap::COL_ID, $productComponent->getComponentId(), $comparison);
-        } elseif ($productComponent instanceof ObjectCollection) {
+                ->addUsingAlias(MenuTableMap::COL_ID, $menuGroup->getMenuId(), $comparison);
+        } elseif ($menuGroup instanceof ObjectCollection) {
             return $this
-                ->useProductComponentQuery()
-                ->filterByPrimaryKeys($productComponent->getPrimaryKeys())
+                ->useMenuGroupQuery()
+                ->filterByPrimaryKeys($menuGroup->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByProductComponent() only accepts arguments of type \ProductComponent or Collection');
+            throw new PropelException('filterByMenuGroup() only accepts arguments of type \MenuGroup or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the ProductComponent relation
+     * Adds a JOIN clause to the query using the MenuGroup relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return $this|ChildComponentQuery The current query, for fluid interface
+     * @return $this|ChildMenuQuery The current query, for fluid interface
      */
-    public function joinProductComponent($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinMenuGroup($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('ProductComponent');
+        $relationMap = $tableMap->getRelation('MenuGroup');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -490,14 +520,14 @@ abstract class ComponentQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'ProductComponent');
+            $this->addJoinObject($join, 'MenuGroup');
         }
 
         return $this;
     }
 
     /**
-     * Use the ProductComponent relation ProductComponent object
+     * Use the MenuGroup relation MenuGroup object
      *
      * @see useQuery()
      *
@@ -505,33 +535,50 @@ abstract class ComponentQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \ProductComponentQuery A secondary query class using the current class as primary query
+     * @return \MenuGroupQuery A secondary query class using the current class as primary query
      */
-    public function useProductComponentQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useMenuGroupQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinProductComponent($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'ProductComponent', '\ProductComponentQuery');
+            ->joinMenuGroup($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'MenuGroup', '\MenuGroupQuery');
+    }
+
+    /**
+     * Filter the query by a related Group object
+     * using the menu_group table as cross reference
+     *
+     * @param Group $group the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildMenuQuery The current query, for fluid interface
+     */
+    public function filterByGroup($group, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useMenuGroupQuery()
+            ->filterByGroup($group, $comparison)
+            ->endUse();
     }
 
     /**
      * Exclude object from result
      *
-     * @param   ChildComponent $component Object to remove from the list of results
+     * @param   ChildMenu $menu Object to remove from the list of results
      *
-     * @return $this|ChildComponentQuery The current query, for fluid interface
+     * @return $this|ChildMenuQuery The current query, for fluid interface
      */
-    public function prune($component = null)
+    public function prune($menu = null)
     {
-        if ($component) {
-            $this->addUsingAlias(ComponentTableMap::COL_ID, $component->getId(), Criteria::NOT_EQUAL);
+        if ($menu) {
+            $this->addUsingAlias(MenuTableMap::COL_ID, $menu->getId(), Criteria::NOT_EQUAL);
         }
 
         return $this;
     }
 
     /**
-     * Deletes all rows from the component table.
+     * Deletes all rows from the menu table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
@@ -539,7 +586,7 @@ abstract class ComponentQuery extends ModelCriteria
     public function doDeleteAll(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(MenuTableMap::DATABASE_NAME);
         }
 
         // use transaction because $criteria could contain info
@@ -550,8 +597,8 @@ abstract class ComponentQuery extends ModelCriteria
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            ComponentTableMap::clearInstancePool();
-            ComponentTableMap::clearRelatedInstancePool();
+            MenuTableMap::clearInstancePool();
+            MenuTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
@@ -569,26 +616,26 @@ abstract class ComponentQuery extends ModelCriteria
     public function delete(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(MenuTableMap::DATABASE_NAME);
         }
 
         $criteria = $this;
 
         // Set the correct dbName
-        $criteria->setDbName(ComponentTableMap::DATABASE_NAME);
+        $criteria->setDbName(MenuTableMap::DATABASE_NAME);
 
         // use transaction because $criteria could contain info
         // for more than one table or we could emulating ON DELETE CASCADE, etc.
         return $con->transaction(function () use ($con, $criteria) {
             $affectedRows = 0; // initialize var to track total num of affected rows
 
-            ComponentTableMap::removeInstanceFromPool($criteria);
+            MenuTableMap::removeInstanceFromPool($criteria);
 
             $affectedRows += ModelCriteria::delete($con);
-            ComponentTableMap::clearRelatedInstancePool();
+            MenuTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
     }
 
-} // ComponentQuery
+} // MenuQuery

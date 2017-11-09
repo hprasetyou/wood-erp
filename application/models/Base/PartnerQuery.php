@@ -22,6 +22,7 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildPartnerQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildPartnerQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method     ChildPartnerQuery orderByEmail($order = Criteria::ASC) Order by the email column
  * @method     ChildPartnerQuery orderByAddress($order = Criteria::ASC) Order by the address column
  * @method     ChildPartnerQuery orderByPhone($order = Criteria::ASC) Order by the phone column
  * @method     ChildPartnerQuery orderByWebsite($order = Criteria::ASC) Order by the website column
@@ -33,9 +34,12 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery orderByIsEmployee($order = Criteria::ASC) Order by the is_employee column
  * @method     ChildPartnerQuery orderByIsCustomer($order = Criteria::ASC) Order by the is_customer column
  * @method     ChildPartnerQuery orderByIsSupplier($order = Criteria::ASC) Order by the is_supplier column
+ * @method     ChildPartnerQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildPartnerQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildPartnerQuery groupById() Group by the id column
  * @method     ChildPartnerQuery groupByName() Group by the name column
+ * @method     ChildPartnerQuery groupByEmail() Group by the email column
  * @method     ChildPartnerQuery groupByAddress() Group by the address column
  * @method     ChildPartnerQuery groupByPhone() Group by the phone column
  * @method     ChildPartnerQuery groupByWebsite() Group by the website column
@@ -47,6 +51,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery groupByIsEmployee() Group by the is_employee column
  * @method     ChildPartnerQuery groupByIsCustomer() Group by the is_customer column
  * @method     ChildPartnerQuery groupByIsSupplier() Group by the is_supplier column
+ * @method     ChildPartnerQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildPartnerQuery groupByUpdatedAt() Group by the updated_at column
  *
  * @method     ChildPartnerQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildPartnerQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -86,13 +92,24 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery rightJoinWithProductCustomer() Adds a RIGHT JOIN clause and with to the query using the ProductCustomer relation
  * @method     ChildPartnerQuery innerJoinWithProductCustomer() Adds a INNER JOIN clause and with to the query using the ProductCustomer relation
  *
- * @method     \PartnerQuery|\ProductCustomerQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildPartnerQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
+ * @method     ChildPartnerQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
+ * @method     ChildPartnerQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
+ *
+ * @method     ChildPartnerQuery joinWithUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the User relation
+ *
+ * @method     ChildPartnerQuery leftJoinWithUser() Adds a LEFT JOIN clause and with to the query using the User relation
+ * @method     ChildPartnerQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
+ * @method     ChildPartnerQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
+ *
+ * @method     \PartnerQuery|\ProductCustomerQuery|\UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildPartner findOne(ConnectionInterface $con = null) Return the first ChildPartner matching the query
  * @method     ChildPartner findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPartner matching the query, or a new ChildPartner object populated from the query conditions when no match is found
  *
  * @method     ChildPartner findOneById(int $id) Return the first ChildPartner filtered by the id column
  * @method     ChildPartner findOneByName(string $name) Return the first ChildPartner filtered by the name column
+ * @method     ChildPartner findOneByEmail(string $email) Return the first ChildPartner filtered by the email column
  * @method     ChildPartner findOneByAddress(string $address) Return the first ChildPartner filtered by the address column
  * @method     ChildPartner findOneByPhone(string $phone) Return the first ChildPartner filtered by the phone column
  * @method     ChildPartner findOneByWebsite(string $website) Return the first ChildPartner filtered by the website column
@@ -103,13 +120,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner findOneByCompanyId(int $company_id) Return the first ChildPartner filtered by the company_id column
  * @method     ChildPartner findOneByIsEmployee(boolean $is_employee) Return the first ChildPartner filtered by the is_employee column
  * @method     ChildPartner findOneByIsCustomer(boolean $is_customer) Return the first ChildPartner filtered by the is_customer column
- * @method     ChildPartner findOneByIsSupplier(boolean $is_supplier) Return the first ChildPartner filtered by the is_supplier column *
+ * @method     ChildPartner findOneByIsSupplier(boolean $is_supplier) Return the first ChildPartner filtered by the is_supplier column
+ * @method     ChildPartner findOneByCreatedAt(string $created_at) Return the first ChildPartner filtered by the created_at column
+ * @method     ChildPartner findOneByUpdatedAt(string $updated_at) Return the first ChildPartner filtered by the updated_at column *
 
  * @method     ChildPartner requirePk($key, ConnectionInterface $con = null) Return the ChildPartner by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOne(ConnectionInterface $con = null) Return the first ChildPartner matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildPartner requireOneById(int $id) Return the first ChildPartner filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByName(string $name) Return the first ChildPartner filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPartner requireOneByEmail(string $email) Return the first ChildPartner filtered by the email column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByAddress(string $address) Return the first ChildPartner filtered by the address column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByPhone(string $phone) Return the first ChildPartner filtered by the phone column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByWebsite(string $website) Return the first ChildPartner filtered by the website column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -121,10 +141,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner requireOneByIsEmployee(boolean $is_employee) Return the first ChildPartner filtered by the is_employee column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByIsCustomer(boolean $is_customer) Return the first ChildPartner filtered by the is_customer column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByIsSupplier(boolean $is_supplier) Return the first ChildPartner filtered by the is_supplier column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPartner requireOneByCreatedAt(string $created_at) Return the first ChildPartner filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPartner requireOneByUpdatedAt(string $updated_at) Return the first ChildPartner filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildPartner[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildPartner objects based on current ModelCriteria
  * @method     ChildPartner[]|ObjectCollection findById(int $id) Return ChildPartner objects filtered by the id column
  * @method     ChildPartner[]|ObjectCollection findByName(string $name) Return ChildPartner objects filtered by the name column
+ * @method     ChildPartner[]|ObjectCollection findByEmail(string $email) Return ChildPartner objects filtered by the email column
  * @method     ChildPartner[]|ObjectCollection findByAddress(string $address) Return ChildPartner objects filtered by the address column
  * @method     ChildPartner[]|ObjectCollection findByPhone(string $phone) Return ChildPartner objects filtered by the phone column
  * @method     ChildPartner[]|ObjectCollection findByWebsite(string $website) Return ChildPartner objects filtered by the website column
@@ -136,6 +159,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner[]|ObjectCollection findByIsEmployee(boolean $is_employee) Return ChildPartner objects filtered by the is_employee column
  * @method     ChildPartner[]|ObjectCollection findByIsCustomer(boolean $is_customer) Return ChildPartner objects filtered by the is_customer column
  * @method     ChildPartner[]|ObjectCollection findByIsSupplier(boolean $is_supplier) Return ChildPartner objects filtered by the is_supplier column
+ * @method     ChildPartner[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildPartner objects filtered by the created_at column
+ * @method     ChildPartner[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildPartner objects filtered by the updated_at column
  * @method     ChildPartner[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -234,7 +259,7 @@ abstract class PartnerQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, address, phone, website, fax, image, tax_number, bank_detail, company_id, is_employee, is_customer, is_supplier FROM partner WHERE id = :p0';
+        $sql = 'SELECT id, name, email, address, phone, website, fax, image, tax_number, bank_detail, company_id, is_employee, is_customer, is_supplier, created_at, updated_at FROM partner WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -388,6 +413,31 @@ abstract class PartnerQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PartnerTableMap::COL_NAME, $name, $comparison);
+    }
+
+    /**
+     * Filter the query on the email column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByEmail('fooValue');   // WHERE email = 'fooValue'
+     * $query->filterByEmail('%fooValue%', Criteria::LIKE); // WHERE email LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $email The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPartnerQuery The current query, for fluid interface
+     */
+    public function filterByEmail($email = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($email)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PartnerTableMap::COL_EMAIL, $email, $comparison);
     }
 
     /**
@@ -690,6 +740,92 @@ abstract class PartnerQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the created_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $createdAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPartnerQuery The current query, for fluid interface
+     */
+    public function filterByCreatedAt($createdAt = null, $comparison = null)
+    {
+        if (is_array($createdAt)) {
+            $useMinMax = false;
+            if (isset($createdAt['min'])) {
+                $this->addUsingAlias(PartnerTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($createdAt['max'])) {
+                $this->addUsingAlias(PartnerTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PartnerTableMap::COL_CREATED_AT, $createdAt, $comparison);
+    }
+
+    /**
+     * Filter the query on the updated_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updatedAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPartnerQuery The current query, for fluid interface
+     */
+    public function filterByUpdatedAt($updatedAt = null, $comparison = null)
+    {
+        if (is_array($updatedAt)) {
+            $useMinMax = false;
+            if (isset($updatedAt['min'])) {
+                $this->addUsingAlias(PartnerTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updatedAt['max'])) {
+                $this->addUsingAlias(PartnerTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PartnerTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
+    }
+
+    /**
      * Filter the query by a related \Partner object
      *
      * @param \Partner|ObjectCollection $partner The related object(s) to use as filter
@@ -910,6 +1046,79 @@ abstract class PartnerQuery extends ModelCriteria
         return $this
             ->joinProductCustomer($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'ProductCustomer', '\ProductCustomerQuery');
+    }
+
+    /**
+     * Filter the query by a related \User object
+     *
+     * @param \User|ObjectCollection $user the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildPartnerQuery The current query, for fluid interface
+     */
+    public function filterByUser($user, $comparison = null)
+    {
+        if ($user instanceof \User) {
+            return $this
+                ->addUsingAlias(PartnerTableMap::COL_ID, $user->getPartnerId(), $comparison);
+        } elseif ($user instanceof ObjectCollection) {
+            return $this
+                ->useUserQuery()
+                ->filterByPrimaryKeys($user->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByUser() only accepts arguments of type \User or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the User relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildPartnerQuery The current query, for fluid interface
+     */
+    public function joinUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('User');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'User');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the User relation User object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \UserQuery A secondary query class using the current class as primary query
+     */
+    public function useUserQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinUser($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'User', '\UserQuery');
     }
 
     /**

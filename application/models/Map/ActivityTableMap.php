@@ -2,8 +2,8 @@
 
 namespace Map;
 
-use \ProductComponent;
-use \ProductComponentQuery;
+use \Activity;
+use \ActivityQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'product_component' table.
+ * This class defines the structure of the 'activity' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class ProductComponentTableMap extends TableMap
+class ActivityTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class ProductComponentTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.ProductComponentTableMap';
+    const CLASS_NAME = '.Map.ActivityTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class ProductComponentTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'product_component';
+    const TABLE_NAME = 'activity';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\ProductComponent';
+    const OM_CLASS = '\\Activity';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'ProductComponent';
+    const CLASS_DEFAULT = 'Activity';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 6;
+    const NUM_COLUMNS = 7;
 
     /**
      * The number of lazy-loaded columns
@@ -69,37 +69,42 @@ class ProductComponentTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 6;
+    const NUM_HYDRATE_COLUMNS = 7;
 
     /**
-     * the column name for the id field
+     * the column name for the uuid field
      */
-    const COL_ID = 'product_component.id';
+    const COL_UUID = 'activity.uuid';
 
     /**
-     * the column name for the product_id field
+     * the column name for the user_id field
      */
-    const COL_PRODUCT_ID = 'product_component.product_id';
+    const COL_USER_ID = 'activity.user_id';
 
     /**
-     * the column name for the component_id field
+     * the column name for the object field
      */
-    const COL_COMPONENT_ID = 'product_component.component_id';
+    const COL_OBJECT = 'activity.object';
 
     /**
-     * the column name for the qty field
+     * the column name for the object_id field
      */
-    const COL_QTY = 'product_component.qty';
+    const COL_OBJECT_ID = 'activity.object_id';
+
+    /**
+     * the column name for the description field
+     */
+    const COL_DESCRIPTION = 'activity.description';
 
     /**
      * the column name for the created_at field
      */
-    const COL_CREATED_AT = 'product_component.created_at';
+    const COL_CREATED_AT = 'activity.created_at';
 
     /**
      * the column name for the updated_at field
      */
-    const COL_UPDATED_AT = 'product_component.updated_at';
+    const COL_UPDATED_AT = 'activity.updated_at';
 
     /**
      * The default string format for model objects of the related table
@@ -113,11 +118,11 @@ class ProductComponentTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'ProductId', 'ComponentId', 'Qty', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'productId', 'componentId', 'qty', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ProductComponentTableMap::COL_ID, ProductComponentTableMap::COL_PRODUCT_ID, ProductComponentTableMap::COL_COMPONENT_ID, ProductComponentTableMap::COL_QTY, ProductComponentTableMap::COL_CREATED_AT, ProductComponentTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'product_id', 'component_id', 'qty', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Uuid', 'UserId', 'Object', 'ObjectId', 'Description', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('uuid', 'userId', 'object', 'objectId', 'description', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ActivityTableMap::COL_UUID, ActivityTableMap::COL_USER_ID, ActivityTableMap::COL_OBJECT, ActivityTableMap::COL_OBJECT_ID, ActivityTableMap::COL_DESCRIPTION, ActivityTableMap::COL_CREATED_AT, ActivityTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('uuid', 'user_id', 'object', 'object_id', 'description', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -127,11 +132,11 @@ class ProductComponentTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'ProductId' => 1, 'ComponentId' => 2, 'Qty' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'productId' => 1, 'componentId' => 2, 'qty' => 3, 'createdAt' => 4, 'updatedAt' => 5, ),
-        self::TYPE_COLNAME       => array(ProductComponentTableMap::COL_ID => 0, ProductComponentTableMap::COL_PRODUCT_ID => 1, ProductComponentTableMap::COL_COMPONENT_ID => 2, ProductComponentTableMap::COL_QTY => 3, ProductComponentTableMap::COL_CREATED_AT => 4, ProductComponentTableMap::COL_UPDATED_AT => 5, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'product_id' => 1, 'component_id' => 2, 'qty' => 3, 'created_at' => 4, 'updated_at' => 5, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Uuid' => 0, 'UserId' => 1, 'Object' => 2, 'ObjectId' => 3, 'Description' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
+        self::TYPE_CAMELNAME     => array('uuid' => 0, 'userId' => 1, 'object' => 2, 'objectId' => 3, 'description' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
+        self::TYPE_COLNAME       => array(ActivityTableMap::COL_UUID => 0, ActivityTableMap::COL_USER_ID => 1, ActivityTableMap::COL_OBJECT => 2, ActivityTableMap::COL_OBJECT_ID => 3, ActivityTableMap::COL_DESCRIPTION => 4, ActivityTableMap::COL_CREATED_AT => 5, ActivityTableMap::COL_UPDATED_AT => 6, ),
+        self::TYPE_FIELDNAME     => array('uuid' => 0, 'user_id' => 1, 'object' => 2, 'object_id' => 3, 'description' => 4, 'created_at' => 5, 'updated_at' => 6, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -144,17 +149,18 @@ class ProductComponentTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('product_component');
-        $this->setPhpName('ProductComponent');
+        $this->setName('activity');
+        $this->setPhpName('Activity');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\ProductComponent');
+        $this->setClassName('\\Activity');
         $this->setPackage('');
-        $this->setUseIdGenerator(true);
+        $this->setUseIdGenerator(false);
         // columns
-        $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addForeignKey('product_id', 'ProductId', 'INTEGER', 'product', 'id', true, null, null);
-        $this->addForeignKey('component_id', 'ComponentId', 'INTEGER', 'component', 'id', true, null, null);
-        $this->addColumn('qty', 'Qty', 'INTEGER', true, null, null);
+        $this->addPrimaryKey('uuid', 'Uuid', 'VARCHAR', true, 255, null);
+        $this->addForeignKey('user_id', 'UserId', 'INTEGER', 'user', 'id', true, null, null);
+        $this->addColumn('object', 'Object', 'VARCHAR', true, 255, null);
+        $this->addColumn('object_id', 'ObjectId', 'INTEGER', true, null, null);
+        $this->addColumn('description', 'Description', 'LONGVARCHAR', false, null, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -164,17 +170,10 @@ class ProductComponentTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Product', '\\Product', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('User', '\\User', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':product_id',
-    1 => ':id',
-  ),
-), null, null, null, false);
-        $this->addRelation('Component', '\\Component', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
-    0 => ':component_id',
+    0 => ':user_id',
     1 => ':id',
   ),
 ), null, null, null, false);
@@ -196,11 +195,11 @@ class ProductComponentTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Uuid', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Uuid', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Uuid', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Uuid', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Uuid', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Uuid', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -217,10 +216,10 @@ class ProductComponentTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return (int) $row[
+        return (string) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
-                : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('Uuid', TableMap::TYPE_PHPNAME, $indexType)
         ];
     }
 
@@ -237,7 +236,7 @@ class ProductComponentTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? ProductComponentTableMap::CLASS_DEFAULT : ProductComponentTableMap::OM_CLASS;
+        return $withPrefix ? ActivityTableMap::CLASS_DEFAULT : ActivityTableMap::OM_CLASS;
     }
 
     /**
@@ -251,22 +250,22 @@ class ProductComponentTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (ProductComponent object, last column rank)
+     * @return array           (Activity object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = ProductComponentTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = ProductComponentTableMap::getInstanceFromPool($key))) {
+        $key = ActivityTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = ActivityTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + ProductComponentTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + ActivityTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = ProductComponentTableMap::OM_CLASS;
-            /** @var ProductComponent $obj */
+            $cls = ActivityTableMap::OM_CLASS;
+            /** @var Activity $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            ProductComponentTableMap::addInstanceToPool($obj, $key);
+            ActivityTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -289,18 +288,18 @@ class ProductComponentTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = ProductComponentTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = ProductComponentTableMap::getInstanceFromPool($key))) {
+            $key = ActivityTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = ActivityTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var ProductComponent $obj */
+                /** @var Activity $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                ProductComponentTableMap::addInstanceToPool($obj, $key);
+                ActivityTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -321,17 +320,19 @@ class ProductComponentTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(ProductComponentTableMap::COL_ID);
-            $criteria->addSelectColumn(ProductComponentTableMap::COL_PRODUCT_ID);
-            $criteria->addSelectColumn(ProductComponentTableMap::COL_COMPONENT_ID);
-            $criteria->addSelectColumn(ProductComponentTableMap::COL_QTY);
-            $criteria->addSelectColumn(ProductComponentTableMap::COL_CREATED_AT);
-            $criteria->addSelectColumn(ProductComponentTableMap::COL_UPDATED_AT);
+            $criteria->addSelectColumn(ActivityTableMap::COL_UUID);
+            $criteria->addSelectColumn(ActivityTableMap::COL_USER_ID);
+            $criteria->addSelectColumn(ActivityTableMap::COL_OBJECT);
+            $criteria->addSelectColumn(ActivityTableMap::COL_OBJECT_ID);
+            $criteria->addSelectColumn(ActivityTableMap::COL_DESCRIPTION);
+            $criteria->addSelectColumn(ActivityTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(ActivityTableMap::COL_UPDATED_AT);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.product_id');
-            $criteria->addSelectColumn($alias . '.component_id');
-            $criteria->addSelectColumn($alias . '.qty');
+            $criteria->addSelectColumn($alias . '.uuid');
+            $criteria->addSelectColumn($alias . '.user_id');
+            $criteria->addSelectColumn($alias . '.object');
+            $criteria->addSelectColumn($alias . '.object_id');
+            $criteria->addSelectColumn($alias . '.description');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }
@@ -346,7 +347,7 @@ class ProductComponentTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(ProductComponentTableMap::DATABASE_NAME)->getTable(ProductComponentTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(ActivityTableMap::DATABASE_NAME)->getTable(ActivityTableMap::TABLE_NAME);
     }
 
     /**
@@ -354,16 +355,16 @@ class ProductComponentTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(ProductComponentTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(ProductComponentTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new ProductComponentTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(ActivityTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(ActivityTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new ActivityTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a ProductComponent or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a Activity or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or ProductComponent object or primary key or array of primary keys
+     * @param mixed               $values Criteria or Activity object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -374,27 +375,27 @@ class ProductComponentTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ActivityTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \ProductComponent) { // it's a model object
+        } elseif ($values instanceof \Activity) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(ProductComponentTableMap::DATABASE_NAME);
-            $criteria->add(ProductComponentTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(ActivityTableMap::DATABASE_NAME);
+            $criteria->add(ActivityTableMap::COL_UUID, (array) $values, Criteria::IN);
         }
 
-        $query = ProductComponentQuery::create()->mergeWith($criteria);
+        $query = ActivityQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            ProductComponentTableMap::clearInstancePool();
+            ActivityTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                ProductComponentTableMap::removeInstanceFromPool($singleval);
+                ActivityTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -402,20 +403,20 @@ class ProductComponentTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the product_component table.
+     * Deletes all rows from the activity table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return ProductComponentQuery::create()->doDeleteAll($con);
+        return ActivityQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a ProductComponent or Criteria object.
+     * Performs an INSERT on the database, given a Activity or Criteria object.
      *
-     * @param mixed               $criteria Criteria or ProductComponent object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or Activity object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -424,22 +425,18 @@ class ProductComponentTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ActivityTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from ProductComponent object
-        }
-
-        if ($criteria->containsKey(ProductComponentTableMap::COL_ID) && $criteria->keyContainsValue(ProductComponentTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.ProductComponentTableMap::COL_ID.')');
+            $criteria = $criteria->buildCriteria(); // build Criteria from Activity object
         }
 
 
         // Set the correct dbName
-        $query = ProductComponentQuery::create()->mergeWith($criteria);
+        $query = ActivityQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -448,7 +445,7 @@ class ProductComponentTableMap extends TableMap
         });
     }
 
-} // ProductComponentTableMap
+} // ActivityTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-ProductComponentTableMap::buildTableMap();
+ActivityTableMap::buildTableMap();

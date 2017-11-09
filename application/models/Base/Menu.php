@@ -2,20 +2,23 @@
 
 namespace Base;
 
-use \Component as ChildComponent;
-use \ComponentQuery as ChildComponentQuery;
-use \Product as ChildProduct;
-use \ProductComponentQuery as ChildProductComponentQuery;
-use \ProductQuery as ChildProductQuery;
+use \Group as ChildGroup;
+use \GroupQuery as ChildGroupQuery;
+use \Menu as ChildMenu;
+use \MenuGroup as ChildMenuGroup;
+use \MenuGroupQuery as ChildMenuGroupQuery;
+use \MenuQuery as ChildMenuQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
-use Map\ProductComponentTableMap;
+use Map\MenuGroupTableMap;
+use Map\MenuTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
+use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
@@ -25,18 +28,18 @@ use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'product_component' table.
+ * Base class that represents a row from the 'menu' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class ProductComponent implements ActiveRecordInterface
+abstract class Menu implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Map\\ProductComponentTableMap';
+    const TABLE_MAP = '\\Map\\MenuTableMap';
 
 
     /**
@@ -73,25 +76,25 @@ abstract class ProductComponent implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the product_id field.
+     * The value for the name field.
      *
-     * @var        int
+     * @var        string
      */
-    protected $product_id;
+    protected $name;
 
     /**
-     * The value for the component_id field.
+     * The value for the url field.
      *
-     * @var        int
+     * @var        string
      */
-    protected $component_id;
+    protected $url;
 
     /**
-     * The value for the qty field.
+     * The value for the controller field.
      *
-     * @var        int
+     * @var        string
      */
-    protected $qty;
+    protected $controller;
 
     /**
      * The value for the created_at field.
@@ -110,14 +113,20 @@ abstract class ProductComponent implements ActiveRecordInterface
     protected $updated_at;
 
     /**
-     * @var        ChildProduct
+     * @var        ObjectCollection|ChildMenuGroup[] Collection to store aggregation of ChildMenuGroup objects.
      */
-    protected $aProduct;
+    protected $collMenuGroups;
+    protected $collMenuGroupsPartial;
 
     /**
-     * @var        ChildComponent
+     * @var        ObjectCollection|ChildGroup[] Cross Collection to store aggregation of ChildGroup objects.
      */
-    protected $aComponent;
+    protected $collGroups;
+
+    /**
+     * @var bool
+     */
+    protected $collGroupsPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -126,6 +135,18 @@ abstract class ProductComponent implements ActiveRecordInterface
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildGroup[]
+     */
+    protected $groupsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildMenuGroup[]
+     */
+    protected $menuGroupsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -138,7 +159,7 @@ abstract class ProductComponent implements ActiveRecordInterface
     }
 
     /**
-     * Initializes internal state of Base\ProductComponent object.
+     * Initializes internal state of Base\Menu object.
      * @see applyDefaults()
      */
     public function __construct()
@@ -235,9 +256,9 @@ abstract class ProductComponent implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>ProductComponent</code> instance.  If
-     * <code>obj</code> is an instance of <code>ProductComponent</code>, delegates to
-     * <code>equals(ProductComponent)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>Menu</code> instance.  If
+     * <code>obj</code> is an instance of <code>Menu</code>, delegates to
+     * <code>equals(Menu)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -303,7 +324,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|ProductComponent The current object, for fluid interface
+     * @return $this|Menu The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -375,33 +396,33 @@ abstract class ProductComponent implements ActiveRecordInterface
     }
 
     /**
-     * Get the [product_id] column value.
+     * Get the [name] column value.
      *
-     * @return int
+     * @return string
      */
-    public function getProductId()
+    public function getName()
     {
-        return $this->product_id;
+        return $this->name;
     }
 
     /**
-     * Get the [component_id] column value.
+     * Get the [url] column value.
      *
-     * @return int
+     * @return string
      */
-    public function getComponentId()
+    public function getUrl()
     {
-        return $this->component_id;
+        return $this->url;
     }
 
     /**
-     * Get the [qty] column value.
+     * Get the [controller] column value.
      *
-     * @return int
+     * @return string
      */
-    public function getQty()
+    public function getController()
     {
-        return $this->qty;
+        return $this->controller;
     }
 
     /**
@@ -448,7 +469,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param int $v new value
-     * @return $this|\ProductComponent The current object (for fluent API support)
+     * @return $this|\Menu The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -458,86 +479,78 @@ abstract class ProductComponent implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[ProductComponentTableMap::COL_ID] = true;
+            $this->modifiedColumns[MenuTableMap::COL_ID] = true;
         }
 
         return $this;
     } // setId()
 
     /**
-     * Set the value of [product_id] column.
+     * Set the value of [name] column.
      *
-     * @param int $v new value
-     * @return $this|\ProductComponent The current object (for fluent API support)
+     * @param string $v new value
+     * @return $this|\Menu The current object (for fluent API support)
      */
-    public function setProductId($v)
+    public function setName($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            $v = (string) $v;
         }
 
-        if ($this->product_id !== $v) {
-            $this->product_id = $v;
-            $this->modifiedColumns[ProductComponentTableMap::COL_PRODUCT_ID] = true;
-        }
-
-        if ($this->aProduct !== null && $this->aProduct->getId() !== $v) {
-            $this->aProduct = null;
+        if ($this->name !== $v) {
+            $this->name = $v;
+            $this->modifiedColumns[MenuTableMap::COL_NAME] = true;
         }
 
         return $this;
-    } // setProductId()
+    } // setName()
 
     /**
-     * Set the value of [component_id] column.
+     * Set the value of [url] column.
      *
-     * @param int $v new value
-     * @return $this|\ProductComponent The current object (for fluent API support)
+     * @param string $v new value
+     * @return $this|\Menu The current object (for fluent API support)
      */
-    public function setComponentId($v)
+    public function setUrl($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            $v = (string) $v;
         }
 
-        if ($this->component_id !== $v) {
-            $this->component_id = $v;
-            $this->modifiedColumns[ProductComponentTableMap::COL_COMPONENT_ID] = true;
-        }
-
-        if ($this->aComponent !== null && $this->aComponent->getId() !== $v) {
-            $this->aComponent = null;
+        if ($this->url !== $v) {
+            $this->url = $v;
+            $this->modifiedColumns[MenuTableMap::COL_URL] = true;
         }
 
         return $this;
-    } // setComponentId()
+    } // setUrl()
 
     /**
-     * Set the value of [qty] column.
+     * Set the value of [controller] column.
      *
-     * @param int $v new value
-     * @return $this|\ProductComponent The current object (for fluent API support)
+     * @param string $v new value
+     * @return $this|\Menu The current object (for fluent API support)
      */
-    public function setQty($v)
+    public function setController($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            $v = (string) $v;
         }
 
-        if ($this->qty !== $v) {
-            $this->qty = $v;
-            $this->modifiedColumns[ProductComponentTableMap::COL_QTY] = true;
+        if ($this->controller !== $v) {
+            $this->controller = $v;
+            $this->modifiedColumns[MenuTableMap::COL_CONTROLLER] = true;
         }
 
         return $this;
-    } // setQty()
+    } // setController()
 
     /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\ProductComponent The current object (for fluent API support)
+     * @return $this|\Menu The current object (for fluent API support)
      */
     public function setCreatedAt($v)
     {
@@ -545,7 +558,7 @@ abstract class ProductComponent implements ActiveRecordInterface
         if ($this->created_at !== null || $dt !== null) {
             if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_at->format("Y-m-d H:i:s.u")) {
                 $this->created_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[ProductComponentTableMap::COL_CREATED_AT] = true;
+                $this->modifiedColumns[MenuTableMap::COL_CREATED_AT] = true;
             }
         } // if either are not null
 
@@ -557,7 +570,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\ProductComponent The current object (for fluent API support)
+     * @return $this|\Menu The current object (for fluent API support)
      */
     public function setUpdatedAt($v)
     {
@@ -565,7 +578,7 @@ abstract class ProductComponent implements ActiveRecordInterface
         if ($this->updated_at !== null || $dt !== null) {
             if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated_at->format("Y-m-d H:i:s.u")) {
                 $this->updated_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[ProductComponentTableMap::COL_UPDATED_AT] = true;
+                $this->modifiedColumns[MenuTableMap::COL_UPDATED_AT] = true;
             }
         } // if either are not null
 
@@ -608,25 +621,25 @@ abstract class ProductComponent implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProductComponentTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : MenuTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProductComponentTableMap::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->product_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : MenuTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProductComponentTableMap::translateFieldName('ComponentId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->component_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : MenuTableMap::translateFieldName('Url', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->url = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProductComponentTableMap::translateFieldName('Qty', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->qty = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : MenuTableMap::translateFieldName('Controller', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->controller = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProductComponentTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : MenuTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ProductComponentTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : MenuTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -639,10 +652,10 @@ abstract class ProductComponent implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 6; // 6 = ProductComponentTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 6; // 6 = MenuTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\ProductComponent'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\Menu'), 0, $e);
         }
     }
 
@@ -661,12 +674,6 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aProduct !== null && $this->product_id !== $this->aProduct->getId()) {
-            $this->aProduct = null;
-        }
-        if ($this->aComponent !== null && $this->component_id !== $this->aComponent->getId()) {
-            $this->aComponent = null;
-        }
     } // ensureConsistency
 
     /**
@@ -690,13 +697,13 @@ abstract class ProductComponent implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(ProductComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(MenuTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildProductComponentQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildMenuQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -706,8 +713,9 @@ abstract class ProductComponent implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aProduct = null;
-            $this->aComponent = null;
+            $this->collMenuGroups = null;
+
+            $this->collGroups = null;
         } // if (deep)
     }
 
@@ -717,8 +725,8 @@ abstract class ProductComponent implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see ProductComponent::setDeleted()
-     * @see ProductComponent::isDeleted()
+     * @see Menu::setDeleted()
+     * @see Menu::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -727,11 +735,11 @@ abstract class ProductComponent implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(MenuTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildProductComponentQuery::create()
+            $deleteQuery = ChildMenuQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -766,7 +774,7 @@ abstract class ProductComponent implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(MenuTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -785,7 +793,7 @@ abstract class ProductComponent implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                ProductComponentTableMap::addInstanceToPool($this);
+                MenuTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -811,25 +819,6 @@ abstract class ProductComponent implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
-            // We call the save method on the following object(s) if they
-            // were passed to this object by their corresponding set
-            // method.  This object relates to these object(s) by a
-            // foreign key reference.
-
-            if ($this->aProduct !== null) {
-                if ($this->aProduct->isModified() || $this->aProduct->isNew()) {
-                    $affectedRows += $this->aProduct->save($con);
-                }
-                $this->setProduct($this->aProduct);
-            }
-
-            if ($this->aComponent !== null) {
-                if ($this->aComponent->isModified() || $this->aComponent->isNew()) {
-                    $affectedRows += $this->aComponent->save($con);
-                }
-                $this->setComponent($this->aComponent);
-            }
-
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -839,6 +828,52 @@ abstract class ProductComponent implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
+            }
+
+            if ($this->groupsScheduledForDeletion !== null) {
+                if (!$this->groupsScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->groupsScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[0] = $this->getId();
+                        $entryPk[1] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \MenuGroupQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->groupsScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collGroups) {
+                foreach ($this->collGroups as $group) {
+                    if (!$group->isDeleted() && ($group->isNew() || $group->isModified())) {
+                        $group->save($con);
+                    }
+                }
+            }
+
+
+            if ($this->menuGroupsScheduledForDeletion !== null) {
+                if (!$this->menuGroupsScheduledForDeletion->isEmpty()) {
+                    \MenuGroupQuery::create()
+                        ->filterByPrimaryKeys($this->menuGroupsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->menuGroupsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collMenuGroups !== null) {
+                foreach ($this->collMenuGroups as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             $this->alreadyInSave = false;
@@ -861,33 +896,33 @@ abstract class ProductComponent implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[ProductComponentTableMap::COL_ID] = true;
+        $this->modifiedColumns[MenuTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ProductComponentTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . MenuTableMap::COL_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(ProductComponentTableMap::COL_ID)) {
+        if ($this->isColumnModified(MenuTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_PRODUCT_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'product_id';
+        if ($this->isColumnModified(MenuTableMap::COL_NAME)) {
+            $modifiedColumns[':p' . $index++]  = 'name';
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_COMPONENT_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'component_id';
+        if ($this->isColumnModified(MenuTableMap::COL_URL)) {
+            $modifiedColumns[':p' . $index++]  = 'url';
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_QTY)) {
-            $modifiedColumns[':p' . $index++]  = 'qty';
+        if ($this->isColumnModified(MenuTableMap::COL_CONTROLLER)) {
+            $modifiedColumns[':p' . $index++]  = 'controller';
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_CREATED_AT)) {
+        if ($this->isColumnModified(MenuTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_UPDATED_AT)) {
+        if ($this->isColumnModified(MenuTableMap::COL_UPDATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'updated_at';
         }
 
         $sql = sprintf(
-            'INSERT INTO product_component (%s) VALUES (%s)',
+            'INSERT INTO menu (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -899,14 +934,14 @@ abstract class ProductComponent implements ActiveRecordInterface
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'product_id':
-                        $stmt->bindValue($identifier, $this->product_id, PDO::PARAM_INT);
+                    case 'name':
+                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
-                    case 'component_id':
-                        $stmt->bindValue($identifier, $this->component_id, PDO::PARAM_INT);
+                    case 'url':
+                        $stmt->bindValue($identifier, $this->url, PDO::PARAM_STR);
                         break;
-                    case 'qty':
-                        $stmt->bindValue($identifier, $this->qty, PDO::PARAM_INT);
+                    case 'controller':
+                        $stmt->bindValue($identifier, $this->controller, PDO::PARAM_STR);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -960,7 +995,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = ProductComponentTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = MenuTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -980,13 +1015,13 @@ abstract class ProductComponent implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getProductId();
+                return $this->getName();
                 break;
             case 2:
-                return $this->getComponentId();
+                return $this->getUrl();
                 break;
             case 3:
-                return $this->getQty();
+                return $this->getController();
                 break;
             case 4:
                 return $this->getCreatedAt();
@@ -1018,16 +1053,16 @@ abstract class ProductComponent implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['ProductComponent'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['Menu'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['ProductComponent'][$this->hashCode()] = true;
-        $keys = ProductComponentTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['Menu'][$this->hashCode()] = true;
+        $keys = MenuTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getProductId(),
-            $keys[2] => $this->getComponentId(),
-            $keys[3] => $this->getQty(),
+            $keys[1] => $this->getName(),
+            $keys[2] => $this->getUrl(),
+            $keys[3] => $this->getController(),
             $keys[4] => $this->getCreatedAt(),
             $keys[5] => $this->getUpdatedAt(),
         );
@@ -1045,35 +1080,20 @@ abstract class ProductComponent implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aProduct) {
+            if (null !== $this->collMenuGroups) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'product';
+                        $key = 'menuGroups';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'product';
+                        $key = 'menu_groups';
                         break;
                     default:
-                        $key = 'Product';
+                        $key = 'MenuGroups';
                 }
 
-                $result[$key] = $this->aProduct->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->aComponent) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'component';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'component';
-                        break;
-                    default:
-                        $key = 'Component';
-                }
-
-                $result[$key] = $this->aComponent->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->collMenuGroups->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1089,11 +1109,11 @@ abstract class ProductComponent implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\ProductComponent
+     * @return $this|\Menu
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = ProductComponentTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = MenuTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1104,7 +1124,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\ProductComponent
+     * @return $this|\Menu
      */
     public function setByPosition($pos, $value)
     {
@@ -1113,13 +1133,13 @@ abstract class ProductComponent implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setProductId($value);
+                $this->setName($value);
                 break;
             case 2:
-                $this->setComponentId($value);
+                $this->setUrl($value);
                 break;
             case 3:
-                $this->setQty($value);
+                $this->setController($value);
                 break;
             case 4:
                 $this->setCreatedAt($value);
@@ -1151,19 +1171,19 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = ProductComponentTableMap::getFieldNames($keyType);
+        $keys = MenuTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setProductId($arr[$keys[1]]);
+            $this->setName($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setComponentId($arr[$keys[2]]);
+            $this->setUrl($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setQty($arr[$keys[3]]);
+            $this->setController($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
             $this->setCreatedAt($arr[$keys[4]]);
@@ -1190,7 +1210,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\ProductComponent The current object, for fluid interface
+     * @return $this|\Menu The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1210,25 +1230,25 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(ProductComponentTableMap::DATABASE_NAME);
+        $criteria = new Criteria(MenuTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(ProductComponentTableMap::COL_ID)) {
-            $criteria->add(ProductComponentTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(MenuTableMap::COL_ID)) {
+            $criteria->add(MenuTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_PRODUCT_ID)) {
-            $criteria->add(ProductComponentTableMap::COL_PRODUCT_ID, $this->product_id);
+        if ($this->isColumnModified(MenuTableMap::COL_NAME)) {
+            $criteria->add(MenuTableMap::COL_NAME, $this->name);
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_COMPONENT_ID)) {
-            $criteria->add(ProductComponentTableMap::COL_COMPONENT_ID, $this->component_id);
+        if ($this->isColumnModified(MenuTableMap::COL_URL)) {
+            $criteria->add(MenuTableMap::COL_URL, $this->url);
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_QTY)) {
-            $criteria->add(ProductComponentTableMap::COL_QTY, $this->qty);
+        if ($this->isColumnModified(MenuTableMap::COL_CONTROLLER)) {
+            $criteria->add(MenuTableMap::COL_CONTROLLER, $this->controller);
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_CREATED_AT)) {
-            $criteria->add(ProductComponentTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(MenuTableMap::COL_CREATED_AT)) {
+            $criteria->add(MenuTableMap::COL_CREATED_AT, $this->created_at);
         }
-        if ($this->isColumnModified(ProductComponentTableMap::COL_UPDATED_AT)) {
-            $criteria->add(ProductComponentTableMap::COL_UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(MenuTableMap::COL_UPDATED_AT)) {
+            $criteria->add(MenuTableMap::COL_UPDATED_AT, $this->updated_at);
         }
 
         return $criteria;
@@ -1246,8 +1266,8 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildProductComponentQuery::create();
-        $criteria->add(ProductComponentTableMap::COL_ID, $this->id);
+        $criteria = ChildMenuQuery::create();
+        $criteria->add(MenuTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1309,18 +1329,32 @@ abstract class ProductComponent implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \ProductComponent (or compatible) type.
+     * @param      object $copyObj An object of \Menu (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setProductId($this->getProductId());
-        $copyObj->setComponentId($this->getComponentId());
-        $copyObj->setQty($this->getQty());
+        $copyObj->setName($this->getName());
+        $copyObj->setUrl($this->getUrl());
+        $copyObj->setController($this->getController());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
+
+        if ($deepCopy) {
+            // important: temporarily setNew(false) because this affects the behavior of
+            // the getter/setter methods for fkey referrer objects.
+            $copyObj->setNew(false);
+
+            foreach ($this->getMenuGroups() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addMenuGroup($relObj->copy($deepCopy));
+                }
+            }
+
+        } // if ($deepCopy)
+
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1336,7 +1370,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \ProductComponent Clone of current object.
+     * @return \Menu Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1349,106 +1383,517 @@ abstract class ProductComponent implements ActiveRecordInterface
         return $copyObj;
     }
 
+
     /**
-     * Declares an association between this object and a ChildProduct object.
+     * Initializes a collection based on the name of a relation.
+     * Avoids crafting an 'init[$relationName]s' method name
+     * that wouldn't work when StandardEnglishPluralizer is used.
      *
-     * @param  ChildProduct $v
-     * @return $this|\ProductComponent The current object (for fluent API support)
+     * @param      string $relationName The name of the relation to initialize
+     * @return void
+     */
+    public function initRelation($relationName)
+    {
+        if ('MenuGroup' == $relationName) {
+            $this->initMenuGroups();
+            return;
+        }
+    }
+
+    /**
+     * Clears out the collMenuGroups collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addMenuGroups()
+     */
+    public function clearMenuGroups()
+    {
+        $this->collMenuGroups = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collMenuGroups collection loaded partially.
+     */
+    public function resetPartialMenuGroups($v = true)
+    {
+        $this->collMenuGroupsPartial = $v;
+    }
+
+    /**
+     * Initializes the collMenuGroups collection.
+     *
+     * By default this just sets the collMenuGroups collection to an empty array (like clearcollMenuGroups());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initMenuGroups($overrideExisting = true)
+    {
+        if (null !== $this->collMenuGroups && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = MenuGroupTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collMenuGroups = new $collectionClassName;
+        $this->collMenuGroups->setModel('\MenuGroup');
+    }
+
+    /**
+     * Gets an array of ChildMenuGroup objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildMenu is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildMenuGroup[] List of ChildMenuGroup objects
      * @throws PropelException
      */
-    public function setProduct(ChildProduct $v = null)
+    public function getMenuGroups(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        if ($v === null) {
-            $this->setProductId(NULL);
-        } else {
-            $this->setProductId($v->getId());
+        $partial = $this->collMenuGroupsPartial && !$this->isNew();
+        if (null === $this->collMenuGroups || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collMenuGroups) {
+                // return empty collection
+                $this->initMenuGroups();
+            } else {
+                $collMenuGroups = ChildMenuGroupQuery::create(null, $criteria)
+                    ->filterByMenu($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collMenuGroupsPartial && count($collMenuGroups)) {
+                        $this->initMenuGroups(false);
+
+                        foreach ($collMenuGroups as $obj) {
+                            if (false == $this->collMenuGroups->contains($obj)) {
+                                $this->collMenuGroups->append($obj);
+                            }
+                        }
+
+                        $this->collMenuGroupsPartial = true;
+                    }
+
+                    return $collMenuGroups;
+                }
+
+                if ($partial && $this->collMenuGroups) {
+                    foreach ($this->collMenuGroups as $obj) {
+                        if ($obj->isNew()) {
+                            $collMenuGroups[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collMenuGroups = $collMenuGroups;
+                $this->collMenuGroupsPartial = false;
+            }
         }
 
-        $this->aProduct = $v;
+        return $this->collMenuGroups;
+    }
 
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildProduct object, it will not be re-added.
-        if ($v !== null) {
-            $v->addProductComponent($this);
+    /**
+     * Sets a collection of ChildMenuGroup objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $menuGroups A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildMenu The current object (for fluent API support)
+     */
+    public function setMenuGroups(Collection $menuGroups, ConnectionInterface $con = null)
+    {
+        /** @var ChildMenuGroup[] $menuGroupsToDelete */
+        $menuGroupsToDelete = $this->getMenuGroups(new Criteria(), $con)->diff($menuGroups);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->menuGroupsScheduledForDeletion = clone $menuGroupsToDelete;
+
+        foreach ($menuGroupsToDelete as $menuGroupRemoved) {
+            $menuGroupRemoved->setMenu(null);
         }
 
+        $this->collMenuGroups = null;
+        foreach ($menuGroups as $menuGroup) {
+            $this->addMenuGroup($menuGroup);
+        }
+
+        $this->collMenuGroups = $menuGroups;
+        $this->collMenuGroupsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related MenuGroup objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related MenuGroup objects.
+     * @throws PropelException
+     */
+    public function countMenuGroups(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collMenuGroupsPartial && !$this->isNew();
+        if (null === $this->collMenuGroups || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collMenuGroups) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getMenuGroups());
+            }
+
+            $query = ChildMenuGroupQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByMenu($this)
+                ->count($con);
+        }
+
+        return count($this->collMenuGroups);
+    }
+
+    /**
+     * Method called to associate a ChildMenuGroup object to this object
+     * through the ChildMenuGroup foreign key attribute.
+     *
+     * @param  ChildMenuGroup $l ChildMenuGroup
+     * @return $this|\Menu The current object (for fluent API support)
+     */
+    public function addMenuGroup(ChildMenuGroup $l)
+    {
+        if ($this->collMenuGroups === null) {
+            $this->initMenuGroups();
+            $this->collMenuGroupsPartial = true;
+        }
+
+        if (!$this->collMenuGroups->contains($l)) {
+            $this->doAddMenuGroup($l);
+
+            if ($this->menuGroupsScheduledForDeletion and $this->menuGroupsScheduledForDeletion->contains($l)) {
+                $this->menuGroupsScheduledForDeletion->remove($this->menuGroupsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildMenuGroup $menuGroup The ChildMenuGroup object to add.
+     */
+    protected function doAddMenuGroup(ChildMenuGroup $menuGroup)
+    {
+        $this->collMenuGroups[]= $menuGroup;
+        $menuGroup->setMenu($this);
+    }
+
+    /**
+     * @param  ChildMenuGroup $menuGroup The ChildMenuGroup object to remove.
+     * @return $this|ChildMenu The current object (for fluent API support)
+     */
+    public function removeMenuGroup(ChildMenuGroup $menuGroup)
+    {
+        if ($this->getMenuGroups()->contains($menuGroup)) {
+            $pos = $this->collMenuGroups->search($menuGroup);
+            $this->collMenuGroups->remove($pos);
+            if (null === $this->menuGroupsScheduledForDeletion) {
+                $this->menuGroupsScheduledForDeletion = clone $this->collMenuGroups;
+                $this->menuGroupsScheduledForDeletion->clear();
+            }
+            $this->menuGroupsScheduledForDeletion[]= clone $menuGroup;
+            $menuGroup->setMenu(null);
+        }
 
         return $this;
     }
 
 
     /**
-     * Get the associated ChildProduct object
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Menu is new, it will return
+     * an empty collection; or if this Menu has previously
+     * been saved, it will retrieve related MenuGroups from storage.
      *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildProduct The associated ChildProduct object.
-     * @throws PropelException
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Menu.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildMenuGroup[] List of ChildMenuGroup objects
      */
-    public function getProduct(ConnectionInterface $con = null)
+    public function getMenuGroupsJoinGroup(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        if ($this->aProduct === null && ($this->product_id != 0)) {
-            $this->aProduct = ChildProductQuery::create()->findPk($this->product_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aProduct->addProductComponents($this);
-             */
-        }
+        $query = ChildMenuGroupQuery::create(null, $criteria);
+        $query->joinWith('Group', $joinBehavior);
 
-        return $this->aProduct;
+        return $this->getMenuGroups($query, $con);
     }
 
     /**
-     * Declares an association between this object and a ChildComponent object.
+     * Clears out the collGroups collection
      *
-     * @param  ChildComponent $v
-     * @return $this|\ProductComponent The current object (for fluent API support)
-     * @throws PropelException
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addGroups()
      */
-    public function setComponent(ChildComponent $v = null)
+    public function clearGroups()
     {
-        if ($v === null) {
-            $this->setComponentId(NULL);
-        } else {
-            $this->setComponentId($v->getId());
+        $this->collGroups = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collGroups crossRef collection.
+     *
+     * By default this just sets the collGroups collection to an empty collection (like clearGroups());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initGroups()
+    {
+        $collectionClassName = MenuGroupTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collGroups = new $collectionClassName;
+        $this->collGroupsPartial = true;
+        $this->collGroups->setModel('\Group');
+    }
+
+    /**
+     * Checks if the collGroups collection is loaded.
+     *
+     * @return bool
+     */
+    public function isGroupsLoaded()
+    {
+        return null !== $this->collGroups;
+    }
+
+    /**
+     * Gets a collection of ChildGroup objects related by a many-to-many relationship
+     * to the current object by way of the menu_group cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildMenu is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildGroup[] List of ChildGroup objects
+     */
+    public function getGroups(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collGroupsPartial && !$this->isNew();
+        if (null === $this->collGroups || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collGroups) {
+                    $this->initGroups();
+                }
+            } else {
+
+                $query = ChildGroupQuery::create(null, $criteria)
+                    ->filterByMenu($this);
+                $collGroups = $query->find($con);
+                if (null !== $criteria) {
+                    return $collGroups;
+                }
+
+                if ($partial && $this->collGroups) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collGroups as $obj) {
+                        if (!$collGroups->contains($obj)) {
+                            $collGroups[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collGroups = $collGroups;
+                $this->collGroupsPartial = false;
+            }
         }
 
-        $this->aComponent = $v;
+        return $this->collGroups;
+    }
 
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildComponent object, it will not be re-added.
-        if ($v !== null) {
-            $v->addProductComponent($this);
+    /**
+     * Sets a collection of Group objects related by a many-to-many relationship
+     * to the current object by way of the menu_group cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $groups A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildMenu The current object (for fluent API support)
+     */
+    public function setGroups(Collection $groups, ConnectionInterface $con = null)
+    {
+        $this->clearGroups();
+        $currentGroups = $this->getGroups();
+
+        $groupsScheduledForDeletion = $currentGroups->diff($groups);
+
+        foreach ($groupsScheduledForDeletion as $toDelete) {
+            $this->removeGroup($toDelete);
         }
 
+        foreach ($groups as $group) {
+            if (!$currentGroups->contains($group)) {
+                $this->doAddGroup($group);
+            }
+        }
+
+        $this->collGroupsPartial = false;
+        $this->collGroups = $groups;
 
         return $this;
     }
 
+    /**
+     * Gets the number of Group objects related by a many-to-many relationship
+     * to the current object by way of the menu_group cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Group objects
+     */
+    public function countGroups(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collGroupsPartial && !$this->isNew();
+        if (null === $this->collGroups || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collGroups) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getGroups());
+                }
+
+                $query = ChildGroupQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByMenu($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collGroups);
+        }
+    }
 
     /**
-     * Get the associated ChildComponent object
+     * Associate a ChildGroup to this object
+     * through the menu_group cross reference table.
      *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildComponent The associated ChildComponent object.
-     * @throws PropelException
+     * @param ChildGroup $group
+     * @return ChildMenu The current object (for fluent API support)
      */
-    public function getComponent(ConnectionInterface $con = null)
+    public function addGroup(ChildGroup $group)
     {
-        if ($this->aComponent === null && ($this->component_id != 0)) {
-            $this->aComponent = ChildComponentQuery::create()->findPk($this->component_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aComponent->addProductComponents($this);
-             */
+        if ($this->collGroups === null) {
+            $this->initGroups();
         }
 
-        return $this->aComponent;
+        if (!$this->getGroups()->contains($group)) {
+            // only add it if the **same** object is not already associated
+            $this->collGroups->push($group);
+            $this->doAddGroup($group);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildGroup $group
+     */
+    protected function doAddGroup(ChildGroup $group)
+    {
+        $menuGroup = new ChildMenuGroup();
+
+        $menuGroup->setGroup($group);
+
+        $menuGroup->setMenu($this);
+
+        $this->addMenuGroup($menuGroup);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$group->isMenusLoaded()) {
+            $group->initMenus();
+            $group->getMenus()->push($this);
+        } elseif (!$group->getMenus()->contains($this)) {
+            $group->getMenus()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove group of this object
+     * through the menu_group cross reference table.
+     *
+     * @param ChildGroup $group
+     * @return ChildMenu The current object (for fluent API support)
+     */
+    public function removeGroup(ChildGroup $group)
+    {
+        if ($this->getGroups()->contains($group)) {
+            $menuGroup = new ChildMenuGroup();
+            $menuGroup->setGroup($group);
+            if ($group->isMenusLoaded()) {
+                //remove the back reference if available
+                $group->getMenus()->removeObject($this);
+            }
+
+            $menuGroup->setMenu($this);
+            $this->removeMenuGroup(clone $menuGroup);
+            $menuGroup->clear();
+
+            $this->collGroups->remove($this->collGroups->search($group));
+
+            if (null === $this->groupsScheduledForDeletion) {
+                $this->groupsScheduledForDeletion = clone $this->collGroups;
+                $this->groupsScheduledForDeletion->clear();
+            }
+
+            $this->groupsScheduledForDeletion->push($group);
+        }
+
+
+        return $this;
     }
 
     /**
@@ -1458,16 +1903,10 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aProduct) {
-            $this->aProduct->removeProductComponent($this);
-        }
-        if (null !== $this->aComponent) {
-            $this->aComponent->removeProductComponent($this);
-        }
         $this->id = null;
-        $this->product_id = null;
-        $this->component_id = null;
-        $this->qty = null;
+        $this->name = null;
+        $this->url = null;
+        $this->controller = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;
@@ -1489,10 +1928,20 @@ abstract class ProductComponent implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collMenuGroups) {
+                foreach ($this->collMenuGroups as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collGroups) {
+                foreach ($this->collGroups as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
-        $this->aProduct = null;
-        $this->aComponent = null;
+        $this->collMenuGroups = null;
+        $this->collGroups = null;
     }
 
     /**
@@ -1502,7 +1951,7 @@ abstract class ProductComponent implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(ProductComponentTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(MenuTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

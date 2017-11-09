@@ -2,8 +2,8 @@
 
 namespace Map;
 
-use \ProductComponent;
-use \ProductComponentQuery;
+use \Group;
+use \GroupQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'product_component' table.
+ * This class defines the structure of the 'group' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class ProductComponentTableMap extends TableMap
+class GroupTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class ProductComponentTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.ProductComponentTableMap';
+    const CLASS_NAME = '.Map.GroupTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class ProductComponentTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'product_component';
+    const TABLE_NAME = 'group';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\ProductComponent';
+    const OM_CLASS = '\\Group';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'ProductComponent';
+    const CLASS_DEFAULT = 'Group';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 6;
+    const NUM_COLUMNS = 5;
 
     /**
      * The number of lazy-loaded columns
@@ -69,37 +69,32 @@ class ProductComponentTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 6;
+    const NUM_HYDRATE_COLUMNS = 5;
 
     /**
      * the column name for the id field
      */
-    const COL_ID = 'product_component.id';
+    const COL_ID = 'group.id';
 
     /**
-     * the column name for the product_id field
+     * the column name for the name field
      */
-    const COL_PRODUCT_ID = 'product_component.product_id';
+    const COL_NAME = 'group.name';
 
     /**
-     * the column name for the component_id field
+     * the column name for the description field
      */
-    const COL_COMPONENT_ID = 'product_component.component_id';
-
-    /**
-     * the column name for the qty field
-     */
-    const COL_QTY = 'product_component.qty';
+    const COL_DESCRIPTION = 'group.description';
 
     /**
      * the column name for the created_at field
      */
-    const COL_CREATED_AT = 'product_component.created_at';
+    const COL_CREATED_AT = 'group.created_at';
 
     /**
      * the column name for the updated_at field
      */
-    const COL_UPDATED_AT = 'product_component.updated_at';
+    const COL_UPDATED_AT = 'group.updated_at';
 
     /**
      * The default string format for model objects of the related table
@@ -113,11 +108,11 @@ class ProductComponentTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'ProductId', 'ComponentId', 'Qty', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'productId', 'componentId', 'qty', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ProductComponentTableMap::COL_ID, ProductComponentTableMap::COL_PRODUCT_ID, ProductComponentTableMap::COL_COMPONENT_ID, ProductComponentTableMap::COL_QTY, ProductComponentTableMap::COL_CREATED_AT, ProductComponentTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'product_id', 'component_id', 'qty', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Description', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'description', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(GroupTableMap::COL_ID, GroupTableMap::COL_NAME, GroupTableMap::COL_DESCRIPTION, GroupTableMap::COL_CREATED_AT, GroupTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'description', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -127,11 +122,11 @@ class ProductComponentTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'ProductId' => 1, 'ComponentId' => 2, 'Qty' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'productId' => 1, 'componentId' => 2, 'qty' => 3, 'createdAt' => 4, 'updatedAt' => 5, ),
-        self::TYPE_COLNAME       => array(ProductComponentTableMap::COL_ID => 0, ProductComponentTableMap::COL_PRODUCT_ID => 1, ProductComponentTableMap::COL_COMPONENT_ID => 2, ProductComponentTableMap::COL_QTY => 3, ProductComponentTableMap::COL_CREATED_AT => 4, ProductComponentTableMap::COL_UPDATED_AT => 5, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'product_id' => 1, 'component_id' => 2, 'qty' => 3, 'created_at' => 4, 'updated_at' => 5, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Description' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'createdAt' => 3, 'updatedAt' => 4, ),
+        self::TYPE_COLNAME       => array(GroupTableMap::COL_ID => 0, GroupTableMap::COL_NAME => 1, GroupTableMap::COL_DESCRIPTION => 2, GroupTableMap::COL_CREATED_AT => 3, GroupTableMap::COL_UPDATED_AT => 4, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'created_at' => 3, 'updated_at' => 4, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -144,17 +139,16 @@ class ProductComponentTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('product_component');
-        $this->setPhpName('ProductComponent');
+        $this->setName('group');
+        $this->setPhpName('Group');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\ProductComponent');
+        $this->setClassName('\\Group');
         $this->setPackage('');
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addForeignKey('product_id', 'ProductId', 'INTEGER', 'product', 'id', true, null, null);
-        $this->addForeignKey('component_id', 'ComponentId', 'INTEGER', 'component', 'id', true, null, null);
-        $this->addColumn('qty', 'Qty', 'INTEGER', true, null, null);
+        $this->addColumn('name', 'Name', 'VARCHAR', true, 255, null);
+        $this->addColumn('description', 'Description', 'LONGVARCHAR', false, null, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -164,20 +158,22 @@ class ProductComponentTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Product', '\\Product', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('UserGroup', '\\UserGroup', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
-    0 => ':product_id',
+    0 => ':group_id',
     1 => ':id',
   ),
-), null, null, null, false);
-        $this->addRelation('Component', '\\Component', RelationMap::MANY_TO_ONE, array (
+), null, null, 'UserGroups', false);
+        $this->addRelation('MenuGroup', '\\MenuGroup', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
-    0 => ':component_id',
+    0 => ':group_id',
     1 => ':id',
   ),
-), null, null, null, false);
+), null, null, 'MenuGroups', false);
+        $this->addRelation('User', '\\User', RelationMap::MANY_TO_MANY, array(), null, null, 'Users');
+        $this->addRelation('Menu', '\\Menu', RelationMap::MANY_TO_MANY, array(), null, null, 'Menus');
     } // buildRelations()
 
     /**
@@ -237,7 +233,7 @@ class ProductComponentTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? ProductComponentTableMap::CLASS_DEFAULT : ProductComponentTableMap::OM_CLASS;
+        return $withPrefix ? GroupTableMap::CLASS_DEFAULT : GroupTableMap::OM_CLASS;
     }
 
     /**
@@ -251,22 +247,22 @@ class ProductComponentTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (ProductComponent object, last column rank)
+     * @return array           (Group object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = ProductComponentTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = ProductComponentTableMap::getInstanceFromPool($key))) {
+        $key = GroupTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = GroupTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + ProductComponentTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + GroupTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = ProductComponentTableMap::OM_CLASS;
-            /** @var ProductComponent $obj */
+            $cls = GroupTableMap::OM_CLASS;
+            /** @var Group $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            ProductComponentTableMap::addInstanceToPool($obj, $key);
+            GroupTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -289,18 +285,18 @@ class ProductComponentTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = ProductComponentTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = ProductComponentTableMap::getInstanceFromPool($key))) {
+            $key = GroupTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = GroupTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var ProductComponent $obj */
+                /** @var Group $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                ProductComponentTableMap::addInstanceToPool($obj, $key);
+                GroupTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -321,17 +317,15 @@ class ProductComponentTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(ProductComponentTableMap::COL_ID);
-            $criteria->addSelectColumn(ProductComponentTableMap::COL_PRODUCT_ID);
-            $criteria->addSelectColumn(ProductComponentTableMap::COL_COMPONENT_ID);
-            $criteria->addSelectColumn(ProductComponentTableMap::COL_QTY);
-            $criteria->addSelectColumn(ProductComponentTableMap::COL_CREATED_AT);
-            $criteria->addSelectColumn(ProductComponentTableMap::COL_UPDATED_AT);
+            $criteria->addSelectColumn(GroupTableMap::COL_ID);
+            $criteria->addSelectColumn(GroupTableMap::COL_NAME);
+            $criteria->addSelectColumn(GroupTableMap::COL_DESCRIPTION);
+            $criteria->addSelectColumn(GroupTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(GroupTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.product_id');
-            $criteria->addSelectColumn($alias . '.component_id');
-            $criteria->addSelectColumn($alias . '.qty');
+            $criteria->addSelectColumn($alias . '.name');
+            $criteria->addSelectColumn($alias . '.description');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }
@@ -346,7 +340,7 @@ class ProductComponentTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(ProductComponentTableMap::DATABASE_NAME)->getTable(ProductComponentTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(GroupTableMap::DATABASE_NAME)->getTable(GroupTableMap::TABLE_NAME);
     }
 
     /**
@@ -354,16 +348,16 @@ class ProductComponentTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(ProductComponentTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(ProductComponentTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new ProductComponentTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(GroupTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(GroupTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new GroupTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a ProductComponent or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a Group or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or ProductComponent object or primary key or array of primary keys
+     * @param mixed               $values Criteria or Group object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -374,27 +368,27 @@ class ProductComponentTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(GroupTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \ProductComponent) { // it's a model object
+        } elseif ($values instanceof \Group) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(ProductComponentTableMap::DATABASE_NAME);
-            $criteria->add(ProductComponentTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(GroupTableMap::DATABASE_NAME);
+            $criteria->add(GroupTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
-        $query = ProductComponentQuery::create()->mergeWith($criteria);
+        $query = GroupQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            ProductComponentTableMap::clearInstancePool();
+            GroupTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                ProductComponentTableMap::removeInstanceFromPool($singleval);
+                GroupTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -402,20 +396,20 @@ class ProductComponentTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the product_component table.
+     * Deletes all rows from the group table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return ProductComponentQuery::create()->doDeleteAll($con);
+        return GroupQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a ProductComponent or Criteria object.
+     * Performs an INSERT on the database, given a Group or Criteria object.
      *
-     * @param mixed               $criteria Criteria or ProductComponent object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or Group object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -424,22 +418,22 @@ class ProductComponentTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(GroupTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from ProductComponent object
+            $criteria = $criteria->buildCriteria(); // build Criteria from Group object
         }
 
-        if ($criteria->containsKey(ProductComponentTableMap::COL_ID) && $criteria->keyContainsValue(ProductComponentTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.ProductComponentTableMap::COL_ID.')');
+        if ($criteria->containsKey(GroupTableMap::COL_ID) && $criteria->keyContainsValue(GroupTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.GroupTableMap::COL_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = ProductComponentQuery::create()->mergeWith($criteria);
+        $query = GroupQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -448,7 +442,7 @@ class ProductComponentTableMap extends TableMap
         });
     }
 
-} // ProductComponentTableMap
+} // GroupTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-ProductComponentTableMap::buildTableMap();
+GroupTableMap::buildTableMap();
