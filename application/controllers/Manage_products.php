@@ -6,7 +6,7 @@ class Manage_products extends CI_Controller{
 
   function __construct(){
     parent::__construct();
-   // $this->authorization->check_authorization('manage_products');
+   $this->authorization->check_authorization('manage_products');
   }
   function index(){
       $this->template->render('admin/products/index');
@@ -51,12 +51,12 @@ class Manage_products extends CI_Controller{
 	}
 
   function create(){
-		
+
 		$this->template->render('admin/products/form',array());
   }
 
   function detail($id){
-		
+
 		$product = ProductQuery::create()->findPK($id);
 		$this->template->render('admin/products/form',array('products'=>$product,));
   }
@@ -95,4 +95,3 @@ class Manage_products extends CI_Controller{
   }
 
 }
-    

@@ -6,7 +6,7 @@ class Manage_partners extends CI_Controller{
 
   function __construct(){
     parent::__construct();
-   // $this->authorization->check_authorization('manage_partners');
+   $this->authorization->check_authorization('manage_partners');
   }
   function index(){
       $this->template->render('admin/partners/index');
@@ -54,12 +54,12 @@ class Manage_partners extends CI_Controller{
 	}
 
   function create(){
-		
+
 		$this->template->render('admin/partners/form',array());
   }
 
   function detail($id){
-		
+
 		$partner = PartnerQuery::create()->findPK($id);
 		$this->template->render('admin/partners/form',array('partners'=>$partner,));
   }
@@ -97,4 +97,3 @@ class Manage_partners extends CI_Controller{
   }
 
 }
-    

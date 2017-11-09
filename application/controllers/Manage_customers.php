@@ -6,7 +6,7 @@ class Manage_customers extends CI_Controller{
 
   function __construct(){
     parent::__construct();
-   // $this->authorization->check_authorization('manage_customers');
+   $this->authorization->check_authorization('manage_customers');
   }
   function index(){
       $this->template->render('admin/customers/index');

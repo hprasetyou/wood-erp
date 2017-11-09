@@ -160,7 +160,7 @@ class Scaffold extends CI_Controller {
 {% set title=\"$humanize_tb_name\" %}
 
 {% set breadcrumbs = [
-	{'link':'#','text':'$humanize_tb_name'  }]
+	{'link':'#','text':res.string.$tb_name_lower  }]
 %}
 {% block content %}
 \t<div class=\"\">
@@ -342,7 +342,7 @@ echo "=========================";
 	 {% set bc_text = 'Baru' %}
 {% endif %}
 {% set breadcrumbs = [
-	{'link': base_url~'index.php/manage_$tb_name_lower','text':'$humanize_tb_name'},
+	{'link': base_url~'index.php/manage_$tb_name_lower','text': res.string.$tb_name_lower },
 	{'link':'#','text':bc_text  }]
 %}
 {% block content %}
@@ -487,7 +487,7 @@ class Manage_$var extends CI_Controller{
 
   function __construct(){
     parent::__construct();
-   // \$this->authorization->check_authorization('manage_$var');
+    \$this->authorization->check_authorization('manage_$var');
   }
   function index(){
       \$this->template->render('admin/$var/index');

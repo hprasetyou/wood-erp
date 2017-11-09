@@ -6,7 +6,7 @@ class Manage_suppliers extends CI_Controller{
 
   function __construct(){
     parent::__construct();
-   // $this->authorization->check_authorization('manage_suppliers');
+    $this->authorization->check_authorization('manage_suppliers');
   }
   function index(){
       $this->template->render('admin/suppliers/index');

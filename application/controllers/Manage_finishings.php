@@ -6,7 +6,7 @@ class Manage_finishings extends CI_Controller{
 
   function __construct(){
     parent::__construct();
-   // $this->authorization->check_authorization('manage_finishings');
+   $this->authorization->check_authorization('manage_finishings');
   }
   function index(){
       $this->template->render('admin/finishings/index');
@@ -39,12 +39,12 @@ class Manage_finishings extends CI_Controller{
 	}
 
   function create(){
-		
+
 		$this->template->render('admin/finishings/form',array());
   }
 
   function detail($id){
-		
+
 		$finishing = FinishingQuery::create()->findPK($id);
 		$this->template->render('admin/finishings/form',array('finishings'=>$finishing,));
   }
@@ -72,4 +72,3 @@ class Manage_finishings extends CI_Controller{
   }
 
 }
-    

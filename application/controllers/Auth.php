@@ -56,4 +56,9 @@ class Auth extends CI_Controller
     }
   }
 
+  function do_logout(){
+    $this->session->sess_destroy();
+    redirect('auth');
+  }
+
 }

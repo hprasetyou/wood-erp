@@ -6,7 +6,7 @@ class Manage_components extends CI_Controller{
 
   function __construct(){
     parent::__construct();
-   // $this->authorization->check_authorization('manage_components');
+    $this->authorization->check_authorization('manage_components');
   }
   function index(){
       $this->template->render('admin/components/index');
@@ -39,12 +39,12 @@ class Manage_components extends CI_Controller{
 	}
 
   function create(){
-		
+
 		$this->template->render('admin/components/form',array());
   }
 
   function detail($id){
-		
+
 		$component = ComponentQuery::create()->findPK($id);
 		$this->template->render('admin/components/form',array('components'=>$component,));
   }
@@ -72,4 +72,3 @@ class Manage_components extends CI_Controller{
   }
 
 }
-    

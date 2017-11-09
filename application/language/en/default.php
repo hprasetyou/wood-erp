@@ -27,6 +27,7 @@
 'is_supplier' => 'Is Supplier',
 'list_price' => 'List Price',
 'login'=>'Login',
+'logout'=>'Log out',
 'login_msg'=>'Please Login',
 'username'=>'Username',
 'password'=>'Password',

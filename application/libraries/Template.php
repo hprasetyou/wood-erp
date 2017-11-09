@@ -33,7 +33,7 @@ class Template {
             }
           }
           $session['access'] = $access;
-          $session['uid'] = UserQuery::create()->findById($this->CI->session->userdata('uid'));
+          $session['uid'] = UserQuery::create()->join('User.Partner')->findOneById($this->CI->session->userdata('uid'));
         }
         $pdata = array(
             'base_url'=>base_url(),
@@ -43,9 +43,6 @@ class Template {
                 'session' => $session
             )
         );
-        if($this->CI->session->userdata('is_logged_in')){
-            $pdata['user_data'] = MemberQuery::create()->findPK($this->CI->session->userdata('id'));
-        }
         $out = array_merge($pdata,$data);
 
         echo $twig->render($tpl.'.html',$out);
