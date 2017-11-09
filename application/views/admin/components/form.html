@@ -16,20 +16,20 @@
 		<form id="form_Component" method="post" action="{{base_url}}index.php/manage_components/write/{{ components.id }}" data-parsley-validate class="form-horizontal form-label-left">
 			<div class="box box-info">
 				<div class="box-header with-border">
-					<h3 class="box-title"> Component </h3>
+					<h3 class="box-title"> {{res.string.component}} </h3>
 					<a href="{{base_url}}index.php/manage_components" class="btn btn-default pull-right">{{res.string.back}}</a>
 					{% if components %}
 						<a href="#" class="btn btn-danger pull-right" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash-o"></i> {{res.string.delete}}</a>
-						<a href="#" class="btn btn-primary pull-right" id="btn-edit"><i class="fa fa-edit"></i> {{res.string.edit}}</a>
+						<a href="#" class="btn btn-primary pull-right" id="btn-edit"><i class="fa fa-edit"></i> {{res.string.edit_data}}</a>
 						<a href="#" style="display:none" class="btn btn-primary pull-right" id="btn-canceledit">{{res.string.cancel}}</a>
 					{% endif %}
-					<button type="submit" {% if components %}style="display:none"{% endif %}  name="button" class="btn btn-success pull-right" id="btn-save"><i class="fa fa-save"></i> {{res.string.save}}</button>
+					<button type="submit" {% if components %}style="display:none"{% endif %}  name="button" class="btn btn-success pull-right" id="btn-save"><i class="fa fa-save"></i> Simpan</button>
 					<div class="clearfix"></div>
 				</div>
 				<div class="box-body">
-					
+
 					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Name </label>
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if components %}style="display:none"{% endif %} class="input-wrap">
 							<input type="text" id="Name" value="{{ components.Name }}"
@@ -42,11 +42,11 @@
 						</div>
 
 					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Description </label>
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.description}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if components %}style="display:none"{% endif %} class="input-wrap">
 							<input type="text" id="Description" value="{{ components.Description }}"
-							name="Description" required="required" class="form-control  col-md-7 col-xs-12">
+							name="Description"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if components %}
 									<p class="control-value">{{ components.Description  }}</p>
@@ -60,63 +60,8 @@
 	</div>
 </div>
 <!-- Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
-	      <p>Apakah anda yakin ingin menghapus data ini?</p>
-      </div>
-      <div class="modal-footer">
-				<form method="post" action="{{ base_url }}index.php/manage_components/delete/{{ components.id }}">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
-        <input name="confirm" type="submit" value="Ya" class="btn btn-primary" />
-				</form>
-      </div>
-    </div>
-  </div>
-</div>
 
 {% endblock %}
 {% block bottom%}
-<script>
-$('#btn-edit').click(function(){
-	$('#btn-canceledit').show()
-	$('#btn-save').show()
-	$('.input-wrap').show()
-	$('.control-value').hide()
-	$(this).hide()
-})
-$('#btn-canceledit').click(function(){
-	$('#btn-edit').show()
-	$('#btn-save').hide()
-	$('.input-wrap').hide()
-	$('.control-value').show()
-	$(this).hide()
-})
-$(function() {
-	$('.input-date').daterangepicker({
-	singleDatePicker: true,
-	showDropdowns: true,
-	locale: {
-		format: 'YYYY/MM/DD'
-	}
-},function(start, end, label) {
-	});
-$('.input-datetime').daterangepicker({
-	singleDatePicker: true,
-	showDropdowns: true,
-	timePicker: true,
-	timePickerIncrement: 30,
-	locale: {
-		format: 'YYYY/MM/DD hh:mm:ss'
-	}
-},
-function(start, end, label) {
-	});
-});
-</script>
+
 {% endblock %}

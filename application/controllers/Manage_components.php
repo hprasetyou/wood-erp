@@ -19,7 +19,6 @@ class Manage_components extends CI_Controller{
 			$components->condition('cond1' ,'Component.name LIKE ?', "%".$this->input->get('search[value]')."%");
 
 			$components->where(array('cond1',),'or');
-      $components->find();
     }
 		$offset = ($this->input->get('start')?$this->input->get('start'):0);
 		$components = $components->paginate(($offset/10)+1, $maxPerPage);
