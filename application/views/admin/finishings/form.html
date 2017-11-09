@@ -20,16 +20,16 @@
 					<a href="{{base_url}}index.php/manage_finishings" class="btn btn-default pull-right">{{res.string.back}}</a>
 					{% if finishings %}
 						<a href="#" class="btn btn-danger pull-right" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash-o"></i> {{res.string.delete}}</a>
-						<a href="#" class="btn btn-primary pull-right" id="btn-edit"><i class="fa fa-edit"></i> {{res.string.edit}}</a>
+						<a href="#" class="btn btn-primary pull-right" id="btn-edit"><i class="fa fa-edit"></i> {{res.string.edit_data}}</a>
 						<a href="#" style="display:none" class="btn btn-primary pull-right" id="btn-canceledit">{{res.string.cancel}}</a>
 					{% endif %}
-					<button type="submit" {% if finishings %}style="display:none"{% endif %}  name="button" class="btn btn-success pull-right" id="btn-save"><i class="fa fa-save"></i> {{res.string.save}}</button>
+					<button type="submit" {% if finishings %}style="display:none"{% endif %}  name="button" class="btn btn-success pull-right" id="btn-save"><i class="fa fa-save"></i> Simpan</button>
 					<div class="clearfix"></div>
 				</div>
 				<div class="box-body">
 					
 					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Name </label>
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if finishings %}style="display:none"{% endif %} class="input-wrap">
 							<input type="text" id="Name" value="{{ finishings.Name }}"
@@ -42,11 +42,11 @@
 						</div>
 
 					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Description </label>
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.description}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if finishings %}style="display:none"{% endif %} class="input-wrap">
 							<input type="text" id="Description" value="{{ finishings.Description }}"
-							name="Description" required="required" class="form-control  col-md-7 col-xs-12">
+							name="Description"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if finishings %}
 									<p class="control-value">{{ finishings.Description  }}</p>
@@ -63,41 +63,5 @@
 
 {% endblock %}
 {% block bottom%}
-<script>
-$('#btn-edit').click(function(){
-	$('#btn-canceledit').show()
-	$('#btn-save').show()
-	$('.input-wrap').show()
-	$('.control-value').hide()
-	$(this).hide()
-})
-$('#btn-canceledit').click(function(){
-	$('#btn-edit').show()
-	$('#btn-save').hide()
-	$('.input-wrap').hide()
-	$('.control-value').show()
-	$(this).hide()
-})
-$(function() {
-	$('.input-date').daterangepicker({
-	singleDatePicker: true,
-	showDropdowns: true,
-	locale: {
-		format: 'YYYY/MM/DD'
-	}
-},function(start, end, label) {
-	});
-$('.input-datetime').daterangepicker({
-	singleDatePicker: true,
-	showDropdowns: true,
-	timePicker: true,
-	timePickerIncrement: 30,
-	locale: {
-		format: 'YYYY/MM/DD hh:mm:ss'
-	}
-},
-function(start, end, label) {
-	});
-});
-</script>
+
 {% endblock %}

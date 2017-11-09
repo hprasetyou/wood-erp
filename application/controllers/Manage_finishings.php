@@ -19,7 +19,6 @@ class Manage_finishings extends CI_Controller{
 			$finishings->condition('cond1' ,'Finishing.name LIKE ?', "%".$this->input->get('search[value]')."%");
 
 			$finishings->where(array('cond1',),'or');
-      $finishings->find();
     }
 		$offset = ($this->input->get('start')?$this->input->get('start'):0);
 		$finishings = $finishings->paginate(($offset/10)+1, $maxPerPage);

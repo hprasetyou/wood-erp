@@ -126,6 +126,7 @@ class Scaffold extends CI_Controller {
 				$labelword = ucfirst(rtrim($this->split_snake($this->split_camel($field_name))));
 				if($this->check_field($field_name)){
 					$words = include('application/language/en/default.php');
+					ksort($words);
 					if(!isset($words[$label])){
 						$lang_file = fopen('./application/language/en/default.php', "w") or die("Unable to open file!");
 						fwrite($lang_file,"<?php \n return array(\n");
@@ -351,7 +352,7 @@ echo "=========================";
 \t\t\t<div class=\"box box-info\">
 \t\t\t\t<div class=\"box-header with-border\">
 \t\t\t\t\t<h3 class=\"box-title\">$humanize_tb_name</h3>
-\t\t\t\t\t<a href=\"{{base_url}}index.php/manage_$tb_name_lower\" class=\"btn btn-default pull-right\">Kembali</a>
+\t\t\t\t\t<a href=\"{{base_url}}index.php/manage_$tb_name_lower\" class=\"btn btn-default pull-right\">{{res.string.back}}</a>
 \t\t\t\t\t{% if $tb_name_lower %}
 \t\t\t\t\t\t<a href=\"#\" class=\"btn btn-danger pull-right\" data-toggle=\"modal\" data-target=\"#deleteModal\"><i class=\"fa fa-trash-o\"></i> {{res.string.delete}}</a>
 \t\t\t\t\t\t<a href=\"#\" class=\"btn btn-primary pull-right\" id=\"btn-edit\"><i class=\"fa fa-edit\"></i> {{res.string.edit_data}}</a>
