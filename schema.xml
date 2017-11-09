@@ -197,4 +197,20 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
+  <table name="activity" idMethod="native" phpName="Activity">
+    <column name="uuid" phpName="Uuid" type="VARCHAR" size="255" primaryKey="true" required="true"/>
+    <column name="user_id" phpName="UserId" type="INTEGER" required="true"/>
+    <column name="object" phpName="Object" type="VARCHAR" size="255" required="true"/>
+    <column name="object_id" phpName="ObjectId" type="INTEGER" required="true"/>
+    <column name="description" phpName="Description" type="LONGVARCHAR" />
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
+    <foreign-key foreignTable="menu">
+      <reference local="menu_id" foreign="id"/>
+    </foreign-key>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+
 </database>
