@@ -16,6 +16,8 @@ class Manage_customers extends CI_Controller{
 		$customers = PartnerQuery::create()->filterByIsCustomer(true);
     if($this->input->get('company_id')){
       $customers->filterByCompanyId($this->input->get('company_id'));
+    }else{
+      $customers->filterByCompanyId(null);
     }
 		$maxPerPage = $this->input->get('length');
 
