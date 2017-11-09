@@ -64,7 +64,7 @@ class Manage_components extends CI_Controller{
   }
 
   function delete($id){
-		if($this->input->post('confirm') == 'Ya'){
+		if($this->input->post('confirm')){
 			$component = ComponentQuery::create()->findPK($id);
 			$component->delete();
 		}

@@ -52,16 +52,15 @@
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img
-              src="{% if customers.Image %}{{customers.Image}}{% else %}/public/upload/images/default-thumbnail.jpg{% endif %}"
+              src="{% if res.session.uid.Partner.Image %}{{res.session.uid.Partner.Image}}{% else %}/public/upload/images/default-thumbnail.jpg{% endif %}"
               class="user-image" alt="User Image">
               <span class="hidden-xs">{{res.session.uid.Partner.Name}}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
-                <img src="{% if customers.Image %}{{customers.Image}}{% else %}/public/upload/images/default-thumbnail.jpg{% endif %}"
+                <img src="{% if res.session.uid.Partner.Image %}{{res.session.uid.Partner.Image}}{% else %}/public/upload/images/default-thumbnail.jpg{% endif %}"
                 class="img-circle" alt="User Image">
-
                 <p>
                   {{res.session.uid.Partner.Name}} - {% for group in res.session.uid.Groups %}{{group.Name}}{% endfor %}
                 </p>
@@ -167,6 +166,7 @@
     <script src="/public/components/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="/public/assets/js/app.js"></script>
+{% include 'common/_delete_modal.html'%}
 {% block bottom %}
 {% endblock %}
 </body>

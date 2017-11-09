@@ -89,7 +89,7 @@ class Manage_partners extends CI_Controller{
   }
 
   function delete($id){
-		if($this->input->post('confirm') == 'Ya'){
+		if($this->input->post('confirm')){
 			$partner = PartnerQuery::create()->findPK($id);
 			$partner->delete();
 		}

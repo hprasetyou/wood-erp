@@ -87,7 +87,7 @@ class Manage_products extends CI_Controller{
   }
 
   function delete($id){
-		if($this->input->post('confirm') == 'Ya'){
+		if($this->input->post('confirm')){
 			$product = ProductQuery::create()->findPK($id);
 			$product->delete();
 		}

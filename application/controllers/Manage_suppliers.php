@@ -108,13 +108,14 @@ class Manage_suppliers extends CI_Controller{
 		//$this->loging->add_entry('suppliers',$supplier->getId(),($id?'melakukan perubahan pada data':'membuat data baru'));
 		redirect('manage_suppliers/detail/'.$supplier->getId());
   }
-
   function delete($id){
-		if($this->input->post('confirm') == 'Ya'){
-			$supplier = PartnerQuery::create()->findPK($id);
-			$supplier->delete();
+
+		$customer = PartnerQuery::create()->findPK($id);
+    $company = $customer->getCompanyId();
+		if($this->input->post('confirm')){
+			$customer->delete();
 		}
-		redirect('manage_suppliers');
+		redirect('manage_suppliers/'.($company?"detail/$company":""));
   }
 
 }

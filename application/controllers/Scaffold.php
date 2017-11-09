@@ -549,7 +549,7 @@ $template .= "
   }
 
   function delete(\$id){
-		if(\$this->input->post('confirm') == 'Ya'){
+		if(\$this->input->post('confirm')){
 			\$$singular_var = $queryclass::create()->findPK(\$id);
 			\$$singular_var$dash>delete();
 		}

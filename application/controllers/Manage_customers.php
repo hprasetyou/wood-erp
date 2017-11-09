@@ -110,11 +110,13 @@ class Manage_customers extends CI_Controller{
   }
 
   function delete($id){
-		if($this->input->post('confirm') == 'Ya'){
-			$customer = PartnerQuery::create()->findPK($id);
+
+		$customer = PartnerQuery::create()->findPK($id);
+    $company = $customer->getCompanyId();
+		if($this->input->post('confirm')){
 			$customer->delete();
 		}
-		redirect('manage_customers');
+		redirect('manage_customers/'.($company?"detail/$company":""));
   }
 
 }

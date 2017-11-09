@@ -11,7 +11,7 @@
     </a>
     <ul class="treeview-menu">
       {% for menu in parentmenu.Child %}
-      <li><a href="/index.php/{{menu.Url}}"><i class="fa {{menu.icon}}"></i> {{menu.Name}}</a></li>
+      <li><a href="/index.php/{{menu.Url}}"><i class="fa {{menu.icon}}"></i> {{attribute(res.string,menu.Name)}}</a></li>
       {% endfor %}
     </ul>
   </li>

@@ -46,5 +46,10 @@
 'description' => 'Description',
 'img_upload_error_msg' => 'Maximum filesize is 1mb',
 'error' => 'Error',
-'upload'=> 'Upload'
+'upload'=> 'Upload',
+'yes'=>'Yes',
+'no'=>'No',
+'ok'=>'Ok',
+'delete_confirmation'=>'Are you sure want to delete this?',
+'confirmation'=>'Confirmation'
 );

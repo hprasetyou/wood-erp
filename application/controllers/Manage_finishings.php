@@ -64,7 +64,7 @@ class Manage_finishings extends CI_Controller{
   }
 
   function delete($id){
-		if($this->input->post('confirm') == 'Ya'){
+		if($this->input->post('confirm')){
 			$finishing = FinishingQuery::create()->findPK($id);
 			$finishing->delete();
 		}

@@ -11,12 +11,13 @@
 		<form id="form_Partner" method="post" action="{{base_url}}index.php/manage_customers/write/{{ customers.id }}" data-parsley-validate class="form-horizontal form-label-left">
 			<div class="box box-info">
 				<div class="box-header with-border">
-					<h3 class="box-title">  {{customers.CompanyId ? customers.Company.Name : res.string.customer}} </h3>
-					<a href="{{base_url}}index.php/manage_customers{% if customers.CompanyId %}/detail/{{customers.CompanyId}}{% endif %}" class="btn btn-default pull-right">{{res.string.back}}</a> {% if customers %}
-					<a href="#" class="btn btn-danger pull-right" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash-o"></i> {{res.string.delete}}</a>
-					<a href="#" class="btn btn-primary pull-right" id="btn-edit"><i class="fa fa-edit"></i> {{res.string.edit}}</a>
-					<a href="#" style="display:none" class="btn btn-primary pull-right" id="btn-canceledit">{{res.string.cancel}}</a> {% endif %}
-					<button type="submit" {% if customers %}style="display:none" {% endif %} name="button" class="btn btn-success pull-right" id="btn-save"><i class="fa fa-save"></i> {{res.string.save}}</button>
+          {% set back_link = customers.CompanyId?'/detail/'~customers.CompanyId:''%}
+          {% include 'common/_form_header.html'
+          with {'back_url':'/index.php/manage_customers'~back_link,
+          'title': res.string.customer,
+          'delete_url':'/index.php/manage_customers/delete/'~customers.Id,
+          'object':customers} %}
+
 					<div class="clearfix"></div>
 				</div>
 				<div class="box-body">
