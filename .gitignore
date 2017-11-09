@@ -22,6 +22,9 @@ user_guide_src/cilexer/dist/*
 user_guide_src/cilexer/pycilexer.egg-info/*
 /vendor/
 
+public/upload/images/*
+!public/upload/images/default-thumnail.jpg
+
 # IDE Files
 #-------------------------
 /nbproject/

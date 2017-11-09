@@ -49,6 +49,7 @@ class Manage_customers extends CI_Controller{
 				$o['data'][$i]['fax'] = $customer->getFax();
 				$o['data'][$i]['image'] = $customer->getImage();
 				$o['data'][$i]['tax_number'] = $customer->getTaxNumber();
+				$o['data'][$i]['email'] = $customer->getEmail();
 				$o['data'][$i]['bank_detail'] = $customer->getBankDetail();
         $o['data'][$i]['tax_number'] = $customer->getTaxNumber();
         $o['data'][$i]['bank_detail'] = $customer->getBankDetail();
@@ -79,6 +80,7 @@ class Manage_customers extends CI_Controller{
   }
 
   function write($id=null){
+
 		if($id){
 			$customer = PartnerQuery::create()->findPK($id);
 		}else{
@@ -88,11 +90,19 @@ class Manage_customers extends CI_Controller{
 		$customer->setAddress($this->input->post('Address'));
 		$customer->setPhone($this->input->post('Phone'));
 		$customer->setWebsite($this->input->post('Website'));
+		$customer->setEmail($this->input->post('Email'));
 		$customer->setFax($this->input->post('Fax'));
-		$customer->setImage($this->input->post('Image'));
+    if($this->input->post('Image')){
+      if(strpos($this->input->post('Image'),'base64')){
+        $this->load->helper('base64toimage');
+    		$customer->setImage(base64_to_img($this->input->post('Image')));
+      }
+    }
 		$customer->setTaxNumber($this->input->post('TaxNumber'));
 		$customer->setBankDetail($this->input->post('BankDetail'));
-		$customer->setCompanyId($this->input->post('CompanyId'));
+    if($this->input->post('CompanyId')>0){
+		    $customer->setCompanyId($this->input->post('CompanyId'));
+    }
     $customer->setIsCustomer(true);
 		$customer->save();
 		//$this->loging->add_entry('customers',$customer->getId(),($id?'melakukan perubahan pada data':'membuat data baru'));

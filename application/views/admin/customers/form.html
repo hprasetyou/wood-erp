@@ -1,113 +1,112 @@
-
-{% extends "dashboard.html" %}
-{% set title=" Partner " %}
-{% if customers %}
-	 {% set bc_text = customers.name %}
-{% else %}
-	 {% set bc_text = 'Baru' %}
-{% endif %}
-{% set breadcrumbs = [
-	{'link': base_url~'index.php/manage_customers','text':' Partner '},
-	{'link':'#','text':bc_text  }]
-%}
-{% block content %}
+ {% extends "dashboard.html" %} {% set title= res.string.customer %}
+ {% if customers %} {% set bc_text = customers.name %}
+ {% else %} {% set bc_text = 'Baru' %}
+  {% endif %}
+	 {% set breadcrumbs = [
+		 {'link': base_url~'index.php/manage_customers','text':res.string.customer},
+		 {'link':'#','text':bc_text }] %}
+		  {% block content %}
 <div class="row">
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<form id="form_Partner" method="post" action="{{base_url}}index.php/manage_customers/write/{{ customers.id }}" data-parsley-validate class="form-horizontal form-label-left">
 			<div class="box box-info">
 				<div class="box-header with-border">
-					<h3 class="box-title"> {{res.string.customer}} </h3>
-					<a href="{{base_url}}index.php/manage_customers{% if customers.CompanyId %}/detail/{{customers.CompanyId}}{% endif %}" class="btn btn-default pull-right">{{res.string.back}}</a>
-					{% if customers %}
-						<a href="#" class="btn btn-danger pull-right" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash-o"></i> {{res.string.delete}}</a>
-						<a href="#" class="btn btn-primary pull-right" id="btn-edit"><i class="fa fa-edit"></i> {{res.string.edit}}</a>
-						<a href="#" style="display:none" class="btn btn-primary pull-right" id="btn-canceledit">{{res.string.cancel}}</a>
-					{% endif %}
-					<button type="submit" {% if customers %}style="display:none"{% endif %}  name="button" class="btn btn-success pull-right" id="btn-save"><i class="fa fa-save"></i> {{res.string.save}}</button>
+					<h3 class="box-title">  {{customers.CompanyId ? customers.Company.Name : res.string.customer}} </h3>
+					<a href="{{base_url}}index.php/manage_customers{% if customers.CompanyId %}/detail/{{customers.CompanyId}}{% endif %}" class="btn btn-default pull-right">{{res.string.back}}</a> {% if customers %}
+					<a href="#" class="btn btn-danger pull-right" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash-o"></i> {{res.string.delete}}</a>
+					<a href="#" class="btn btn-primary pull-right" id="btn-edit"><i class="fa fa-edit"></i> {{res.string.edit}}</a>
+					<a href="#" style="display:none" class="btn btn-primary pull-right" id="btn-canceledit">{{res.string.cancel}}</a> {% endif %}
+					<button type="submit" {% if customers %}style="display:none" {% endif %} name="button" class="btn btn-success pull-right" id="btn-save"><i class="fa fa-save"></i> {{res.string.save}}</button>
 					<div class="clearfix"></div>
 				</div>
 				<div class="box-body">
 					<div class="col-sm-12">
-<input type="hidden" name="CompanyId" value="{{res.query_params.company_id}}">
-					<div class='row'>
+						<input type="hidden" name="CompanyId" value="{{res.query_params.company_id}}">
+						<div class='row'>
 							<div class="image col-sm-2 col-xs-6">
 								<a href="#/" data-toggle="modal" class="thumbnail avatar-thumbnail" data-target="#modalAvatar">
 									<input type="hidden" id="Image" value="{{ customers.image }}"
 									name="Image"  class="form-control  col-md-7 col-xs-12">
-									<img class='preview-image' src="{{base_url}}public/upload/images/{% if customers.Image %}{{customers.Image}}{% else %}default-thumbnail.jpg{% endif %}" alt="...">
+									<img class='preview-image' src="{% if customers.Image %}{{customers.Image}}{% else %}/public/upload/images/default-thumbnail.jpg{% endif %}" alt="...">
 								</a>
+							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-6">
+						<div class="row">
+							<div class="col-sm-6">
 
-							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
-								<div class="col-md-6 col-sm-6 col-xs-12">
-								<div {% if customers %}style="display:none"{% endif %} class="input-wrap">
-									<input type="text" id="Name" value="{{ customers.Name }}"
-									name="Name" required="required" class="form-control  col-md-7 col-xs-12">
-								</div>
+								<div class="form-group">
+									<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
+									<div class="col-md-6 col-sm-6 col-xs-12">
+										<div {% if customers %}style="display:none" {% endif %} class="input-wrap">
+											<input type="text" id="Name" value="{{ customers.Name }}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
+										</div>
 										{% if customers %}
-											<p class="control-value">{{ customers.Name  }}</p>
+										<p class="control-value">{{ customers.Name }}</p>
 										{% endif %}
 									</div>
 								</div>
 
-							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.address}}</label>
-								<div class="col-md-6 col-sm-6 col-xs-12">
-								<div {% if customers %}style="display:none"{% endif %} class="input-wrap">
-									<input type="text" id="Address" value="{{ customers.Address }}"
-									name="Address"  class="form-control  col-md-7 col-xs-12">
-								</div>
+								<div class="form-group">
+									<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.address}}</label>
+									<div class="col-md-6 col-sm-6 col-xs-12">
+										<div {% if customers %}style="display:none" {% endif %} class="input-wrap">
+											<input type="text" id="Address" value="{{ customers.Address }}" name="Address" class="form-control  col-md-7 col-xs-12">
+										</div>
 										{% if customers %}
-											<p class="control-value">{{ customers.Address  }}</p>
+										<p class="control-value">{{ customers.Address }}</p>
 										{% endif %}
 									</div>
 								</div>
 
-							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.phone}}</label>
-								<div class="col-md-6 col-sm-6 col-xs-12">
-								<div {% if customers %}style="display:none"{% endif %} class="input-wrap">
-									<input type="text" id="Phone" value="{{ customers.Phone }}"
-									name="Phone"  class="form-control  col-md-7 col-xs-12">
-								</div>
+								<div class="form-group">
+									<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.phone}}</label>
+									<div class="col-md-6 col-sm-6 col-xs-12">
+										<div {% if customers %}style="display:none" {% endif %} class="input-wrap">
+											<input type="text" id="Phone" value="{{ customers.Phone }}" name="Phone" class="form-control  col-md-7 col-xs-12">
+										</div>
 										{% if customers %}
-											<p class="control-value">{{ customers.Phone  }}</p>
+										<p class="control-value">{{ customers.Phone }}</p>
 										{% endif %}
 									</div>
 								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.website}}</label>
+									<div class="col-md-6 col-sm-6 col-xs-12">
+										<div {% if customers %}style="display:none" {% endif %} class="input-wrap">
+											<input type="text" id="Website" value="{{ customers.Website }}" name="Website" class="form-control  col-md-7 col-xs-12">
+										</div>
+										{% if customers %}
+										<p class="control-value">{{ customers.Website }}</p>
+										{% endif %}
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.email}}</label>
+									<div class="col-md-6 col-sm-6 col-xs-12">
+										<div {% if customers %}style="display:none" {% endif %} class="input-wrap">
+											<input type="text" id="Email" value="{{ customers.Email }}" name="Email" class="form-control  col-md-7 col-xs-12">
+										</div>
+										{% if customers %}
+										<p class="control-value">{{ customers.Email }}</p>
+										{% endif %}
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.fax}}</label>
+									<div class="col-md-6 col-sm-6 col-xs-12">
+										<div {% if customers %}style="display:none" {% endif %} class="input-wrap">
+											<input type="text" id="Fax" value="{{ customers.Fax }}" name="Fax" class="form-control  col-md-7 col-xs-12">
+										</div>
+										{% if customers %}
+										<p class="control-value">{{ customers.Fax }}</p>
+										{% endif %}
+									</div>
+								</div>
+							</div>
 						</div>
-						<div class="col-sm-6">
-							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.website}}</label>
-								<div class="col-md-6 col-sm-6 col-xs-12">
-								<div {% if customers %}style="display:none"{% endif %} class="input-wrap">
-									<input type="text" id="Website" value="{{ customers.Website }}"
-									name="Website"  class="form-control  col-md-7 col-xs-12">
-								</div>
-										{% if customers %}
-											<p class="control-value">{{ customers.Website  }}</p>
-										{% endif %}
-									</div>
-								</div>
-
-							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.fax}}</label>
-								<div class="col-md-6 col-sm-6 col-xs-12">
-								<div {% if customers %}style="display:none"{% endif %} class="input-wrap">
-									<input type="text" id="Fax" value="{{ customers.Fax }}"
-									name="Fax"  class="form-control  col-md-7 col-xs-12">
-								</div>
-										{% if customers %}
-											<p class="control-value">{{ customers.Fax  }}</p>
-										{% endif %}
-									</div>
-								</div>
-						</div>
-					</div>
 
 					</div>
 				</div>
@@ -128,20 +127,18 @@
 				</div>
 				<div class="box-body">
 					<p class="text-muted font-13 m-b-30"></p>
-						<table data-controller="manage_customers" data-domain='{"company_id":{{customers.Id}}}' class="table table-striped " id="table_Partner">
-	<thead>
-		<tr>
-			<th data-fieldname="name">{{res.string.name}}</th>
-			<th data-fieldname="address">{{res.string.address}}</th>
-			<th data-fieldname="phone">{{res.string.phone}}</th>
-			<th data-fieldname="website">{{res.string.website}}</th>
-			<th data-fieldname="fax">{{res.string.fax}}</th>
-			<th data-fieldname="tax_number">{{res.string.tax_number}}</th>
-			<th data-fieldname="bank_detail">{{res.string.bank_detail}}</th>
-			<th></th>
-		</tr>
-	</thead>
-</table>
+					<table data-controller="manage_customers" data-domain='{"company_id":{{customers.Id}}}' class="table table-striped " id="table_Partner">
+						<thead>
+							<tr>
+								<th data-fieldname="name">{{res.string.name}}</th>
+								<th data-fieldname="address">{{res.string.address}}</th>
+								<th data-fieldname="phone">{{res.string.phone}}</th>
+								<th data-fieldname="website">{{res.string.website}}</th>
+								<th data-fieldname="email">{{res.string.email}}</th>
+								<th></th>
+							</tr>
+						</thead>
+					</table>
 				</div>
 			</div>
 		</div>
@@ -149,7 +146,4 @@
 </div>
 {% endif %}
 <!-- Modal -->
-{% endblock %}
-{% block bottom%}
-{% include 'common/_img_upload_modal.html'%}
-{% endblock %}
+{% endblock %} {% block bottom%} {% include 'common/_img_upload_modal.html'%} {% endblock %}
