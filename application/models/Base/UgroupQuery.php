@@ -2,11 +2,11 @@
 
 namespace Base;
 
-use \Group as ChildGroup;
-use \GroupQuery as ChildGroupQuery;
+use \Ugroup as ChildUgroup;
+use \UgroupQuery as ChildUgroupQuery;
 use \Exception;
 use \PDO;
-use Map\GroupTableMap;
+use Map\UgroupTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -20,105 +20,105 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  *
- * @method     ChildGroupQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildGroupQuery orderByName($order = Criteria::ASC) Order by the name column
- * @method     ChildGroupQuery orderByDescription($order = Criteria::ASC) Order by the description column
- * @method     ChildGroupQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
- * @method     ChildGroupQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
+ * @method     ChildUgroupQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     ChildUgroupQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method     ChildUgroupQuery orderByDescription($order = Criteria::ASC) Order by the description column
+ * @method     ChildUgroupQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildUgroupQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
- * @method     ChildGroupQuery groupById() Group by the id column
- * @method     ChildGroupQuery groupByName() Group by the name column
- * @method     ChildGroupQuery groupByDescription() Group by the description column
- * @method     ChildGroupQuery groupByCreatedAt() Group by the created_at column
- * @method     ChildGroupQuery groupByUpdatedAt() Group by the updated_at column
+ * @method     ChildUgroupQuery groupById() Group by the id column
+ * @method     ChildUgroupQuery groupByName() Group by the name column
+ * @method     ChildUgroupQuery groupByDescription() Group by the description column
+ * @method     ChildUgroupQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildUgroupQuery groupByUpdatedAt() Group by the updated_at column
  *
- * @method     ChildGroupQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     ChildGroupQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     ChildGroupQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     ChildUgroupQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     ChildUgroupQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     ChildUgroupQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildGroupQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildGroupQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildGroupQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ * @method     ChildUgroupQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildUgroupQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildUgroupQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildGroupQuery leftJoinUserGroup($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserGroup relation
- * @method     ChildGroupQuery rightJoinUserGroup($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserGroup relation
- * @method     ChildGroupQuery innerJoinUserGroup($relationAlias = null) Adds a INNER JOIN clause to the query using the UserGroup relation
+ * @method     ChildUgroupQuery leftJoinUserGroup($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserGroup relation
+ * @method     ChildUgroupQuery rightJoinUserGroup($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserGroup relation
+ * @method     ChildUgroupQuery innerJoinUserGroup($relationAlias = null) Adds a INNER JOIN clause to the query using the UserGroup relation
  *
- * @method     ChildGroupQuery joinWithUserGroup($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the UserGroup relation
+ * @method     ChildUgroupQuery joinWithUserGroup($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the UserGroup relation
  *
- * @method     ChildGroupQuery leftJoinWithUserGroup() Adds a LEFT JOIN clause and with to the query using the UserGroup relation
- * @method     ChildGroupQuery rightJoinWithUserGroup() Adds a RIGHT JOIN clause and with to the query using the UserGroup relation
- * @method     ChildGroupQuery innerJoinWithUserGroup() Adds a INNER JOIN clause and with to the query using the UserGroup relation
+ * @method     ChildUgroupQuery leftJoinWithUserGroup() Adds a LEFT JOIN clause and with to the query using the UserGroup relation
+ * @method     ChildUgroupQuery rightJoinWithUserGroup() Adds a RIGHT JOIN clause and with to the query using the UserGroup relation
+ * @method     ChildUgroupQuery innerJoinWithUserGroup() Adds a INNER JOIN clause and with to the query using the UserGroup relation
  *
- * @method     ChildGroupQuery leftJoinMenuGroup($relationAlias = null) Adds a LEFT JOIN clause to the query using the MenuGroup relation
- * @method     ChildGroupQuery rightJoinMenuGroup($relationAlias = null) Adds a RIGHT JOIN clause to the query using the MenuGroup relation
- * @method     ChildGroupQuery innerJoinMenuGroup($relationAlias = null) Adds a INNER JOIN clause to the query using the MenuGroup relation
+ * @method     ChildUgroupQuery leftJoinMenuGroup($relationAlias = null) Adds a LEFT JOIN clause to the query using the MenuGroup relation
+ * @method     ChildUgroupQuery rightJoinMenuGroup($relationAlias = null) Adds a RIGHT JOIN clause to the query using the MenuGroup relation
+ * @method     ChildUgroupQuery innerJoinMenuGroup($relationAlias = null) Adds a INNER JOIN clause to the query using the MenuGroup relation
  *
- * @method     ChildGroupQuery joinWithMenuGroup($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the MenuGroup relation
+ * @method     ChildUgroupQuery joinWithMenuGroup($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the MenuGroup relation
  *
- * @method     ChildGroupQuery leftJoinWithMenuGroup() Adds a LEFT JOIN clause and with to the query using the MenuGroup relation
- * @method     ChildGroupQuery rightJoinWithMenuGroup() Adds a RIGHT JOIN clause and with to the query using the MenuGroup relation
- * @method     ChildGroupQuery innerJoinWithMenuGroup() Adds a INNER JOIN clause and with to the query using the MenuGroup relation
+ * @method     ChildUgroupQuery leftJoinWithMenuGroup() Adds a LEFT JOIN clause and with to the query using the MenuGroup relation
+ * @method     ChildUgroupQuery rightJoinWithMenuGroup() Adds a RIGHT JOIN clause and with to the query using the MenuGroup relation
+ * @method     ChildUgroupQuery innerJoinWithMenuGroup() Adds a INNER JOIN clause and with to the query using the MenuGroup relation
  *
  * @method     \UserGroupQuery|\MenuGroupQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
- * @method     ChildGroup findOne(ConnectionInterface $con = null) Return the first ChildGroup matching the query
- * @method     ChildGroup findOneOrCreate(ConnectionInterface $con = null) Return the first ChildGroup matching the query, or a new ChildGroup object populated from the query conditions when no match is found
+ * @method     ChildUgroup findOne(ConnectionInterface $con = null) Return the first ChildUgroup matching the query
+ * @method     ChildUgroup findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUgroup matching the query, or a new ChildUgroup object populated from the query conditions when no match is found
  *
- * @method     ChildGroup findOneById(int $id) Return the first ChildGroup filtered by the id column
- * @method     ChildGroup findOneByName(string $name) Return the first ChildGroup filtered by the name column
- * @method     ChildGroup findOneByDescription(string $description) Return the first ChildGroup filtered by the description column
- * @method     ChildGroup findOneByCreatedAt(string $created_at) Return the first ChildGroup filtered by the created_at column
- * @method     ChildGroup findOneByUpdatedAt(string $updated_at) Return the first ChildGroup filtered by the updated_at column *
+ * @method     ChildUgroup findOneById(int $id) Return the first ChildUgroup filtered by the id column
+ * @method     ChildUgroup findOneByName(string $name) Return the first ChildUgroup filtered by the name column
+ * @method     ChildUgroup findOneByDescription(string $description) Return the first ChildUgroup filtered by the description column
+ * @method     ChildUgroup findOneByCreatedAt(string $created_at) Return the first ChildUgroup filtered by the created_at column
+ * @method     ChildUgroup findOneByUpdatedAt(string $updated_at) Return the first ChildUgroup filtered by the updated_at column *
 
- * @method     ChildGroup requirePk($key, ConnectionInterface $con = null) Return the ChildGroup by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildGroup requireOne(ConnectionInterface $con = null) Return the first ChildGroup matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUgroup requirePk($key, ConnectionInterface $con = null) Return the ChildUgroup by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUgroup requireOne(ConnectionInterface $con = null) Return the first ChildUgroup matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildGroup requireOneById(int $id) Return the first ChildGroup filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildGroup requireOneByName(string $name) Return the first ChildGroup filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildGroup requireOneByDescription(string $description) Return the first ChildGroup filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildGroup requireOneByCreatedAt(string $created_at) Return the first ChildGroup filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildGroup requireOneByUpdatedAt(string $updated_at) Return the first ChildGroup filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUgroup requireOneById(int $id) Return the first ChildUgroup filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUgroup requireOneByName(string $name) Return the first ChildUgroup filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUgroup requireOneByDescription(string $description) Return the first ChildUgroup filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUgroup requireOneByCreatedAt(string $created_at) Return the first ChildUgroup filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUgroup requireOneByUpdatedAt(string $updated_at) Return the first ChildUgroup filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildGroup[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildGroup objects based on current ModelCriteria
- * @method     ChildGroup[]|ObjectCollection findById(int $id) Return ChildGroup objects filtered by the id column
- * @method     ChildGroup[]|ObjectCollection findByName(string $name) Return ChildGroup objects filtered by the name column
- * @method     ChildGroup[]|ObjectCollection findByDescription(string $description) Return ChildGroup objects filtered by the description column
- * @method     ChildGroup[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildGroup objects filtered by the created_at column
- * @method     ChildGroup[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildGroup objects filtered by the updated_at column
- * @method     ChildGroup[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
+ * @method     ChildUgroup[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildUgroup objects based on current ModelCriteria
+ * @method     ChildUgroup[]|ObjectCollection findById(int $id) Return ChildUgroup objects filtered by the id column
+ * @method     ChildUgroup[]|ObjectCollection findByName(string $name) Return ChildUgroup objects filtered by the name column
+ * @method     ChildUgroup[]|ObjectCollection findByDescription(string $description) Return ChildUgroup objects filtered by the description column
+ * @method     ChildUgroup[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildUgroup objects filtered by the created_at column
+ * @method     ChildUgroup[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildUgroup objects filtered by the updated_at column
+ * @method     ChildUgroup[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
-abstract class GroupQuery extends ModelCriteria
+abstract class UgroupQuery extends ModelCriteria
 {
     protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
-     * Initializes internal state of \Base\GroupQuery object.
+     * Initializes internal state of \Base\UgroupQuery object.
      *
      * @param     string $dbName The database name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'default', $modelName = '\\Group', $modelAlias = null)
+    public function __construct($dbName = 'default', $modelName = '\\Ugroup', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
-     * Returns a new ChildGroupQuery object.
+     * Returns a new ChildUgroupQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
      * @param     Criteria $criteria Optional Criteria to build the query from
      *
-     * @return ChildGroupQuery
+     * @return ChildUgroupQuery
      */
     public static function create($modelAlias = null, Criteria $criteria = null)
     {
-        if ($criteria instanceof ChildGroupQuery) {
+        if ($criteria instanceof ChildUgroupQuery) {
             return $criteria;
         }
-        $query = new ChildGroupQuery();
+        $query = new ChildUgroupQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -141,7 +141,7 @@ abstract class GroupQuery extends ModelCriteria
      * @param mixed $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
-     * @return ChildGroup|array|mixed the result, formatted by the current formatter
+     * @return ChildUgroup|array|mixed the result, formatted by the current formatter
      */
     public function findPk($key, ConnectionInterface $con = null)
     {
@@ -150,7 +150,7 @@ abstract class GroupQuery extends ModelCriteria
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(GroupTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(UgroupTableMap::DATABASE_NAME);
         }
 
         $this->basePreSelect($con);
@@ -163,7 +163,7 @@ abstract class GroupQuery extends ModelCriteria
             return $this->findPkComplex($key, $con);
         }
 
-        if ((null !== ($obj = GroupTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+        if ((null !== ($obj = UgroupTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -180,7 +180,7 @@ abstract class GroupQuery extends ModelCriteria
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildGroup A model object, or null if the key is not found
+     * @return ChildUgroup A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
@@ -195,10 +195,10 @@ abstract class GroupQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-            /** @var ChildGroup $obj */
-            $obj = new ChildGroup();
+            /** @var ChildUgroup $obj */
+            $obj = new ChildUgroup();
             $obj->hydrate($row);
-            GroupTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            UgroupTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -211,7 +211,7 @@ abstract class GroupQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return ChildGroup|array|mixed the result, formatted by the current formatter
+     * @return ChildUgroup|array|mixed the result, formatted by the current formatter
      */
     protected function findPkComplex($key, ConnectionInterface $con)
     {
@@ -253,12 +253,12 @@ abstract class GroupQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return $this|ChildGroupQuery The current query, for fluid interface
+     * @return $this|ChildUgroupQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
 
-        return $this->addUsingAlias(GroupTableMap::COL_ID, $key, Criteria::EQUAL);
+        return $this->addUsingAlias(UgroupTableMap::COL_ID, $key, Criteria::EQUAL);
     }
 
     /**
@@ -266,12 +266,12 @@ abstract class GroupQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return $this|ChildGroupQuery The current query, for fluid interface
+     * @return $this|ChildUgroupQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
 
-        return $this->addUsingAlias(GroupTableMap::COL_ID, $keys, Criteria::IN);
+        return $this->addUsingAlias(UgroupTableMap::COL_ID, $keys, Criteria::IN);
     }
 
     /**
@@ -290,18 +290,18 @@ abstract class GroupQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildGroupQuery The current query, for fluid interface
+     * @return $this|ChildUgroupQuery The current query, for fluid interface
      */
     public function filterById($id = null, $comparison = null)
     {
         if (is_array($id)) {
             $useMinMax = false;
             if (isset($id['min'])) {
-                $this->addUsingAlias(GroupTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(UgroupTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($id['max'])) {
-                $this->addUsingAlias(GroupTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(UgroupTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -312,7 +312,7 @@ abstract class GroupQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(GroupTableMap::COL_ID, $id, $comparison);
+        return $this->addUsingAlias(UgroupTableMap::COL_ID, $id, $comparison);
     }
 
     /**
@@ -327,7 +327,7 @@ abstract class GroupQuery extends ModelCriteria
      * @param     string $name The value to use as filter.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildGroupQuery The current query, for fluid interface
+     * @return $this|ChildUgroupQuery The current query, for fluid interface
      */
     public function filterByName($name = null, $comparison = null)
     {
@@ -337,7 +337,7 @@ abstract class GroupQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(GroupTableMap::COL_NAME, $name, $comparison);
+        return $this->addUsingAlias(UgroupTableMap::COL_NAME, $name, $comparison);
     }
 
     /**
@@ -352,7 +352,7 @@ abstract class GroupQuery extends ModelCriteria
      * @param     string $description The value to use as filter.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildGroupQuery The current query, for fluid interface
+     * @return $this|ChildUgroupQuery The current query, for fluid interface
      */
     public function filterByDescription($description = null, $comparison = null)
     {
@@ -362,7 +362,7 @@ abstract class GroupQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(GroupTableMap::COL_DESCRIPTION, $description, $comparison);
+        return $this->addUsingAlias(UgroupTableMap::COL_DESCRIPTION, $description, $comparison);
     }
 
     /**
@@ -383,18 +383,18 @@ abstract class GroupQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildGroupQuery The current query, for fluid interface
+     * @return $this|ChildUgroupQuery The current query, for fluid interface
      */
     public function filterByCreatedAt($createdAt = null, $comparison = null)
     {
         if (is_array($createdAt)) {
             $useMinMax = false;
             if (isset($createdAt['min'])) {
-                $this->addUsingAlias(GroupTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(UgroupTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($createdAt['max'])) {
-                $this->addUsingAlias(GroupTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(UgroupTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -405,7 +405,7 @@ abstract class GroupQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(GroupTableMap::COL_CREATED_AT, $createdAt, $comparison);
+        return $this->addUsingAlias(UgroupTableMap::COL_CREATED_AT, $createdAt, $comparison);
     }
 
     /**
@@ -426,18 +426,18 @@ abstract class GroupQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildGroupQuery The current query, for fluid interface
+     * @return $this|ChildUgroupQuery The current query, for fluid interface
      */
     public function filterByUpdatedAt($updatedAt = null, $comparison = null)
     {
         if (is_array($updatedAt)) {
             $useMinMax = false;
             if (isset($updatedAt['min'])) {
-                $this->addUsingAlias(GroupTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(UgroupTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($updatedAt['max'])) {
-                $this->addUsingAlias(GroupTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(UgroupTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -448,7 +448,7 @@ abstract class GroupQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(GroupTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
+        return $this->addUsingAlias(UgroupTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
     }
 
     /**
@@ -457,13 +457,13 @@ abstract class GroupQuery extends ModelCriteria
      * @param \UserGroup|ObjectCollection $userGroup the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildGroupQuery The current query, for fluid interface
+     * @return ChildUgroupQuery The current query, for fluid interface
      */
     public function filterByUserGroup($userGroup, $comparison = null)
     {
         if ($userGroup instanceof \UserGroup) {
             return $this
-                ->addUsingAlias(GroupTableMap::COL_ID, $userGroup->getGroupId(), $comparison);
+                ->addUsingAlias(UgroupTableMap::COL_ID, $userGroup->getGroupId(), $comparison);
         } elseif ($userGroup instanceof ObjectCollection) {
             return $this
                 ->useUserGroupQuery()
@@ -480,7 +480,7 @@ abstract class GroupQuery extends ModelCriteria
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return $this|ChildGroupQuery The current query, for fluid interface
+     * @return $this|ChildUgroupQuery The current query, for fluid interface
      */
     public function joinUserGroup($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
@@ -530,13 +530,13 @@ abstract class GroupQuery extends ModelCriteria
      * @param \MenuGroup|ObjectCollection $menuGroup the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildGroupQuery The current query, for fluid interface
+     * @return ChildUgroupQuery The current query, for fluid interface
      */
     public function filterByMenuGroup($menuGroup, $comparison = null)
     {
         if ($menuGroup instanceof \MenuGroup) {
             return $this
-                ->addUsingAlias(GroupTableMap::COL_ID, $menuGroup->getGroupId(), $comparison);
+                ->addUsingAlias(UgroupTableMap::COL_ID, $menuGroup->getGroupId(), $comparison);
         } elseif ($menuGroup instanceof ObjectCollection) {
             return $this
                 ->useMenuGroupQuery()
@@ -553,7 +553,7 @@ abstract class GroupQuery extends ModelCriteria
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return $this|ChildGroupQuery The current query, for fluid interface
+     * @return $this|ChildUgroupQuery The current query, for fluid interface
      */
     public function joinMenuGroup($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
@@ -604,7 +604,7 @@ abstract class GroupQuery extends ModelCriteria
      * @param User $user the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildGroupQuery The current query, for fluid interface
+     * @return ChildUgroupQuery The current query, for fluid interface
      */
     public function filterByUser($user, $comparison = Criteria::EQUAL)
     {
@@ -621,7 +621,7 @@ abstract class GroupQuery extends ModelCriteria
      * @param Menu $menu the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildGroupQuery The current query, for fluid interface
+     * @return ChildUgroupQuery The current query, for fluid interface
      */
     public function filterByMenu($menu, $comparison = Criteria::EQUAL)
     {
@@ -634,14 +634,14 @@ abstract class GroupQuery extends ModelCriteria
     /**
      * Exclude object from result
      *
-     * @param   ChildGroup $group Object to remove from the list of results
+     * @param   ChildUgroup $ugroup Object to remove from the list of results
      *
-     * @return $this|ChildGroupQuery The current query, for fluid interface
+     * @return $this|ChildUgroupQuery The current query, for fluid interface
      */
-    public function prune($group = null)
+    public function prune($ugroup = null)
     {
-        if ($group) {
-            $this->addUsingAlias(GroupTableMap::COL_ID, $group->getId(), Criteria::NOT_EQUAL);
+        if ($ugroup) {
+            $this->addUsingAlias(UgroupTableMap::COL_ID, $ugroup->getId(), Criteria::NOT_EQUAL);
         }
 
         return $this;
@@ -656,7 +656,7 @@ abstract class GroupQuery extends ModelCriteria
     public function doDeleteAll(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(GroupTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UgroupTableMap::DATABASE_NAME);
         }
 
         // use transaction because $criteria could contain info
@@ -667,8 +667,8 @@ abstract class GroupQuery extends ModelCriteria
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            GroupTableMap::clearInstancePool();
-            GroupTableMap::clearRelatedInstancePool();
+            UgroupTableMap::clearInstancePool();
+            UgroupTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
@@ -686,26 +686,26 @@ abstract class GroupQuery extends ModelCriteria
     public function delete(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(GroupTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UgroupTableMap::DATABASE_NAME);
         }
 
         $criteria = $this;
 
         // Set the correct dbName
-        $criteria->setDbName(GroupTableMap::DATABASE_NAME);
+        $criteria->setDbName(UgroupTableMap::DATABASE_NAME);
 
         // use transaction because $criteria could contain info
         // for more than one table or we could emulating ON DELETE CASCADE, etc.
         return $con->transaction(function () use ($con, $criteria) {
             $affectedRows = 0; // initialize var to track total num of affected rows
 
-            GroupTableMap::removeInstanceFromPool($criteria);
+            UgroupTableMap::removeInstanceFromPool($criteria);
 
             $affectedRows += ModelCriteria::delete($con);
-            GroupTableMap::clearRelatedInstancePool();
+            UgroupTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
     }
 
-} // GroupQuery
+} // UgroupQuery

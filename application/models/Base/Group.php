@@ -33,7 +33,7 @@ use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'group' table.
+ * Base class that represents a row from the 'ugroup' table.
  *
  *
  *
@@ -961,7 +961,7 @@ abstract class Group implements ActiveRecordInterface
         }
 
         $sql = sprintf(
-            'INSERT INTO group (%s) VALUES (%s)',
+            'INSERT INTO ugroup (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );

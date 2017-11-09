@@ -2,12 +2,12 @@
 
 namespace Base;
 
-use \Activity as ChildActivity;
-use \ActivityQuery as ChildActivityQuery;
-use \Group as ChildGroup;
-use \GroupQuery as ChildGroupQuery;
-use \Partner as ChildPartner;
-use \PartnerQuery as ChildPartnerQuery;
+use \Menu as ChildMenu;
+use \MenuGroup as ChildMenuGroup;
+use \MenuGroupQuery as ChildMenuGroupQuery;
+use \MenuQuery as ChildMenuQuery;
+use \Ugroup as ChildUgroup;
+use \UgroupQuery as ChildUgroupQuery;
 use \User as ChildUser;
 use \UserGroup as ChildUserGroup;
 use \UserGroupQuery as ChildUserGroupQuery;
@@ -15,9 +15,9 @@ use \UserQuery as ChildUserQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
-use Map\ActivityTableMap;
+use Map\MenuGroupTableMap;
+use Map\UgroupTableMap;
 use Map\UserGroupTableMap;
-use Map\UserTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -33,18 +33,18 @@ use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'user' table.
+ * Base class that represents a row from the 'ugroup' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class User implements ActiveRecordInterface
+abstract class Ugroup implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Map\\UserTableMap';
+    const TABLE_MAP = '\\Map\\UgroupTableMap';
 
 
     /**
@@ -88,33 +88,11 @@ abstract class User implements ActiveRecordInterface
     protected $name;
 
     /**
-     * The value for the password field.
+     * The value for the description field.
      *
      * @var        string
      */
-    protected $password;
-
-    /**
-     * The value for the partner_id field.
-     *
-     * @var        int
-     */
-    protected $partner_id;
-
-    /**
-     * The value for the last_login field.
-     *
-     * @var        DateTime
-     */
-    protected $last_login;
-
-    /**
-     * The value for the status field.
-     *
-     * Note: this column has a database default value of: false
-     * @var        boolean
-     */
-    protected $status;
+    protected $description;
 
     /**
      * The value for the created_at field.
@@ -133,31 +111,36 @@ abstract class User implements ActiveRecordInterface
     protected $updated_at;
 
     /**
-     * @var        ChildPartner
-     */
-    protected $aPartner;
-
-    /**
      * @var        ObjectCollection|ChildUserGroup[] Collection to store aggregation of ChildUserGroup objects.
      */
     protected $collUserGroups;
     protected $collUserGroupsPartial;
 
     /**
-     * @var        ObjectCollection|ChildActivity[] Collection to store aggregation of ChildActivity objects.
+     * @var        ObjectCollection|ChildMenuGroup[] Collection to store aggregation of ChildMenuGroup objects.
      */
-    protected $collActivities;
-    protected $collActivitiesPartial;
+    protected $collMenuGroups;
+    protected $collMenuGroupsPartial;
 
     /**
-     * @var        ObjectCollection|ChildGroup[] Cross Collection to store aggregation of ChildGroup objects.
+     * @var        ObjectCollection|ChildUser[] Cross Collection to store aggregation of ChildUser objects.
      */
-    protected $collGroups;
+    protected $collUsers;
 
     /**
      * @var bool
      */
-    protected $collGroupsPartial;
+    protected $collUsersPartial;
+
+    /**
+     * @var        ObjectCollection|ChildMenu[] Cross Collection to store aggregation of ChildMenu objects.
+     */
+    protected $collMenus;
+
+    /**
+     * @var bool
+     */
+    protected $collMenusPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -169,9 +152,15 @@ abstract class User implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildGroup[]
+     * @var ObjectCollection|ChildUser[]
      */
-    protected $groupsScheduledForDeletion = null;
+    protected $usersScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildMenu[]
+     */
+    protected $menusScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -181,9 +170,9 @@ abstract class User implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildActivity[]
+     * @var ObjectCollection|ChildMenuGroup[]
      */
-    protected $activitiesScheduledForDeletion = null;
+    protected $menuGroupsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -193,11 +182,10 @@ abstract class User implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->status = false;
     }
 
     /**
-     * Initializes internal state of Base\User object.
+     * Initializes internal state of Base\Ugroup object.
      * @see applyDefaults()
      */
     public function __construct()
@@ -294,9 +282,9 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>User</code> instance.  If
-     * <code>obj</code> is an instance of <code>User</code>, delegates to
-     * <code>equals(User)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>Ugroup</code> instance.  If
+     * <code>obj</code> is an instance of <code>Ugroup</code>, delegates to
+     * <code>equals(Ugroup)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -362,7 +350,7 @@ abstract class User implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|User The current object, for fluid interface
+     * @return $this|Ugroup The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -444,63 +432,13 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * Get the [password] column value.
+     * Get the [description] column value.
      *
      * @return string
      */
-    public function getPassword()
+    public function getDescription()
     {
-        return $this->password;
-    }
-
-    /**
-     * Get the [partner_id] column value.
-     *
-     * @return int
-     */
-    public function getPartnerId()
-    {
-        return $this->partner_id;
-    }
-
-    /**
-     * Get the [optionally formatted] temporal [last_login] column value.
-     *
-     *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw DateTime object will be returned.
-     *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
-     *
-     * @throws PropelException - if unable to parse/validate the date/time value.
-     */
-    public function getLastLogin($format = NULL)
-    {
-        if ($format === null) {
-            return $this->last_login;
-        } else {
-            return $this->last_login instanceof \DateTimeInterface ? $this->last_login->format($format) : null;
-        }
-    }
-
-    /**
-     * Get the [status] column value.
-     *
-     * @return boolean
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * Get the [status] column value.
-     *
-     * @return boolean
-     */
-    public function isStatus()
-    {
-        return $this->getStatus();
+        return $this->description;
     }
 
     /**
@@ -547,7 +485,7 @@ abstract class User implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param int $v new value
-     * @return $this|\User The current object (for fluent API support)
+     * @return $this|\Ugroup The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -557,7 +495,7 @@ abstract class User implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[UserTableMap::COL_ID] = true;
+            $this->modifiedColumns[UgroupTableMap::COL_ID] = true;
         }
 
         return $this;
@@ -567,7 +505,7 @@ abstract class User implements ActiveRecordInterface
      * Set the value of [name] column.
      *
      * @param string $v new value
-     * @return $this|\User The current object (for fluent API support)
+     * @return $this|\Ugroup The current object (for fluent API support)
      */
     public function setName($v)
     {
@@ -577,110 +515,38 @@ abstract class User implements ActiveRecordInterface
 
         if ($this->name !== $v) {
             $this->name = $v;
-            $this->modifiedColumns[UserTableMap::COL_NAME] = true;
+            $this->modifiedColumns[UgroupTableMap::COL_NAME] = true;
         }
 
         return $this;
     } // setName()
 
     /**
-     * Set the value of [password] column.
+     * Set the value of [description] column.
      *
      * @param string $v new value
-     * @return $this|\User The current object (for fluent API support)
+     * @return $this|\Ugroup The current object (for fluent API support)
      */
-    public function setPassword($v)
+    public function setDescription($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->password !== $v) {
-            $this->password = $v;
-            $this->modifiedColumns[UserTableMap::COL_PASSWORD] = true;
+        if ($this->description !== $v) {
+            $this->description = $v;
+            $this->modifiedColumns[UgroupTableMap::COL_DESCRIPTION] = true;
         }
 
         return $this;
-    } // setPassword()
-
-    /**
-     * Set the value of [partner_id] column.
-     *
-     * @param int $v new value
-     * @return $this|\User The current object (for fluent API support)
-     */
-    public function setPartnerId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->partner_id !== $v) {
-            $this->partner_id = $v;
-            $this->modifiedColumns[UserTableMap::COL_PARTNER_ID] = true;
-        }
-
-        if ($this->aPartner !== null && $this->aPartner->getId() !== $v) {
-            $this->aPartner = null;
-        }
-
-        return $this;
-    } // setPartnerId()
-
-    /**
-     * Sets the value of [last_login] column to a normalized version of the date/time value specified.
-     *
-     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
-     *               Empty strings are treated as NULL.
-     * @return $this|\User The current object (for fluent API support)
-     */
-    public function setLastLogin($v)
-    {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->last_login !== null || $dt !== null) {
-            if ($this->last_login === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->last_login->format("Y-m-d H:i:s.u")) {
-                $this->last_login = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[UserTableMap::COL_LAST_LOGIN] = true;
-            }
-        } // if either are not null
-
-        return $this;
-    } // setLastLogin()
-
-    /**
-     * Sets the value of the [status] column.
-     * Non-boolean arguments are converted using the following rules:
-     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     *
-     * @param  boolean|integer|string $v The new value
-     * @return $this|\User The current object (for fluent API support)
-     */
-    public function setStatus($v)
-    {
-        if ($v !== null) {
-            if (is_string($v)) {
-                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-            } else {
-                $v = (boolean) $v;
-            }
-        }
-
-        if ($this->status !== $v) {
-            $this->status = $v;
-            $this->modifiedColumns[UserTableMap::COL_STATUS] = true;
-        }
-
-        return $this;
-    } // setStatus()
+    } // setDescription()
 
     /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\User The current object (for fluent API support)
+     * @return $this|\Ugroup The current object (for fluent API support)
      */
     public function setCreatedAt($v)
     {
@@ -688,7 +554,7 @@ abstract class User implements ActiveRecordInterface
         if ($this->created_at !== null || $dt !== null) {
             if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_at->format("Y-m-d H:i:s.u")) {
                 $this->created_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[UserTableMap::COL_CREATED_AT] = true;
+                $this->modifiedColumns[UgroupTableMap::COL_CREATED_AT] = true;
             }
         } // if either are not null
 
@@ -700,7 +566,7 @@ abstract class User implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\User The current object (for fluent API support)
+     * @return $this|\Ugroup The current object (for fluent API support)
      */
     public function setUpdatedAt($v)
     {
@@ -708,7 +574,7 @@ abstract class User implements ActiveRecordInterface
         if ($this->updated_at !== null || $dt !== null) {
             if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated_at->format("Y-m-d H:i:s.u")) {
                 $this->updated_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[UserTableMap::COL_UPDATED_AT] = true;
+                $this->modifiedColumns[UgroupTableMap::COL_UPDATED_AT] = true;
             }
         } // if either are not null
 
@@ -725,10 +591,6 @@ abstract class User implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->status !== false) {
-                return false;
-            }
-
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -755,34 +617,22 @@ abstract class User implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : UserTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : UgroupTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : UserTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : UgroupTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : UserTableMap::translateFieldName('Password', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->password = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : UgroupTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->description = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : UserTableMap::translateFieldName('PartnerId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->partner_id = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : UserTableMap::translateFieldName('LastLogin', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
-            $this->last_login = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : UserTableMap::translateFieldName('Status', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->status = (null !== $col) ? (boolean) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : UserTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : UgroupTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : UserTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : UgroupTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -795,10 +645,10 @@ abstract class User implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 8; // 8 = UserTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = UgroupTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\User'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\Ugroup'), 0, $e);
         }
     }
 
@@ -817,9 +667,6 @@ abstract class User implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aPartner !== null && $this->partner_id !== $this->aPartner->getId()) {
-            $this->aPartner = null;
-        }
     } // ensureConsistency
 
     /**
@@ -843,13 +690,13 @@ abstract class User implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(UserTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(UgroupTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildUserQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildUgroupQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -859,12 +706,12 @@ abstract class User implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aPartner = null;
             $this->collUserGroups = null;
 
-            $this->collActivities = null;
+            $this->collMenuGroups = null;
 
-            $this->collGroups = null;
+            $this->collUsers = null;
+            $this->collMenus = null;
         } // if (deep)
     }
 
@@ -874,8 +721,8 @@ abstract class User implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see User::setDeleted()
-     * @see User::isDeleted()
+     * @see Ugroup::setDeleted()
+     * @see Ugroup::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -884,11 +731,11 @@ abstract class User implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(UserTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UgroupTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildUserQuery::create()
+            $deleteQuery = ChildUgroupQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -923,7 +770,7 @@ abstract class User implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(UserTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UgroupTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -942,7 +789,7 @@ abstract class User implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                UserTableMap::addInstanceToPool($this);
+                UgroupTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -968,18 +815,6 @@ abstract class User implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
-            // We call the save method on the following object(s) if they
-            // were passed to this object by their corresponding set
-            // method.  This object relates to these object(s) by a
-            // foreign key reference.
-
-            if ($this->aPartner !== null) {
-                if ($this->aPartner->isModified() || $this->aPartner->isNew()) {
-                    $affectedRows += $this->aPartner->save($con);
-                }
-                $this->setPartner($this->aPartner);
-            }
-
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -991,14 +826,14 @@ abstract class User implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->groupsScheduledForDeletion !== null) {
-                if (!$this->groupsScheduledForDeletion->isEmpty()) {
+            if ($this->usersScheduledForDeletion !== null) {
+                if (!$this->usersScheduledForDeletion->isEmpty()) {
                     $pks = array();
-                    foreach ($this->groupsScheduledForDeletion as $entry) {
+                    foreach ($this->usersScheduledForDeletion as $entry) {
                         $entryPk = [];
 
-                        $entryPk[0] = $this->getId();
-                        $entryPk[1] = $entry->getId();
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
                         $pks[] = $entryPk;
                     }
 
@@ -1006,15 +841,44 @@ abstract class User implements ActiveRecordInterface
                         ->filterByPrimaryKeys($pks)
                         ->delete($con);
 
-                    $this->groupsScheduledForDeletion = null;
+                    $this->usersScheduledForDeletion = null;
                 }
 
             }
 
-            if ($this->collGroups) {
-                foreach ($this->collGroups as $group) {
-                    if (!$group->isDeleted() && ($group->isNew() || $group->isModified())) {
-                        $group->save($con);
+            if ($this->collUsers) {
+                foreach ($this->collUsers as $user) {
+                    if (!$user->isDeleted() && ($user->isNew() || $user->isModified())) {
+                        $user->save($con);
+                    }
+                }
+            }
+
+
+            if ($this->menusScheduledForDeletion !== null) {
+                if (!$this->menusScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->menusScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \MenuGroupQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->menusScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collMenus) {
+                foreach ($this->collMenus as $menu) {
+                    if (!$menu->isDeleted() && ($menu->isNew() || $menu->isModified())) {
+                        $menu->save($con);
                     }
                 }
             }
@@ -1037,17 +901,17 @@ abstract class User implements ActiveRecordInterface
                 }
             }
 
-            if ($this->activitiesScheduledForDeletion !== null) {
-                if (!$this->activitiesScheduledForDeletion->isEmpty()) {
-                    \ActivityQuery::create()
-                        ->filterByPrimaryKeys($this->activitiesScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->menuGroupsScheduledForDeletion !== null) {
+                if (!$this->menuGroupsScheduledForDeletion->isEmpty()) {
+                    \MenuGroupQuery::create()
+                        ->filterByPrimaryKeys($this->menuGroupsScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->activitiesScheduledForDeletion = null;
+                    $this->menuGroupsScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collActivities !== null) {
-                foreach ($this->collActivities as $referrerFK) {
+            if ($this->collMenuGroups !== null) {
+                foreach ($this->collMenuGroups as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1074,39 +938,30 @@ abstract class User implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[UserTableMap::COL_ID] = true;
+        $this->modifiedColumns[UgroupTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . UserTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . UgroupTableMap::COL_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(UserTableMap::COL_ID)) {
+        if ($this->isColumnModified(UgroupTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(UserTableMap::COL_NAME)) {
+        if ($this->isColumnModified(UgroupTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'name';
         }
-        if ($this->isColumnModified(UserTableMap::COL_PASSWORD)) {
-            $modifiedColumns[':p' . $index++]  = 'password';
+        if ($this->isColumnModified(UgroupTableMap::COL_DESCRIPTION)) {
+            $modifiedColumns[':p' . $index++]  = 'description';
         }
-        if ($this->isColumnModified(UserTableMap::COL_PARTNER_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'partner_id';
-        }
-        if ($this->isColumnModified(UserTableMap::COL_LAST_LOGIN)) {
-            $modifiedColumns[':p' . $index++]  = 'last_login';
-        }
-        if ($this->isColumnModified(UserTableMap::COL_STATUS)) {
-            $modifiedColumns[':p' . $index++]  = 'status';
-        }
-        if ($this->isColumnModified(UserTableMap::COL_CREATED_AT)) {
+        if ($this->isColumnModified(UgroupTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
-        if ($this->isColumnModified(UserTableMap::COL_UPDATED_AT)) {
+        if ($this->isColumnModified(UgroupTableMap::COL_UPDATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'updated_at';
         }
 
         $sql = sprintf(
-            'INSERT INTO user (%s) VALUES (%s)',
+            'INSERT INTO ugroup (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -1121,17 +976,8 @@ abstract class User implements ActiveRecordInterface
                     case 'name':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
-                    case 'password':
-                        $stmt->bindValue($identifier, $this->password, PDO::PARAM_STR);
-                        break;
-                    case 'partner_id':
-                        $stmt->bindValue($identifier, $this->partner_id, PDO::PARAM_INT);
-                        break;
-                    case 'last_login':
-                        $stmt->bindValue($identifier, $this->last_login ? $this->last_login->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
-                        break;
-                    case 'status':
-                        $stmt->bindValue($identifier, (int) $this->status, PDO::PARAM_INT);
+                    case 'description':
+                        $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -1185,7 +1031,7 @@ abstract class User implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = UserTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = UgroupTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -1208,21 +1054,12 @@ abstract class User implements ActiveRecordInterface
                 return $this->getName();
                 break;
             case 2:
-                return $this->getPassword();
+                return $this->getDescription();
                 break;
             case 3:
-                return $this->getPartnerId();
-                break;
-            case 4:
-                return $this->getLastLogin();
-                break;
-            case 5:
-                return $this->getStatus();
-                break;
-            case 6:
                 return $this->getCreatedAt();
                 break;
-            case 7:
+            case 4:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1249,31 +1086,24 @@ abstract class User implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['User'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['Ugroup'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['User'][$this->hashCode()] = true;
-        $keys = UserTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['Ugroup'][$this->hashCode()] = true;
+        $keys = UgroupTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
-            $keys[2] => $this->getPassword(),
-            $keys[3] => $this->getPartnerId(),
-            $keys[4] => $this->getLastLogin(),
-            $keys[5] => $this->getStatus(),
-            $keys[6] => $this->getCreatedAt(),
-            $keys[7] => $this->getUpdatedAt(),
+            $keys[2] => $this->getDescription(),
+            $keys[3] => $this->getCreatedAt(),
+            $keys[4] => $this->getUpdatedAt(),
         );
+        if ($result[$keys[3]] instanceof \DateTimeInterface) {
+            $result[$keys[3]] = $result[$keys[3]]->format('c');
+        }
+
         if ($result[$keys[4]] instanceof \DateTimeInterface) {
             $result[$keys[4]] = $result[$keys[4]]->format('c');
-        }
-
-        if ($result[$keys[6]] instanceof \DateTimeInterface) {
-            $result[$keys[6]] = $result[$keys[6]]->format('c');
-        }
-
-        if ($result[$keys[7]] instanceof \DateTimeInterface) {
-            $result[$keys[7]] = $result[$keys[7]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1282,21 +1112,6 @@ abstract class User implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aPartner) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'partner';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'partner';
-                        break;
-                    default:
-                        $key = 'Partner';
-                }
-
-                $result[$key] = $this->aPartner->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
             if (null !== $this->collUserGroups) {
 
                 switch ($keyType) {
@@ -1312,20 +1127,20 @@ abstract class User implements ActiveRecordInterface
 
                 $result[$key] = $this->collUserGroups->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
-            if (null !== $this->collActivities) {
+            if (null !== $this->collMenuGroups) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'activities';
+                        $key = 'menuGroups';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'activities';
+                        $key = 'menu_groups';
                         break;
                     default:
-                        $key = 'Activities';
+                        $key = 'MenuGroups';
                 }
 
-                $result[$key] = $this->collActivities->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collMenuGroups->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1341,11 +1156,11 @@ abstract class User implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\User
+     * @return $this|\Ugroup
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = UserTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = UgroupTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1356,7 +1171,7 @@ abstract class User implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\User
+     * @return $this|\Ugroup
      */
     public function setByPosition($pos, $value)
     {
@@ -1368,21 +1183,12 @@ abstract class User implements ActiveRecordInterface
                 $this->setName($value);
                 break;
             case 2:
-                $this->setPassword($value);
+                $this->setDescription($value);
                 break;
             case 3:
-                $this->setPartnerId($value);
-                break;
-            case 4:
-                $this->setLastLogin($value);
-                break;
-            case 5:
-                $this->setStatus($value);
-                break;
-            case 6:
                 $this->setCreatedAt($value);
                 break;
-            case 7:
+            case 4:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1409,7 +1215,7 @@ abstract class User implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = UserTableMap::getFieldNames($keyType);
+        $keys = UgroupTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setId($arr[$keys[0]]);
@@ -1418,22 +1224,13 @@ abstract class User implements ActiveRecordInterface
             $this->setName($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setPassword($arr[$keys[2]]);
+            $this->setDescription($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setPartnerId($arr[$keys[3]]);
+            $this->setCreatedAt($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setLastLogin($arr[$keys[4]]);
-        }
-        if (array_key_exists($keys[5], $arr)) {
-            $this->setStatus($arr[$keys[5]]);
-        }
-        if (array_key_exists($keys[6], $arr)) {
-            $this->setCreatedAt($arr[$keys[6]]);
-        }
-        if (array_key_exists($keys[7], $arr)) {
-            $this->setUpdatedAt($arr[$keys[7]]);
+            $this->setUpdatedAt($arr[$keys[4]]);
         }
     }
 
@@ -1454,7 +1251,7 @@ abstract class User implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\User The current object, for fluid interface
+     * @return $this|\Ugroup The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1474,31 +1271,22 @@ abstract class User implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(UserTableMap::DATABASE_NAME);
+        $criteria = new Criteria(UgroupTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(UserTableMap::COL_ID)) {
-            $criteria->add(UserTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(UgroupTableMap::COL_ID)) {
+            $criteria->add(UgroupTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(UserTableMap::COL_NAME)) {
-            $criteria->add(UserTableMap::COL_NAME, $this->name);
+        if ($this->isColumnModified(UgroupTableMap::COL_NAME)) {
+            $criteria->add(UgroupTableMap::COL_NAME, $this->name);
         }
-        if ($this->isColumnModified(UserTableMap::COL_PASSWORD)) {
-            $criteria->add(UserTableMap::COL_PASSWORD, $this->password);
+        if ($this->isColumnModified(UgroupTableMap::COL_DESCRIPTION)) {
+            $criteria->add(UgroupTableMap::COL_DESCRIPTION, $this->description);
         }
-        if ($this->isColumnModified(UserTableMap::COL_PARTNER_ID)) {
-            $criteria->add(UserTableMap::COL_PARTNER_ID, $this->partner_id);
+        if ($this->isColumnModified(UgroupTableMap::COL_CREATED_AT)) {
+            $criteria->add(UgroupTableMap::COL_CREATED_AT, $this->created_at);
         }
-        if ($this->isColumnModified(UserTableMap::COL_LAST_LOGIN)) {
-            $criteria->add(UserTableMap::COL_LAST_LOGIN, $this->last_login);
-        }
-        if ($this->isColumnModified(UserTableMap::COL_STATUS)) {
-            $criteria->add(UserTableMap::COL_STATUS, $this->status);
-        }
-        if ($this->isColumnModified(UserTableMap::COL_CREATED_AT)) {
-            $criteria->add(UserTableMap::COL_CREATED_AT, $this->created_at);
-        }
-        if ($this->isColumnModified(UserTableMap::COL_UPDATED_AT)) {
-            $criteria->add(UserTableMap::COL_UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(UgroupTableMap::COL_UPDATED_AT)) {
+            $criteria->add(UgroupTableMap::COL_UPDATED_AT, $this->updated_at);
         }
 
         return $criteria;
@@ -1516,8 +1304,8 @@ abstract class User implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildUserQuery::create();
-        $criteria->add(UserTableMap::COL_ID, $this->id);
+        $criteria = ChildUgroupQuery::create();
+        $criteria->add(UgroupTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1579,7 +1367,7 @@ abstract class User implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \User (or compatible) type.
+     * @param      object $copyObj An object of \Ugroup (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1587,10 +1375,7 @@ abstract class User implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setName($this->getName());
-        $copyObj->setPassword($this->getPassword());
-        $copyObj->setPartnerId($this->getPartnerId());
-        $copyObj->setLastLogin($this->getLastLogin());
-        $copyObj->setStatus($this->getStatus());
+        $copyObj->setDescription($this->getDescription());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
 
@@ -1605,9 +1390,9 @@ abstract class User implements ActiveRecordInterface
                 }
             }
 
-            foreach ($this->getActivities() as $relObj) {
+            foreach ($this->getMenuGroups() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addActivity($relObj->copy($deepCopy));
+                    $copyObj->addMenuGroup($relObj->copy($deepCopy));
                 }
             }
 
@@ -1628,7 +1413,7 @@ abstract class User implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \User Clone of current object.
+     * @return \Ugroup Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1639,57 +1424,6 @@ abstract class User implements ActiveRecordInterface
         $this->copyInto($copyObj, $deepCopy);
 
         return $copyObj;
-    }
-
-    /**
-     * Declares an association between this object and a ChildPartner object.
-     *
-     * @param  ChildPartner $v
-     * @return $this|\User The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setPartner(ChildPartner $v = null)
-    {
-        if ($v === null) {
-            $this->setPartnerId(NULL);
-        } else {
-            $this->setPartnerId($v->getId());
-        }
-
-        $this->aPartner = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildPartner object, it will not be re-added.
-        if ($v !== null) {
-            $v->addUser($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildPartner object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildPartner The associated ChildPartner object.
-     * @throws PropelException
-     */
-    public function getPartner(ConnectionInterface $con = null)
-    {
-        if ($this->aPartner === null && ($this->partner_id != 0)) {
-            $this->aPartner = ChildPartnerQuery::create()->findPk($this->partner_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aPartner->addUsers($this);
-             */
-        }
-
-        return $this->aPartner;
     }
 
 
@@ -1707,8 +1441,8 @@ abstract class User implements ActiveRecordInterface
             $this->initUserGroups();
             return;
         }
-        if ('Activity' == $relationName) {
-            $this->initActivities();
+        if ('MenuGroup' == $relationName) {
+            $this->initMenuGroups();
             return;
         }
     }
@@ -1765,7 +1499,7 @@ abstract class User implements ActiveRecordInterface
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildUser is new, it will return
+     * If this ChildUgroup is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
@@ -1782,7 +1516,7 @@ abstract class User implements ActiveRecordInterface
                 $this->initUserGroups();
             } else {
                 $collUserGroups = ChildUserGroupQuery::create(null, $criteria)
-                    ->filterByUser($this)
+                    ->filterByUgroup($this)
                     ->find($con);
 
                 if (null !== $criteria) {
@@ -1825,7 +1559,7 @@ abstract class User implements ActiveRecordInterface
      *
      * @param      Collection $userGroups A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildUser The current object (for fluent API support)
+     * @return $this|ChildUgroup The current object (for fluent API support)
      */
     public function setUserGroups(Collection $userGroups, ConnectionInterface $con = null)
     {
@@ -1839,7 +1573,7 @@ abstract class User implements ActiveRecordInterface
         $this->userGroupsScheduledForDeletion = clone $userGroupsToDelete;
 
         foreach ($userGroupsToDelete as $userGroupRemoved) {
-            $userGroupRemoved->setUser(null);
+            $userGroupRemoved->setUgroup(null);
         }
 
         $this->collUserGroups = null;
@@ -1880,7 +1614,7 @@ abstract class User implements ActiveRecordInterface
             }
 
             return $query
-                ->filterByUser($this)
+                ->filterByUgroup($this)
                 ->count($con);
         }
 
@@ -1892,7 +1626,7 @@ abstract class User implements ActiveRecordInterface
      * through the ChildUserGroup foreign key attribute.
      *
      * @param  ChildUserGroup $l ChildUserGroup
-     * @return $this|\User The current object (for fluent API support)
+     * @return $this|\Ugroup The current object (for fluent API support)
      */
     public function addUserGroup(ChildUserGroup $l)
     {
@@ -1918,12 +1652,12 @@ abstract class User implements ActiveRecordInterface
     protected function doAddUserGroup(ChildUserGroup $userGroup)
     {
         $this->collUserGroups[]= $userGroup;
-        $userGroup->setUser($this);
+        $userGroup->setUgroup($this);
     }
 
     /**
      * @param  ChildUserGroup $userGroup The ChildUserGroup object to remove.
-     * @return $this|ChildUser The current object (for fluent API support)
+     * @return $this|ChildUgroup The current object (for fluent API support)
      */
     public function removeUserGroup(ChildUserGroup $userGroup)
     {
@@ -1935,7 +1669,7 @@ abstract class User implements ActiveRecordInterface
                 $this->userGroupsScheduledForDeletion->clear();
             }
             $this->userGroupsScheduledForDeletion[]= clone $userGroup;
-            $userGroup->setUser(null);
+            $userGroup->setUgroup(null);
         }
 
         return $this;
@@ -1945,53 +1679,53 @@ abstract class User implements ActiveRecordInterface
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this User is new, it will return
-     * an empty collection; or if this User has previously
+     * Otherwise if this Ugroup is new, it will return
+     * an empty collection; or if this Ugroup has previously
      * been saved, it will retrieve related UserGroups from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in User.
+     * actually need in Ugroup.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildUserGroup[] List of ChildUserGroup objects
      */
-    public function getUserGroupsJoinGroup(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getUserGroupsJoinUser(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildUserGroupQuery::create(null, $criteria);
-        $query->joinWith('Group', $joinBehavior);
+        $query->joinWith('User', $joinBehavior);
 
         return $this->getUserGroups($query, $con);
     }
 
     /**
-     * Clears out the collActivities collection
+     * Clears out the collMenuGroups collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addActivities()
+     * @see        addMenuGroups()
      */
-    public function clearActivities()
+    public function clearMenuGroups()
     {
-        $this->collActivities = null; // important to set this to NULL since that means it is uninitialized
+        $this->collMenuGroups = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collActivities collection loaded partially.
+     * Reset is the collMenuGroups collection loaded partially.
      */
-    public function resetPartialActivities($v = true)
+    public function resetPartialMenuGroups($v = true)
     {
-        $this->collActivitiesPartial = $v;
+        $this->collMenuGroupsPartial = $v;
     }
 
     /**
-     * Initializes the collActivities collection.
+     * Initializes the collMenuGroups collection.
      *
-     * By default this just sets the collActivities collection to an empty array (like clearcollActivities());
+     * By default this just sets the collMenuGroups collection to an empty array (like clearcollMenuGroups());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -2000,162 +1734,165 @@ abstract class User implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initActivities($overrideExisting = true)
+    public function initMenuGroups($overrideExisting = true)
     {
-        if (null !== $this->collActivities && !$overrideExisting) {
+        if (null !== $this->collMenuGroups && !$overrideExisting) {
             return;
         }
 
-        $collectionClassName = ActivityTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = MenuGroupTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collActivities = new $collectionClassName;
-        $this->collActivities->setModel('\Activity');
+        $this->collMenuGroups = new $collectionClassName;
+        $this->collMenuGroups->setModel('\MenuGroup');
     }
 
     /**
-     * Gets an array of ChildActivity objects which contain a foreign key that references this object.
+     * Gets an array of ChildMenuGroup objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildUser is new, it will return
+     * If this ChildUgroup is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildActivity[] List of ChildActivity objects
+     * @return ObjectCollection|ChildMenuGroup[] List of ChildMenuGroup objects
      * @throws PropelException
      */
-    public function getActivities(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getMenuGroups(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collActivitiesPartial && !$this->isNew();
-        if (null === $this->collActivities || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collActivities) {
+        $partial = $this->collMenuGroupsPartial && !$this->isNew();
+        if (null === $this->collMenuGroups || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collMenuGroups) {
                 // return empty collection
-                $this->initActivities();
+                $this->initMenuGroups();
             } else {
-                $collActivities = ChildActivityQuery::create(null, $criteria)
-                    ->filterByUser($this)
+                $collMenuGroups = ChildMenuGroupQuery::create(null, $criteria)
+                    ->filterByUgroup($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collActivitiesPartial && count($collActivities)) {
-                        $this->initActivities(false);
+                    if (false !== $this->collMenuGroupsPartial && count($collMenuGroups)) {
+                        $this->initMenuGroups(false);
 
-                        foreach ($collActivities as $obj) {
-                            if (false == $this->collActivities->contains($obj)) {
-                                $this->collActivities->append($obj);
+                        foreach ($collMenuGroups as $obj) {
+                            if (false == $this->collMenuGroups->contains($obj)) {
+                                $this->collMenuGroups->append($obj);
                             }
                         }
 
-                        $this->collActivitiesPartial = true;
+                        $this->collMenuGroupsPartial = true;
                     }
 
-                    return $collActivities;
+                    return $collMenuGroups;
                 }
 
-                if ($partial && $this->collActivities) {
-                    foreach ($this->collActivities as $obj) {
+                if ($partial && $this->collMenuGroups) {
+                    foreach ($this->collMenuGroups as $obj) {
                         if ($obj->isNew()) {
-                            $collActivities[] = $obj;
+                            $collMenuGroups[] = $obj;
                         }
                     }
                 }
 
-                $this->collActivities = $collActivities;
-                $this->collActivitiesPartial = false;
+                $this->collMenuGroups = $collMenuGroups;
+                $this->collMenuGroupsPartial = false;
             }
         }
 
-        return $this->collActivities;
+        return $this->collMenuGroups;
     }
 
     /**
-     * Sets a collection of ChildActivity objects related by a one-to-many relationship
+     * Sets a collection of ChildMenuGroup objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $activities A Propel collection.
+     * @param      Collection $menuGroups A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildUser The current object (for fluent API support)
+     * @return $this|ChildUgroup The current object (for fluent API support)
      */
-    public function setActivities(Collection $activities, ConnectionInterface $con = null)
+    public function setMenuGroups(Collection $menuGroups, ConnectionInterface $con = null)
     {
-        /** @var ChildActivity[] $activitiesToDelete */
-        $activitiesToDelete = $this->getActivities(new Criteria(), $con)->diff($activities);
+        /** @var ChildMenuGroup[] $menuGroupsToDelete */
+        $menuGroupsToDelete = $this->getMenuGroups(new Criteria(), $con)->diff($menuGroups);
 
 
-        $this->activitiesScheduledForDeletion = $activitiesToDelete;
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->menuGroupsScheduledForDeletion = clone $menuGroupsToDelete;
 
-        foreach ($activitiesToDelete as $activityRemoved) {
-            $activityRemoved->setUser(null);
+        foreach ($menuGroupsToDelete as $menuGroupRemoved) {
+            $menuGroupRemoved->setUgroup(null);
         }
 
-        $this->collActivities = null;
-        foreach ($activities as $activity) {
-            $this->addActivity($activity);
+        $this->collMenuGroups = null;
+        foreach ($menuGroups as $menuGroup) {
+            $this->addMenuGroup($menuGroup);
         }
 
-        $this->collActivities = $activities;
-        $this->collActivitiesPartial = false;
+        $this->collMenuGroups = $menuGroups;
+        $this->collMenuGroupsPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related Activity objects.
+     * Returns the number of related MenuGroup objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related Activity objects.
+     * @return int             Count of related MenuGroup objects.
      * @throws PropelException
      */
-    public function countActivities(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countMenuGroups(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collActivitiesPartial && !$this->isNew();
-        if (null === $this->collActivities || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collActivities) {
+        $partial = $this->collMenuGroupsPartial && !$this->isNew();
+        if (null === $this->collMenuGroups || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collMenuGroups) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getActivities());
+                return count($this->getMenuGroups());
             }
 
-            $query = ChildActivityQuery::create(null, $criteria);
+            $query = ChildMenuGroupQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
 
             return $query
-                ->filterByUser($this)
+                ->filterByUgroup($this)
                 ->count($con);
         }
 
-        return count($this->collActivities);
+        return count($this->collMenuGroups);
     }
 
     /**
-     * Method called to associate a ChildActivity object to this object
-     * through the ChildActivity foreign key attribute.
+     * Method called to associate a ChildMenuGroup object to this object
+     * through the ChildMenuGroup foreign key attribute.
      *
-     * @param  ChildActivity $l ChildActivity
-     * @return $this|\User The current object (for fluent API support)
+     * @param  ChildMenuGroup $l ChildMenuGroup
+     * @return $this|\Ugroup The current object (for fluent API support)
      */
-    public function addActivity(ChildActivity $l)
+    public function addMenuGroup(ChildMenuGroup $l)
     {
-        if ($this->collActivities === null) {
-            $this->initActivities();
-            $this->collActivitiesPartial = true;
+        if ($this->collMenuGroups === null) {
+            $this->initMenuGroups();
+            $this->collMenuGroupsPartial = true;
         }
 
-        if (!$this->collActivities->contains($l)) {
-            $this->doAddActivity($l);
+        if (!$this->collMenuGroups->contains($l)) {
+            $this->doAddMenuGroup($l);
 
-            if ($this->activitiesScheduledForDeletion and $this->activitiesScheduledForDeletion->contains($l)) {
-                $this->activitiesScheduledForDeletion->remove($this->activitiesScheduledForDeletion->search($l));
+            if ($this->menuGroupsScheduledForDeletion and $this->menuGroupsScheduledForDeletion->contains($l)) {
+                $this->menuGroupsScheduledForDeletion->remove($this->menuGroupsScheduledForDeletion->search($l));
             }
         }
 
@@ -2163,212 +1900,237 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildActivity $activity The ChildActivity object to add.
+     * @param ChildMenuGroup $menuGroup The ChildMenuGroup object to add.
      */
-    protected function doAddActivity(ChildActivity $activity)
+    protected function doAddMenuGroup(ChildMenuGroup $menuGroup)
     {
-        $this->collActivities[]= $activity;
-        $activity->setUser($this);
+        $this->collMenuGroups[]= $menuGroup;
+        $menuGroup->setUgroup($this);
     }
 
     /**
-     * @param  ChildActivity $activity The ChildActivity object to remove.
-     * @return $this|ChildUser The current object (for fluent API support)
+     * @param  ChildMenuGroup $menuGroup The ChildMenuGroup object to remove.
+     * @return $this|ChildUgroup The current object (for fluent API support)
      */
-    public function removeActivity(ChildActivity $activity)
+    public function removeMenuGroup(ChildMenuGroup $menuGroup)
     {
-        if ($this->getActivities()->contains($activity)) {
-            $pos = $this->collActivities->search($activity);
-            $this->collActivities->remove($pos);
-            if (null === $this->activitiesScheduledForDeletion) {
-                $this->activitiesScheduledForDeletion = clone $this->collActivities;
-                $this->activitiesScheduledForDeletion->clear();
+        if ($this->getMenuGroups()->contains($menuGroup)) {
+            $pos = $this->collMenuGroups->search($menuGroup);
+            $this->collMenuGroups->remove($pos);
+            if (null === $this->menuGroupsScheduledForDeletion) {
+                $this->menuGroupsScheduledForDeletion = clone $this->collMenuGroups;
+                $this->menuGroupsScheduledForDeletion->clear();
             }
-            $this->activitiesScheduledForDeletion[]= clone $activity;
-            $activity->setUser(null);
+            $this->menuGroupsScheduledForDeletion[]= clone $menuGroup;
+            $menuGroup->setUgroup(null);
         }
 
         return $this;
     }
 
+
     /**
-     * Clears out the collGroups collection
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Ugroup is new, it will return
+     * an empty collection; or if this Ugroup has previously
+     * been saved, it will retrieve related MenuGroups from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Ugroup.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildMenuGroup[] List of ChildMenuGroup objects
+     */
+    public function getMenuGroupsJoinMenu(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildMenuGroupQuery::create(null, $criteria);
+        $query->joinWith('Menu', $joinBehavior);
+
+        return $this->getMenuGroups($query, $con);
+    }
+
+    /**
+     * Clears out the collUsers collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addGroups()
+     * @see        addUsers()
      */
-    public function clearGroups()
+    public function clearUsers()
     {
-        $this->collGroups = null; // important to set this to NULL since that means it is uninitialized
+        $this->collUsers = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Initializes the collGroups crossRef collection.
+     * Initializes the collUsers crossRef collection.
      *
-     * By default this just sets the collGroups collection to an empty collection (like clearGroups());
+     * By default this just sets the collUsers collection to an empty collection (like clearUsers());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
      * @return void
      */
-    public function initGroups()
+    public function initUsers()
     {
         $collectionClassName = UserGroupTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collGroups = new $collectionClassName;
-        $this->collGroupsPartial = true;
-        $this->collGroups->setModel('\Group');
+        $this->collUsers = new $collectionClassName;
+        $this->collUsersPartial = true;
+        $this->collUsers->setModel('\User');
     }
 
     /**
-     * Checks if the collGroups collection is loaded.
+     * Checks if the collUsers collection is loaded.
      *
      * @return bool
      */
-    public function isGroupsLoaded()
+    public function isUsersLoaded()
     {
-        return null !== $this->collGroups;
+        return null !== $this->collUsers;
     }
 
     /**
-     * Gets a collection of ChildGroup objects related by a many-to-many relationship
+     * Gets a collection of ChildUser objects related by a many-to-many relationship
      * to the current object by way of the user_group cross-reference table.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildUser is new, it will return
+     * If this ChildUgroup is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param      Criteria $criteria Optional query object to filter the query
      * @param      ConnectionInterface $con Optional connection object
      *
-     * @return ObjectCollection|ChildGroup[] List of ChildGroup objects
+     * @return ObjectCollection|ChildUser[] List of ChildUser objects
      */
-    public function getGroups(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getUsers(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collGroupsPartial && !$this->isNew();
-        if (null === $this->collGroups || null !== $criteria || $partial) {
+        $partial = $this->collUsersPartial && !$this->isNew();
+        if (null === $this->collUsers || null !== $criteria || $partial) {
             if ($this->isNew()) {
                 // return empty collection
-                if (null === $this->collGroups) {
-                    $this->initGroups();
+                if (null === $this->collUsers) {
+                    $this->initUsers();
                 }
             } else {
 
-                $query = ChildGroupQuery::create(null, $criteria)
-                    ->filterByUser($this);
-                $collGroups = $query->find($con);
+                $query = ChildUserQuery::create(null, $criteria)
+                    ->filterByUgroup($this);
+                $collUsers = $query->find($con);
                 if (null !== $criteria) {
-                    return $collGroups;
+                    return $collUsers;
                 }
 
-                if ($partial && $this->collGroups) {
+                if ($partial && $this->collUsers) {
                     //make sure that already added objects gets added to the list of the database.
-                    foreach ($this->collGroups as $obj) {
-                        if (!$collGroups->contains($obj)) {
-                            $collGroups[] = $obj;
+                    foreach ($this->collUsers as $obj) {
+                        if (!$collUsers->contains($obj)) {
+                            $collUsers[] = $obj;
                         }
                     }
                 }
 
-                $this->collGroups = $collGroups;
-                $this->collGroupsPartial = false;
+                $this->collUsers = $collUsers;
+                $this->collUsersPartial = false;
             }
         }
 
-        return $this->collGroups;
+        return $this->collUsers;
     }
 
     /**
-     * Sets a collection of Group objects related by a many-to-many relationship
+     * Sets a collection of User objects related by a many-to-many relationship
      * to the current object by way of the user_group cross-reference table.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param  Collection $groups A Propel collection.
+     * @param  Collection $users A Propel collection.
      * @param  ConnectionInterface $con Optional connection object
-     * @return $this|ChildUser The current object (for fluent API support)
+     * @return $this|ChildUgroup The current object (for fluent API support)
      */
-    public function setGroups(Collection $groups, ConnectionInterface $con = null)
+    public function setUsers(Collection $users, ConnectionInterface $con = null)
     {
-        $this->clearGroups();
-        $currentGroups = $this->getGroups();
+        $this->clearUsers();
+        $currentUsers = $this->getUsers();
 
-        $groupsScheduledForDeletion = $currentGroups->diff($groups);
+        $usersScheduledForDeletion = $currentUsers->diff($users);
 
-        foreach ($groupsScheduledForDeletion as $toDelete) {
-            $this->removeGroup($toDelete);
+        foreach ($usersScheduledForDeletion as $toDelete) {
+            $this->removeUser($toDelete);
         }
 
-        foreach ($groups as $group) {
-            if (!$currentGroups->contains($group)) {
-                $this->doAddGroup($group);
+        foreach ($users as $user) {
+            if (!$currentUsers->contains($user)) {
+                $this->doAddUser($user);
             }
         }
 
-        $this->collGroupsPartial = false;
-        $this->collGroups = $groups;
+        $this->collUsersPartial = false;
+        $this->collUsers = $users;
 
         return $this;
     }
 
     /**
-     * Gets the number of Group objects related by a many-to-many relationship
+     * Gets the number of User objects related by a many-to-many relationship
      * to the current object by way of the user_group cross-reference table.
      *
      * @param      Criteria $criteria Optional query object to filter the query
      * @param      boolean $distinct Set to true to force count distinct
      * @param      ConnectionInterface $con Optional connection object
      *
-     * @return int the number of related Group objects
+     * @return int the number of related User objects
      */
-    public function countGroups(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countUsers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collGroupsPartial && !$this->isNew();
-        if (null === $this->collGroups || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collGroups) {
+        $partial = $this->collUsersPartial && !$this->isNew();
+        if (null === $this->collUsers || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collUsers) {
                 return 0;
             } else {
 
                 if ($partial && !$criteria) {
-                    return count($this->getGroups());
+                    return count($this->getUsers());
                 }
 
-                $query = ChildGroupQuery::create(null, $criteria);
+                $query = ChildUserQuery::create(null, $criteria);
                 if ($distinct) {
                     $query->distinct();
                 }
 
                 return $query
-                    ->filterByUser($this)
+                    ->filterByUgroup($this)
                     ->count($con);
             }
         } else {
-            return count($this->collGroups);
+            return count($this->collUsers);
         }
     }
 
     /**
-     * Associate a ChildGroup to this object
+     * Associate a ChildUser to this object
      * through the user_group cross reference table.
      *
-     * @param ChildGroup $group
-     * @return ChildUser The current object (for fluent API support)
+     * @param ChildUser $user
+     * @return ChildUgroup The current object (for fluent API support)
      */
-    public function addGroup(ChildGroup $group)
+    public function addUser(ChildUser $user)
     {
-        if ($this->collGroups === null) {
-            $this->initGroups();
+        if ($this->collUsers === null) {
+            $this->initUsers();
         }
 
-        if (!$this->getGroups()->contains($group)) {
+        if (!$this->getUsers()->contains($user)) {
             // only add it if the **same** object is not already associated
-            $this->collGroups->push($group);
-            $this->doAddGroup($group);
+            $this->collUsers->push($user);
+            $this->doAddUser($user);
         }
 
         return $this;
@@ -2376,58 +2138,301 @@ abstract class User implements ActiveRecordInterface
 
     /**
      *
-     * @param ChildGroup $group
+     * @param ChildUser $user
      */
-    protected function doAddGroup(ChildGroup $group)
+    protected function doAddUser(ChildUser $user)
     {
         $userGroup = new ChildUserGroup();
 
-        $userGroup->setGroup($group);
+        $userGroup->setUser($user);
 
-        $userGroup->setUser($this);
+        $userGroup->setUgroup($this);
 
         $this->addUserGroup($userGroup);
 
         // set the back reference to this object directly as using provided method either results
         // in endless loop or in multiple relations
-        if (!$group->isUsersLoaded()) {
-            $group->initUsers();
-            $group->getUsers()->push($this);
-        } elseif (!$group->getUsers()->contains($this)) {
-            $group->getUsers()->push($this);
+        if (!$user->isUgroupsLoaded()) {
+            $user->initUgroups();
+            $user->getUgroups()->push($this);
+        } elseif (!$user->getUgroups()->contains($this)) {
+            $user->getUgroups()->push($this);
         }
 
     }
 
     /**
-     * Remove group of this object
+     * Remove user of this object
      * through the user_group cross reference table.
      *
-     * @param ChildGroup $group
-     * @return ChildUser The current object (for fluent API support)
+     * @param ChildUser $user
+     * @return ChildUgroup The current object (for fluent API support)
      */
-    public function removeGroup(ChildGroup $group)
+    public function removeUser(ChildUser $user)
     {
-        if ($this->getGroups()->contains($group)) {
+        if ($this->getUsers()->contains($user)) {
             $userGroup = new ChildUserGroup();
-            $userGroup->setGroup($group);
-            if ($group->isUsersLoaded()) {
+            $userGroup->setUser($user);
+            if ($user->isUgroupsLoaded()) {
                 //remove the back reference if available
-                $group->getUsers()->removeObject($this);
+                $user->getUgroups()->removeObject($this);
             }
 
-            $userGroup->setUser($this);
+            $userGroup->setUgroup($this);
             $this->removeUserGroup(clone $userGroup);
             $userGroup->clear();
 
-            $this->collGroups->remove($this->collGroups->search($group));
+            $this->collUsers->remove($this->collUsers->search($user));
 
-            if (null === $this->groupsScheduledForDeletion) {
-                $this->groupsScheduledForDeletion = clone $this->collGroups;
-                $this->groupsScheduledForDeletion->clear();
+            if (null === $this->usersScheduledForDeletion) {
+                $this->usersScheduledForDeletion = clone $this->collUsers;
+                $this->usersScheduledForDeletion->clear();
             }
 
-            $this->groupsScheduledForDeletion->push($group);
+            $this->usersScheduledForDeletion->push($user);
+        }
+
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collMenus collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addMenus()
+     */
+    public function clearMenus()
+    {
+        $this->collMenus = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collMenus crossRef collection.
+     *
+     * By default this just sets the collMenus collection to an empty collection (like clearMenus());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initMenus()
+    {
+        $collectionClassName = MenuGroupTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collMenus = new $collectionClassName;
+        $this->collMenusPartial = true;
+        $this->collMenus->setModel('\Menu');
+    }
+
+    /**
+     * Checks if the collMenus collection is loaded.
+     *
+     * @return bool
+     */
+    public function isMenusLoaded()
+    {
+        return null !== $this->collMenus;
+    }
+
+    /**
+     * Gets a collection of ChildMenu objects related by a many-to-many relationship
+     * to the current object by way of the menu_group cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildUgroup is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildMenu[] List of ChildMenu objects
+     */
+    public function getMenus(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collMenusPartial && !$this->isNew();
+        if (null === $this->collMenus || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collMenus) {
+                    $this->initMenus();
+                }
+            } else {
+
+                $query = ChildMenuQuery::create(null, $criteria)
+                    ->filterByUgroup($this);
+                $collMenus = $query->find($con);
+                if (null !== $criteria) {
+                    return $collMenus;
+                }
+
+                if ($partial && $this->collMenus) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collMenus as $obj) {
+                        if (!$collMenus->contains($obj)) {
+                            $collMenus[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collMenus = $collMenus;
+                $this->collMenusPartial = false;
+            }
+        }
+
+        return $this->collMenus;
+    }
+
+    /**
+     * Sets a collection of Menu objects related by a many-to-many relationship
+     * to the current object by way of the menu_group cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $menus A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildUgroup The current object (for fluent API support)
+     */
+    public function setMenus(Collection $menus, ConnectionInterface $con = null)
+    {
+        $this->clearMenus();
+        $currentMenus = $this->getMenus();
+
+        $menusScheduledForDeletion = $currentMenus->diff($menus);
+
+        foreach ($menusScheduledForDeletion as $toDelete) {
+            $this->removeMenu($toDelete);
+        }
+
+        foreach ($menus as $menu) {
+            if (!$currentMenus->contains($menu)) {
+                $this->doAddMenu($menu);
+            }
+        }
+
+        $this->collMenusPartial = false;
+        $this->collMenus = $menus;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Menu objects related by a many-to-many relationship
+     * to the current object by way of the menu_group cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Menu objects
+     */
+    public function countMenus(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collMenusPartial && !$this->isNew();
+        if (null === $this->collMenus || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collMenus) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getMenus());
+                }
+
+                $query = ChildMenuQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByUgroup($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collMenus);
+        }
+    }
+
+    /**
+     * Associate a ChildMenu to this object
+     * through the menu_group cross reference table.
+     *
+     * @param ChildMenu $menu
+     * @return ChildUgroup The current object (for fluent API support)
+     */
+    public function addMenu(ChildMenu $menu)
+    {
+        if ($this->collMenus === null) {
+            $this->initMenus();
+        }
+
+        if (!$this->getMenus()->contains($menu)) {
+            // only add it if the **same** object is not already associated
+            $this->collMenus->push($menu);
+            $this->doAddMenu($menu);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildMenu $menu
+     */
+    protected function doAddMenu(ChildMenu $menu)
+    {
+        $menuGroup = new ChildMenuGroup();
+
+        $menuGroup->setMenu($menu);
+
+        $menuGroup->setUgroup($this);
+
+        $this->addMenuGroup($menuGroup);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$menu->isUgroupsLoaded()) {
+            $menu->initUgroups();
+            $menu->getUgroups()->push($this);
+        } elseif (!$menu->getUgroups()->contains($this)) {
+            $menu->getUgroups()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove menu of this object
+     * through the menu_group cross reference table.
+     *
+     * @param ChildMenu $menu
+     * @return ChildUgroup The current object (for fluent API support)
+     */
+    public function removeMenu(ChildMenu $menu)
+    {
+        if ($this->getMenus()->contains($menu)) {
+            $menuGroup = new ChildMenuGroup();
+            $menuGroup->setMenu($menu);
+            if ($menu->isUgroupsLoaded()) {
+                //remove the back reference if available
+                $menu->getUgroups()->removeObject($this);
+            }
+
+            $menuGroup->setUgroup($this);
+            $this->removeMenuGroup(clone $menuGroup);
+            $menuGroup->clear();
+
+            $this->collMenus->remove($this->collMenus->search($menu));
+
+            if (null === $this->menusScheduledForDeletion) {
+                $this->menusScheduledForDeletion = clone $this->collMenus;
+                $this->menusScheduledForDeletion->clear();
+            }
+
+            $this->menusScheduledForDeletion->push($menu);
         }
 
 
@@ -2441,15 +2446,9 @@ abstract class User implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aPartner) {
-            $this->aPartner->removeUser($this);
-        }
         $this->id = null;
         $this->name = null;
-        $this->password = null;
-        $this->partner_id = null;
-        $this->last_login = null;
-        $this->status = null;
+        $this->description = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;
@@ -2476,22 +2475,27 @@ abstract class User implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collActivities) {
-                foreach ($this->collActivities as $o) {
+            if ($this->collMenuGroups) {
+                foreach ($this->collMenuGroups as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collGroups) {
-                foreach ($this->collGroups as $o) {
+            if ($this->collUsers) {
+                foreach ($this->collUsers as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collMenus) {
+                foreach ($this->collMenus as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
         } // if ($deep)
 
         $this->collUserGroups = null;
-        $this->collActivities = null;
-        $this->collGroups = null;
-        $this->aPartner = null;
+        $this->collMenuGroups = null;
+        $this->collUsers = null;
+        $this->collMenus = null;
     }
 
     /**
@@ -2501,7 +2505,7 @@ abstract class User implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(UserTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(UgroupTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

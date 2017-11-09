@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'group' table.
+ * This class defines the structure of the 'ugroup' table.
  *
  *
  *
@@ -44,7 +44,7 @@ class GroupTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'group';
+    const TABLE_NAME = 'ugroup';
 
     /**
      * The related Propel class for this table
@@ -74,27 +74,27 @@ class GroupTableMap extends TableMap
     /**
      * the column name for the id field
      */
-    const COL_ID = 'group.id';
+    const COL_ID = 'ugroup.id';
 
     /**
      * the column name for the name field
      */
-    const COL_NAME = 'group.name';
+    const COL_NAME = 'ugroup.name';
 
     /**
      * the column name for the description field
      */
-    const COL_DESCRIPTION = 'group.description';
+    const COL_DESCRIPTION = 'ugroup.description';
 
     /**
      * the column name for the created_at field
      */
-    const COL_CREATED_AT = 'group.created_at';
+    const COL_CREATED_AT = 'ugroup.created_at';
 
     /**
      * the column name for the updated_at field
      */
-    const COL_UPDATED_AT = 'group.updated_at';
+    const COL_UPDATED_AT = 'ugroup.updated_at';
 
     /**
      * The default string format for model objects of the related table
@@ -139,7 +139,7 @@ class GroupTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('group');
+        $this->setName('ugroup');
         $this->setPhpName('Group');
         $this->setIdentifierQuoting(false);
         $this->setClassName('\\Group');
@@ -396,7 +396,7 @@ class GroupTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the group table.
+     * Deletes all rows from the ugroup table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).

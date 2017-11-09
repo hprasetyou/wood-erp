@@ -806,7 +806,7 @@ abstract class UserGroup implements ActiveRecordInterface
                         $key = 'group';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'group';
+                        $key = 'ugroup';
                         break;
                     default:
                         $key = 'Group';
@@ -977,7 +977,7 @@ abstract class UserGroup implements ActiveRecordInterface
             $validPrimaryKeyFKs = false;
         }
 
-        //relation user_group_fk_0278b4 to table group
+        //relation user_group_fk_1a8724 to table ugroup
         if ($this->aGroup && $hash = spl_object_hash($this->aGroup)) {
             $primaryKeyFKs[] = $hash;
         } else {

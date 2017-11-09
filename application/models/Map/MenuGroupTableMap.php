@@ -133,7 +133,7 @@ class MenuGroupTableMap extends TableMap
         $this->setIsCrossRef(true);
         // columns
         $this->addForeignPrimaryKey('menu_id', 'MenuId', 'INTEGER' , 'menu', 'id', true, null, null);
-        $this->addForeignPrimaryKey('group_id', 'GroupId', 'INTEGER' , 'group', 'id', true, null, null);
+        $this->addForeignPrimaryKey('group_id', 'GroupId', 'INTEGER' , 'ugroup', 'id', true, null, null);
     } // initialize()
 
     /**
