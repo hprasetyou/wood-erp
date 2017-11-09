@@ -46,7 +46,7 @@ class Auth extends CI_Controller
       $newdata = array(
         'uid'  => $user->getId(),
         'access'     => serialize($user_access),
-        'logged_in' => TRUE
+        'logged_in' => True
       );
       $this->session->set_userdata($newdata);
       redirect($redirect_url?$redirect_url:'auth');

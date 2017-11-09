@@ -90,11 +90,25 @@ abstract class Menu implements ActiveRecordInterface
     protected $url;
 
     /**
+     * The value for the icon field.
+     *
+     * @var        string
+     */
+    protected $icon;
+
+    /**
      * The value for the controller field.
      *
      * @var        string
      */
     protected $controller;
+
+    /**
+     * The value for the parent_id field.
+     *
+     * @var        int
+     */
+    protected $parent_id;
 
     /**
      * The value for the created_at field.
@@ -113,10 +127,21 @@ abstract class Menu implements ActiveRecordInterface
     protected $updated_at;
 
     /**
+     * @var        ChildMenu
+     */
+    protected $aParent;
+
+    /**
      * @var        ObjectCollection|ChildMenuGroup[] Collection to store aggregation of ChildMenuGroup objects.
      */
     protected $collMenuGroups;
     protected $collMenuGroupsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildMenu[] Collection to store aggregation of ChildMenu objects.
+     */
+    protected $collMenusRelatedById;
+    protected $collMenusRelatedByIdPartial;
 
     /**
      * @var        ObjectCollection|ChildGroup[] Cross Collection to store aggregation of ChildGroup objects.
@@ -147,6 +172,12 @@ abstract class Menu implements ActiveRecordInterface
      * @var ObjectCollection|ChildMenuGroup[]
      */
     protected $menuGroupsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildMenu[]
+     */
+    protected $menusRelatedByIdScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -416,6 +447,16 @@ abstract class Menu implements ActiveRecordInterface
     }
 
     /**
+     * Get the [icon] column value.
+     *
+     * @return string
+     */
+    public function getIcon()
+    {
+        return $this->icon;
+    }
+
+    /**
      * Get the [controller] column value.
      *
      * @return string
@@ -423,6 +464,16 @@ abstract class Menu implements ActiveRecordInterface
     public function getController()
     {
         return $this->controller;
+    }
+
+    /**
+     * Get the [parent_id] column value.
+     *
+     * @return int
+     */
+    public function getParentId()
+    {
+        return $this->parent_id;
     }
 
     /**
@@ -526,6 +577,26 @@ abstract class Menu implements ActiveRecordInterface
     } // setUrl()
 
     /**
+     * Set the value of [icon] column.
+     *
+     * @param string $v new value
+     * @return $this|\Menu The current object (for fluent API support)
+     */
+    public function setIcon($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->icon !== $v) {
+            $this->icon = $v;
+            $this->modifiedColumns[MenuTableMap::COL_ICON] = true;
+        }
+
+        return $this;
+    } // setIcon()
+
+    /**
      * Set the value of [controller] column.
      *
      * @param string $v new value
@@ -544,6 +615,30 @@ abstract class Menu implements ActiveRecordInterface
 
         return $this;
     } // setController()
+
+    /**
+     * Set the value of [parent_id] column.
+     *
+     * @param int $v new value
+     * @return $this|\Menu The current object (for fluent API support)
+     */
+    public function setParentId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->parent_id !== $v) {
+            $this->parent_id = $v;
+            $this->modifiedColumns[MenuTableMap::COL_PARENT_ID] = true;
+        }
+
+        if ($this->aParent !== null && $this->aParent->getId() !== $v) {
+            $this->aParent = null;
+        }
+
+        return $this;
+    } // setParentId()
 
     /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
@@ -630,16 +725,22 @@ abstract class Menu implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : MenuTableMap::translateFieldName('Url', TableMap::TYPE_PHPNAME, $indexType)];
             $this->url = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : MenuTableMap::translateFieldName('Controller', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : MenuTableMap::translateFieldName('Icon', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->icon = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : MenuTableMap::translateFieldName('Controller', TableMap::TYPE_PHPNAME, $indexType)];
             $this->controller = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : MenuTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : MenuTableMap::translateFieldName('ParentId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->parent_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : MenuTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : MenuTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : MenuTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -652,7 +753,7 @@ abstract class Menu implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 6; // 6 = MenuTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = MenuTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Menu'), 0, $e);
@@ -674,6 +775,9 @@ abstract class Menu implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aParent !== null && $this->parent_id !== $this->aParent->getId()) {
+            $this->aParent = null;
+        }
     } // ensureConsistency
 
     /**
@@ -713,7 +817,10 @@ abstract class Menu implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aParent = null;
             $this->collMenuGroups = null;
+
+            $this->collMenusRelatedById = null;
 
             $this->collGroups = null;
         } // if (deep)
@@ -819,6 +926,18 @@ abstract class Menu implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aParent !== null) {
+                if ($this->aParent->isModified() || $this->aParent->isNew()) {
+                    $affectedRows += $this->aParent->save($con);
+                }
+                $this->setParent($this->aParent);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -876,6 +995,24 @@ abstract class Menu implements ActiveRecordInterface
                 }
             }
 
+            if ($this->menusRelatedByIdScheduledForDeletion !== null) {
+                if (!$this->menusRelatedByIdScheduledForDeletion->isEmpty()) {
+                    foreach ($this->menusRelatedByIdScheduledForDeletion as $menuRelatedById) {
+                        // need to save related object because we set the relation to null
+                        $menuRelatedById->save($con);
+                    }
+                    $this->menusRelatedByIdScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collMenusRelatedById !== null) {
+                foreach ($this->collMenusRelatedById as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -911,8 +1048,14 @@ abstract class Menu implements ActiveRecordInterface
         if ($this->isColumnModified(MenuTableMap::COL_URL)) {
             $modifiedColumns[':p' . $index++]  = 'url';
         }
+        if ($this->isColumnModified(MenuTableMap::COL_ICON)) {
+            $modifiedColumns[':p' . $index++]  = 'icon';
+        }
         if ($this->isColumnModified(MenuTableMap::COL_CONTROLLER)) {
             $modifiedColumns[':p' . $index++]  = 'controller';
+        }
+        if ($this->isColumnModified(MenuTableMap::COL_PARENT_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'parent_id';
         }
         if ($this->isColumnModified(MenuTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
@@ -940,8 +1083,14 @@ abstract class Menu implements ActiveRecordInterface
                     case 'url':
                         $stmt->bindValue($identifier, $this->url, PDO::PARAM_STR);
                         break;
+                    case 'icon':
+                        $stmt->bindValue($identifier, $this->icon, PDO::PARAM_STR);
+                        break;
                     case 'controller':
                         $stmt->bindValue($identifier, $this->controller, PDO::PARAM_STR);
+                        break;
+                    case 'parent_id':
+                        $stmt->bindValue($identifier, $this->parent_id, PDO::PARAM_INT);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -1021,12 +1170,18 @@ abstract class Menu implements ActiveRecordInterface
                 return $this->getUrl();
                 break;
             case 3:
-                return $this->getController();
+                return $this->getIcon();
                 break;
             case 4:
-                return $this->getCreatedAt();
+                return $this->getController();
                 break;
             case 5:
+                return $this->getParentId();
+                break;
+            case 6:
+                return $this->getCreatedAt();
+                break;
+            case 7:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1062,16 +1217,18 @@ abstract class Menu implements ActiveRecordInterface
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
             $keys[2] => $this->getUrl(),
-            $keys[3] => $this->getController(),
-            $keys[4] => $this->getCreatedAt(),
-            $keys[5] => $this->getUpdatedAt(),
+            $keys[3] => $this->getIcon(),
+            $keys[4] => $this->getController(),
+            $keys[5] => $this->getParentId(),
+            $keys[6] => $this->getCreatedAt(),
+            $keys[7] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[4]] instanceof \DateTimeInterface) {
-            $result[$keys[4]] = $result[$keys[4]]->format('c');
+        if ($result[$keys[6]] instanceof \DateTimeInterface) {
+            $result[$keys[6]] = $result[$keys[6]]->format('c');
         }
 
-        if ($result[$keys[5]] instanceof \DateTimeInterface) {
-            $result[$keys[5]] = $result[$keys[5]]->format('c');
+        if ($result[$keys[7]] instanceof \DateTimeInterface) {
+            $result[$keys[7]] = $result[$keys[7]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1080,6 +1237,21 @@ abstract class Menu implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
+            if (null !== $this->aParent) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'menu';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'menu';
+                        break;
+                    default:
+                        $key = 'Parent';
+                }
+
+                $result[$key] = $this->aParent->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
             if (null !== $this->collMenuGroups) {
 
                 switch ($keyType) {
@@ -1094,6 +1266,21 @@ abstract class Menu implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->collMenuGroups->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collMenusRelatedById) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'menus';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'menus';
+                        break;
+                    default:
+                        $key = 'Menus';
+                }
+
+                $result[$key] = $this->collMenusRelatedById->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1139,12 +1326,18 @@ abstract class Menu implements ActiveRecordInterface
                 $this->setUrl($value);
                 break;
             case 3:
-                $this->setController($value);
+                $this->setIcon($value);
                 break;
             case 4:
-                $this->setCreatedAt($value);
+                $this->setController($value);
                 break;
             case 5:
+                $this->setParentId($value);
+                break;
+            case 6:
+                $this->setCreatedAt($value);
+                break;
+            case 7:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1183,13 +1376,19 @@ abstract class Menu implements ActiveRecordInterface
             $this->setUrl($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setController($arr[$keys[3]]);
+            $this->setIcon($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setCreatedAt($arr[$keys[4]]);
+            $this->setController($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setUpdatedAt($arr[$keys[5]]);
+            $this->setParentId($arr[$keys[5]]);
+        }
+        if (array_key_exists($keys[6], $arr)) {
+            $this->setCreatedAt($arr[$keys[6]]);
+        }
+        if (array_key_exists($keys[7], $arr)) {
+            $this->setUpdatedAt($arr[$keys[7]]);
         }
     }
 
@@ -1241,8 +1440,14 @@ abstract class Menu implements ActiveRecordInterface
         if ($this->isColumnModified(MenuTableMap::COL_URL)) {
             $criteria->add(MenuTableMap::COL_URL, $this->url);
         }
+        if ($this->isColumnModified(MenuTableMap::COL_ICON)) {
+            $criteria->add(MenuTableMap::COL_ICON, $this->icon);
+        }
         if ($this->isColumnModified(MenuTableMap::COL_CONTROLLER)) {
             $criteria->add(MenuTableMap::COL_CONTROLLER, $this->controller);
+        }
+        if ($this->isColumnModified(MenuTableMap::COL_PARENT_ID)) {
+            $criteria->add(MenuTableMap::COL_PARENT_ID, $this->parent_id);
         }
         if ($this->isColumnModified(MenuTableMap::COL_CREATED_AT)) {
             $criteria->add(MenuTableMap::COL_CREATED_AT, $this->created_at);
@@ -1338,7 +1543,9 @@ abstract class Menu implements ActiveRecordInterface
     {
         $copyObj->setName($this->getName());
         $copyObj->setUrl($this->getUrl());
+        $copyObj->setIcon($this->getIcon());
         $copyObj->setController($this->getController());
+        $copyObj->setParentId($this->getParentId());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
 
@@ -1350,6 +1557,12 @@ abstract class Menu implements ActiveRecordInterface
             foreach ($this->getMenuGroups() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addMenuGroup($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getMenusRelatedById() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addMenuRelatedById($relObj->copy($deepCopy));
                 }
             }
 
@@ -1383,6 +1596,57 @@ abstract class Menu implements ActiveRecordInterface
         return $copyObj;
     }
 
+    /**
+     * Declares an association between this object and a ChildMenu object.
+     *
+     * @param  ChildMenu $v
+     * @return $this|\Menu The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setParent(ChildMenu $v = null)
+    {
+        if ($v === null) {
+            $this->setParentId(NULL);
+        } else {
+            $this->setParentId($v->getId());
+        }
+
+        $this->aParent = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildMenu object, it will not be re-added.
+        if ($v !== null) {
+            $v->addMenuRelatedById($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildMenu object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildMenu The associated ChildMenu object.
+     * @throws PropelException
+     */
+    public function getParent(ConnectionInterface $con = null)
+    {
+        if ($this->aParent === null && ($this->parent_id != 0)) {
+            $this->aParent = ChildMenuQuery::create()->findPk($this->parent_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aParent->addMenusRelatedById($this);
+             */
+        }
+
+        return $this->aParent;
+    }
+
 
     /**
      * Initializes a collection based on the name of a relation.
@@ -1396,6 +1660,10 @@ abstract class Menu implements ActiveRecordInterface
     {
         if ('MenuGroup' == $relationName) {
             $this->initMenuGroups();
+            return;
+        }
+        if ('MenuRelatedById' == $relationName) {
+            $this->initMenusRelatedById();
             return;
         }
     }
@@ -1654,6 +1922,231 @@ abstract class Menu implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collMenusRelatedById collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addMenusRelatedById()
+     */
+    public function clearMenusRelatedById()
+    {
+        $this->collMenusRelatedById = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collMenusRelatedById collection loaded partially.
+     */
+    public function resetPartialMenusRelatedById($v = true)
+    {
+        $this->collMenusRelatedByIdPartial = $v;
+    }
+
+    /**
+     * Initializes the collMenusRelatedById collection.
+     *
+     * By default this just sets the collMenusRelatedById collection to an empty array (like clearcollMenusRelatedById());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initMenusRelatedById($overrideExisting = true)
+    {
+        if (null !== $this->collMenusRelatedById && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = MenuTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collMenusRelatedById = new $collectionClassName;
+        $this->collMenusRelatedById->setModel('\Menu');
+    }
+
+    /**
+     * Gets an array of ChildMenu objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildMenu is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildMenu[] List of ChildMenu objects
+     * @throws PropelException
+     */
+    public function getMenusRelatedById(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collMenusRelatedByIdPartial && !$this->isNew();
+        if (null === $this->collMenusRelatedById || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collMenusRelatedById) {
+                // return empty collection
+                $this->initMenusRelatedById();
+            } else {
+                $collMenusRelatedById = ChildMenuQuery::create(null, $criteria)
+                    ->filterByParent($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collMenusRelatedByIdPartial && count($collMenusRelatedById)) {
+                        $this->initMenusRelatedById(false);
+
+                        foreach ($collMenusRelatedById as $obj) {
+                            if (false == $this->collMenusRelatedById->contains($obj)) {
+                                $this->collMenusRelatedById->append($obj);
+                            }
+                        }
+
+                        $this->collMenusRelatedByIdPartial = true;
+                    }
+
+                    return $collMenusRelatedById;
+                }
+
+                if ($partial && $this->collMenusRelatedById) {
+                    foreach ($this->collMenusRelatedById as $obj) {
+                        if ($obj->isNew()) {
+                            $collMenusRelatedById[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collMenusRelatedById = $collMenusRelatedById;
+                $this->collMenusRelatedByIdPartial = false;
+            }
+        }
+
+        return $this->collMenusRelatedById;
+    }
+
+    /**
+     * Sets a collection of ChildMenu objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $menusRelatedById A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildMenu The current object (for fluent API support)
+     */
+    public function setMenusRelatedById(Collection $menusRelatedById, ConnectionInterface $con = null)
+    {
+        /** @var ChildMenu[] $menusRelatedByIdToDelete */
+        $menusRelatedByIdToDelete = $this->getMenusRelatedById(new Criteria(), $con)->diff($menusRelatedById);
+
+
+        $this->menusRelatedByIdScheduledForDeletion = $menusRelatedByIdToDelete;
+
+        foreach ($menusRelatedByIdToDelete as $menuRelatedByIdRemoved) {
+            $menuRelatedByIdRemoved->setParent(null);
+        }
+
+        $this->collMenusRelatedById = null;
+        foreach ($menusRelatedById as $menuRelatedById) {
+            $this->addMenuRelatedById($menuRelatedById);
+        }
+
+        $this->collMenusRelatedById = $menusRelatedById;
+        $this->collMenusRelatedByIdPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Menu objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Menu objects.
+     * @throws PropelException
+     */
+    public function countMenusRelatedById(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collMenusRelatedByIdPartial && !$this->isNew();
+        if (null === $this->collMenusRelatedById || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collMenusRelatedById) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getMenusRelatedById());
+            }
+
+            $query = ChildMenuQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByParent($this)
+                ->count($con);
+        }
+
+        return count($this->collMenusRelatedById);
+    }
+
+    /**
+     * Method called to associate a ChildMenu object to this object
+     * through the ChildMenu foreign key attribute.
+     *
+     * @param  ChildMenu $l ChildMenu
+     * @return $this|\Menu The current object (for fluent API support)
+     */
+    public function addMenuRelatedById(ChildMenu $l)
+    {
+        if ($this->collMenusRelatedById === null) {
+            $this->initMenusRelatedById();
+            $this->collMenusRelatedByIdPartial = true;
+        }
+
+        if (!$this->collMenusRelatedById->contains($l)) {
+            $this->doAddMenuRelatedById($l);
+
+            if ($this->menusRelatedByIdScheduledForDeletion and $this->menusRelatedByIdScheduledForDeletion->contains($l)) {
+                $this->menusRelatedByIdScheduledForDeletion->remove($this->menusRelatedByIdScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildMenu $menuRelatedById The ChildMenu object to add.
+     */
+    protected function doAddMenuRelatedById(ChildMenu $menuRelatedById)
+    {
+        $this->collMenusRelatedById[]= $menuRelatedById;
+        $menuRelatedById->setParent($this);
+    }
+
+    /**
+     * @param  ChildMenu $menuRelatedById The ChildMenu object to remove.
+     * @return $this|ChildMenu The current object (for fluent API support)
+     */
+    public function removeMenuRelatedById(ChildMenu $menuRelatedById)
+    {
+        if ($this->getMenusRelatedById()->contains($menuRelatedById)) {
+            $pos = $this->collMenusRelatedById->search($menuRelatedById);
+            $this->collMenusRelatedById->remove($pos);
+            if (null === $this->menusRelatedByIdScheduledForDeletion) {
+                $this->menusRelatedByIdScheduledForDeletion = clone $this->collMenusRelatedById;
+                $this->menusRelatedByIdScheduledForDeletion->clear();
+            }
+            $this->menusRelatedByIdScheduledForDeletion[]= $menuRelatedById;
+            $menuRelatedById->setParent(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears out the collGroups collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
@@ -1903,10 +2396,15 @@ abstract class Menu implements ActiveRecordInterface
      */
     public function clear()
     {
+        if (null !== $this->aParent) {
+            $this->aParent->removeMenuRelatedById($this);
+        }
         $this->id = null;
         $this->name = null;
         $this->url = null;
+        $this->icon = null;
         $this->controller = null;
+        $this->parent_id = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;
@@ -1933,6 +2431,11 @@ abstract class Menu implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collMenusRelatedById) {
+                foreach ($this->collMenusRelatedById as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collGroups) {
                 foreach ($this->collGroups as $o) {
                     $o->clearAllReferences($deep);
@@ -1941,7 +2444,9 @@ abstract class Menu implements ActiveRecordInterface
         } // if ($deep)
 
         $this->collMenuGroups = null;
+        $this->collMenusRelatedById = null;
         $this->collGroups = null;
+        $this->aParent = null;
     }
 
     /**

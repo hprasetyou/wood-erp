@@ -37,6 +37,7 @@
 
   ]%}
 <!DOCTYPE html>
+
 <html>
 <head>
   <meta charset="utf-8">
@@ -68,7 +69,6 @@
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
-
   <header class="main-header">
     <!-- Logo -->
     <a href="#" class="logo">
@@ -143,7 +143,8 @@
                         Sales Department
                         <small><i class="fa fa-clock-o"></i> Yesterday</small>
                       </h4>
-                      <p>Why not buy a new awesome theme?</p>
+                      <p>
+                      </p>
                     </a>
                   </li>
                   <li>
@@ -279,24 +280,7 @@
       <!-- /.search form -->
       <!-- sidebar menu: : style can be found in sidebar.less -->
 
-      <ul class="sidebar-menu" data-widget="tree">
-        <li class="header">NAVIGASI</li>
-        {% for menu in menus %}
-        <li class="treeview">
-          <a href="#">
-            <i class="fa fa-{{menu.icon}}"></i> <span>{{menu.name}}</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            {% for childmenu in menu.menu%}
-            <li><a href="/index.php/{{childmenu.link}}"><i class="fa fa-circle-o"></i> {{childmenu.name}}</a></li>
-            {% endfor %}
-          </ul>
-        </li>
-        {% endfor %}
-      </ul>
+      {% include 'common/_side_menu.html'%}
     </section>
     <!-- /.sidebar -->
   </aside>

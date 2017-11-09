@@ -59,7 +59,7 @@ class MenuTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 6;
+    const NUM_COLUMNS = 8;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class MenuTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 6;
+    const NUM_HYDRATE_COLUMNS = 8;
 
     /**
      * the column name for the id field
@@ -87,9 +87,19 @@ class MenuTableMap extends TableMap
     const COL_URL = 'menu.url';
 
     /**
+     * the column name for the icon field
+     */
+    const COL_ICON = 'menu.icon';
+
+    /**
      * the column name for the controller field
      */
     const COL_CONTROLLER = 'menu.controller';
+
+    /**
+     * the column name for the parent_id field
+     */
+    const COL_PARENT_ID = 'menu.parent_id';
 
     /**
      * the column name for the created_at field
@@ -113,11 +123,11 @@ class MenuTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Url', 'Controller', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'url', 'controller', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(MenuTableMap::COL_ID, MenuTableMap::COL_NAME, MenuTableMap::COL_URL, MenuTableMap::COL_CONTROLLER, MenuTableMap::COL_CREATED_AT, MenuTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'url', 'controller', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Url', 'Icon', 'Controller', 'ParentId', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'url', 'icon', 'controller', 'parentId', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(MenuTableMap::COL_ID, MenuTableMap::COL_NAME, MenuTableMap::COL_URL, MenuTableMap::COL_ICON, MenuTableMap::COL_CONTROLLER, MenuTableMap::COL_PARENT_ID, MenuTableMap::COL_CREATED_AT, MenuTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'url', 'icon', 'controller', 'parent_id', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -127,11 +137,11 @@ class MenuTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Url' => 2, 'Controller' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'url' => 2, 'controller' => 3, 'createdAt' => 4, 'updatedAt' => 5, ),
-        self::TYPE_COLNAME       => array(MenuTableMap::COL_ID => 0, MenuTableMap::COL_NAME => 1, MenuTableMap::COL_URL => 2, MenuTableMap::COL_CONTROLLER => 3, MenuTableMap::COL_CREATED_AT => 4, MenuTableMap::COL_UPDATED_AT => 5, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'url' => 2, 'controller' => 3, 'created_at' => 4, 'updated_at' => 5, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Url' => 2, 'Icon' => 3, 'Controller' => 4, 'ParentId' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'url' => 2, 'icon' => 3, 'controller' => 4, 'parentId' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
+        self::TYPE_COLNAME       => array(MenuTableMap::COL_ID => 0, MenuTableMap::COL_NAME => 1, MenuTableMap::COL_URL => 2, MenuTableMap::COL_ICON => 3, MenuTableMap::COL_CONTROLLER => 4, MenuTableMap::COL_PARENT_ID => 5, MenuTableMap::COL_CREATED_AT => 6, MenuTableMap::COL_UPDATED_AT => 7, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'url' => 2, 'icon' => 3, 'controller' => 4, 'parent_id' => 5, 'created_at' => 6, 'updated_at' => 7, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -154,7 +164,9 @@ class MenuTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', true, 255, null);
         $this->addColumn('url', 'Url', 'VARCHAR', true, 255, null);
+        $this->addColumn('icon', 'Icon', 'VARCHAR', true, 255, null);
         $this->addColumn('controller', 'Controller', 'VARCHAR', true, 255, null);
+        $this->addForeignKey('parent_id', 'ParentId', 'INTEGER', 'menu', 'id', false, null, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -164,6 +176,13 @@ class MenuTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('Parent', '\\Menu', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':parent_id',
+    1 => ':id',
+  ),
+), null, null, null, false);
         $this->addRelation('MenuGroup', '\\MenuGroup', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -171,6 +190,13 @@ class MenuTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'MenuGroups', false);
+        $this->addRelation('MenuRelatedById', '\\Menu', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':parent_id',
+    1 => ':id',
+  ),
+), null, null, 'MenusRelatedById', false);
         $this->addRelation('Group', '\\Group', RelationMap::MANY_TO_MANY, array(), null, null, 'Groups');
     } // buildRelations()
 
@@ -318,14 +344,18 @@ class MenuTableMap extends TableMap
             $criteria->addSelectColumn(MenuTableMap::COL_ID);
             $criteria->addSelectColumn(MenuTableMap::COL_NAME);
             $criteria->addSelectColumn(MenuTableMap::COL_URL);
+            $criteria->addSelectColumn(MenuTableMap::COL_ICON);
             $criteria->addSelectColumn(MenuTableMap::COL_CONTROLLER);
+            $criteria->addSelectColumn(MenuTableMap::COL_PARENT_ID);
             $criteria->addSelectColumn(MenuTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(MenuTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.name');
             $criteria->addSelectColumn($alias . '.url');
+            $criteria->addSelectColumn($alias . '.icon');
             $criteria->addSelectColumn($alias . '.controller');
+            $criteria->addSelectColumn($alias . '.parent_id');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }

@@ -11,11 +11,36 @@ class Template {
         $loader = new Twig_Loader_Filesystem('./application/views');
         $twig = new Twig_Environment($loader);
         $this->CI->load->helper('url');
+        $session = [];
+        if($this->CI->session->userdata('logged_in')){
+          $uaccess = MenuQuery::create()
+          ->findById(unserialize($this->CI->session->userdata('access')));
+          $access = [];
+          foreach ($uaccess as $key => $value) {
+            # code...
+            $exist = false;
+            $parent = false;
+            foreach ($access as $parentmenu) {
+              if($parentmenu->getId()==$value->getParent()->getId()){
+                //exist
+                $exist = true;
+                $parentmenu->Child[] = $value;
+              }
+            }
+            if(!$exist){
+              $access[$key] = $value->getParent();
+              $access[$key]->Child[] = $value;
+            }
+          }
+          $session['access'] = $access;
+          $session['uid'] = UserQuery::create()->findById($this->CI->session->userdata('uid'));
+        }
         $pdata = array(
             'base_url'=>base_url(),
             'res'=>array(
                 'string'=>include('application/language/en/default.php'),
-                'query_params'=>$this->CI->input->get()
+                'query_params'=>$this->CI->input->get(),
+                'session' => $session
             )
         );
         if($this->CI->session->userdata('is_logged_in')){

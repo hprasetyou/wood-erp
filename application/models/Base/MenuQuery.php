@@ -23,14 +23,18 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildMenuQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildMenuQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method     ChildMenuQuery orderByUrl($order = Criteria::ASC) Order by the url column
+ * @method     ChildMenuQuery orderByIcon($order = Criteria::ASC) Order by the icon column
  * @method     ChildMenuQuery orderByController($order = Criteria::ASC) Order by the controller column
+ * @method     ChildMenuQuery orderByParentId($order = Criteria::ASC) Order by the parent_id column
  * @method     ChildMenuQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildMenuQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildMenuQuery groupById() Group by the id column
  * @method     ChildMenuQuery groupByName() Group by the name column
  * @method     ChildMenuQuery groupByUrl() Group by the url column
+ * @method     ChildMenuQuery groupByIcon() Group by the icon column
  * @method     ChildMenuQuery groupByController() Group by the controller column
+ * @method     ChildMenuQuery groupByParentId() Group by the parent_id column
  * @method     ChildMenuQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildMenuQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -42,6 +46,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildMenuQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildMenuQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
+ * @method     ChildMenuQuery leftJoinParent($relationAlias = null) Adds a LEFT JOIN clause to the query using the Parent relation
+ * @method     ChildMenuQuery rightJoinParent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Parent relation
+ * @method     ChildMenuQuery innerJoinParent($relationAlias = null) Adds a INNER JOIN clause to the query using the Parent relation
+ *
+ * @method     ChildMenuQuery joinWithParent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Parent relation
+ *
+ * @method     ChildMenuQuery leftJoinWithParent() Adds a LEFT JOIN clause and with to the query using the Parent relation
+ * @method     ChildMenuQuery rightJoinWithParent() Adds a RIGHT JOIN clause and with to the query using the Parent relation
+ * @method     ChildMenuQuery innerJoinWithParent() Adds a INNER JOIN clause and with to the query using the Parent relation
+ *
  * @method     ChildMenuQuery leftJoinMenuGroup($relationAlias = null) Adds a LEFT JOIN clause to the query using the MenuGroup relation
  * @method     ChildMenuQuery rightJoinMenuGroup($relationAlias = null) Adds a RIGHT JOIN clause to the query using the MenuGroup relation
  * @method     ChildMenuQuery innerJoinMenuGroup($relationAlias = null) Adds a INNER JOIN clause to the query using the MenuGroup relation
@@ -52,7 +66,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildMenuQuery rightJoinWithMenuGroup() Adds a RIGHT JOIN clause and with to the query using the MenuGroup relation
  * @method     ChildMenuQuery innerJoinWithMenuGroup() Adds a INNER JOIN clause and with to the query using the MenuGroup relation
  *
- * @method     \MenuGroupQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildMenuQuery leftJoinMenuRelatedById($relationAlias = null) Adds a LEFT JOIN clause to the query using the MenuRelatedById relation
+ * @method     ChildMenuQuery rightJoinMenuRelatedById($relationAlias = null) Adds a RIGHT JOIN clause to the query using the MenuRelatedById relation
+ * @method     ChildMenuQuery innerJoinMenuRelatedById($relationAlias = null) Adds a INNER JOIN clause to the query using the MenuRelatedById relation
+ *
+ * @method     ChildMenuQuery joinWithMenuRelatedById($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the MenuRelatedById relation
+ *
+ * @method     ChildMenuQuery leftJoinWithMenuRelatedById() Adds a LEFT JOIN clause and with to the query using the MenuRelatedById relation
+ * @method     ChildMenuQuery rightJoinWithMenuRelatedById() Adds a RIGHT JOIN clause and with to the query using the MenuRelatedById relation
+ * @method     ChildMenuQuery innerJoinWithMenuRelatedById() Adds a INNER JOIN clause and with to the query using the MenuRelatedById relation
+ *
+ * @method     \MenuQuery|\MenuGroupQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildMenu findOne(ConnectionInterface $con = null) Return the first ChildMenu matching the query
  * @method     ChildMenu findOneOrCreate(ConnectionInterface $con = null) Return the first ChildMenu matching the query, or a new ChildMenu object populated from the query conditions when no match is found
@@ -60,7 +84,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildMenu findOneById(int $id) Return the first ChildMenu filtered by the id column
  * @method     ChildMenu findOneByName(string $name) Return the first ChildMenu filtered by the name column
  * @method     ChildMenu findOneByUrl(string $url) Return the first ChildMenu filtered by the url column
+ * @method     ChildMenu findOneByIcon(string $icon) Return the first ChildMenu filtered by the icon column
  * @method     ChildMenu findOneByController(string $controller) Return the first ChildMenu filtered by the controller column
+ * @method     ChildMenu findOneByParentId(int $parent_id) Return the first ChildMenu filtered by the parent_id column
  * @method     ChildMenu findOneByCreatedAt(string $created_at) Return the first ChildMenu filtered by the created_at column
  * @method     ChildMenu findOneByUpdatedAt(string $updated_at) Return the first ChildMenu filtered by the updated_at column *
 
@@ -70,7 +96,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildMenu requireOneById(int $id) Return the first ChildMenu filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildMenu requireOneByName(string $name) Return the first ChildMenu filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildMenu requireOneByUrl(string $url) Return the first ChildMenu filtered by the url column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildMenu requireOneByIcon(string $icon) Return the first ChildMenu filtered by the icon column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildMenu requireOneByController(string $controller) Return the first ChildMenu filtered by the controller column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildMenu requireOneByParentId(int $parent_id) Return the first ChildMenu filtered by the parent_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildMenu requireOneByCreatedAt(string $created_at) Return the first ChildMenu filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildMenu requireOneByUpdatedAt(string $updated_at) Return the first ChildMenu filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -78,7 +106,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildMenu[]|ObjectCollection findById(int $id) Return ChildMenu objects filtered by the id column
  * @method     ChildMenu[]|ObjectCollection findByName(string $name) Return ChildMenu objects filtered by the name column
  * @method     ChildMenu[]|ObjectCollection findByUrl(string $url) Return ChildMenu objects filtered by the url column
+ * @method     ChildMenu[]|ObjectCollection findByIcon(string $icon) Return ChildMenu objects filtered by the icon column
  * @method     ChildMenu[]|ObjectCollection findByController(string $controller) Return ChildMenu objects filtered by the controller column
+ * @method     ChildMenu[]|ObjectCollection findByParentId(int $parent_id) Return ChildMenu objects filtered by the parent_id column
  * @method     ChildMenu[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildMenu objects filtered by the created_at column
  * @method     ChildMenu[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildMenu objects filtered by the updated_at column
  * @method     ChildMenu[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -179,7 +209,7 @@ abstract class MenuQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, url, controller, created_at, updated_at FROM menu WHERE id = :p0';
+        $sql = 'SELECT id, name, url, icon, controller, parent_id, created_at, updated_at FROM menu WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -361,6 +391,31 @@ abstract class MenuQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the icon column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIcon('fooValue');   // WHERE icon = 'fooValue'
+     * $query->filterByIcon('%fooValue%', Criteria::LIKE); // WHERE icon LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $icon The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildMenuQuery The current query, for fluid interface
+     */
+    public function filterByIcon($icon = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($icon)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(MenuTableMap::COL_ICON, $icon, $comparison);
+    }
+
+    /**
      * Filter the query on the controller column
      *
      * Example usage:
@@ -383,6 +438,49 @@ abstract class MenuQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(MenuTableMap::COL_CONTROLLER, $controller, $comparison);
+    }
+
+    /**
+     * Filter the query on the parent_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByParentId(1234); // WHERE parent_id = 1234
+     * $query->filterByParentId(array(12, 34)); // WHERE parent_id IN (12, 34)
+     * $query->filterByParentId(array('min' => 12)); // WHERE parent_id > 12
+     * </code>
+     *
+     * @see       filterByParent()
+     *
+     * @param     mixed $parentId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildMenuQuery The current query, for fluid interface
+     */
+    public function filterByParentId($parentId = null, $comparison = null)
+    {
+        if (is_array($parentId)) {
+            $useMinMax = false;
+            if (isset($parentId['min'])) {
+                $this->addUsingAlias(MenuTableMap::COL_PARENT_ID, $parentId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($parentId['max'])) {
+                $this->addUsingAlias(MenuTableMap::COL_PARENT_ID, $parentId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(MenuTableMap::COL_PARENT_ID, $parentId, $comparison);
     }
 
     /**
@@ -472,6 +570,83 @@ abstract class MenuQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \Menu object
+     *
+     * @param \Menu|ObjectCollection $menu The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildMenuQuery The current query, for fluid interface
+     */
+    public function filterByParent($menu, $comparison = null)
+    {
+        if ($menu instanceof \Menu) {
+            return $this
+                ->addUsingAlias(MenuTableMap::COL_PARENT_ID, $menu->getId(), $comparison);
+        } elseif ($menu instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(MenuTableMap::COL_PARENT_ID, $menu->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByParent() only accepts arguments of type \Menu or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Parent relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildMenuQuery The current query, for fluid interface
+     */
+    public function joinParent($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Parent');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Parent');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Parent relation Menu object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \MenuQuery A secondary query class using the current class as primary query
+     */
+    public function useParentQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinParent($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Parent', '\MenuQuery');
+    }
+
+    /**
      * Filter the query by a related \MenuGroup object
      *
      * @param \MenuGroup|ObjectCollection $menuGroup the related object to use as filter
@@ -542,6 +717,79 @@ abstract class MenuQuery extends ModelCriteria
         return $this
             ->joinMenuGroup($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'MenuGroup', '\MenuGroupQuery');
+    }
+
+    /**
+     * Filter the query by a related \Menu object
+     *
+     * @param \Menu|ObjectCollection $menu the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildMenuQuery The current query, for fluid interface
+     */
+    public function filterByMenuRelatedById($menu, $comparison = null)
+    {
+        if ($menu instanceof \Menu) {
+            return $this
+                ->addUsingAlias(MenuTableMap::COL_ID, $menu->getParentId(), $comparison);
+        } elseif ($menu instanceof ObjectCollection) {
+            return $this
+                ->useMenuRelatedByIdQuery()
+                ->filterByPrimaryKeys($menu->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByMenuRelatedById() only accepts arguments of type \Menu or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the MenuRelatedById relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildMenuQuery The current query, for fluid interface
+     */
+    public function joinMenuRelatedById($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('MenuRelatedById');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'MenuRelatedById');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the MenuRelatedById relation Menu object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \MenuQuery A secondary query class using the current class as primary query
+     */
+    public function useMenuRelatedByIdQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinMenuRelatedById($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'MenuRelatedById', '\MenuQuery');
     }
 
     /**

@@ -24,16 +24,16 @@ class Scaffold extends CI_Controller {
 
 	}
 
-  public function generate($tb_name, $fk=null){
+  public function generate($tb_name, $menu=false, $fk=null){
 	    $var = Inflector::pluralize(strtolower($tb_name));
-		// $menu = new Menu();
-		// $menu->setName($var);
-		// $menu->setLink("manage_$var");
-		// $menu->setIcon("fa fa-plus");
-		// $menu->setIsActive(1);
-		// $menu->setIsParent(4);
-		// $menu->setDetail("manage_$var");
-		// $menu->save();
+			if($menu){
+				$menu = new Menu();
+				$menu->setName($var);
+				$menu->setUrl("manage_$var");
+				$menu->setIcon("fa fa-cube");
+				$menu->setController("manage_$var");
+				$menu->save();
+			}
 		$table = $this->find_table($tb_name);
 		if($table){
 			$fklist = [];
