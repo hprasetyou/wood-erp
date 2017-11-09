@@ -169,7 +169,7 @@ class Scaffold extends CI_Controller {
 \t\t\t<div class=\"col-md-12 col-sm-12 col-xs-12\">
 \t\t\t\t<div class=\"box\">
 \t\t\t\t\t<div class=\"box-header\">
-\t\t\t\t\t\t<h3 class=\"box-title\">$humanize_tb_name</h3>
+\t\t\t\t\t\t<h3 class=\"box-title\">{{res.string.$tb_name_lower}}</h3>
 \t\t\t\t\t\t<a href=\"{{base_url}}index.php/manage_$tb_name_lower/create\" class=\"btn btn-primary pull-right\">{{res.string.new_data}}</a>
 \t\t\t\t\t\t<div class=\"clearfix\"></div>
 \t\t\t\t\t</div>
@@ -351,7 +351,7 @@ echo "=========================";
 \t\t<form id=\"form_$tb_name\" method=\"post\" action=\"{{base_url}}index.php/manage_$tb_name_lower/write/{{ $tb_name_lower.id }}\" data-parsley-validate class=\"form-horizontal form-label-left\">
 \t\t\t<div class=\"box box-info\">
 \t\t\t\t<div class=\"box-header with-border\">
-\t\t\t\t\t<h3 class=\"box-title\">$humanize_tb_name</h3>
+\t\t\t\t\t<h3 class=\"box-title\">{{res.string.$tb_name_lower}}</h3>
 \t\t\t\t\t<a href=\"{{base_url}}index.php/manage_$tb_name_lower\" class=\"btn btn-default pull-right\">{{res.string.back}}</a>
 \t\t\t\t\t{% if $tb_name_lower %}
 \t\t\t\t\t\t<a href=\"#\" class=\"btn btn-danger pull-right\" data-toggle=\"modal\" data-target=\"#deleteModal\"><i class=\"fa fa-trash-o\"></i> {{res.string.delete}}</a>
