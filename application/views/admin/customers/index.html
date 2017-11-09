@@ -1,49 +1,40 @@
-
-{% extends "dashboard.html" %}
-{% set title=" Partner " %}
-
-{% set breadcrumbs = [
-	{'link':'#','text':' Partner '  }]
-%}
-{% block content %}
-	<div class="">
-		<div class="clearfix"></div>
-		<div class="row">
-			<div class="col-md-12 col-sm-12 col-xs-12">
-				<div class="box">
-					<div class="box-header">
-						<h3 class="box-title"> Partner </h3>
-						<a href="{{base_url}}index.php/manage_customers/create" class="btn btn-primary pull-right">{{res.string.new_data}}</a>
-						<div class="clearfix"></div>
-					</div>
-					<div class="box-body">
-						<p class="text-muted font-13 m-b-30"></p>
-							<table data-controller="manage_customers" class="table table-striped " id="table_Partner">
-		<thead>
-			<tr>
-				<th data-fieldname="name">{{res.string.name}}</th>
-				<th data-fieldname="address">{{res.string.address}}</th>
-				<th data-fieldname="phone">{{res.string.phone}}</th>
-				<th data-fieldname="website">{{res.string.website}}</th>
-				<th data-fieldname="fax">{{res.string.fax}}</th>
-				<th data-fieldname="tax_number">{{res.string.tax_number}}</th>
-				<th data-fieldname="bank_detail">{{res.string.bank_detail}}</th>
-				<th></th>
-			</tr>
-		</thead>
-</table>
-					</div>
+ {% extends "dashboard.html" %} {% set title=" Partner " %} {% set breadcrumbs = [ {'link':'#','text':' Partner ' }] %} {% block content %}
+<div class="">
+	<div class="clearfix"></div>
+	<div class="row">
+		<div class="col-md-12 col-sm-12 col-xs-12">
+			<div class="box">
+				<div class="box-header">
+					<h3 class="box-title"> {{res.string.customer}} </h3>
+					<a href="{{base_url}}index.php/manage_customers/create" class="btn btn-primary pull-right">{{res.string.new_data}}</a>
+					<div class="clearfix"></div>
+				</div>
+				<div class="box-body">
+					<p class="text-muted font-13 m-b-30"></p>
+					<table data-controller="manage_customers" class="table table-striped " id="table_Partner">
+						<thead>
+							<tr>
+								<th data-fieldname="name">{{res.string.name}}</th>
+								<th data-fieldname="address">{{res.string.address}}</th>
+								<th data-fieldname="phone">{{res.string.phone}}</th>
+								<th data-fieldname="website">{{res.string.website}}</th>
+								<th data-fieldname="fax">{{res.string.fax}}</th>
+								<th data-fieldname="tax_number">{{res.string.tax_number}}</th>
+								<th data-fieldname="bank_detail">{{res.string.bank_detail}}</th>
+								<th></th>
+							</tr>
+						</thead>
+					</table>
 				</div>
 			</div>
 		</div>
 	</div>
+</div>
 
-{% endblock %}
-{% block bottom %}
+{% endblock %} {% block bottom %}
 <script>
-
-$(document).ready(function(){
-    $('#table_Partner').loadTableData()
-  })
+	$(document).ready(function() {
+		$('#table_Partner').loadTableData()
+	})
 </script>
 {% endblock %}
