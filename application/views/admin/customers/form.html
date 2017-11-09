@@ -154,7 +154,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Upload gambar</h4>
+        <h4 class="modal-title" id="myModalLabel">{{ res.string.upload }}</h4>
       </div>
       <div class="modal-body">
           <input type="hidden" name="image-data" id="image-data" value="">
@@ -186,8 +186,8 @@ $('#input-avatar').change(function(){
 	}else{
 		$(this).val(null)
 			$('.modal-close').show()
-			$('#myModalLabel').text('Kesalahan')
-			$('#modal-message').text('Extensi file harus .jpg dengan ukuran maks 1mb')
+			$('#myModalLabel').text('{{ res.string.error }}')
+			$('#modal-message').text('{{ res.string.img_upload_error_msg }}')
 			$('#btnOk').hide()
 			$('#myModal').modal('show')
 		}
