@@ -10,7 +10,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Signin Template for Bootstrap</title>
+    <title>{{res.string.login}}</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="/public/components/bootstrap/dist/css/bootstrap.min.css">
@@ -29,17 +29,15 @@
     <div class="container">
 
       <form class="form-signin" method="post" action="/auth/do_login">
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="text" id="Username" name="Username" class="form-control" placeholder="Username" required autofocus>
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="Password" name="Password" class="form-control" placeholder="Password" required>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" value="remember-me"> Remember me
-          </label>
-        </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <h2 class="form-signin-heading">{{res.string.login_msg}}</h2>
+        <label for="inputEmail" class="sr-only">{{res.string.username}}</label>
+        <input type="text" id="Username" name="Username" class="form-control"
+        placeholder="{{res.string.username}}" required autofocus>
+        <label for="inputPassword" class="sr-only">{{res.string.password}}</label>
+        <input type="password" id="Password" name="Password" class="form-control"
+        placeholder="{{res.string.password}}" required>
+        <br>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">{{res.string.login}}</button>
       </form>
 
     </div> <!-- /container -->
