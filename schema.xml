@@ -19,6 +19,7 @@
   <table name="partner" idMethod="native" phpName="Partner">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
+    <column name="email" phpName="Email" type="VARCHAR" size="255" required="true"/>
     <column name="address" phpName="Address" type="LONGVARCHAR"/>
     <column name="phone" phpName="Phone" type="VARCHAR" size="255"/>
     <column name="website" phpName="Website" type="VARCHAR" size="255"/>
@@ -118,6 +119,20 @@
     <index name="finishing_id">
       <index-column name="finishing_id"/>
     </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="user" idMethod="native" phpName="User">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
+    <column name="password" phpName="Password" type="VARCHAR" size="255" required="true"/>
+    <column name="partner_id" phpName="PartnerId" type="INTEGER" required="true"/>
+    <column name="last_login" phpName="LastLogin" type="TIMESTAMP"/>
+    <column name="status" phpName="Status" type="BOOLEAN" defaultValue="true" required="true"/>
+    <foreign-key foreignTable="partner">
+      <reference local="partner_id" foreign="id"/>
+    </foreign-key>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
