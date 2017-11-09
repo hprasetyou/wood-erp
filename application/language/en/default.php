@@ -36,5 +36,8 @@
 'website' => 'Website',
 'width_asb' => 'Width Assembled',
 'width_kdn' => 'Width Knockdown',
-'description' => 'Description'
+'description' => 'Description',
+'img_upload_error_msg' => 'Maximum filesize is 1mb',
+'error' => 'Error',
+'upload'=> 'Upload'
 );
