@@ -153,7 +153,7 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-  <table name="user_group" idMethod="native" phpName="Group">
+  <table name="group" idMethod="native" phpName="Group">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
     <column name="description" phpName="Description" type="LONGVARCHAR" />
@@ -162,6 +162,37 @@
     <foreign-key foreignTable="partner">
       <reference local="partner_id" foreign="id"/>
     </foreign-key>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="user_group" isCrossRef="true">
+    <column name="user_id" phpName="UserId" type="integer" primaryKey="true"/>
+    <column name="group_id" phpName="GroupId" type="integer" primaryKey="true"/>
+    <foreign-key foreignTable="user">
+      <reference local="user_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="group">
+      <reference local="group_id" foreign="id"/>
+    </foreign-key>
+  </table>
+  <table name="menu_group" isCrossRef="true">
+    <column name="menu_id" phpName="MenuId" type="integer" primaryKey="true"/>
+    <column name="group_id" phpName="GroupId" type="integer" primaryKey="true"/>
+    <foreign-key foreignTable="menu">
+      <reference local="menu_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="group">
+      <reference local="group_id" foreign="id"/>
+    </foreign-key>
+  </table>
+  <table name="menu" idMethod="native" phpName="Menu">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
+    <column name="url" phpName="Url" type="VARCHAR" size="255" required="true"/>
+    <column name="controller" phpName="Controller" type="VARCHAR" size="255" required="true"/>
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
