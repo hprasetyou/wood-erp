@@ -7,7 +7,7 @@
 	 {% set bc_text = 'Baru' %}
 {% endif %}
 {% set breadcrumbs = [
-	{'link': base_url~'index.php/manage_users','text': res.string.users },
+	{'link': base_url~'index.php/manage_users','text': res.string.user },
 	{'link':'#','text':bc_text  }]
 %}
 {% block content %}
@@ -89,10 +89,26 @@
 											{% endif %}
 										</div>
 									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="form-group">
+										<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.group}}</label>
+										<div class="col-md-6 col-sm-6 col-xs-12">
+											<div {% if users.Groups %}style="display:none" {% endif %} class="input-wrap input-group">
+													<input type="hidden"id="Group" value="{{ users.Groups[0].Id }}" name="Group"  >
+													<input type="text" name="displaysrc_id" id="displaysrc_id"  value="{{ users.Groups[0].Name }}" class="form-control" />
+													<span class="input-group-btn">
+														<button class="btn btnModal btn-default" id="btnsrc_id"  data-target="ModalGroup" type="button">Cari</button>
+													</span>
+											</div>
+											{% if users.Groups %}
+											<p class="control-value">{{ users.Groups[0].Name }}</p>
+											{% endif %}
 
+										</div>
+									</div>
 								</div>
 							</div>
-
 						</div>
 
 				</div>
@@ -104,5 +120,6 @@
 {% endblock %}
 {% block bottom%}
 {% include 'common/_img_upload_modal.html'%}
+{% include 'admin/groups/_modal.html'%}
 
 {% endblock %}

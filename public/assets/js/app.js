@@ -1,6 +1,6 @@
 var base_url = window.location.href.split('index.php');
 jQuery.fn
-jQuery.fn.loadTableData = function(){
+jQuery.fn.loadTableData = function(conf = {search:true}){
   var tt = $(this)
   var c = tt.data('controller')
   var bdm = tt.data('domain')
@@ -35,10 +35,14 @@ jQuery.fn.loadTableData = function(){
   tt.DataTable({
     "processing": true,
     "serverSide": true,
+    "searching": conf.search,
     "searchDelay": 1000,
     "ordering": false,
     "ajax": base_url[0]+"index.php/"+c+"/get_json"+params,
-    "columns": fl
+    "columns": fl,
+    "initComplete": function(settings, json) {
+      tt.css('width','100%')
+    }
   });
 }
 
@@ -116,7 +120,9 @@ $(document).ready(function(){
   $('.select2').css('width','100%');
 })
 $('.form-select').select2()
-$('#btn-edit').click(function(){
+$('#btn-edit').click(function(e){
+  e.preventDefault();
+  $('input:checkbox').removeAttr('disabled')
 $('#btn-canceledit').show()
 $('#btn-save').show()
 $('.input-wrap').show()
@@ -124,7 +130,9 @@ $('.img-layer').hide()
 $('.control-value').hide()
 $(this).hide()
 })
-$('#btn-canceledit').click(function(){
+$('#btn-canceledit').click(function(e){
+  e.preventDefault();
+$('input:checkbox').attr('disabled','disabled')
 $('#btn-edit').show()
 $('.img-layer').show()
 $('#btn-save').hide()

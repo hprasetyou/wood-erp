@@ -1,6 +1,6 @@
 <div class='row'>
   <div class="image col-sm-2 col-xs-6">
-    <div class="img-layer"></div>
+    <div class="img-layer" {% if value is null %} style="display:none" {% endif %} ></div>
     <a href="#/" data-toggle="modal" class="thumbnail avatar-thumbnail" data-target="#modalAvatar">
       <input type="hidden" id="{{ name}}" value="{{ value }}"
       name="{{ name}}"  class="form-control  col-md-7 col-xs-12">

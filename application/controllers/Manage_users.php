@@ -14,6 +14,16 @@ class Manage_users extends CI_Controller{
 
 	function get_json(){
 		$users = UserQuery::create();
+    if($this->input->get('group_id')){
+      $user_groups = UserGroupQuery::create()
+      ->filterByGroupId($this->input->get('group_id'));
+      $ids = [];
+      foreach ($user_groups as $user_group) {
+        # code...
+        $ids[] = $user_group->getUserId();
+      }
+      $users->filterById($ids);
+    }
 		$maxPerPage = $this->input->get('length');
 		if($this->input->get('search[value]')){
 			$users->condition('cond1' ,'User.name LIKE ?', "%".$this->input->get('search[value]')."%");
@@ -85,6 +95,11 @@ class Manage_users extends CI_Controller{
     }
     $user->setPartner($employee);
 		$user->save();
+    $user->getUserGroups()->delete();
+    $usermenu = new UserGroup;
+    $usermenu->setUserId($user->getId());
+    $usermenu->setGroupId($this->input->post('Group'));
+    $usermenu->save();
 		//$this->loging->add_entry('users',$user->getId(),($id?'melakukan perubahan pada data':'membuat data baru'));
 		redirect('manage_users/detail/'.$user->getId());
   }

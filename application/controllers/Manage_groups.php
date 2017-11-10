@@ -39,26 +39,70 @@ class Manage_groups extends CI_Controller{
 	}
 
   function create(){
-		
+
 		$this->template->render('admin/groups/form',array());
   }
 
   function detail($id){
-		
+
 		$group = GroupQuery::create()->findPK($id);
-		$this->template->render('admin/groups/form',array('groups'=>$group,));
+    // echo json_encode($this->get_group_access($group->getId()));
+    // $ga = $this->get_group_access($group->getId());
+		$this->template->render('admin/groups/form',array(
+      'groups'=>$group,
+      'menus'=> MenuQuery::create()->findByParentId(0)));
+  }
+
+  private function get_group_access($gid){
+
+    $accesses = MenuGroupQuery::create()
+    ->addSelectQuery(
+      MenuGroupQuery::create()
+        ->filterByGroupId($gid),'gm')
+    ->rightJoinWith('gm.Menu')
+    ->where('Menu.ParentId > ?',0)
+    ->find();
+    $gaccess = [];
+    $a = 0;
+    foreach ($accesses as $key => $ga) {
+      # code...
+      $value = $ga->getMenu();
+      $exist = false;
+      $parent = false;
+      foreach ($gaccess as $parentmenu) {
+        if($parentmenu->getId()==$value->getParent()->getId()){
+          //exist
+          $exist = true;
+          $parentmenu->Child[] = $value;
+        }
+      }
+      if(!$exist){
+        $gaccess[$a] = $value->getParent();
+        $gaccess[$a]->Child[] = $value;
+        $a++;
+      }
+    }
+    return $gaccess;
   }
 
   function write($id=null){
 		if($id){
 			$group = GroupQuery::create()->findPK($id);
+      $group->getMenuGroups()->delete();
 		}else{
 			$group = new Group;
 		}
 		$group->setName($this->input->post('Name'));
 		$group->setDescription($this->input->post('Description'));
-
 		$group->save();
+    foreach ($this->input->post('menu') as $key => $value) {
+      # code...
+      echo $value;
+      $menugroup = new MenuGroup;
+      $menugroup->setMenuId($value);
+      $menugroup->setGroup($group);
+      $menugroup->save();
+    }
 		//$this->loging->add_entry('groups',$group->getId(),($id?'melakukan perubahan pada data':'membuat data baru'));
 		redirect('manage_groups/detail/'.$group->getId());
   }
@@ -72,4 +116,3 @@ class Manage_groups extends CI_Controller{
   }
 
 }
-    

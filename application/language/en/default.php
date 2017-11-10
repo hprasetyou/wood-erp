@@ -1,5 +1,6 @@
-<?php 
+<?php
  return array(
+'access' => 'Access',
 'address' => 'Address',
 'back' => 'Back',
 'bank' => 'Bank',
@@ -36,6 +37,7 @@
 'login_msg' => 'Please Login',
 'logout' => 'Log out',
 'menu' => 'Menu',
+'member' => 'Member',
 'name' => 'Name',
 'new_data' => 'New Data',
 'no' => 'No',
@@ -54,5 +56,8 @@
 'width_asb' => 'Width Assembled',
 'width_kdn' => 'Width Knockdown',
 'yes' => 'Yes',
+'component' => 'Component',
+'user'=>'User',
+'group'=>'Group',
 'status' => 'Status'
 );
