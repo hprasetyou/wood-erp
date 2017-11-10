@@ -26,7 +26,7 @@ class Scaffold extends CI_Controller {
 
   public function generate($tb_name, $menu=false, $fk=null){
 	    $var = Inflector::pluralize(strtolower($tb_name));
-			if($menu){
+			if($menu=="yes"){
 				$menu = new Menu();
 				$menu->setName($var);
 				$menu->setUrl("manage_$var");
@@ -197,7 +197,7 @@ $(document).ready(function(){
 	private function _view_form_template($tb_name,$fields,$fk){
 		$tb_name_lower = strtolower(Inflector::pluralize($tb_name));
 		$humanize_tb_name = $this->split_camel(Inflector::singularize($tb_name));
-
+		$tb_name_singular = Inflector::singularize($tb_name_lower);
 		$form_field = "";
 		$modals = "";
 		$header = false;
@@ -351,16 +351,11 @@ echo "=========================";
 \t\t<form id=\"form_$tb_name\" method=\"post\" action=\"{{base_url}}index.php/manage_$tb_name_lower/write/{{ $tb_name_lower.id }}\" data-parsley-validate class=\"form-horizontal form-label-left\">
 \t\t\t<div class=\"box box-info\">
 \t\t\t\t<div class=\"box-header with-border\">
-\t\t\t\t\t<h3 class=\"box-title\">{{res.string.$tb_name_lower}}</h3>
-\t\t\t\t\t<a href=\"{{base_url}}index.php/manage_$tb_name_lower\" class=\"btn btn-default pull-right\">{{res.string.back}}</a>
-\t\t\t\t\t{% if $tb_name_lower %}
-\t\t\t\t\t\t<a href=\"#\" class=\"btn btn-danger pull-right\" data-toggle=\"modal\" data-target=\"#deleteModal\"><i class=\"fa fa-trash-o\"></i> {{res.string.delete}}</a>
-\t\t\t\t\t\t<a href=\"#\" class=\"btn btn-primary pull-right\" id=\"btn-edit\"><i class=\"fa fa-edit\"></i> {{res.string.edit_data}}</a>
-\t\t\t\t\t\t<a href=\"#\" style=\"display:none\" class=\"btn btn-primary pull-right\" id=\"btn-canceledit\">{{res.string.cancel}}</a>
-\t\t\t\t\t{% endif %}
-\t\t\t\t\t<button type=\"submit\" {% if $tb_name_lower %}style=\"display:none\"{% endif %}  name=\"button\" class=\"btn btn-success pull-right\" id=\"btn-save\"><i class=\"fa fa-save\"></i> Simpan</button>
-\t\t\t\t\t<div class=\"clearfix\"></div>
-\t\t\t\t</div>
+\t\t\t\t{% include 'common/_form_header.html'
+\t\t\t\twith {'back_url':'/index.php/manage_$tb_name_lower'~back_link,
+\t\t\t\t'title': res.string.$tb_name_singular,
+\t\t\t\t'delete_url':'/index.php/manage_$tb_name_lower/delete/{{ $tb_name_lower.Id }}',
+\t\t\t\t'object':$tb_name_lower} %}
 \t\t\t\t<div class=\"box-body\">
 \t\t\t\t\t$form_field
 \t\t\t\t</div>

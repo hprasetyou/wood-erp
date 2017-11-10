@@ -23,15 +23,8 @@
 				<div class="box-body">
 					<div class="col-sm-12">
 						<input type="hidden" name="CompanyId" value="{{res.query_params.company_id}}">
-						<div class='row'>
-							<div class="image col-sm-2 col-xs-6">
-								<a href="#/" data-toggle="modal" class="thumbnail avatar-thumbnail" data-target="#modalAvatar">
-									<input type="hidden" id="Image" value="{{ customers.image }}"
-									name="Image"  class="form-control  col-md-7 col-xs-12">
-									<img class='preview-image' src="{% if customers.Image %}{{customers.Image}}{% else %}/public/upload/images/default-thumbnail.jpg{% endif %}" alt="...">
-								</a>
-							</div>
-						</div>
+            {% include 'common/_img_input.html' with { 'value':customers.Image,name:'Image' } %}
+
 						<div class="row">
 							<div class="col-sm-6">
 

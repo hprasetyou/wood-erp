@@ -120,11 +120,13 @@ $('#btn-edit').click(function(){
 $('#btn-canceledit').show()
 $('#btn-save').show()
 $('.input-wrap').show()
+$('.img-layer').hide()
 $('.control-value').hide()
 $(this).hide()
 })
 $('#btn-canceledit').click(function(){
 $('#btn-edit').show()
+$('.img-layer').show()
 $('#btn-save').hide()
 $('.input-wrap').hide()
 $('.control-value').show()

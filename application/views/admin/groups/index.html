@@ -1,0 +1,44 @@
+
+{% extends "dashboard.html" %}
+{% set title=" Group " %}
+
+{% set breadcrumbs = [
+	{'link':'#','text':res.string.groups  }]
+%}
+{% block content %}
+	<div class="">
+		<div class="clearfix"></div>
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="box">
+					<div class="box-header">
+						<h3 class="box-title">{{res.string.groups}}</h3>
+						<a href="{{base_url}}index.php/manage_groups/create" class="btn btn-primary pull-right">{{res.string.new_data}}</a>
+						<div class="clearfix"></div>
+					</div>
+					<div class="box-body">
+						<p class="text-muted font-13 m-b-30"></p>
+							<table data-controller="manage_groups" class="table table-striped " id="table_Group">
+		<thead>
+			<tr>
+				<th data-fieldname="name">{{res.string.name}}</th>
+				<th data-fieldname="description">{{res.string.description}}</th>
+				<th></th>
+			</tr>
+		</thead>
+</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+{% block bottom %}
+<script>
+
+$(document).ready(function(){
+    $('#table_Group').loadTableData()
+  })
+</script>
+{% endblock %}

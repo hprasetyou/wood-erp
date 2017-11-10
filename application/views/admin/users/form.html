@@ -1,0 +1,108 @@
+
+{% extends "dashboard.html" %}
+{% set title=" User " %}
+{% if users %}
+	 {% set bc_text = users.id  %}
+{% else %}
+	 {% set bc_text = 'Baru' %}
+{% endif %}
+{% set breadcrumbs = [
+	{'link': base_url~'index.php/manage_users','text': res.string.users },
+	{'link':'#','text':bc_text  }]
+%}
+{% block content %}
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<form id="form_User" method="post" action="{{base_url}}index.php/manage_users/write/{{ users.id }}" data-parsley-validate class="form-horizontal form-label-left">
+			<div class="box box-info">
+				<div class="box-header with-border">
+				{% include 'common/_form_header.html'
+				with {'back_url':'/index.php/manage_users'~back_link,
+				'title': res.string.user,
+				'delete_url':'/index.php/manage_users/delete/{{ users.Id }}',
+				'object':users} %}
+				<div class="box-body">
+
+						<div class="col-sm-12">
+							<input type="hidden" name="CompanyId" value="{{res.query_params.company_id}}">
+							{% include 'common/_img_input.html' with { 'value':users.Partner.Image,name:'Image' } %}
+
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group">
+										<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
+										<div class="col-md-6 col-sm-6 col-xs-12">
+										<div {% if users %}style="display:none"{% endif %} class="input-wrap">
+											<input type="text" id="Name" value="{{ users.Name }}"
+											name="Name" required="required" class="form-control  col-md-7 col-xs-12">
+										</div>
+												{% if users %}
+													<p class="control-value">{{ users.Name  }}</p>
+												{% endif %}
+											</div>
+										</div>
+									<div class="form-group">
+										<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
+										<div class="col-md-6 col-sm-6 col-xs-12">
+											<div {% if users.Partner %}style="display:none" {% endif %} class="input-wrap">
+												<input type="text" id="PartnerName" value="{{ users.Partner.Name }}" name="PartnerName" required="required" class="form-control  col-md-7 col-xs-12">
+											</div>
+											{% if users.Partner %}
+											<p class="control-value">{{ users.Partner.Name }}</p>
+											{% endif %}
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.address}}</label>
+										<div class="col-md-6 col-sm-6 col-xs-12">
+											<div {% if users.Partner %}style="display:none" {% endif %} class="input-wrap">
+												<input type="text" id="Address" value="{{ users.Partner.Address }}" name="Address" class="form-control  col-md-7 col-xs-12">
+											</div>
+											{% if users.Partner %}
+											<p class="control-value">{{ users.Partner.Address }}</p>
+											{% endif %}
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.phone}}</label>
+										<div class="col-md-6 col-sm-6 col-xs-12">
+											<div {% if users.Partner %}style="display:none" {% endif %} class="input-wrap">
+												<input type="text" id="Phone" value="{{ users.Partner.Phone }}" name="Phone" class="form-control  col-md-7 col-xs-12">
+											</div>
+											{% if users.Partner %}
+											<p class="control-value">{{ users.Partner.Phone }}</p>
+											{% endif %}
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="form-group">
+										<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.email}}</label>
+										<div class="col-md-6 col-sm-6 col-xs-12">
+											<div {% if users.Partner %}style="display:none" {% endif %} class="input-wrap">
+												<input type="text" id="Email" value="{{ users.Partner.Email }}" name="Email" class="form-control  col-md-7 col-xs-12">
+											</div>
+											{% if users.Partner %}
+											<p class="control-value">{{ users.Partner.Email }}</p>
+											{% endif %}
+										</div>
+									</div>
+
+								</div>
+							</div>
+
+						</div>
+
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<!-- Modal -->
+{% endblock %}
+{% block bottom%}
+{% include 'common/_img_upload_modal.html'%}
+
+{% endblock %}
