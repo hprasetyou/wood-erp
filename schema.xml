@@ -214,5 +214,16 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
+  <table name="product_image" phpName="ProductImage">
+    <column name="name" phpName="Name" type="VARCHAR" size="255"/>
+    <column name="url" phpName="Url" type="LONGVARCHAR"/>
+    <column name="description" phpName="Description" type="LONGVARCHAR"/>
+    <column name="product_id" phpName="ProductId" type="INTEGER" required="true"/>
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
+    <foreign-key foreignTable="product">
+      <reference local="product_id" foreign="id"/>
+    </foreign-key>
+  </table>
 
 </database>

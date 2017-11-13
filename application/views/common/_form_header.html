@@ -1,4 +1,4 @@
-<h3 class="box-title"> {{title}} </h3>
+<h3 class="box-title"> {{title}} {% if object %} - {{ object.Name }}{% endif%} </h3>
 <a href="#" onclick="window.history.back()" class="btn btn-default pull-right">{{res.string.back}}</a>
 {% if object %}
   <a href="#" class="btn btn-danger pull-right" data-url="{{delete_url}}" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash-o"></i> {{res.string.delete}}</a>

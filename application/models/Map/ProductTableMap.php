@@ -245,6 +245,13 @@ class ProductTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'ProductFinishings', false);
+        $this->addRelation('ProductImage', '\\ProductImage', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':product_id',
+    1 => ':id',
+  ),
+), null, null, 'ProductImages', false);
     } // buildRelations()
 
     /**
