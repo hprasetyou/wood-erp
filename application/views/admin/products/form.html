@@ -1,243 +1,304 @@
-
-{% extends "dashboard.html" %}
-{% set title=" Product " %}
-{% if products %}
-	 {% set bc_text = products.name %}
-{% else %}
-	 {% set bc_text = 'Baru' %}
-{% endif %}
-{% set breadcrumbs = [
-	{'link': base_url~'index.php/manage_products','text':' Product '},
-	{'link':'#','text':bc_text  }]
-%}
-{% block content %}
+ {% extends "dashboard.html" %} {% set title=" Product " %} {% if products %} {% set bc_text = products.id %} {% else %}
+{% set bc_text = 'Baru' %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_products','text': res.string.products
+}, {'link':'#','text':bc_text }] %} {% block content %}
 <div class="row">
 	<div class="col-md-12 col-sm-12 col-xs-12">
-		<form id="form_Product" method="post" action="{{base_url}}index.php/manage_products/write/{{ products.id }}" data-parsley-validate class="form-horizontal form-label-left">
+		<form id="form_Product" method="post" action="{{base_url}}index.php/manage_products/write/{{ products.id }}" data-parsley-validate
+		    class="form-horizontal form-label-left">
 			<div class="box box-info">
 				<div class="box-header with-border">
-					{% include 'common/_form_header.html'
-          with {'back_url':'/index.php/manage_products',
-          'title': res.string.product,
-          'delete_url':'/index.php/manage_products/delete/'~products.Id,
-          'object':products} %}
-					<div class="clearfix"></div>
+					{% include 'common/_form_header.html' with {'back_url':'/index.php/manage_products'~back_link, 'title': res.string.product,
+					'delete_url':'/index.php/manage_products/delete/{{ products.Id }}', 'object':products} %}
 				</div>
 				<div class="box-body">
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if products %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" id="Name" value="{{ products.Name }}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if products %}
+									<p class="control-value">{{ products.Name }}</p>
+									{% endif %}
+								</div>
+							</div>
 
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" id="name" value="{{ products.name }}"
-							name="name" required="required" class="form-control  col-md-7 col-xs-12">
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.description}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if products %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" id="Description" value="{{ products.Description }}" name="Description" required="required" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if products %}
+									<p class="control-value">{{ products.Description }}</p>
+									{% endif %}
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.is_kdn}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if products %}style="display:none" {% endif %} class="input-wrap">
+										<input type="checkbox" id="IsKdn" value="1" {{ products.IsKdn ? "checked": "" }} name="IsKdn" class="form-checkbox">
+									</div>
+									{% if products %}
+									<p class="control-value">{{ products.IsKdn ? res.string.yes : res.string.no }}</p>
+									{% endif %}
+								</div>
+							</div>
 						</div>
-								{% if products %}
-									<p class="control-value">{{ products.name  }}</p>
-								{% endif %}
+						<div class="col-sm-6">
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.cost_price}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if products %}style="display:none" {% endif %} class="input-wrap">
+										<input type="number" id="CostPrice" value="{{ products.CostPrice }}" name="CostPrice" required="required" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if products %}
+									<p class="control-value">{{ products.CostPrice }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.list_price}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if products %}style="display:none" {% endif %} class="input-wrap">
+										<input type="number" id="ListPrice" value="{{ products.ListPrice }}" name="ListPrice" required="required" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if products %}
+									<p class="control-value">{{ products.ListPrice }}</p>
+									{% endif %}
+								</div>
 							</div>
 						</div>
 
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.description}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" id="description" value="{{ products.description }}"
-							name="description" required="required" class="form-control  col-md-7 col-xs-12">
-						</div>
-								{% if products %}
-									<p class="control-value">{{ products.description  }}</p>
-								{% endif %}
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+
+							<div class="nav-tabs-custom">
+								<ul class="nav nav-tabs">
+									<li class="active">
+										<a href="#tab_1" data-toggle="tab">{{res.string.dimension}}</a>
+									</li>
+									<li>
+										<a href="#tab_2" data-toggle="tab">{{ res.string.image }}</a>
+									</li>
+								</ul>
+								<div class="tab-content">
+									<div class="tab-pane clearfix active" id="tab_1">
+										<div class="row">
+											<div class="col-sm-6 form-dimension">
+												<div class="form-group">
+													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.width_asb}}</label>
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<div {% if products %}style="display:none" {% endif %} class="input-wrap">
+															<input type="number" id="WidthAsb" value="{{ products.WidthAsb }}" name="WidthAsb" required="required" class="form-control form-dimension-input col-md-7 col-xs-12">
+														</div>
+														{% if products %}
+														<p class="control-value">{{ products.WidthAsb }}</p>
+														{% endif %}
+													</div>
+												</div>
+
+												<div class="form-group">
+													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.height_asb}}</label>
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<div {% if products %}style="display:none" {% endif %} class="input-wrap">
+															<input type="number" id="HeightAsb" value="{{ products.HeightAsb }}" name="HeightAsb" required="required" class="form-control form-dimension-input col-md-7 col-xs-12">
+														</div>
+														{% if products %}
+														<p class="control-value">{{ products.HeightAsb }}</p>
+														{% endif %}
+													</div>
+												</div>
+
+												<div class="form-group">
+													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.depth_asb}}</label>
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<div {% if products %}style="display:none" {% endif %} class="input-wrap">
+															<input type="number" id="DepthAsb" value="{{ products.DepthAsb }}" name="DepthAsb" required="required" class="form-control form-dimension-input col-md-7 col-xs-12">
+														</div>
+														{% if products %}
+														<p class="control-value">{{ products.DepthAsb }}</p>
+														{% endif %}
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.cubic_asb}}</label>
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<div {% if products %}style="display:none" {% endif %} class="input-wrap">
+															<input type="number" readonly id="CubicAsb" value="{{ products.CubicAsb }}" name="CubicAsb" required="required" class="form-control form-dimension-result col-md-7 col-xs-12">
+														</div>
+														{% if products %}
+														<p class="control-value">{{ products.CubicAsb }}</p>
+														{% endif %}
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-6 form-dimension form-knockdown">
+												<div class="form-group">
+													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.width_kdn}}</label>
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<div {% if products %}style="display:none" {% endif %} class="input-wrap">
+															<input type="number" id="WidthKdn" value="{{ products.WidthKdn }}" name="WidthKdn" required="required" class="form-control form-dimension-input col-md-7 col-xs-12">
+														</div>
+														{% if products %}
+														<p class="control-value">{{ products.WidthKdn }}</p>
+														{% endif %}
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.height_kdn}}</label>
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<div {% if products %}style="display:none" {% endif %} class="input-wrap">
+															<input type="number" id="HeightKdn" value="{{ products.HeightKdn }}" name="HeightKdn" required="required" class="form-control form-dimension-input col-md-7 col-xs-12">
+														</div>
+														{% if products %}
+														<p class="control-value">{{ products.HeightKdn }}</p>
+														{% endif %}
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.depth_kdn}}</label>
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<div {% if products %}style="display:none" {% endif %} class="input-wrap">
+															<input type="number" id="DepthKdn" value="{{ products.DepthKdn }}" name="DepthKdn" required="required" class="form-control form-dimension-input col-md-7 col-xs-12">
+														</div>
+														{% if products %}
+														<p class="control-value">{{ products.DepthKdn }}</p>
+														{% endif %}
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.cubic_kdn}}</label>
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<div {% if products %}style="display:none" {% endif %} class="input-wrap">
+															<input type="number" readonly id="CubicKdn" value="{{ products.CubicKdn }}" name="CubicKdn" required="required" class="form-control  form-dimension-result col-md-7 col-xs-12">
+														</div>
+														{% if products %}
+														<p class="control-value">{{ products.CubicKdn }}</p>
+														{% endif %}
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- /.tab-pane -->
+									<div class="tab-pane" id="tab_2">
+										<div class="">
+
+											{% include 'common/_img_input.html' with { 'value':productimages.Url,name:'Image' } %}
+
+											<div class="form-group">
+												<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
+												<div class="col-md-6 col-sm-6 col-xs-12">
+													<div {% if productimages %}style="display:none" {% endif %} class="input-wrap">
+														<input type="text" id="prodImagesName" value="{{ productimages.Name }}" name="prodImagesName" class="form-control  col-md-7 col-xs-12">
+													</div>
+													{% if productimages %}
+													<p class="control-value">{{ productimages.Name }}</p>
+													{% endif %}
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.description}}</label>
+												<div class="col-md-6 col-sm-6 col-xs-12">
+													<div {% if productimages %}style="display:none" {% endif %} class="input-wrap">
+														<input type="text" id="prodImagesDescription" value="{{ productimages.Description }}" name="prodImagesDescription" class="form-control  col-md-7 col-xs-12">
+													</div>
+													{% if productimages %}
+													<p class="control-value">{{ productimages.Description }}</p>
+													{% endif %}
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="col-md-6 col-md-offset-3 col-sm-6 col-xs-12">
+													<a href="#" id="btnSaveImgProduct" class="btn btn-default">{{res.string.save}}</a>
+												</div>
+											</div>
+										</div>
+										<div class="prod-img-list clearfix">
+											{% for Images in products.ProductImages%}
+											<div class="image col-sm-2 col-xs-6">
+												<a href="#/" data-toggle="modal" class="thumbnail prod-image-thumbnail" data-target="#modalImgProduct">
+												  <img class='' src="{% if Images.Url %}{{Images.Url}}{% else %}/public/upload/images/default-thumbnail.jpg{% endif %}" alt="...">
+												</a>
+												{{Images.Name}}
+											</div>	
+											{% endfor %}	
+										</div>
+										<textarea name="imgProduct" id="imgProduct" style="display: none"></textarea>
+									</div>
+									<!-- /.tab-pane -->
+								</div>
 							</div>
 						</div>
-
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.is_kdn}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
-							<input type="checkbox" id="is_kdn" value="{{ products.is_kdn }}"
-							name="is_kdn" required="required" class="col-md-7 col-xs-12">
-						</div>
-								{% if products %}
-									<p class="control-value">{{ products.is_kdn  }}</p>
-								{% endif %}
-							</div>
-						</div>
-
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.cost_price}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
-							<input type="number" id="cost_price" value="{{ products.cost_price }}"
-							name="cost_price" required="required" class="form-control  col-md-7 col-xs-12">
-						</div>
-								{% if products %}
-									<p class="control-value">{{ products.cost_price  }}</p>
-								{% endif %}
-							</div>
-						</div>
-
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.list_price}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
-							<input type="number" id="list_price" value="{{ products.list_price }}"
-							name="list_price" required="required" class="form-control  col-md-7 col-xs-12">
-						</div>
-								{% if products %}
-									<p class="control-value">{{ products.list_price  }}</p>
-								{% endif %}
-							</div>
-						</div>
-
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.cubic_asb}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
-							<input type="number" id="cubic_asb" value="{{ products.cubic_asb }}"
-							name="cubic_asb" required="required" class="form-control  col-md-7 col-xs-12">
-						</div>
-								{% if products %}
-									<p class="control-value">{{ products.cubic_asb  }}</p>
-								{% endif %}
-							</div>
-						</div>
-
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.cubic_kdn}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
-							<input type="number" id="cubic_kdn" value="{{ products.cubic_kdn }}"
-							name="cubic_kdn" required="required" class="form-control  col-md-7 col-xs-12">
-						</div>
-								{% if products %}
-									<p class="control-value">{{ products.cubic_kdn  }}</p>
-								{% endif %}
-							</div>
-						</div>
-
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.width_asb}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
-							<input type="number" id="width_asb" value="{{ products.width_asb }}"
-							name="width_asb" required="required" class="form-control  col-md-7 col-xs-12">
-						</div>
-								{% if products %}
-									<p class="control-value">{{ products.width_asb  }}</p>
-								{% endif %}
-							</div>
-						</div>
-
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.height_asb}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
-							<input type="number" id="height_asb" value="{{ products.height_asb }}"
-							name="height_asb" required="required" class="form-control  col-md-7 col-xs-12">
-						</div>
-								{% if products %}
-									<p class="control-value">{{ products.height_asb  }}</p>
-								{% endif %}
-							</div>
-						</div>
-
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.depth_asb}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
-							<input type="number" id="depth_asb" value="{{ products.depth_asb }}"
-							name="depth_asb" required="required" class="form-control  col-md-7 col-xs-12">
-						</div>
-								{% if products %}
-									<p class="control-value">{{ products.depth_asb  }}</p>
-								{% endif %}
-							</div>
-						</div>
-
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.width_kdn}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
-							<input type="number" id="width_kdn" value="{{ products.width_kdn }}"
-							name="width_kdn" required="required" class="form-control  col-md-7 col-xs-12">
-						</div>
-								{% if products %}
-									<p class="control-value">{{ products.width_kdn  }}</p>
-								{% endif %}
-							</div>
-						</div>
-
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.height_kdn}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
-							<input type="number" id="height_kdn" value="{{ products.height_kdn }}"
-							name="height_kdn" required="required" class="form-control  col-md-7 col-xs-12">
-						</div>
-								{% if products %}
-									<p class="control-value">{{ products.height_kdn  }}</p>
-								{% endif %}
-							</div>
-						</div>
-
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.depth_kdn}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if products %}style="display:none"{% endif %} class="input-wrap">
-							<input type="number" id="depth_kdn" value="{{ products.depth_kdn }}"
-							name="depth_kdn" required="required" class="form-control  col-md-7 col-xs-12">
-						</div>
-								{% if products %}
-									<p class="control-value">{{ products.depth_kdn  }}</p>
-								{% endif %}
-							</div>
-						</div>
-
+					</div>
 				</div>
-			</div>
 		</form>
+		</div>
 	</div>
-</div>
-<!-- Modal -->
 
-{% endblock %}
-{% block bottom%}
-<script>
-$('#btn-edit').click(function(){
-	$('#btn-canceledit').show()
-	$('#btn-save').show()
-	$('.input-wrap').show()
-	$('.control-value').hide()
-	$(this).hide()
-})
-$('#btn-canceledit').click(function(){
-	$('#btn-edit').show()
-	$('#btn-save').hide()
-	$('.input-wrap').hide()
-	$('.control-value').show()
-	$(this).hide()
-})
-$(function() {
-	$('.input-date').daterangepicker({
-	singleDatePicker: true,
-	showDropdowns: true,
-	locale: {
-		format: 'YYYY/MM/DD'
-	}
-},function(start, end, label) {
-	});
-$('.input-datetime').daterangepicker({
-	singleDatePicker: true,
-	showDropdowns: true,
-	timePicker: true,
-	timePickerIncrement: 30,
-	locale: {
-		format: 'YYYY/MM/DD hh:mm:ss'
-	}
-},
-function(start, end, label) {
-	});
-});
-</script>
-{% endblock %}
+	<!-- Modal -->
+
+	{% endblock %} {% block bottom%} {% include 'common/_img_upload_modal.html'%}
+	<script>
+		$(document).ready(function () {
+			$('#IsKdn').trigger('change')
+		})
+		$('#IsKdn').change(function (e) {
+			if ($(this).prop('checked')) {
+				$('.form-knockdown').show()
+			} else {
+				$('.form-knockdown').hide()
+			}
+		})
+
+		$('.form-dimension-input').on('change keyup paste', function () {
+			var r = 1;
+			var b = $(this).parents('.form-dimension');
+			b.find('.form-dimension-input').each(function () {
+				r = r * $(this).val()
+			})
+			b.find('.form-dimension-result').val(r)
+		})
+
+		var imgProd = []
+
+
+		$('#btnSaveImgProduct').click(function(e){
+			imgProd.push({
+					'name':$('#prodImagesName').val(),
+					'url':$('#Image').val(),
+					'description':$('#prodImagesDescription').val(),
+					'product_id':'{{products.Id}}'
+				})
+
+			$('#imgProduct').val(JSON.stringify(imgProd))
+			$('.prod-img-list').append('<div class="image col-sm-2 col-xs-6">'+
+'<a href="#/" data-toggle="modal" class="thumbnail prod-image-thumbnail" data-target="#modalImgProduct">'+
+'<img class="" src="'+$('#Image').val()+'"/></a>'+
+'</div>	')
+		// 	e.preventDefault()
+		// 	$.ajax({
+		// 		url:'/index.php/manage_productimages/write',
+		// 		method:'POST',
+		// 		dataType:'JSON',
+		// 		data:JSON.stringify({
+		// 			'name':$('#prodImagesName').val(),
+		// 			'url':$('#Image').val(),
+		// 			'description':$('#prodImagesDescription').val(),
+		// 			'product_id':'{{products.Id}}'
+		// 		}),
+		// 		success:function(o){
+		// 			console.log(o)
+		// 		}
+		// 	})
+		})
+	</script>
+
+	{% endblock %}

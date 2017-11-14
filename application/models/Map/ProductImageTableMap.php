@@ -9,7 +9,6 @@ use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\DataFetcher\DataFetcherInterface;
-use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
@@ -60,7 +59,7 @@ class ProductImageTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 6;
+    const NUM_COLUMNS = 7;
 
     /**
      * The number of lazy-loaded columns
@@ -70,7 +69,12 @@ class ProductImageTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 6;
+    const NUM_HYDRATE_COLUMNS = 7;
+
+    /**
+     * the column name for the id field
+     */
+    const COL_ID = 'product_image.id';
 
     /**
      * the column name for the name field
@@ -114,11 +118,11 @@ class ProductImageTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Name', 'Url', 'Description', 'ProductId', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('name', 'url', 'description', 'productId', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ProductImageTableMap::COL_NAME, ProductImageTableMap::COL_URL, ProductImageTableMap::COL_DESCRIPTION, ProductImageTableMap::COL_PRODUCT_ID, ProductImageTableMap::COL_CREATED_AT, ProductImageTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('name', 'url', 'description', 'product_id', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Url', 'Description', 'ProductId', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'url', 'description', 'productId', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ProductImageTableMap::COL_ID, ProductImageTableMap::COL_NAME, ProductImageTableMap::COL_URL, ProductImageTableMap::COL_DESCRIPTION, ProductImageTableMap::COL_PRODUCT_ID, ProductImageTableMap::COL_CREATED_AT, ProductImageTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'url', 'description', 'product_id', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -128,11 +132,11 @@ class ProductImageTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Name' => 0, 'Url' => 1, 'Description' => 2, 'ProductId' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
-        self::TYPE_CAMELNAME     => array('name' => 0, 'url' => 1, 'description' => 2, 'productId' => 3, 'createdAt' => 4, 'updatedAt' => 5, ),
-        self::TYPE_COLNAME       => array(ProductImageTableMap::COL_NAME => 0, ProductImageTableMap::COL_URL => 1, ProductImageTableMap::COL_DESCRIPTION => 2, ProductImageTableMap::COL_PRODUCT_ID => 3, ProductImageTableMap::COL_CREATED_AT => 4, ProductImageTableMap::COL_UPDATED_AT => 5, ),
-        self::TYPE_FIELDNAME     => array('name' => 0, 'url' => 1, 'description' => 2, 'product_id' => 3, 'created_at' => 4, 'updated_at' => 5, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Url' => 2, 'Description' => 3, 'ProductId' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'url' => 2, 'description' => 3, 'productId' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
+        self::TYPE_COLNAME       => array(ProductImageTableMap::COL_ID => 0, ProductImageTableMap::COL_NAME => 1, ProductImageTableMap::COL_URL => 2, ProductImageTableMap::COL_DESCRIPTION => 3, ProductImageTableMap::COL_PRODUCT_ID => 4, ProductImageTableMap::COL_CREATED_AT => 5, ProductImageTableMap::COL_UPDATED_AT => 6, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'url' => 2, 'description' => 3, 'product_id' => 4, 'created_at' => 5, 'updated_at' => 6, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -150,8 +154,9 @@ class ProductImageTableMap extends TableMap
         $this->setIdentifierQuoting(false);
         $this->setClassName('\\ProductImage');
         $this->setPackage('');
-        $this->setUseIdGenerator(false);
+        $this->setUseIdGenerator(true);
         // columns
+        $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', false, 255, null);
         $this->addColumn('url', 'Url', 'LONGVARCHAR', false, null, null);
         $this->addColumn('description', 'Description', 'LONGVARCHAR', false, null, null);
@@ -189,7 +194,12 @@ class ProductImageTableMap extends TableMap
      */
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return null;
+        // If the PK cannot be derived from the row, return NULL.
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+            return null;
+        }
+
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -206,7 +216,11 @@ class ProductImageTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return '';
+        return (int) $row[
+            $indexType == TableMap::TYPE_NUM
+                ? 0 + $offset
+                : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
+        ];
     }
 
     /**
@@ -306,6 +320,7 @@ class ProductImageTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
+            $criteria->addSelectColumn(ProductImageTableMap::COL_ID);
             $criteria->addSelectColumn(ProductImageTableMap::COL_NAME);
             $criteria->addSelectColumn(ProductImageTableMap::COL_URL);
             $criteria->addSelectColumn(ProductImageTableMap::COL_DESCRIPTION);
@@ -313,6 +328,7 @@ class ProductImageTableMap extends TableMap
             $criteria->addSelectColumn(ProductImageTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(ProductImageTableMap::COL_UPDATED_AT);
         } else {
+            $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.name');
             $criteria->addSelectColumn($alias . '.url');
             $criteria->addSelectColumn($alias . '.description');
@@ -366,10 +382,11 @@ class ProductImageTableMap extends TableMap
             // rename for clarity
             $criteria = $values;
         } elseif ($values instanceof \ProductImage) { // it's a model object
-            // create criteria based on pk value
-            $criteria = $values->buildCriteria();
+            // create criteria based on pk values
+            $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            throw new LogicException('The ProductImage object has no primary key');
+            $criteria = new Criteria(ProductImageTableMap::DATABASE_NAME);
+            $criteria->add(ProductImageTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
         $query = ProductImageQuery::create()->mergeWith($criteria);
@@ -415,6 +432,10 @@ class ProductImageTableMap extends TableMap
             $criteria = clone $criteria; // rename for clarity
         } else {
             $criteria = $criteria->buildCriteria(); // build Criteria from ProductImage object
+        }
+
+        if ($criteria->containsKey(ProductImageTableMap::COL_ID) && $criteria->keyContainsValue(ProductImageTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.ProductImageTableMap::COL_ID.')');
         }
 
 

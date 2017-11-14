@@ -14,7 +14,7 @@
           {% set back_link = suppliers.CompanyId?'/detail/'~suppliers.CompanyId:''%}
           {% include 'common/_form_header.html'
           with {'back_url':'/index.php/manage_suppliers'~back_link,
-          'title': res.string.customer,
+          'title': res.string.supplier,
           'delete_url':'/index.php/manage_suppliers/delete/'~suppliers.Id,
           'object':suppliers} %}
           <div class="clearfix"></div>

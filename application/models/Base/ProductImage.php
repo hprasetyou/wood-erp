@@ -64,6 +64,13 @@ abstract class ProductImage implements ActiveRecordInterface
     protected $virtualColumns = array();
 
     /**
+     * The value for the id field.
+     *
+     * @var        int
+     */
+    protected $id;
+
+    /**
      * The value for the name field.
      *
      * @var        string
@@ -358,6 +365,16 @@ abstract class ProductImage implements ActiveRecordInterface
     }
 
     /**
+     * Get the [id] column value.
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * Get the [name] column value.
      *
      * @return string
@@ -436,6 +453,26 @@ abstract class ProductImage implements ActiveRecordInterface
             return $this->updated_at instanceof \DateTimeInterface ? $this->updated_at->format($format) : null;
         }
     }
+
+    /**
+     * Set the value of [id] column.
+     *
+     * @param int $v new value
+     * @return $this|\ProductImage The current object (for fluent API support)
+     */
+    public function setId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->id !== $v) {
+            $this->id = $v;
+            $this->modifiedColumns[ProductImageTableMap::COL_ID] = true;
+        }
+
+        return $this;
+    } // setId()
 
     /**
      * Set the value of [name] column.
@@ -597,25 +634,28 @@ abstract class ProductImage implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProductImageTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProductImageTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProductImageTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProductImageTableMap::translateFieldName('Url', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProductImageTableMap::translateFieldName('Url', TableMap::TYPE_PHPNAME, $indexType)];
             $this->url = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProductImageTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProductImageTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
             $this->description = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProductImageTableMap::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProductImageTableMap::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->product_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProductImageTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ProductImageTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ProductImageTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ProductImageTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -628,7 +668,7 @@ abstract class ProductImage implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 6; // 6 = ProductImageTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = ProductImageTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\ProductImage'), 0, $e);
@@ -839,8 +879,15 @@ abstract class ProductImage implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
+        $this->modifiedColumns[ProductImageTableMap::COL_ID] = true;
+        if (null !== $this->id) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ProductImageTableMap::COL_ID . ')');
+        }
 
          // check the columns in natural order for more readable SQL queries
+        if ($this->isColumnModified(ProductImageTableMap::COL_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'id';
+        }
         if ($this->isColumnModified(ProductImageTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'name';
         }
@@ -870,6 +917,9 @@ abstract class ProductImage implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
+                    case 'id':
+                        $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+                        break;
                     case 'name':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
@@ -895,6 +945,13 @@ abstract class ProductImage implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
+
+        try {
+            $pk = $con->lastInsertId();
+        } catch (Exception $e) {
+            throw new PropelException('Unable to get autoincrement id.', 0, $e);
+        }
+        $this->setId($pk);
 
         $this->setNew(false);
     }
@@ -944,21 +1001,24 @@ abstract class ProductImage implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getName();
+                return $this->getId();
                 break;
             case 1:
-                return $this->getUrl();
+                return $this->getName();
                 break;
             case 2:
-                return $this->getDescription();
+                return $this->getUrl();
                 break;
             case 3:
-                return $this->getProductId();
+                return $this->getDescription();
                 break;
             case 4:
-                return $this->getCreatedAt();
+                return $this->getProductId();
                 break;
             case 5:
+                return $this->getCreatedAt();
+                break;
+            case 6:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -991,19 +1051,20 @@ abstract class ProductImage implements ActiveRecordInterface
         $alreadyDumpedObjects['ProductImage'][$this->hashCode()] = true;
         $keys = ProductImageTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getName(),
-            $keys[1] => $this->getUrl(),
-            $keys[2] => $this->getDescription(),
-            $keys[3] => $this->getProductId(),
-            $keys[4] => $this->getCreatedAt(),
-            $keys[5] => $this->getUpdatedAt(),
+            $keys[0] => $this->getId(),
+            $keys[1] => $this->getName(),
+            $keys[2] => $this->getUrl(),
+            $keys[3] => $this->getDescription(),
+            $keys[4] => $this->getProductId(),
+            $keys[5] => $this->getCreatedAt(),
+            $keys[6] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[4]] instanceof \DateTimeInterface) {
-            $result[$keys[4]] = $result[$keys[4]]->format('c');
-        }
-
         if ($result[$keys[5]] instanceof \DateTimeInterface) {
             $result[$keys[5]] = $result[$keys[5]]->format('c');
+        }
+
+        if ($result[$keys[6]] instanceof \DateTimeInterface) {
+            $result[$keys[6]] = $result[$keys[6]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1062,21 +1123,24 @@ abstract class ProductImage implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                $this->setName($value);
+                $this->setId($value);
                 break;
             case 1:
-                $this->setUrl($value);
+                $this->setName($value);
                 break;
             case 2:
-                $this->setDescription($value);
+                $this->setUrl($value);
                 break;
             case 3:
-                $this->setProductId($value);
+                $this->setDescription($value);
                 break;
             case 4:
-                $this->setCreatedAt($value);
+                $this->setProductId($value);
                 break;
             case 5:
+                $this->setCreatedAt($value);
+                break;
+            case 6:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1106,22 +1170,25 @@ abstract class ProductImage implements ActiveRecordInterface
         $keys = ProductImageTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
-            $this->setName($arr[$keys[0]]);
+            $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setUrl($arr[$keys[1]]);
+            $this->setName($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setDescription($arr[$keys[2]]);
+            $this->setUrl($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setProductId($arr[$keys[3]]);
+            $this->setDescription($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setCreatedAt($arr[$keys[4]]);
+            $this->setProductId($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setUpdatedAt($arr[$keys[5]]);
+            $this->setCreatedAt($arr[$keys[5]]);
+        }
+        if (array_key_exists($keys[6], $arr)) {
+            $this->setUpdatedAt($arr[$keys[6]]);
         }
     }
 
@@ -1164,6 +1231,9 @@ abstract class ProductImage implements ActiveRecordInterface
     {
         $criteria = new Criteria(ProductImageTableMap::DATABASE_NAME);
 
+        if ($this->isColumnModified(ProductImageTableMap::COL_ID)) {
+            $criteria->add(ProductImageTableMap::COL_ID, $this->id);
+        }
         if ($this->isColumnModified(ProductImageTableMap::COL_NAME)) {
             $criteria->add(ProductImageTableMap::COL_NAME, $this->name);
         }
@@ -1198,7 +1268,8 @@ abstract class ProductImage implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        throw new LogicException('The ProductImage object has no primary key');
+        $criteria = ChildProductImageQuery::create();
+        $criteria->add(ProductImageTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1211,7 +1282,7 @@ abstract class ProductImage implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = false;
+        $validPk = null !== $this->getId();
 
         $validPrimaryKeyFKs = 0;
         $primaryKeyFKs = [];
@@ -1226,27 +1297,23 @@ abstract class ProductImage implements ActiveRecordInterface
     }
 
     /**
-     * Returns NULL since this table doesn't have a primary key.
-     * This method exists only for BC and is deprecated!
-     * @return null
+     * Returns the primary key for this object (row).
+     * @return int
      */
     public function getPrimaryKey()
     {
-        return null;
+        return $this->getId();
     }
 
     /**
-     * Dummy primary key setter.
+     * Generic method to set the primary key (id column).
      *
-     * This function only exists to preserve backwards compatibility.  It is no longer
-     * needed or required by the Persistent interface.  It will be removed in next BC-breaking
-     * release of Propel.
-     *
-     * @deprecated
+     * @param       int $key Primary key.
+     * @return void
      */
-    public function setPrimaryKey($pk)
+    public function setPrimaryKey($key)
     {
-        // do nothing, because this object doesn't have any primary keys
+        $this->setId($key);
     }
 
     /**
@@ -1255,7 +1322,7 @@ abstract class ProductImage implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return ;
+        return null === $this->getId();
     }
 
     /**
@@ -1279,6 +1346,7 @@ abstract class ProductImage implements ActiveRecordInterface
         $copyObj->setUpdatedAt($this->getUpdatedAt());
         if ($makeNew) {
             $copyObj->setNew(true);
+            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1365,6 +1433,7 @@ abstract class ProductImage implements ActiveRecordInterface
         if (null !== $this->aProduct) {
             $this->aProduct->removeProductImage($this);
         }
+        $this->id = null;
         $this->name = null;
         $this->url = null;
         $this->description = null;

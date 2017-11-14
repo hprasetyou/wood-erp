@@ -215,6 +215,7 @@
     </vendor>
   </table>
   <table name="product_image" phpName="ProductImage">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="name" phpName="Name" type="VARCHAR" size="255"/>
     <column name="url" phpName="Url" type="LONGVARCHAR"/>
     <column name="description" phpName="Description" type="LONGVARCHAR"/>

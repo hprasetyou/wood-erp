@@ -6,7 +6,7 @@ class Manage_products extends CI_Controller{
 
   function __construct(){
     parent::__construct();
-   $this->authorization->check_authorization('manage_products');
+    $this->authorization->check_authorization('manage_products');
   }
   function index(){
       $this->template->render('admin/products/index');
@@ -19,7 +19,6 @@ class Manage_products extends CI_Controller{
 			$products->condition('cond1' ,'Product.name LIKE ?', "%".$this->input->get('search[value]')."%");
 
 			$products->where(array('cond1',),'or');
-      $products->find();
     }
 		$offset = ($this->input->get('start')?$this->input->get('start'):0);
 		$products = $products->paginate(($offset/10)+1, $maxPerPage);
@@ -82,6 +81,22 @@ class Manage_products extends CI_Controller{
 		$product->setDepthKdn($this->input->post('DepthKdn'));
 
 		$product->save();
+		$this->load->helper('base64toimage');
+		$prod_img = json_decode($this->input->post('imgProduct'));
+		foreach ($prod_img as $key => $input_data) {
+			# code...
+			$productimage = new ProductImage;
+			$productimage->setName($input_data->name);
+			if($input_data->url){
+				if(strpos($input_data->url,'base64')){
+					$productimage->setUrl(base64_to_img($input_data->url));
+				}
+			}
+			$productimage->setDescription($input_data->description);
+			$productimage->setProductId($product->getId());
+      echo $productimage;
+			$productimage->save();
+		}
 		//$this->loging->add_entry('products',$product->getId(),($id?'melakukan perubahan pada data':'membuat data baru'));
 		redirect('manage_products/detail/'.$product->getId());
   }

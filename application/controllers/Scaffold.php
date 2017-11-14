@@ -221,7 +221,7 @@ $(document).ready(function(){
 			if($this->check_field($field_name)){
 			$form_field .= "
 \t\t\t\t\t<div class=\"form-group\">
-\t\t\t\t\t\t<label class=\"control-label col-md-3 col-sm-3 col-xs-12\" for=\"first-name\">{{res.string.$label}}</label>
+\t\t\t\t\t\t<label class=\"control-label col-md-3 col-sm-3 col-xs-12\" for=\"$field_name\">{{res.string.$label}}</label>
 \t\t\t\t\t\t<div class=\"col-md-6 col-sm-6 col-xs-12\">";
 			$i=0;
 			$display_val = "$tb_name_lower.$field_name";
@@ -356,10 +356,10 @@ echo "=========================";
 \t\t\t\t'title': res.string.$tb_name_singular,
 \t\t\t\t'delete_url':'/index.php/manage_$tb_name_lower/delete/{{ $tb_name_lower.Id }}',
 \t\t\t\t'object':$tb_name_lower} %}
+\t\t\t\t</div>
 \t\t\t\t<div class=\"box-body\">
 \t\t\t\t\t$form_field
 \t\t\t\t</div>
-\t\t\t</div>
 \t\t</form>
 \t</div>
 </div>

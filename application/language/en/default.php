@@ -1,4 +1,4 @@
-<?php
+<?php 
  return array(
 'access' => 'Access',
 'address' => 'Address',
@@ -19,10 +19,12 @@
 'depth_asb' => 'Depth Assembled',
 'depth_kdn' => 'Depth Knockdown',
 'description' => 'Description',
+'dimension' => 'Dimension',
 'edit' => 'Edit',
 'email' => 'Email',
 'error' => 'Error',
 'fax' => 'Fax',
+'group' => 'Group',
 'height_asb' => 'Height Assembled',
 'height_kdn' => 'Height Knockdown',
 'image' => 'Image',
@@ -36,8 +38,8 @@
 'login' => 'Login',
 'login_msg' => 'Please Login',
 'logout' => 'Log out',
-'menu' => 'Menu',
 'member' => 'Member',
+'menu' => 'Menu',
 'name' => 'Name',
 'new_data' => 'New Data',
 'no' => 'No',
@@ -48,16 +50,16 @@
 'phone' => 'Phone',
 'product' => 'Product',
 'save' => 'Save',
+'status' => 'Status',
 'supplier' => 'Supplier',
 'tax_number' => 'Tax Number',
 'upload' => 'Upload',
+'url' => 'Url',
+'user' => 'User',
 'username' => 'Username',
 'website' => 'Website',
 'width_asb' => 'Width Assembled',
 'width_kdn' => 'Width Knockdown',
 'yes' => 'Yes',
-'component' => 'Component',
-'user'=>'User',
-'group'=>'Group',
-'status' => 'Status'
+'product_id' => 'Product Id'
 );
