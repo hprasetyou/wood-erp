@@ -15,5 +15,14 @@ class Authorization {
 
     function check_authorization($object,$except=array()){
         $this->authenticate();
+        $uacccess = unserialize($this->CI->session->userdata('access'));
+        $menu = MenuQuery::create()->findOneByController($object);
+        $access = false;
+        if(in_array($menu->getId(),$uacccess)){
+          $access = true;
+        }
+        if(!$access){
+          die('access denied');
+        }
     }
 }
