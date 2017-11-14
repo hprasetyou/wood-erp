@@ -1,5 +1,11 @@
 <div class="">
-
+  <div class="box box-success">
+    <div class="box-header with-border">
+      <!-- /.box-tools -->
+      {{res.string.add_image}}
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
   {% include 'common/_img_input.html' with { 'value':productimages.Url,name:'Image' } %}
 
   <div class="form-group">
@@ -30,7 +36,16 @@
     </div>
   </div>
 </div>
+</div>
+</div>
 <div class="prod-img-list clearfix">
+  <div class="box box-success">
+    <div class="box-header with-border">
+      <!-- /.box-tools -->
+      {{res.string.image_list}}
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
   {% for Images in products.ProductImages%}
   <div class="image col-sm-2 col-xs-6">
     <a href="#/" data-toggle="modal" class="thumbnail prod-image-thumbnail" data-target="#modalImgProduct">
@@ -39,5 +54,7 @@
     {{Images.Name}}
   </div>
   {% endfor %}
+</div>
+</div>
 </div>
 <textarea name="imgProduct" id="imgProduct" style="display: none"></textarea>
