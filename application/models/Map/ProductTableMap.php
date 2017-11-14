@@ -221,7 +221,7 @@ class ProductTableMap extends TableMap
         $this->addColumn('article', 'Article', 'VARCHAR', false, 255, null);
         $this->addColumn('description', 'Description', 'LONGVARCHAR', false, null, null);
         $this->addColumn('is_kdn', 'IsKdn', 'BOOLEAN', true, 1, false);
-        $this->addColumn('has_component', 'HasComponent', 'BOOLEAN', true, 1, false);
+        $this->addColumn('has_component', 'HasComponent', 'BOOLEAN', false, 1, false);
         $this->addColumn('cost_price', 'CostPrice', 'FLOAT', true, null, null);
         $this->addColumn('list_price', 'ListPrice', 'FLOAT', true, null, null);
         $this->addColumn('cubic_asb', 'CubicAsb', 'FLOAT', true, null, null);

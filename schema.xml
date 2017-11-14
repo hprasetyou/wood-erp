@@ -53,7 +53,7 @@
     <column name="article" phpName="Article" type="VARCHAR" size="255"/>
     <column name="description" phpName="Description" type="LONGVARCHAR"/>
     <column name="is_kdn" phpName="IsKdn" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
-    <column name="has_component" phpName="HasComponent" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
+    <column name="has_component" phpName="HasComponent" type="BOOLEAN" size="1" defaultValue="false"/>
     <column name="cost_price" phpName="CostPrice" type="FLOAT" required="true"/>
     <column name="list_price" phpName="ListPrice" type="FLOAT" required="true"/>
     <column name="cubic_asb" phpName="CubicAsb" type="FLOAT" required="true"/>
