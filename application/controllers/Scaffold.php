@@ -539,7 +539,7 @@ class Manage_$var extends CI_Controller{
 		}
 $template .= "
 		\$$singular_var$dash>save();
-		//\$this->loging->add_entry('$var',\$$singular_var$dash>getId(),(\$id?'melakukan perubahan pada data':'membuat data baru'));
+		\$this->loging->add_entry('$var',\$$singular_var$dash>getId(),(\$id?'activity_modify':'activity_create'));
 		redirect('manage_$var/detail/'.\$$singular_var$dash>getId());
   }
 
