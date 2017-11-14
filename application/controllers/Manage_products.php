@@ -51,7 +51,10 @@ class Manage_products extends CI_Controller{
 
   function create(){
     $this->load->helper('good_numbering');
+    $finishings = FinishingQuery::create()->find();
+
 		$this->template->render('admin/products/form',array(
+      'finishings'=>	$finishings,
       'new_number'=>create_number(
           array('format'=>'WDX-i',
           'tb_name'=>'product',
@@ -61,7 +64,20 @@ class Manage_products extends CI_Controller{
   function detail($id){
     $this->load->helper('good_numbering');
 		$product = ProductQuery::create()->findPK($id);
-		$this->template->render('admin/products/form',array('products'=>$product,'new_number'=>create_number(
+    $finishings = FinishingQuery::create()->find();
+    foreach ($finishings as $key => $value) {
+      # code...
+      $productfinishing = ProductFinishingQuery::create()
+      ->filterByProduct($product)
+      ->filterByFinishing($value);
+      if($productfinishing->count()>0){
+        $value->have = true;
+      }
+    }
+		$this->template->render('admin/products/form',array(
+      'products'=>$product,
+      'finishings'=>	$finishings,
+      'new_number'=>create_number(
         array('format'=>'WDX-i',
         'tb_name'=>'product',
         'tb_field'=>'article'))));
@@ -120,6 +136,15 @@ class Manage_products extends CI_Controller{
         $productcomponent->save();
       }
     }
+    $product->getProductFinishings()->delete();
+    foreach ($this->input->post('Finishing') as $k=> $finishing) {
+      # code...
+      $pf = new ProductFinishing;
+      $pf->setFinishingId($k);
+      $pf->setProductId($product->getId());
+      $pf->save();
+    }
+
     $this->loging->add_entry('products',$product->getId(),($id?'activity_modify':'activity_create'));
 
 		//$this->loging->add_entry('products',$product->getId(),($id?'melakukan perubahan pada data':'membuat data baru'));

@@ -123,6 +123,9 @@
 									<li id="component_tab">
 										<a href="#tab_3" data-toggle="tab">{{ res.string.component }}</a>
 									</li>
+									<li>
+										<a href="#tab_4" data-toggle="tab">{{ res.string.available_finishing }}</a>
+									</li>
 								</ul>
 								<div class="tab-content">
                   <!-- /.tab-pane -->
@@ -136,6 +139,10 @@
 									<!-- /.tab-pane -->
 									<div class="tab-pane" id="tab_3">
                     {% include "admin/products/_components_tab.html"%}
+                  </div>
+									<!-- /.tab-pane -->
+									<div class="tab-pane" id="tab_4">
+                    {% include "admin/products/_finishing_tab.html"%}
                   </div>
 								</div>
 							</div>

@@ -1,0 +1,18 @@
+<div class="">
+  <div class="box box-success">
+    <div class="box-header with-border">
+      <!-- /.box-tools -->
+      {{res.string.available_finishing}}
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+      {% for finishing in finishings %}
+      <div class="col-sm-2">
+        <div class="form-group">
+          <label for="Finishing[{{finishing.Id}}]"><input {{finishing.have?'checked':''}} type="checkbox" name="Finishing[{{finishing.Id}}]" id="Finishing[{{finishing.Id}}]"> {{finishing.Name}}</label>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

@@ -25,6 +25,8 @@
 'edit' => 'Edit',
 'email' => 'Email',
 'error' => 'Error',
+'finishing'=>'Finishing',
+'available_finishing'=>'Available Finishing',
 'fax' => 'Fax',
 'group' => 'Group',
 'height_asb' => 'Height Assembled',
