@@ -94,9 +94,17 @@ class Manage_products extends CI_Controller{
 			}
 			$productimage->setDescription($input_data->description);
 			$productimage->setProductId($product->getId());
-      echo $productimage;
 			$productimage->save();
 		}
+    $prod_component = json_decode($this->input->post('productComponents'));
+    foreach ($prod_component as $component) {
+      $productcomponent = new ProductComponent;
+      $productcomponent->setProductId($product->getId());
+      $productcomponent->setComponentId($component->component_id);
+      $productcomponent->setQty($component->qty);
+      $productcomponent->save();
+    }
+
 		//$this->loging->add_entry('products',$product->getId(),($id?'melakukan perubahan pada data':'membuat data baru'));
 		redirect('manage_products/detail/'.$product->getId());
   }

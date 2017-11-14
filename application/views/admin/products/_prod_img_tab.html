@@ -1,0 +1,43 @@
+<div class="">
+
+  {% include 'common/_img_input.html' with { 'value':productimages.Url,name:'Image' } %}
+
+  <div class="form-group">
+    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div {% if productimages %}style="display:none" {% endif %} class="input-wrap">
+        <input type="text" id="prodImagesName" value="{{ productimages.Name }}" name="prodImagesName" class="form-control  col-md-7 col-xs-12">
+      </div>
+      {% if productimages %}
+      <p class="control-value">{{ productimages.Name }}</p>
+      {% endif %}
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.description}}</label>
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div {% if productimages %}style="display:none" {% endif %} class="input-wrap">
+        <input type="text" id="prodImagesDescription" value="{{ productimages.Description }}" name="prodImagesDescription" class="form-control  col-md-7 col-xs-12">
+      </div>
+      {% if productimages %}
+      <p class="control-value">{{ productimages.Description }}</p>
+      {% endif %}
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-md-6 col-md-offset-3 col-sm-6 col-xs-12">
+      <a href="#" id="btnSaveImgProduct" class="btn btn-default">{{res.string.save}}</a>
+    </div>
+  </div>
+</div>
+<div class="prod-img-list clearfix">
+  {% for Images in products.ProductImages%}
+  <div class="image col-sm-2 col-xs-6">
+    <a href="#/" data-toggle="modal" class="thumbnail prod-image-thumbnail" data-target="#modalImgProduct">
+      <img class='' src="{% if Images.Url %}{{Images.Url}}{% else %}/public/upload/images/default-thumbnail.jpg{% endif %}" alt="...">
+    </a>
+    {{Images.Name}}
+  </div>
+  {% endfor %}
+</div>
+<textarea name="imgProduct" id="imgProduct" style="display: none"></textarea>

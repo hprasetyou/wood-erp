@@ -239,7 +239,7 @@ $(document).ready(function(){
 \t\t\t\t\t\t\t<input type=\"hidden\" type=\"text\" id=\"$field_name\" value=\"{{ $tb_name_lower.$field_name }}\" name=\"$field_name\"  >
 \t\t\t\t\t\t\t<input type=\"text\" $required name=\"display$field_name\" id=\"display$field_name\"  value=\"{{ $tb_name_lower.$theirphpmodel }}\" class=\"form-control\" />
 \t\t\t\t\t\t\t<span class=\"input-group-btn\">
-\t\t\t\t\t\t\t\t<button class=\"btn btnModal btn-default\" id=\"btn$field_name\"  data-target=\"Modal$theirphpmodel\" type=\"button\">Cari</button>
+\t\t\t\t\t\t\t\t<button class=\"btn btnModal btn-default\" id=\"btn$field_name\"  data-target=\"Modal$theirphpmodel\" type=\"button\">{{res.string.search}}</button>
 \t\t\t\t\t\t\t</span>
 \t\t\t\t\t\t</div>";
 				$modals .= "{% include \"admin/$theirmodellower/_modal.html\" %}\n";

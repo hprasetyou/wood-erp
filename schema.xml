@@ -50,8 +50,10 @@
   <table name="product" idMethod="native" phpName="Product">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
-    <column name="description" phpName="Description" type="LONGVARCHAR" required="true"/>
-    <column name="is_kdn" phpName="IsKdn" type="BOOLEAN" size="1" required="true"/>
+    <column name="article" phpName="Article" type="VARCHAR" size="255"/>
+    <column name="description" phpName="Description" type="LONGVARCHAR"/>
+    <column name="is_kdn" phpName="IsKdn" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
+    <column name="has_component" phpName="HasComponent" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
     <column name="cost_price" phpName="CostPrice" type="FLOAT" required="true"/>
     <column name="list_price" phpName="ListPrice" type="FLOAT" required="true"/>
     <column name="cubic_asb" phpName="CubicAsb" type="FLOAT" required="true"/>
@@ -59,9 +61,10 @@
     <column name="width_asb" phpName="WidthAsb" type="FLOAT" required="true"/>
     <column name="height_asb" phpName="HeightAsb" type="FLOAT" required="true"/>
     <column name="depth_asb" phpName="DepthAsb" type="FLOAT" required="true"/>
-    <column name="width_kdn" phpName="WidthKdn" type="FLOAT" required="true"/>
-    <column name="height_kdn" phpName="HeightKdn" type="FLOAT" required="true"/>
-    <column name="depth_kdn" phpName="DepthKdn" type="FLOAT" required="true"/>
+    <column name="width_kdn" phpName="WidthKdn" type="FLOAT"/>
+    <column name="height_kdn" phpName="HeightKdn" type="FLOAT"/>
+    <column name="depth_kdn" phpName="DepthKdn" type="FLOAT"/>
+    <column name="net_cubic" phpName="NetCubic" type="FLOAT"/>
     <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
     <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
     <vendor type="mysql">

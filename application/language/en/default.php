@@ -1,6 +1,7 @@
-<?php 
+<?php
  return array(
 'access' => 'Access',
+'add' => 'Add',
 'address' => 'Address',
 'back' => 'Back',
 'bank' => 'Bank',
@@ -8,6 +9,7 @@
 'cancel' => 'Cancel',
 'company_id' => 'Company Id',
 'component' => 'Component',
+'component_id' => 'Component Id',
 'confirmation' => 'Confirmation',
 'contact_person' => 'Contact Person',
 'cost_price' => 'Cost Price',
@@ -49,6 +51,7 @@
 'people' => 'People',
 'phone' => 'Phone',
 'product' => 'Product',
+'product_id' => 'Product Id',
 'save' => 'Save',
 'status' => 'Status',
 'supplier' => 'Supplier',
@@ -61,5 +64,8 @@
 'width_asb' => 'Width Assembled',
 'width_kdn' => 'Width Knockdown',
 'yes' => 'Yes',
-'product_id' => 'Product Id'
+'qty' => 'Qty',
+'has_component'=>'Has Component',
+'article_number'=>'Article Number',
+'search'=>'Search'
 );

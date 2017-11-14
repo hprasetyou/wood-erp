@@ -14,16 +14,27 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.article_number}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
 									<div {% if products %}style="display:none" {% endif %} class="input-wrap">
-										<input type="text" id="Name" value="{{ products.Name }}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
+										<input type="text" id="Article" value="{{ products.Article }}" name="Article" required="required" class="form-control  col-md-7 col-xs-12">
 									</div>
 									{% if products %}
-									<p class="control-value">{{ products.Name }}</p>
+									<p class="control-value">{{ products.Article }}</p>
 									{% endif %}
 								</div>
 							</div>
+  							<div class="form-group">
+  								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
+  								<div class="col-md-6 col-sm-6 col-xs-12">
+  									<div {% if products %}style="display:none" {% endif %} class="input-wrap">
+  										<input type="text" id="Name" value="{{ products.Name }}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
+  									</div>
+  									{% if products %}
+  									<p class="control-value">{{ products.Name }}</p>
+  									{% endif %}
+  								</div>
+  							</div>
 
 							<div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.description}}</label>
@@ -44,6 +55,17 @@
 									</div>
 									{% if products %}
 									<p class="control-value">{{ products.IsKdn ? res.string.yes : res.string.no }}</p>
+									{% endif %}
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.has_component}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if products %}style="display:none" {% endif %} class="input-wrap">
+										<input type="checkbox" id="HasComponent" value="1" {{ products.HasComponent ? "checked": "" }} name="HasComponent" class="form-checkbox">
+									</div>
+									{% if products %}
+									<p class="control-value">{{ products.HasComponent ? res.string.yes : res.string.no }}</p>
 									{% endif %}
 								</div>
 							</div>
@@ -87,153 +109,23 @@
 									<li>
 										<a href="#tab_2" data-toggle="tab">{{ res.string.image }}</a>
 									</li>
+									<li id="component_tab">
+										<a href="#tab_3" data-toggle="tab">{{ res.string.component }}</a>
+									</li>
 								</ul>
 								<div class="tab-content">
+                  <!-- /.tab-pane -->
 									<div class="tab-pane clearfix active" id="tab_1">
-										<div class="row">
-											<div class="col-sm-6 form-dimension">
-												<div class="form-group">
-													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.width_asb}}</label>
-													<div class="col-md-6 col-sm-6 col-xs-12">
-														<div {% if products %}style="display:none" {% endif %} class="input-wrap">
-															<input type="number" id="WidthAsb" value="{{ products.WidthAsb }}" name="WidthAsb" required="required" class="form-control form-dimension-input col-md-7 col-xs-12">
-														</div>
-														{% if products %}
-														<p class="control-value">{{ products.WidthAsb }}</p>
-														{% endif %}
-													</div>
-												</div>
-
-												<div class="form-group">
-													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.height_asb}}</label>
-													<div class="col-md-6 col-sm-6 col-xs-12">
-														<div {% if products %}style="display:none" {% endif %} class="input-wrap">
-															<input type="number" id="HeightAsb" value="{{ products.HeightAsb }}" name="HeightAsb" required="required" class="form-control form-dimension-input col-md-7 col-xs-12">
-														</div>
-														{% if products %}
-														<p class="control-value">{{ products.HeightAsb }}</p>
-														{% endif %}
-													</div>
-												</div>
-
-												<div class="form-group">
-													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.depth_asb}}</label>
-													<div class="col-md-6 col-sm-6 col-xs-12">
-														<div {% if products %}style="display:none" {% endif %} class="input-wrap">
-															<input type="number" id="DepthAsb" value="{{ products.DepthAsb }}" name="DepthAsb" required="required" class="form-control form-dimension-input col-md-7 col-xs-12">
-														</div>
-														{% if products %}
-														<p class="control-value">{{ products.DepthAsb }}</p>
-														{% endif %}
-													</div>
-												</div>
-												<div class="form-group">
-													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.cubic_asb}}</label>
-													<div class="col-md-6 col-sm-6 col-xs-12">
-														<div {% if products %}style="display:none" {% endif %} class="input-wrap">
-															<input type="number" readonly id="CubicAsb" value="{{ products.CubicAsb }}" name="CubicAsb" required="required" class="form-control form-dimension-result col-md-7 col-xs-12">
-														</div>
-														{% if products %}
-														<p class="control-value">{{ products.CubicAsb }}</p>
-														{% endif %}
-													</div>
-												</div>
-											</div>
-											<div class="col-sm-6 form-dimension form-knockdown">
-												<div class="form-group">
-													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.width_kdn}}</label>
-													<div class="col-md-6 col-sm-6 col-xs-12">
-														<div {% if products %}style="display:none" {% endif %} class="input-wrap">
-															<input type="number" id="WidthKdn" value="{{ products.WidthKdn }}" name="WidthKdn" required="required" class="form-control form-dimension-input col-md-7 col-xs-12">
-														</div>
-														{% if products %}
-														<p class="control-value">{{ products.WidthKdn }}</p>
-														{% endif %}
-													</div>
-												</div>
-												<div class="form-group">
-													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.height_kdn}}</label>
-													<div class="col-md-6 col-sm-6 col-xs-12">
-														<div {% if products %}style="display:none" {% endif %} class="input-wrap">
-															<input type="number" id="HeightKdn" value="{{ products.HeightKdn }}" name="HeightKdn" required="required" class="form-control form-dimension-input col-md-7 col-xs-12">
-														</div>
-														{% if products %}
-														<p class="control-value">{{ products.HeightKdn }}</p>
-														{% endif %}
-													</div>
-												</div>
-												<div class="form-group">
-													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.depth_kdn}}</label>
-													<div class="col-md-6 col-sm-6 col-xs-12">
-														<div {% if products %}style="display:none" {% endif %} class="input-wrap">
-															<input type="number" id="DepthKdn" value="{{ products.DepthKdn }}" name="DepthKdn" required="required" class="form-control form-dimension-input col-md-7 col-xs-12">
-														</div>
-														{% if products %}
-														<p class="control-value">{{ products.DepthKdn }}</p>
-														{% endif %}
-													</div>
-												</div>
-												<div class="form-group">
-													<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.cubic_kdn}}</label>
-													<div class="col-md-6 col-sm-6 col-xs-12">
-														<div {% if products %}style="display:none" {% endif %} class="input-wrap">
-															<input type="number" readonly id="CubicKdn" value="{{ products.CubicKdn }}" name="CubicKdn" required="required" class="form-control  form-dimension-result col-md-7 col-xs-12">
-														</div>
-														{% if products %}
-														<p class="control-value">{{ products.CubicKdn }}</p>
-														{% endif %}
-													</div>
-												</div>
-											</div>
-										</div>
+                    {% include "admin/products/_dimension_tab.html"%}
 									</div>
 									<!-- /.tab-pane -->
 									<div class="tab-pane" id="tab_2">
-										<div class="">
-
-											{% include 'common/_img_input.html' with { 'value':productimages.Url,name:'Image' } %}
-
-											<div class="form-group">
-												<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
-												<div class="col-md-6 col-sm-6 col-xs-12">
-													<div {% if productimages %}style="display:none" {% endif %} class="input-wrap">
-														<input type="text" id="prodImagesName" value="{{ productimages.Name }}" name="prodImagesName" class="form-control  col-md-7 col-xs-12">
-													</div>
-													{% if productimages %}
-													<p class="control-value">{{ productimages.Name }}</p>
-													{% endif %}
-												</div>
-											</div>
-											<div class="form-group">
-												<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.description}}</label>
-												<div class="col-md-6 col-sm-6 col-xs-12">
-													<div {% if productimages %}style="display:none" {% endif %} class="input-wrap">
-														<input type="text" id="prodImagesDescription" value="{{ productimages.Description }}" name="prodImagesDescription" class="form-control  col-md-7 col-xs-12">
-													</div>
-													{% if productimages %}
-													<p class="control-value">{{ productimages.Description }}</p>
-													{% endif %}
-												</div>
-											</div>
-											<div class="form-group">
-												<div class="col-md-6 col-md-offset-3 col-sm-6 col-xs-12">
-													<a href="#" id="btnSaveImgProduct" class="btn btn-default">{{res.string.save}}</a>
-												</div>
-											</div>
-										</div>
-										<div class="prod-img-list clearfix">
-											{% for Images in products.ProductImages%}
-											<div class="image col-sm-2 col-xs-6">
-												<a href="#/" data-toggle="modal" class="thumbnail prod-image-thumbnail" data-target="#modalImgProduct">
-												  <img class='' src="{% if Images.Url %}{{Images.Url}}{% else %}/public/upload/images/default-thumbnail.jpg{% endif %}" alt="...">
-												</a>
-												{{Images.Name}}
-											</div>	
-											{% endfor %}	
-										</div>
-										<textarea name="imgProduct" id="imgProduct" style="display: none"></textarea>
-									</div>
+                    {% include "admin/products/_prod_img_tab.html"%}
+                  </div>
 									<!-- /.tab-pane -->
+									<div class="tab-pane" id="tab_3">
+                    {% include "admin/products/_components_tab.html"%}
+                  </div>
 								</div>
 							</div>
 						</div>
@@ -247,15 +139,18 @@
 
 	{% endblock %} {% block bottom%} {% include 'common/_img_upload_modal.html'%}
 	<script>
+  var prod_comp = $('#table_ProductComponent').DataTable({
+    'ordering':false,
+    'searching':false
+  })
 		$(document).ready(function () {
-			$('#IsKdn').trigger('change')
+			$('input:checkbox').trigger('change')
 		})
 		$('#IsKdn').change(function (e) {
-			if ($(this).prop('checked')) {
-				$('.form-knockdown').show()
-			} else {
-				$('.form-knockdown').hide()
-			}
+      $('.form-knockdown').toggle($(this).prop('checked'))
+		})
+		$('#HasComponent').change(function (e) {
+      $('#component_tab').toggle($(this).prop('checked'))
 		})
 
 		$('.form-dimension-input').on('change keyup paste', function () {
@@ -267,15 +162,18 @@
 			b.find('.form-dimension-result').val(r)
 		})
 
-		var imgProd = []
+    	var imgProd = []
+    	var compProd = []
 
 
 		$('#btnSaveImgProduct').click(function(e){
+    	e.preventDefault()
 			imgProd.push({
 					'name':$('#prodImagesName').val(),
 					'url':$('#Image').val(),
 					'description':$('#prodImagesDescription').val(),
-					'product_id':'{{products.Id}}'
+					'product_id':'{{products.Id}}',
+          'state':'new'
 				})
 
 			$('#imgProduct').val(JSON.stringify(imgProd))
@@ -283,22 +181,48 @@
 '<a href="#/" data-toggle="modal" class="thumbnail prod-image-thumbnail" data-target="#modalImgProduct">'+
 '<img class="" src="'+$('#Image').val()+'"/></a>'+
 '</div>	')
-		// 	e.preventDefault()
-		// 	$.ajax({
-		// 		url:'/index.php/manage_productimages/write',
-		// 		method:'POST',
-		// 		dataType:'JSON',
-		// 		data:JSON.stringify({
-		// 			'name':$('#prodImagesName').val(),
-		// 			'url':$('#Image').val(),
-		// 			'description':$('#prodImagesDescription').val(),
-		// 			'product_id':'{{products.Id}}'
-		// 		}),
-		// 		success:function(o){
-		// 			console.log(o)
-		// 		}
-		// 	})
+      {% if products %}
+			// $.ajax({
+			// 	url:'/index.php/manage_productimages/write',
+			// 	method:'POST',
+			// 	dataType:'JSON',
+			// 	data:JSON.stringify({
+			// 		'name':$('#prodImagesName').val(),
+			// 		'url':$('#Image').val(),
+			// 		'description':$('#prodImagesDescription').val(),
+			// 		'product_id':'{{products.Id}}'
+			// 	}),
+			// 	success:function(o){
+			// 		console.log(o)
+			// 	}
+			// })
+      {% endif %}
 		})
+//TODO:Problem with index, fix later
+    $('#btnSaveComponent').click(function(e){
+      e.preventDefault()
+      var idx = compProd.length
+      var nc = {
+        index:idx,
+        component_id:$('#ComponentId').val(),
+        component_name:$('#displayComponentId').val(),
+        qty:$('#Qty').val(),
+        state:'new'
+      };
+      compProd.push(nc)
+      prod_comp.row.add([nc.component_name,nc.qty,'<a href="#" data-idx="'+idx+'" class="btn btn-danger btn-delete-row"><i class="fa fa-trash"></i></a>']).draw()
+      $('#productComponents').val(JSON.stringify(compProd))
+    })
+    $('#table_ProductComponent').on( 'click','.btn-delete-row',function(e){
+      e.preventDefault()
+      var oidx = $(this).data('idx')
+      compProd.splice(compProd.map(function(x) {return x.index; }).indexOf(oidx),1)
+      $('#productComponents').val(JSON.stringify(compProd))
+
+      prod_comp.row( $(this).parents('tr') )
+        .remove()
+        .draw();
+    })
 	</script>
 
 	{% endblock %}

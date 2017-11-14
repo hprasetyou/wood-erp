@@ -22,8 +22,10 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildProductQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildProductQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method     ChildProductQuery orderByArticle($order = Criteria::ASC) Order by the article column
  * @method     ChildProductQuery orderByDescription($order = Criteria::ASC) Order by the description column
  * @method     ChildProductQuery orderByIsKdn($order = Criteria::ASC) Order by the is_kdn column
+ * @method     ChildProductQuery orderByHasComponent($order = Criteria::ASC) Order by the has_component column
  * @method     ChildProductQuery orderByCostPrice($order = Criteria::ASC) Order by the cost_price column
  * @method     ChildProductQuery orderByListPrice($order = Criteria::ASC) Order by the list_price column
  * @method     ChildProductQuery orderByCubicAsb($order = Criteria::ASC) Order by the cubic_asb column
@@ -34,13 +36,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery orderByWidthKdn($order = Criteria::ASC) Order by the width_kdn column
  * @method     ChildProductQuery orderByHeightKdn($order = Criteria::ASC) Order by the height_kdn column
  * @method     ChildProductQuery orderByDepthKdn($order = Criteria::ASC) Order by the depth_kdn column
+ * @method     ChildProductQuery orderByNetCubic($order = Criteria::ASC) Order by the net_cubic column
  * @method     ChildProductQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildProductQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildProductQuery groupById() Group by the id column
  * @method     ChildProductQuery groupByName() Group by the name column
+ * @method     ChildProductQuery groupByArticle() Group by the article column
  * @method     ChildProductQuery groupByDescription() Group by the description column
  * @method     ChildProductQuery groupByIsKdn() Group by the is_kdn column
+ * @method     ChildProductQuery groupByHasComponent() Group by the has_component column
  * @method     ChildProductQuery groupByCostPrice() Group by the cost_price column
  * @method     ChildProductQuery groupByListPrice() Group by the list_price column
  * @method     ChildProductQuery groupByCubicAsb() Group by the cubic_asb column
@@ -51,6 +56,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery groupByWidthKdn() Group by the width_kdn column
  * @method     ChildProductQuery groupByHeightKdn() Group by the height_kdn column
  * @method     ChildProductQuery groupByDepthKdn() Group by the depth_kdn column
+ * @method     ChildProductQuery groupByNetCubic() Group by the net_cubic column
  * @method     ChildProductQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildProductQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -109,8 +115,10 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildProduct findOneById(int $id) Return the first ChildProduct filtered by the id column
  * @method     ChildProduct findOneByName(string $name) Return the first ChildProduct filtered by the name column
+ * @method     ChildProduct findOneByArticle(string $article) Return the first ChildProduct filtered by the article column
  * @method     ChildProduct findOneByDescription(string $description) Return the first ChildProduct filtered by the description column
  * @method     ChildProduct findOneByIsKdn(boolean $is_kdn) Return the first ChildProduct filtered by the is_kdn column
+ * @method     ChildProduct findOneByHasComponent(boolean $has_component) Return the first ChildProduct filtered by the has_component column
  * @method     ChildProduct findOneByCostPrice(double $cost_price) Return the first ChildProduct filtered by the cost_price column
  * @method     ChildProduct findOneByListPrice(double $list_price) Return the first ChildProduct filtered by the list_price column
  * @method     ChildProduct findOneByCubicAsb(double $cubic_asb) Return the first ChildProduct filtered by the cubic_asb column
@@ -121,6 +129,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct findOneByWidthKdn(double $width_kdn) Return the first ChildProduct filtered by the width_kdn column
  * @method     ChildProduct findOneByHeightKdn(double $height_kdn) Return the first ChildProduct filtered by the height_kdn column
  * @method     ChildProduct findOneByDepthKdn(double $depth_kdn) Return the first ChildProduct filtered by the depth_kdn column
+ * @method     ChildProduct findOneByNetCubic(double $net_cubic) Return the first ChildProduct filtered by the net_cubic column
  * @method     ChildProduct findOneByCreatedAt(string $created_at) Return the first ChildProduct filtered by the created_at column
  * @method     ChildProduct findOneByUpdatedAt(string $updated_at) Return the first ChildProduct filtered by the updated_at column *
 
@@ -129,8 +138,10 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildProduct requireOneById(int $id) Return the first ChildProduct filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByName(string $name) Return the first ChildProduct filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProduct requireOneByArticle(string $article) Return the first ChildProduct filtered by the article column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByDescription(string $description) Return the first ChildProduct filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByIsKdn(boolean $is_kdn) Return the first ChildProduct filtered by the is_kdn column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProduct requireOneByHasComponent(boolean $has_component) Return the first ChildProduct filtered by the has_component column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByCostPrice(double $cost_price) Return the first ChildProduct filtered by the cost_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByListPrice(double $list_price) Return the first ChildProduct filtered by the list_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByCubicAsb(double $cubic_asb) Return the first ChildProduct filtered by the cubic_asb column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -141,14 +152,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct requireOneByWidthKdn(double $width_kdn) Return the first ChildProduct filtered by the width_kdn column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByHeightKdn(double $height_kdn) Return the first ChildProduct filtered by the height_kdn column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByDepthKdn(double $depth_kdn) Return the first ChildProduct filtered by the depth_kdn column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProduct requireOneByNetCubic(double $net_cubic) Return the first ChildProduct filtered by the net_cubic column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByCreatedAt(string $created_at) Return the first ChildProduct filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByUpdatedAt(string $updated_at) Return the first ChildProduct filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildProduct[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildProduct objects based on current ModelCriteria
  * @method     ChildProduct[]|ObjectCollection findById(int $id) Return ChildProduct objects filtered by the id column
  * @method     ChildProduct[]|ObjectCollection findByName(string $name) Return ChildProduct objects filtered by the name column
+ * @method     ChildProduct[]|ObjectCollection findByArticle(string $article) Return ChildProduct objects filtered by the article column
  * @method     ChildProduct[]|ObjectCollection findByDescription(string $description) Return ChildProduct objects filtered by the description column
  * @method     ChildProduct[]|ObjectCollection findByIsKdn(boolean $is_kdn) Return ChildProduct objects filtered by the is_kdn column
+ * @method     ChildProduct[]|ObjectCollection findByHasComponent(boolean $has_component) Return ChildProduct objects filtered by the has_component column
  * @method     ChildProduct[]|ObjectCollection findByCostPrice(double $cost_price) Return ChildProduct objects filtered by the cost_price column
  * @method     ChildProduct[]|ObjectCollection findByListPrice(double $list_price) Return ChildProduct objects filtered by the list_price column
  * @method     ChildProduct[]|ObjectCollection findByCubicAsb(double $cubic_asb) Return ChildProduct objects filtered by the cubic_asb column
@@ -159,6 +173,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct[]|ObjectCollection findByWidthKdn(double $width_kdn) Return ChildProduct objects filtered by the width_kdn column
  * @method     ChildProduct[]|ObjectCollection findByHeightKdn(double $height_kdn) Return ChildProduct objects filtered by the height_kdn column
  * @method     ChildProduct[]|ObjectCollection findByDepthKdn(double $depth_kdn) Return ChildProduct objects filtered by the depth_kdn column
+ * @method     ChildProduct[]|ObjectCollection findByNetCubic(double $net_cubic) Return ChildProduct objects filtered by the net_cubic column
  * @method     ChildProduct[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildProduct objects filtered by the created_at column
  * @method     ChildProduct[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildProduct objects filtered by the updated_at column
  * @method     ChildProduct[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -259,7 +274,7 @@ abstract class ProductQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, description, is_kdn, cost_price, list_price, cubic_asb, cubic_kdn, width_asb, height_asb, depth_asb, width_kdn, height_kdn, depth_kdn, created_at, updated_at FROM product WHERE id = :p0';
+        $sql = 'SELECT id, name, article, description, is_kdn, has_component, cost_price, list_price, cubic_asb, cubic_kdn, width_asb, height_asb, depth_asb, width_kdn, height_kdn, depth_kdn, net_cubic, created_at, updated_at FROM product WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -416,6 +431,31 @@ abstract class ProductQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the article column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByArticle('fooValue');   // WHERE article = 'fooValue'
+     * $query->filterByArticle('%fooValue%', Criteria::LIKE); // WHERE article LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $article The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProductQuery The current query, for fluid interface
+     */
+    public function filterByArticle($article = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($article)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProductTableMap::COL_ARTICLE, $article, $comparison);
+    }
+
+    /**
      * Filter the query on the description column
      *
      * Example usage:
@@ -465,6 +505,33 @@ abstract class ProductQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProductTableMap::COL_IS_KDN, $isKdn, $comparison);
+    }
+
+    /**
+     * Filter the query on the has_component column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByHasComponent(true); // WHERE has_component = true
+     * $query->filterByHasComponent('yes'); // WHERE has_component = true
+     * </code>
+     *
+     * @param     boolean|string $hasComponent The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProductQuery The current query, for fluid interface
+     */
+    public function filterByHasComponent($hasComponent = null, $comparison = null)
+    {
+        if (is_string($hasComponent)) {
+            $hasComponent = in_array(strtolower($hasComponent), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(ProductTableMap::COL_HAS_COMPONENT, $hasComponent, $comparison);
     }
 
     /**
@@ -875,6 +942,47 @@ abstract class ProductQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProductTableMap::COL_DEPTH_KDN, $depthKdn, $comparison);
+    }
+
+    /**
+     * Filter the query on the net_cubic column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByNetCubic(1234); // WHERE net_cubic = 1234
+     * $query->filterByNetCubic(array(12, 34)); // WHERE net_cubic IN (12, 34)
+     * $query->filterByNetCubic(array('min' => 12)); // WHERE net_cubic > 12
+     * </code>
+     *
+     * @param     mixed $netCubic The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProductQuery The current query, for fluid interface
+     */
+    public function filterByNetCubic($netCubic = null, $comparison = null)
+    {
+        if (is_array($netCubic)) {
+            $useMinMax = false;
+            if (isset($netCubic['min'])) {
+                $this->addUsingAlias(ProductTableMap::COL_NET_CUBIC, $netCubic['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($netCubic['max'])) {
+                $this->addUsingAlias(ProductTableMap::COL_NET_CUBIC, $netCubic['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProductTableMap::COL_NET_CUBIC, $netCubic, $comparison);
     }
 
     /**

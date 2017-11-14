@@ -1,0 +1,79 @@
+
+{% extends "dashboard.html" %}
+{% set title=" Product Component " %}
+{% if productcomponents %}
+	 {% set bc_text = productcomponents.id  %}
+{% else %}
+	 {% set bc_text = 'Baru' %}
+{% endif %}
+{% set breadcrumbs = [
+	{'link': base_url~'index.php/manage_productcomponents','text': res.string.productcomponents },
+	{'link':'#','text':bc_text  }]
+%}
+{% block content %}
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<form id="form_ProductComponent" method="post" action="{{base_url}}index.php/manage_productcomponents/write/{{ productcomponents.id }}" data-parsley-validate class="form-horizontal form-label-left">
+			<div class="box box-info">
+				<div class="box-header with-border">
+				{% include 'common/_form_header.html'
+				with {'back_url':'/index.php/manage_productcomponents'~back_link,
+				'title': res.string.productcomponent,
+				'delete_url':'/index.php/manage_productcomponents/delete/{{ productcomponents.Id }}',
+				'object':productcomponents} %}
+				</div>
+				<div class="box-body">
+					
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProductId">{{res.string.product_id}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if productcomponents %}style="display:none"{% endif %} class="input-wrap">
+							<input type="number" id="ProductId" value="{{ productcomponents.ProductId }}"
+							name="ProductId" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if productcomponents %}
+									<p class="control-value">{{ productcomponents.ProductId  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ComponentId">{{res.string.component_id}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if productcomponents %}style="display:none"{% endif %} class="input-wrap input-group">
+							<input type="hidden" type="text" id="ComponentId" value="{{ productcomponents.ComponentId }}" name="ComponentId"  >
+							<input type="text" required="required" name="displayComponentId" id="displayComponentId"  value="{{ productcomponents.Component }}" class="form-control" />
+							<span class="input-group-btn">
+								<button class="btn btnModal btn-default" id="btnComponentId"  data-target="ModalComponent" type="button">Cari</button>
+							</span>
+						</div>
+								{% if productcomponents %}
+									<p class="control-value">{{ productcomponents.Component.Name  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Qty">{{res.string.qty}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if productcomponents %}style="display:none"{% endif %} class="input-wrap">
+							<input type="number" id="Qty" value="{{ productcomponents.Qty }}"
+							name="Qty" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if productcomponents %}
+									<p class="control-value">{{ productcomponents.Qty  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+				</div>
+		</form>
+	</div>
+</div>
+<!-- Modal -->
+{% include "admin/components/_modal.html" %}
+
+{% endblock %}
+{% block bottom%}
+
+{% endblock %}

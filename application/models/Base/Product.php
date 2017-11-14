@@ -90,6 +90,13 @@ abstract class Product implements ActiveRecordInterface
     protected $name;
 
     /**
+     * The value for the article field.
+     *
+     * @var        string
+     */
+    protected $article;
+
+    /**
      * The value for the description field.
      *
      * @var        string
@@ -99,9 +106,18 @@ abstract class Product implements ActiveRecordInterface
     /**
      * The value for the is_kdn field.
      *
+     * Note: this column has a database default value of: false
      * @var        boolean
      */
     protected $is_kdn;
+
+    /**
+     * The value for the has_component field.
+     *
+     * Note: this column has a database default value of: false
+     * @var        boolean
+     */
+    protected $has_component;
 
     /**
      * The value for the cost_price field.
@@ -172,6 +188,13 @@ abstract class Product implements ActiveRecordInterface
      * @var        double
      */
     protected $depth_kdn;
+
+    /**
+     * The value for the net_cubic field.
+     *
+     * @var        double
+     */
+    protected $net_cubic;
 
     /**
      * The value for the created_at field.
@@ -253,6 +276,8 @@ abstract class Product implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
+        $this->is_kdn = false;
+        $this->has_component = false;
     }
 
     /**
@@ -503,6 +528,16 @@ abstract class Product implements ActiveRecordInterface
     }
 
     /**
+     * Get the [article] column value.
+     *
+     * @return string
+     */
+    public function getArticle()
+    {
+        return $this->article;
+    }
+
+    /**
      * Get the [description] column value.
      *
      * @return string
@@ -530,6 +565,26 @@ abstract class Product implements ActiveRecordInterface
     public function isKdn()
     {
         return $this->getIsKdn();
+    }
+
+    /**
+     * Get the [has_component] column value.
+     *
+     * @return boolean
+     */
+    public function getHasComponent()
+    {
+        return $this->has_component;
+    }
+
+    /**
+     * Get the [has_component] column value.
+     *
+     * @return boolean
+     */
+    public function hasComponent()
+    {
+        return $this->getHasComponent();
     }
 
     /**
@@ -633,6 +688,16 @@ abstract class Product implements ActiveRecordInterface
     }
 
     /**
+     * Get the [net_cubic] column value.
+     *
+     * @return double
+     */
+    public function getNetCubic()
+    {
+        return $this->net_cubic;
+    }
+
+    /**
      * Get the [optionally formatted] temporal [created_at] column value.
      *
      *
@@ -713,6 +778,26 @@ abstract class Product implements ActiveRecordInterface
     } // setName()
 
     /**
+     * Set the value of [article] column.
+     *
+     * @param string $v new value
+     * @return $this|\Product The current object (for fluent API support)
+     */
+    public function setArticle($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->article !== $v) {
+            $this->article = $v;
+            $this->modifiedColumns[ProductTableMap::COL_ARTICLE] = true;
+        }
+
+        return $this;
+    } // setArticle()
+
+    /**
      * Set the value of [description] column.
      *
      * @param string $v new value
@@ -759,6 +844,34 @@ abstract class Product implements ActiveRecordInterface
 
         return $this;
     } // setIsKdn()
+
+    /**
+     * Sets the value of the [has_component] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     *
+     * @param  boolean|integer|string $v The new value
+     * @return $this|\Product The current object (for fluent API support)
+     */
+    public function setHasComponent($v)
+    {
+        if ($v !== null) {
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
+        }
+
+        if ($this->has_component !== $v) {
+            $this->has_component = $v;
+            $this->modifiedColumns[ProductTableMap::COL_HAS_COMPONENT] = true;
+        }
+
+        return $this;
+    } // setHasComponent()
 
     /**
      * Set the value of [cost_price] column.
@@ -961,6 +1074,26 @@ abstract class Product implements ActiveRecordInterface
     } // setDepthKdn()
 
     /**
+     * Set the value of [net_cubic] column.
+     *
+     * @param double $v new value
+     * @return $this|\Product The current object (for fluent API support)
+     */
+    public function setNetCubic($v)
+    {
+        if ($v !== null) {
+            $v = (double) $v;
+        }
+
+        if ($this->net_cubic !== $v) {
+            $this->net_cubic = $v;
+            $this->modifiedColumns[ProductTableMap::COL_NET_CUBIC] = true;
+        }
+
+        return $this;
+    } // setNetCubic()
+
+    /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
@@ -1010,6 +1143,14 @@ abstract class Product implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->is_kdn !== false) {
+                return false;
+            }
+
+            if ($this->has_component !== false) {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -1042,49 +1183,58 @@ abstract class Product implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProductTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProductTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProductTableMap::translateFieldName('Article', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->article = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProductTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
             $this->description = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProductTableMap::translateFieldName('IsKdn', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProductTableMap::translateFieldName('IsKdn', TableMap::TYPE_PHPNAME, $indexType)];
             $this->is_kdn = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProductTableMap::translateFieldName('CostPrice', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ProductTableMap::translateFieldName('HasComponent', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->has_component = (null !== $col) ? (boolean) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ProductTableMap::translateFieldName('CostPrice', TableMap::TYPE_PHPNAME, $indexType)];
             $this->cost_price = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ProductTableMap::translateFieldName('ListPrice', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : ProductTableMap::translateFieldName('ListPrice', TableMap::TYPE_PHPNAME, $indexType)];
             $this->list_price = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ProductTableMap::translateFieldName('CubicAsb', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : ProductTableMap::translateFieldName('CubicAsb', TableMap::TYPE_PHPNAME, $indexType)];
             $this->cubic_asb = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : ProductTableMap::translateFieldName('CubicKdn', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : ProductTableMap::translateFieldName('CubicKdn', TableMap::TYPE_PHPNAME, $indexType)];
             $this->cubic_kdn = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : ProductTableMap::translateFieldName('WidthAsb', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : ProductTableMap::translateFieldName('WidthAsb', TableMap::TYPE_PHPNAME, $indexType)];
             $this->width_asb = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : ProductTableMap::translateFieldName('HeightAsb', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : ProductTableMap::translateFieldName('HeightAsb', TableMap::TYPE_PHPNAME, $indexType)];
             $this->height_asb = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : ProductTableMap::translateFieldName('DepthAsb', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : ProductTableMap::translateFieldName('DepthAsb', TableMap::TYPE_PHPNAME, $indexType)];
             $this->depth_asb = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : ProductTableMap::translateFieldName('WidthKdn', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : ProductTableMap::translateFieldName('WidthKdn', TableMap::TYPE_PHPNAME, $indexType)];
             $this->width_kdn = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : ProductTableMap::translateFieldName('HeightKdn', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : ProductTableMap::translateFieldName('HeightKdn', TableMap::TYPE_PHPNAME, $indexType)];
             $this->height_kdn = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : ProductTableMap::translateFieldName('DepthKdn', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : ProductTableMap::translateFieldName('DepthKdn', TableMap::TYPE_PHPNAME, $indexType)];
             $this->depth_kdn = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : ProductTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : ProductTableMap::translateFieldName('NetCubic', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->net_cubic = (null !== $col) ? (double) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : ProductTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : ProductTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 18 + $startcol : ProductTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -1097,7 +1247,7 @@ abstract class Product implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 16; // 16 = ProductTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 19; // 19 = ProductTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Product'), 0, $e);
@@ -1380,11 +1530,17 @@ abstract class Product implements ActiveRecordInterface
         if ($this->isColumnModified(ProductTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'name';
         }
+        if ($this->isColumnModified(ProductTableMap::COL_ARTICLE)) {
+            $modifiedColumns[':p' . $index++]  = 'article';
+        }
         if ($this->isColumnModified(ProductTableMap::COL_DESCRIPTION)) {
             $modifiedColumns[':p' . $index++]  = 'description';
         }
         if ($this->isColumnModified(ProductTableMap::COL_IS_KDN)) {
             $modifiedColumns[':p' . $index++]  = 'is_kdn';
+        }
+        if ($this->isColumnModified(ProductTableMap::COL_HAS_COMPONENT)) {
+            $modifiedColumns[':p' . $index++]  = 'has_component';
         }
         if ($this->isColumnModified(ProductTableMap::COL_COST_PRICE)) {
             $modifiedColumns[':p' . $index++]  = 'cost_price';
@@ -1416,6 +1572,9 @@ abstract class Product implements ActiveRecordInterface
         if ($this->isColumnModified(ProductTableMap::COL_DEPTH_KDN)) {
             $modifiedColumns[':p' . $index++]  = 'depth_kdn';
         }
+        if ($this->isColumnModified(ProductTableMap::COL_NET_CUBIC)) {
+            $modifiedColumns[':p' . $index++]  = 'net_cubic';
+        }
         if ($this->isColumnModified(ProductTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
@@ -1439,11 +1598,17 @@ abstract class Product implements ActiveRecordInterface
                     case 'name':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
+                    case 'article':
+                        $stmt->bindValue($identifier, $this->article, PDO::PARAM_STR);
+                        break;
                     case 'description':
                         $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
                         break;
                     case 'is_kdn':
                         $stmt->bindValue($identifier, (int) $this->is_kdn, PDO::PARAM_INT);
+                        break;
+                    case 'has_component':
+                        $stmt->bindValue($identifier, (int) $this->has_component, PDO::PARAM_INT);
                         break;
                     case 'cost_price':
                         $stmt->bindValue($identifier, $this->cost_price, PDO::PARAM_STR);
@@ -1474,6 +1639,9 @@ abstract class Product implements ActiveRecordInterface
                         break;
                     case 'depth_kdn':
                         $stmt->bindValue($identifier, $this->depth_kdn, PDO::PARAM_STR);
+                        break;
+                    case 'net_cubic':
+                        $stmt->bindValue($identifier, $this->net_cubic, PDO::PARAM_STR);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -1550,45 +1718,54 @@ abstract class Product implements ActiveRecordInterface
                 return $this->getName();
                 break;
             case 2:
-                return $this->getDescription();
+                return $this->getArticle();
                 break;
             case 3:
-                return $this->getIsKdn();
+                return $this->getDescription();
                 break;
             case 4:
-                return $this->getCostPrice();
+                return $this->getIsKdn();
                 break;
             case 5:
-                return $this->getListPrice();
+                return $this->getHasComponent();
                 break;
             case 6:
-                return $this->getCubicAsb();
+                return $this->getCostPrice();
                 break;
             case 7:
-                return $this->getCubicKdn();
+                return $this->getListPrice();
                 break;
             case 8:
-                return $this->getWidthAsb();
+                return $this->getCubicAsb();
                 break;
             case 9:
-                return $this->getHeightAsb();
+                return $this->getCubicKdn();
                 break;
             case 10:
-                return $this->getDepthAsb();
+                return $this->getWidthAsb();
                 break;
             case 11:
-                return $this->getWidthKdn();
+                return $this->getHeightAsb();
                 break;
             case 12:
-                return $this->getHeightKdn();
+                return $this->getDepthAsb();
                 break;
             case 13:
-                return $this->getDepthKdn();
+                return $this->getWidthKdn();
                 break;
             case 14:
-                return $this->getCreatedAt();
+                return $this->getHeightKdn();
                 break;
             case 15:
+                return $this->getDepthKdn();
+                break;
+            case 16:
+                return $this->getNetCubic();
+                break;
+            case 17:
+                return $this->getCreatedAt();
+                break;
+            case 18:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1623,27 +1800,30 @@ abstract class Product implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
-            $keys[2] => $this->getDescription(),
-            $keys[3] => $this->getIsKdn(),
-            $keys[4] => $this->getCostPrice(),
-            $keys[5] => $this->getListPrice(),
-            $keys[6] => $this->getCubicAsb(),
-            $keys[7] => $this->getCubicKdn(),
-            $keys[8] => $this->getWidthAsb(),
-            $keys[9] => $this->getHeightAsb(),
-            $keys[10] => $this->getDepthAsb(),
-            $keys[11] => $this->getWidthKdn(),
-            $keys[12] => $this->getHeightKdn(),
-            $keys[13] => $this->getDepthKdn(),
-            $keys[14] => $this->getCreatedAt(),
-            $keys[15] => $this->getUpdatedAt(),
+            $keys[2] => $this->getArticle(),
+            $keys[3] => $this->getDescription(),
+            $keys[4] => $this->getIsKdn(),
+            $keys[5] => $this->getHasComponent(),
+            $keys[6] => $this->getCostPrice(),
+            $keys[7] => $this->getListPrice(),
+            $keys[8] => $this->getCubicAsb(),
+            $keys[9] => $this->getCubicKdn(),
+            $keys[10] => $this->getWidthAsb(),
+            $keys[11] => $this->getHeightAsb(),
+            $keys[12] => $this->getDepthAsb(),
+            $keys[13] => $this->getWidthKdn(),
+            $keys[14] => $this->getHeightKdn(),
+            $keys[15] => $this->getDepthKdn(),
+            $keys[16] => $this->getNetCubic(),
+            $keys[17] => $this->getCreatedAt(),
+            $keys[18] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[14]] instanceof \DateTimeInterface) {
-            $result[$keys[14]] = $result[$keys[14]]->format('c');
+        if ($result[$keys[17]] instanceof \DateTimeInterface) {
+            $result[$keys[17]] = $result[$keys[17]]->format('c');
         }
 
-        if ($result[$keys[15]] instanceof \DateTimeInterface) {
-            $result[$keys[15]] = $result[$keys[15]]->format('c');
+        if ($result[$keys[18]] instanceof \DateTimeInterface) {
+            $result[$keys[18]] = $result[$keys[18]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1753,45 +1933,54 @@ abstract class Product implements ActiveRecordInterface
                 $this->setName($value);
                 break;
             case 2:
-                $this->setDescription($value);
+                $this->setArticle($value);
                 break;
             case 3:
-                $this->setIsKdn($value);
+                $this->setDescription($value);
                 break;
             case 4:
-                $this->setCostPrice($value);
+                $this->setIsKdn($value);
                 break;
             case 5:
-                $this->setListPrice($value);
+                $this->setHasComponent($value);
                 break;
             case 6:
-                $this->setCubicAsb($value);
+                $this->setCostPrice($value);
                 break;
             case 7:
-                $this->setCubicKdn($value);
+                $this->setListPrice($value);
                 break;
             case 8:
-                $this->setWidthAsb($value);
+                $this->setCubicAsb($value);
                 break;
             case 9:
-                $this->setHeightAsb($value);
+                $this->setCubicKdn($value);
                 break;
             case 10:
-                $this->setDepthAsb($value);
+                $this->setWidthAsb($value);
                 break;
             case 11:
-                $this->setWidthKdn($value);
+                $this->setHeightAsb($value);
                 break;
             case 12:
-                $this->setHeightKdn($value);
+                $this->setDepthAsb($value);
                 break;
             case 13:
-                $this->setDepthKdn($value);
+                $this->setWidthKdn($value);
                 break;
             case 14:
-                $this->setCreatedAt($value);
+                $this->setHeightKdn($value);
                 break;
             case 15:
+                $this->setDepthKdn($value);
+                break;
+            case 16:
+                $this->setNetCubic($value);
+                break;
+            case 17:
+                $this->setCreatedAt($value);
+                break;
+            case 18:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1827,46 +2016,55 @@ abstract class Product implements ActiveRecordInterface
             $this->setName($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setDescription($arr[$keys[2]]);
+            $this->setArticle($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setIsKdn($arr[$keys[3]]);
+            $this->setDescription($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setCostPrice($arr[$keys[4]]);
+            $this->setIsKdn($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setListPrice($arr[$keys[5]]);
+            $this->setHasComponent($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setCubicAsb($arr[$keys[6]]);
+            $this->setCostPrice($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setCubicKdn($arr[$keys[7]]);
+            $this->setListPrice($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setWidthAsb($arr[$keys[8]]);
+            $this->setCubicAsb($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setHeightAsb($arr[$keys[9]]);
+            $this->setCubicKdn($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setDepthAsb($arr[$keys[10]]);
+            $this->setWidthAsb($arr[$keys[10]]);
         }
         if (array_key_exists($keys[11], $arr)) {
-            $this->setWidthKdn($arr[$keys[11]]);
+            $this->setHeightAsb($arr[$keys[11]]);
         }
         if (array_key_exists($keys[12], $arr)) {
-            $this->setHeightKdn($arr[$keys[12]]);
+            $this->setDepthAsb($arr[$keys[12]]);
         }
         if (array_key_exists($keys[13], $arr)) {
-            $this->setDepthKdn($arr[$keys[13]]);
+            $this->setWidthKdn($arr[$keys[13]]);
         }
         if (array_key_exists($keys[14], $arr)) {
-            $this->setCreatedAt($arr[$keys[14]]);
+            $this->setHeightKdn($arr[$keys[14]]);
         }
         if (array_key_exists($keys[15], $arr)) {
-            $this->setUpdatedAt($arr[$keys[15]]);
+            $this->setDepthKdn($arr[$keys[15]]);
+        }
+        if (array_key_exists($keys[16], $arr)) {
+            $this->setNetCubic($arr[$keys[16]]);
+        }
+        if (array_key_exists($keys[17], $arr)) {
+            $this->setCreatedAt($arr[$keys[17]]);
+        }
+        if (array_key_exists($keys[18], $arr)) {
+            $this->setUpdatedAt($arr[$keys[18]]);
         }
     }
 
@@ -1915,11 +2113,17 @@ abstract class Product implements ActiveRecordInterface
         if ($this->isColumnModified(ProductTableMap::COL_NAME)) {
             $criteria->add(ProductTableMap::COL_NAME, $this->name);
         }
+        if ($this->isColumnModified(ProductTableMap::COL_ARTICLE)) {
+            $criteria->add(ProductTableMap::COL_ARTICLE, $this->article);
+        }
         if ($this->isColumnModified(ProductTableMap::COL_DESCRIPTION)) {
             $criteria->add(ProductTableMap::COL_DESCRIPTION, $this->description);
         }
         if ($this->isColumnModified(ProductTableMap::COL_IS_KDN)) {
             $criteria->add(ProductTableMap::COL_IS_KDN, $this->is_kdn);
+        }
+        if ($this->isColumnModified(ProductTableMap::COL_HAS_COMPONENT)) {
+            $criteria->add(ProductTableMap::COL_HAS_COMPONENT, $this->has_component);
         }
         if ($this->isColumnModified(ProductTableMap::COL_COST_PRICE)) {
             $criteria->add(ProductTableMap::COL_COST_PRICE, $this->cost_price);
@@ -1950,6 +2154,9 @@ abstract class Product implements ActiveRecordInterface
         }
         if ($this->isColumnModified(ProductTableMap::COL_DEPTH_KDN)) {
             $criteria->add(ProductTableMap::COL_DEPTH_KDN, $this->depth_kdn);
+        }
+        if ($this->isColumnModified(ProductTableMap::COL_NET_CUBIC)) {
+            $criteria->add(ProductTableMap::COL_NET_CUBIC, $this->net_cubic);
         }
         if ($this->isColumnModified(ProductTableMap::COL_CREATED_AT)) {
             $criteria->add(ProductTableMap::COL_CREATED_AT, $this->created_at);
@@ -2044,8 +2251,10 @@ abstract class Product implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setName($this->getName());
+        $copyObj->setArticle($this->getArticle());
         $copyObj->setDescription($this->getDescription());
         $copyObj->setIsKdn($this->getIsKdn());
+        $copyObj->setHasComponent($this->getHasComponent());
         $copyObj->setCostPrice($this->getCostPrice());
         $copyObj->setListPrice($this->getListPrice());
         $copyObj->setCubicAsb($this->getCubicAsb());
@@ -2056,6 +2265,7 @@ abstract class Product implements ActiveRecordInterface
         $copyObj->setWidthKdn($this->getWidthKdn());
         $copyObj->setHeightKdn($this->getHeightKdn());
         $copyObj->setDepthKdn($this->getDepthKdn());
+        $copyObj->setNetCubic($this->getNetCubic());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
 
@@ -3131,8 +3341,10 @@ abstract class Product implements ActiveRecordInterface
     {
         $this->id = null;
         $this->name = null;
+        $this->article = null;
         $this->description = null;
         $this->is_kdn = null;
+        $this->has_component = null;
         $this->cost_price = null;
         $this->list_price = null;
         $this->cubic_asb = null;
@@ -3143,6 +3355,7 @@ abstract class Product implements ActiveRecordInterface
         $this->width_kdn = null;
         $this->height_kdn = null;
         $this->depth_kdn = null;
+        $this->net_cubic = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;
