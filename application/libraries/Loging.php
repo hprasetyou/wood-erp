@@ -13,7 +13,7 @@ class Loging
     $log->setObjectId($id_obj);
     $log->setObject($model);
     $log->setDescription($msg);
-    $log->UserId($this->CI->session->uid);
+    $log->setUserId($this->CI->session->userdata('uid'));
     $log->save();
   }
 

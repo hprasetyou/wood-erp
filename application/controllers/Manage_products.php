@@ -75,7 +75,7 @@ class Manage_products extends CI_Controller{
 		}
 		$product->setName($this->input->post('Name'));
 		$product->setDescription($this->input->post('Description'));
-		$product->setIsKdn($this->input->post('IsKdn'));
+		$product->setIsKdn($this->input->post('IsKdn')?true:false);
 		$product->setHasComponent($this->input->post('HasComponent'));
 		$product->setArticle($this->input->post('Article'));
 		$product->setNetCubic($this->input->post('NetCubic'));
@@ -92,27 +92,35 @@ class Manage_products extends CI_Controller{
 		$product->save();
 		$this->load->helper('base64toimage');
 		$prod_img = json_decode($this->input->post('imgProduct'));
-		foreach ($prod_img as $key => $input_data) {
-			# code...
-			$productimage = new ProductImage;
-			$productimage->setName($input_data->name);
-			if($input_data->url){
-				if(strpos($input_data->url,'base64')){
-					$productimage->setUrl(base64_to_img($input_data->url));
-				}
-			}
-			$productimage->setDescription($input_data->description);
-			$productimage->setProductId($product->getId());
-			$productimage->save();
-		}
-    $prod_component = json_decode($this->input->post('productComponents'));
-    foreach ($prod_component as $component) {
-      $productcomponent = new ProductComponent;
-      $productcomponent->setProductId($product->getId());
-      $productcomponent->setComponentId($component->component_id);
-      $productcomponent->setQty($component->qty);
-      $productcomponent->save();
+    print_r($prod_img);
+    if($prod_img){
+      foreach ($prod_img as $key => $input_data) {
+        # code...
+        $productimage = new ProductImage;
+        $productimage->setName($input_data->name);
+        if($input_data->url){
+          if(strpos($input_data->url,'base64')){
+            $productimage->setUrl(base64_to_img($input_data->url));
+          }
+        }
+        $productimage->setDescription($input_data->description);
+        $productimage->setProductId($product->getId());
+        $productimage->save();
+      }
     }
+
+    $prod_component = json_decode($this->input->post('productComponents'));
+
+    if($prod_component){
+      foreach ($prod_component as $component) {
+        $productcomponent = new ProductComponent;
+        $productcomponent->setProductId($product->getId());
+        $productcomponent->setComponentId($component->component_id);
+        $productcomponent->setQty($component->qty);
+        $productcomponent->save();
+      }
+    }
+    $this->loging->add_entry('products',$product->getId(),($id?'activity_modify':'activity_create'));
 
 		//$this->loging->add_entry('products',$product->getId(),($id?'melakukan perubahan pada data':'membuat data baru'));
 		redirect('manage_products/detail/'.$product->getId());
