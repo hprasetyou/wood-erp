@@ -103,7 +103,8 @@ class Manage_groups extends CI_Controller{
       $menugroup->setGroup($group);
       $menugroup->save();
     }
-		//$this->loging->add_entry('groups',$group->getId(),($id?'melakukan perubahan pada data':'membuat data baru'));
+
+		$this->loging->add_entry('groups',$group->getId(),($id?'activity_modify':'activity_create'));
 		redirect('manage_groups/detail/'.$group->getId());
   }
 

@@ -105,7 +105,7 @@ class Manage_customers extends CI_Controller{
     }
     $customer->setIsCustomer(true);
 		$customer->save();
-		//$this->loging->add_entry('customers',$customer->getId(),($id?'melakukan perubahan pada data':'membuat data baru'));
+    $this->loging->add_entry('customers',$group->getId(),($id?'activity_modify':'activity_create'));
 		redirect('manage_customers/detail/'.$customer->getId());
   }
 

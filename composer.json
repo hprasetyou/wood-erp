@@ -15,7 +15,8 @@
 		"propel/propel": "~2.0@dev",
 		"twig/twig": "^2.4",
 		"doctrine/inflector": "^1.2",
-		"fzaninotto/faker": "^1.7"
+		"fzaninotto/faker": "^1.7",
+		"monolog/monolog": "^1.23"
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"
