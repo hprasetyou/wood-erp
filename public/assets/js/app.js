@@ -118,6 +118,15 @@ $(document).ready(function(){
   init_modal_selection()
   $('.form-select').select2()
   $('.select2').css('width','100%');
+  $('.btn-back').click(function(e){
+    e.preventDefault()
+    var link = window.location.href.replace('#','');
+    if(link == document.referer){
+      window.history.go(-2)
+    }else{
+      window.history.back();
+    }
+  })
 })
 $('.form-select').select2()
 $('#btn-edit').click(function(e){

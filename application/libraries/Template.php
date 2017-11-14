@@ -40,7 +40,8 @@ class Template {
             'res'=>array(
                 'string'=>include('application/language/en/default.php'),
                 'query_params'=>$this->CI->input->get(),
-                'session' => $session
+                'session' => $session,
+                'info' => $this->CI->session->flashdata('info')
             )
         );
         $out = array_merge($pdata,$data);

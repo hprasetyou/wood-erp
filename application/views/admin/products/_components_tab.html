@@ -2,13 +2,13 @@
   <h3 class="box-title"> {{res.string.component}}</h3>
   <div class="clearfix"></div>
 </div>
-<div class="box box-success">
+<div  {% if products %} style="display:none" {% endif %} class="input-wrap box box-success">
   <div class="box-header with-border">
     <!-- /.box-tools -->
   </div>
   <!-- /.box-header -->
   <div class="box-body">
-    <div class="row">
+    <div  class="row input-wrap">
       <div class="col-sm-6">
         <div class="form-group">
           <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ComponentId">{{res.string.component}}</label>

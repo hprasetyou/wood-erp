@@ -9,7 +9,7 @@
       {% for finishing in finishings %}
       <div class="col-sm-2">
         <div class="form-group">
-          <label for="Finishing[{{finishing.Id}}]"><input {{finishing.have?'checked':''}} type="checkbox" name="Finishing[{{finishing.Id}}]" id="Finishing[{{finishing.Id}}]"> {{finishing.Name}}</label>
+          <label for="Finishing[{{finishing.Id}}]"><input {% if products %} disabled {% endif %} {{finishing.have?'checked':''}} type="checkbox" name="Finishing[{{finishing.Id}}]" id="Finishing[{{finishing.Id}}]"> {{finishing.Name}}</label>
         </div>
       </div>
       {% endfor %}
