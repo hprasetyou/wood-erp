@@ -15,7 +15,7 @@
           <div class="col-md-6 col-sm-6 col-xs-12">
             <div class="input-wrap input-group">
               <input type="hidden" type="text" id="ComponentId" value="{{ productcomponents.ComponentId }}" name="ComponentId">
-              <input type="text" required="required" name="displayComponentId" id="displayComponentId" value="{{ productcomponents.Component }}" class="form-control" />
+              <input type="text" name="displayComponentId" id="displayComponentId" value="{{ productcomponents.Component }}" class="form-control" />
               <span class="input-group-btn">
                       <button class="btn btnModal btn-default" id="btnComponentId"  data-target="ModalComponent" type="button">{{res.string.search}}</button>
                     </span>
@@ -28,7 +28,7 @@
           <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Qty">{{res.string.qty}}</label>
           <div class="col-md-6 col-sm-6 col-xs-12">
             <div class="input-wrap">
-              <input type="number" id="Qty" value="{{ productcomponents.Qty }}" name="Qty" required="required" class="form-control  col-md-7 col-xs-12">
+              <input type="number" id="Qty" value="{{ productcomponents.Qty }}" name="Qty"  class="form-control  col-md-7 col-xs-12">
             </div>
           </div>
         </div>

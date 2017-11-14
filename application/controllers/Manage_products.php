@@ -50,14 +50,21 @@ class Manage_products extends CI_Controller{
 	}
 
   function create(){
-
-		$this->template->render('admin/products/form',array());
+    $this->load->helper('good_numbering');
+		$this->template->render('admin/products/form',array(
+      'new_number'=>create_number(
+          array('format'=>'WDX-i',
+          'tb_name'=>'product',
+          'tb_field'=>'article'))));
   }
 
   function detail($id){
-
+    $this->load->helper('good_numbering');
 		$product = ProductQuery::create()->findPK($id);
-		$this->template->render('admin/products/form',array('products'=>$product,));
+		$this->template->render('admin/products/form',array('products'=>$product,'new_number'=>create_number(
+        array('format'=>'WDX-i',
+        'tb_name'=>'product',
+        'tb_field'=>'article'))));
   }
 
   function write($id=null){
@@ -69,6 +76,9 @@ class Manage_products extends CI_Controller{
 		$product->setName($this->input->post('Name'));
 		$product->setDescription($this->input->post('Description'));
 		$product->setIsKdn($this->input->post('IsKdn'));
+		$product->setHasComponent($this->input->post('HasComponent'));
+		$product->setArticle($this->input->post('Article'));
+		$product->setNetCubic($this->input->post('NetCubic'));
 		$product->setCostPrice($this->input->post('CostPrice'));
 		$product->setListPrice($this->input->post('ListPrice'));
 		$product->setCubicAsb($this->input->post('CubicAsb'));
@@ -79,7 +89,6 @@ class Manage_products extends CI_Controller{
 		$product->setWidthKdn($this->input->post('WidthKdn'));
 		$product->setHeightKdn($this->input->post('HeightKdn'));
 		$product->setDepthKdn($this->input->post('DepthKdn'));
-
 		$product->save();
 		$this->load->helper('base64toimage');
 		$prod_img = json_decode($this->input->post('imgProduct'));
@@ -116,5 +125,6 @@ class Manage_products extends CI_Controller{
 		}
 		redirect('manage_products');
   }
+
 
 }

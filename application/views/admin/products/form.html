@@ -17,7 +17,7 @@
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.article_number}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
 									<div {% if products %}style="display:none" {% endif %} class="input-wrap">
-										<input type="text" id="Article" value="{{ products.Article }}" name="Article" required="required" class="form-control  col-md-7 col-xs-12">
+										<input type="text" id="Article" value="{{ products.Article?products.Article:new_number }}" name="Article" required="required" class="form-control  col-md-7 col-xs-12">
 									</div>
 									{% if products %}
 									<p class="control-value">{{ products.Article }}</p>
@@ -72,7 +72,7 @@
 						</div>
 						<div class="col-sm-6">
 
-							<div class="form-group">
+              <div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.cost_price}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
 									<div {% if products %}style="display:none" {% endif %} class="input-wrap">
@@ -80,6 +80,17 @@
 									</div>
 									{% if products %}
 									<p class="control-value">{{ products.CostPrice }}</p>
+									{% endif %}
+								</div>
+							</div>
+              <div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.net_cubic}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if products %}style="display:none" {% endif %} class="input-wrap">
+										<input type="number" id="NetCubic" value="{{ products.NetCubic }}" name="NetCubic" required="required" class="form-control col-md-7 col-xs-12">
+									</div>
+									{% if products %}
+									<p class="control-value">{{ products.NetCubic }}</p>
 									{% endif %}
 								</div>
 							</div>

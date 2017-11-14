@@ -67,5 +67,6 @@
 'qty' => 'Qty',
 'has_component'=>'Has Component',
 'article_number'=>'Article Number',
+'net_cubic' => 'Net Cubic',
 'search'=>'Search'
 );
