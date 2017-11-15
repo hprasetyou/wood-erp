@@ -46,6 +46,7 @@
 'menu' => 'Menu',
 'name' => 'Name',
 'new_data' => 'New Data',
+'not_knockdown'=>'Not a knockdown',
 'no' => 'No',
 'ok' => 'Ok',
 'partner_id' => 'Partner Id',

@@ -7,14 +7,33 @@ jQuery.fn.loadTableData = function(conf = {search:true}){
   var fl = []
    tt.find('th').each(function(){
      if($(this).data('fieldname')){
-       fl.push({
-         data:$(this).data('fieldname')
-       })
+       if($(this).data('fieldtype')){
+         var ft = $(this).data('fieldtype')
+         switch (ft) {
+           case 'image':
+             fl.push({
+              "data":$(this).data('fieldname'),
+              "render":new Function("data", "type","row","meta",
+              "return '<img src=\"'+data+'\" "+
+              "class=\"img img-row\" />'")
+            })
+             break;
+           default:
+              break;
+
+         }
+
+       }else{
+         fl.push({
+           data:$(this).data('fieldname')
+         })
+       }
+
      }
    })
    fl.push({
     "data":"id",
-    "render":new Function("data", "type","row","meta", "console.log(meta);return '<a data-id=\"'+data+'\" class=\"btn btn-sm btn-default pulloginl-right btn-select\" href=\"'+meta.settings.ajax.split('get_json')[0]+'detail/'+data+'\"><i class=\"fa fa-search\"></i> </a>'")
+    "render":new Function("data", "type","row","meta", "return '<a data-id=\"'+data+'\" class=\"btn btn-sm btn-default pulloginl-right btn-select\" href=\"'+meta.settings.ajax.split('get_json')[0]+'detail/'+data+'\"><i class=\"fa fa-search\"></i> </a>'")
   })
   var params = ''
   if(bdm){

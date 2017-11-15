@@ -60,7 +60,11 @@ class Manage_finishings extends CI_Controller{
 
 		$finishing->save();
 		$this->loging->add_entry('finishings',$finishing->getId(),($id?'activity_modify':'activity_create'));
+		if($this->input->get('ref')){
+			redirect($this->input->get('ref'));
+		}else{
 		redirect('manage_finishings/detail/'.$finishing->getId());
+		}
   }
 
   function delete($id){

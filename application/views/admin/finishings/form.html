@@ -13,7 +13,9 @@
 {% block content %}
 <div class="row">
 	<div class="col-md-12 col-sm-12 col-xs-12">
-		<form id="form_Finishing" method="post" action="{{base_url}}index.php/manage_finishings/write/{{ finishings.id }}" data-parsley-validate class="form-horizontal form-label-left">
+		<form id="form_Finishing" method="post" 
+			    action="{{base_url}}index.php/manage_finishings/write/{{ finishings.id }}?ref={{res.query_params.ref}}" 
+			data-parsley-validate class="form-horizontal form-label-left">
 			<div class="box box-info">
 				<div class="box-header with-border">
 				{% include 'common/_form_header.html'

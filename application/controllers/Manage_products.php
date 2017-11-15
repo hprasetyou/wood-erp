@@ -29,20 +29,26 @@ class Manage_products extends CI_Controller{
     $o['data']=[];
     $i=0;
     foreach ($products as $product) {
-				$o['data'][$i]['id'] = $product->getId();
-				$o['data'][$i]['name'] = $product->getName();
-				$o['data'][$i]['description'] = $product->getDescription();
-				$o['data'][$i]['is_kdn'] = $product->getIsKdn();
-				$o['data'][$i]['cost_price'] = $product->getCostPrice();
-				$o['data'][$i]['list_price'] = $product->getListPrice();
-				$o['data'][$i]['cubic_asb'] = $product->getCubicAsb();
-				$o['data'][$i]['cubic_kdn'] = $product->getCubicKdn();
-				$o['data'][$i]['width_asb'] = $product->getWidthAsb();
-				$o['data'][$i]['height_asb'] = $product->getHeightAsb();
-				$o['data'][$i]['depth_asb'] = $product->getDepthAsb();
-				$o['data'][$i]['width_kdn'] = $product->getWidthKdn();
-				$o['data'][$i]['height_kdn'] = $product->getHeightKdn();
-				$o['data'][$i]['depth_kdn'] = $product->getDepthKdn();
+	    $imgurl = '';
+	    if($product->getProductImages()->count()>0){
+	    	$imgurl = $product->getProductImages()[0]->getUrl();
+	    }
+	    	$o['data'][$i]['id'] = $product->getId();
+		$o['data'][$i]['name'] = $product->getName();
+		$o['data'][$i]['description'] = $product->getDescription();
+		$o['data'][$i]['is_kdn'] = $product->getIsKdn();
+		$o['data'][$i]['cost_price'] = $product->getCostPrice();
+		$o['data'][$i]['list_price'] = $product->getListPrice();
+		$o['data'][$i]['article'] = $product->getArticle();
+		$o['data'][$i]['image'] = $imgurl;
+		$o['data'][$i]['cubic_asb'] = $product->getCubicAsb();
+		$o['data'][$i]['cubic_kdn'] = $product->getIsKdn()?$product->getCubicKdn():string('not_knockdown');
+		$o['data'][$i]['width_asb'] = $product->getWidthAsb();
+		$o['data'][$i]['height_asb'] = $product->getHeightAsb();
+		$o['data'][$i]['depth_asb'] = $product->getDepthAsb();
+		$o['data'][$i]['width_kdn'] = $product->getWidthKdn();
+		$o['data'][$i]['height_kdn'] = $product->getHeightKdn();
+		$o['data'][$i]['depth_kdn'] = $product->getDepthKdn();
 
 				$i++;
     }
