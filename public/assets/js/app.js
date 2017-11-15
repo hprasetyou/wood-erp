@@ -14,7 +14,7 @@ jQuery.fn.loadTableData = function(conf = {search:true}){
              fl.push({
               "data":$(this).data('fieldname'),
               "render":new Function("data", "type","row","meta",
-              "return '<img src=\"'+data+'\" "+
+              "return '<img src=\"'+data.replace('original','120x120')+'\" "+
               "class=\"img img-row\" />'")
             })
              break;
