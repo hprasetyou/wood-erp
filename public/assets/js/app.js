@@ -170,3 +170,19 @@ locale: {
 function(start, end, label) {
 });
 });
+
+//navbar focus
+
+$('.treeview-menu').each(function(i){
+console.log(i);
+$(this).children().each(function(){
+  var li = $(this)
+  var href = li.children().attr('href')
+  console.log(href);
+  console.log(window.location.pathname);
+  if(href == window.location.pathname){
+    console.log('sama');
+    $(this).addClass("active");
+  }
+})
+})

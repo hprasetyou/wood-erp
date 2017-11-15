@@ -182,44 +182,50 @@
 
     	var imgProd = []
     	var compProd = []
+      var idx = 0
 
 
+      //Image!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    $('.img-list').on('click','.close-img',function(e){
+      e.preventDefault()
+      var imgo = $(this).parents('.image')
+      imgo.remove()
+      if(imgo.data('id')){
+        imgProd.push({
+            'index':idx,
+            'id':imgo.data('id'),
+            'state':'delete'
+          })
+          idx = idx+1
+      }else{
+        imgProd.splice(imgProd.map(function(x) {return x.index; }).indexOf(imgo.data('index')),1)
+      }
+			$('#imgProduct').val(JSON.stringify(imgProd))
+    })
 		$('#btnSaveImgProduct').click(function(e){
     	e.preventDefault()
 			imgProd.push({
+          'index':idx,
 					'name':$('#prodImagesName').val(),
 					'url':$('#Image').val(),
 					'description':$('#prodImagesDescription').val(),
 					'product_id':'{{products.Id}}',
           'state':'new'
 				})
-
+        $('.preview-image').prop('src','/public/upload/images/default-thumbnail.jpg')
 			$('#imgProduct').val(JSON.stringify(imgProd))
-			$('.prod-img-list').append('<div class="image col-sm-2 col-xs-6">'+
-'<a href="#/" data-toggle="modal" class="thumbnail prod-image-thumbnail" data-target="#modalImgProduct">'+
+      idx = idx+1
+$('.img-list').append('<div data-index="'+idx+'" class="image col-sm-2 col-xs-6">'+
+'<a class="close close-img">&times;</a>'+
+'<a href="#" data-toggle="modal" class="thumbnail prod-image-thumbnail" data-target="#modalImgProduct">'+
 '<img class="" src="'+$('#Image').val()+'"/></a>'+
 '</div>	')
-      {% if products %}
-			// $.ajax({
-			// 	url:'/index.php/manage_productimages/write',
-			// 	method:'POST',
-			// 	dataType:'JSON',
-			// 	data:JSON.stringify({
-			// 		'name':$('#prodImagesName').val(),
-			// 		'url':$('#Image').val(),
-			// 		'description':$('#prodImagesDescription').val(),
-			// 		'product_id':'{{products.Id}}'
-			// 	}),
-			// 	success:function(o){
-			// 		console.log(o)
-			// 	}
-			// })
-      {% endif %}
+
 		})
 //TODO:Problem with index, fix later
     $('#btnSaveComponent').click(function(e){
       e.preventDefault()
-      var idx = compProd.length
+
       var nc = {
         index:idx,
         component_id:$('#ComponentId').val(),
@@ -228,15 +234,24 @@
         state:'new'
       };
       compProd.push(nc)
+      idx = idx+1;
       prod_comp.row.add([nc.component_name,nc.qty,'<a href="#" data-idx="'+idx+'" class="btn btn-danger btn-delete-row"><i class="fa fa-trash"></i></a>']).draw()
       $('#productComponents').val(JSON.stringify(compProd))
     })
     $('#table_ProductComponent').on( 'click','.btn-delete-row',function(e){
       e.preventDefault()
       var oidx = $(this).data('idx')
-      compProd.splice(compProd.map(function(x) {return x.index; }).indexOf(oidx),1)
+      if($(this).data('id')){
+        compProd.push({
+          id:$(this).data('id'),
+          index:idx,
+          state:'delete'
+        })
+        idx = idx+1
+      }else{
+        compProd.splice(compProd.map(function(x) {return x.index; }).indexOf(oidx),1)
+      }
       $('#productComponents').val(JSON.stringify(compProd))
-
       prod_comp.row( $(this).parents('tr') )
         .remove()
         .draw();

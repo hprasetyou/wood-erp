@@ -108,20 +108,36 @@ class Manage_products extends CI_Controller{
 		$product->save();
 		$this->load->helper('base64toimage');
 		$prod_img = json_decode($this->input->post('imgProduct'));
-    print_r($prod_img);
     if($prod_img){
       foreach ($prod_img as $key => $input_data) {
         # code...
-        $productimage = new ProductImage;
-        $productimage->setName($input_data->name);
-        if($input_data->url){
-          if(strpos($input_data->url,'base64')){
-            $productimage->setUrl(base64_to_img($input_data->url));
-          }
+        switch ($input_data->state) {
+          case 'new':
+            $productimage = new ProductImage;
+            $productimage->setName($input_data->name);
+            if($input_data->url){
+              if(strpos($input_data->url,'base64')){
+                $productimage->setUrl(base64_to_img($input_data->url));
+              }
+            }
+            $productimage->setDescription($input_data->description);
+            $productimage->setProductId($product->getId());
+            $productimage->save();
+            # code...
+            break;
+          case 'delete':
+            $productimage = ProductImageQuery::create()
+            ->findPk($input_data->id);
+            unlink('.'.$productimage->getUrl());
+            $productimage->delete();
+            # code...
+            break;
+
+          default:
+            # code...
+            break;
         }
-        $productimage->setDescription($input_data->description);
-        $productimage->setProductId($product->getId());
-        $productimage->save();
+
       }
     }
 
@@ -129,11 +145,26 @@ class Manage_products extends CI_Controller{
 
     if($prod_component){
       foreach ($prod_component as $component) {
-        $productcomponent = new ProductComponent;
-        $productcomponent->setProductId($product->getId());
-        $productcomponent->setComponentId($component->component_id);
-        $productcomponent->setQty($component->qty);
-        $productcomponent->save();
+        switch ($component->state) {
+          case 'new':
+            # code...
+            $productcomponent = new ProductComponent;
+            $productcomponent->setProductId($product->getId());
+            $productcomponent->setComponentId($component->component_id);
+            $productcomponent->setQty($component->qty);
+            $productcomponent->save();
+            break;
+          case 'delete':
+            # code...
+            $productcomponent = ProductComponentQuery::create()
+            ->findPk($component->id)
+            ->delete();
+
+            break;
+          default:
+            break;
+        }
+
       }
     }
     $product->getProductFinishings()->delete();
