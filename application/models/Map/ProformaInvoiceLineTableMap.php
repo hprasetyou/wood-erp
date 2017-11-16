@@ -2,8 +2,8 @@
 
 namespace Map;
 
-use \ProductCustomer;
-use \ProductCustomerQuery;
+use \ProformaInvoiceLine;
+use \ProformaInvoiceLineQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'product_customer' table.
+ * This class defines the structure of the 'proforma_invoice_line' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class ProductCustomerTableMap extends TableMap
+class ProformaInvoiceLineTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class ProductCustomerTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.ProductCustomerTableMap';
+    const CLASS_NAME = '.Map.ProformaInvoiceLineTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class ProductCustomerTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'product_customer';
+    const TABLE_NAME = 'proforma_invoice_line';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\ProductCustomer';
+    const OM_CLASS = '\\ProformaInvoiceLine';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'ProductCustomer';
+    const CLASS_DEFAULT = 'ProformaInvoiceLine';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 8;
+    const NUM_COLUMNS = 12;
 
     /**
      * The number of lazy-loaded columns
@@ -69,47 +69,67 @@ class ProductCustomerTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 8;
+    const NUM_HYDRATE_COLUMNS = 12;
 
     /**
      * the column name for the id field
      */
-    const COL_ID = 'product_customer.id';
+    const COL_ID = 'proforma_invoice_line.id';
 
     /**
-     * the column name for the name field
+     * the column name for the proforma_invoice_id field
      */
-    const COL_NAME = 'product_customer.name';
+    const COL_PROFORMA_INVOICE_ID = 'proforma_invoice_line.proforma_invoice_id';
 
     /**
-     * the column name for the partner_id field
+     * the column name for the product_customer_id field
      */
-    const COL_PARTNER_ID = 'product_customer.partner_id';
-
-    /**
-     * the column name for the product_id field
-     */
-    const COL_PRODUCT_ID = 'product_customer.product_id';
-
-    /**
-     * the column name for the product_price field
-     */
-    const COL_PRODUCT_PRICE = 'product_customer.product_price';
+    const COL_PRODUCT_CUSTOMER_ID = 'proforma_invoice_line.product_customer_id';
 
     /**
      * the column name for the description field
      */
-    const COL_DESCRIPTION = 'product_customer.description';
+    const COL_DESCRIPTION = 'proforma_invoice_line.description';
+
+    /**
+     * the column name for the qty field
+     */
+    const COL_QTY = 'proforma_invoice_line.qty';
+
+    /**
+     * the column name for the qty_on_container field
+     */
+    const COL_QTY_ON_CONTAINER = 'proforma_invoice_line.qty_on_container';
+
+    /**
+     * the column name for the cubic_dimension field
+     */
+    const COL_CUBIC_DIMENSION = 'proforma_invoice_line.cubic_dimension';
+
+    /**
+     * the column name for the total_cubic_dimension field
+     */
+    const COL_TOTAL_CUBIC_DIMENSION = 'proforma_invoice_line.total_cubic_dimension';
+
+    /**
+     * the column name for the price field
+     */
+    const COL_PRICE = 'proforma_invoice_line.price';
+
+    /**
+     * the column name for the total_price field
+     */
+    const COL_TOTAL_PRICE = 'proforma_invoice_line.total_price';
 
     /**
      * the column name for the created_at field
      */
-    const COL_CREATED_AT = 'product_customer.created_at';
+    const COL_CREATED_AT = 'proforma_invoice_line.created_at';
 
     /**
      * the column name for the updated_at field
      */
-    const COL_UPDATED_AT = 'product_customer.updated_at';
+    const COL_UPDATED_AT = 'proforma_invoice_line.updated_at';
 
     /**
      * The default string format for model objects of the related table
@@ -123,11 +143,11 @@ class ProductCustomerTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'PartnerId', 'ProductId', 'ProductPrice', 'Description', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'partnerId', 'productId', 'productPrice', 'description', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ProductCustomerTableMap::COL_ID, ProductCustomerTableMap::COL_NAME, ProductCustomerTableMap::COL_PARTNER_ID, ProductCustomerTableMap::COL_PRODUCT_ID, ProductCustomerTableMap::COL_PRODUCT_PRICE, ProductCustomerTableMap::COL_DESCRIPTION, ProductCustomerTableMap::COL_CREATED_AT, ProductCustomerTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'partner_id', 'product_id', 'product_price', 'description', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id', 'ProformaInvoiceId', 'ProductCustomerId', 'Description', 'Qty', 'QtyOnContainer', 'CubicDimension', 'TotalCubicDimension', 'Price', 'TotalPrice', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'proformaInvoiceId', 'productCustomerId', 'description', 'qty', 'qtyOnContainer', 'cubicDimension', 'totalCubicDimension', 'price', 'totalPrice', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ProformaInvoiceLineTableMap::COL_ID, ProformaInvoiceLineTableMap::COL_PROFORMA_INVOICE_ID, ProformaInvoiceLineTableMap::COL_PRODUCT_CUSTOMER_ID, ProformaInvoiceLineTableMap::COL_DESCRIPTION, ProformaInvoiceLineTableMap::COL_QTY, ProformaInvoiceLineTableMap::COL_QTY_ON_CONTAINER, ProformaInvoiceLineTableMap::COL_CUBIC_DIMENSION, ProformaInvoiceLineTableMap::COL_TOTAL_CUBIC_DIMENSION, ProformaInvoiceLineTableMap::COL_PRICE, ProformaInvoiceLineTableMap::COL_TOTAL_PRICE, ProformaInvoiceLineTableMap::COL_CREATED_AT, ProformaInvoiceLineTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'proforma_invoice_id', 'product_customer_id', 'description', 'qty', 'qty_on_container', 'cubic_dimension', 'total_cubic_dimension', 'price', 'total_price', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
     );
 
     /**
@@ -137,11 +157,11 @@ class ProductCustomerTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'PartnerId' => 2, 'ProductId' => 3, 'ProductPrice' => 4, 'Description' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'partnerId' => 2, 'productId' => 3, 'productPrice' => 4, 'description' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
-        self::TYPE_COLNAME       => array(ProductCustomerTableMap::COL_ID => 0, ProductCustomerTableMap::COL_NAME => 1, ProductCustomerTableMap::COL_PARTNER_ID => 2, ProductCustomerTableMap::COL_PRODUCT_ID => 3, ProductCustomerTableMap::COL_PRODUCT_PRICE => 4, ProductCustomerTableMap::COL_DESCRIPTION => 5, ProductCustomerTableMap::COL_CREATED_AT => 6, ProductCustomerTableMap::COL_UPDATED_AT => 7, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'partner_id' => 2, 'product_id' => 3, 'product_price' => 4, 'description' => 5, 'created_at' => 6, 'updated_at' => 7, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'ProformaInvoiceId' => 1, 'ProductCustomerId' => 2, 'Description' => 3, 'Qty' => 4, 'QtyOnContainer' => 5, 'CubicDimension' => 6, 'TotalCubicDimension' => 7, 'Price' => 8, 'TotalPrice' => 9, 'CreatedAt' => 10, 'UpdatedAt' => 11, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'proformaInvoiceId' => 1, 'productCustomerId' => 2, 'description' => 3, 'qty' => 4, 'qtyOnContainer' => 5, 'cubicDimension' => 6, 'totalCubicDimension' => 7, 'price' => 8, 'totalPrice' => 9, 'createdAt' => 10, 'updatedAt' => 11, ),
+        self::TYPE_COLNAME       => array(ProformaInvoiceLineTableMap::COL_ID => 0, ProformaInvoiceLineTableMap::COL_PROFORMA_INVOICE_ID => 1, ProformaInvoiceLineTableMap::COL_PRODUCT_CUSTOMER_ID => 2, ProformaInvoiceLineTableMap::COL_DESCRIPTION => 3, ProformaInvoiceLineTableMap::COL_QTY => 4, ProformaInvoiceLineTableMap::COL_QTY_ON_CONTAINER => 5, ProformaInvoiceLineTableMap::COL_CUBIC_DIMENSION => 6, ProformaInvoiceLineTableMap::COL_TOTAL_CUBIC_DIMENSION => 7, ProformaInvoiceLineTableMap::COL_PRICE => 8, ProformaInvoiceLineTableMap::COL_TOTAL_PRICE => 9, ProformaInvoiceLineTableMap::COL_CREATED_AT => 10, ProformaInvoiceLineTableMap::COL_UPDATED_AT => 11, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'proforma_invoice_id' => 1, 'product_customer_id' => 2, 'description' => 3, 'qty' => 4, 'qty_on_container' => 5, 'cubic_dimension' => 6, 'total_cubic_dimension' => 7, 'price' => 8, 'total_price' => 9, 'created_at' => 10, 'updated_at' => 11, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
     );
 
     /**
@@ -154,19 +174,23 @@ class ProductCustomerTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('product_customer');
-        $this->setPhpName('ProductCustomer');
+        $this->setName('proforma_invoice_line');
+        $this->setPhpName('ProformaInvoiceLine');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\ProductCustomer');
+        $this->setClassName('\\ProformaInvoiceLine');
         $this->setPackage('');
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('name', 'Name', 'VARCHAR', false, 255, null);
-        $this->addForeignKey('partner_id', 'PartnerId', 'INTEGER', 'partner', 'id', true, null, null);
-        $this->addForeignKey('product_id', 'ProductId', 'INTEGER', 'product', 'id', true, null, null);
-        $this->addColumn('product_price', 'ProductPrice', 'INTEGER', true, null, null);
-        $this->addColumn('description', 'Description', 'LONGVARCHAR', false, null, null);
+        $this->addForeignKey('proforma_invoice_id', 'ProformaInvoiceId', 'INTEGER', 'proforma_invoice', 'id', true, null, null);
+        $this->addForeignKey('product_customer_id', 'ProductCustomerId', 'INTEGER', 'product_customer', 'id', true, null, null);
+        $this->addColumn('description', 'Description', 'VARCHAR', false, 255, null);
+        $this->addColumn('qty', 'Qty', 'INTEGER', false, null, null);
+        $this->addColumn('qty_on_container', 'QtyOnContainer', 'INTEGER', false, null, null);
+        $this->addColumn('cubic_dimension', 'CubicDimension', 'FLOAT', false, null, null);
+        $this->addColumn('total_cubic_dimension', 'TotalCubicDimension', 'FLOAT', false, null, null);
+        $this->addColumn('price', 'Price', 'FLOAT', false, null, null);
+        $this->addColumn('total_price', 'TotalPrice', 'FLOAT', false, null, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -176,27 +200,20 @@ class ProductCustomerTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Partner', '\\Partner', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('ProformaInvoice', '\\ProformaInvoice', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':partner_id',
+    0 => ':proforma_invoice_id',
     1 => ':id',
   ),
 ), null, null, null, false);
-        $this->addRelation('Product', '\\Product', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
-    0 => ':product_id',
-    1 => ':id',
-  ),
-), null, null, null, false);
-        $this->addRelation('ProformaInvoiceLine', '\\ProformaInvoiceLine', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('ProductCustomer', '\\ProductCustomer', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':product_customer_id',
     1 => ':id',
   ),
-), null, null, 'ProformaInvoiceLines', false);
+), null, null, null, false);
     } // buildRelations()
 
     /**
@@ -256,7 +273,7 @@ class ProductCustomerTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? ProductCustomerTableMap::CLASS_DEFAULT : ProductCustomerTableMap::OM_CLASS;
+        return $withPrefix ? ProformaInvoiceLineTableMap::CLASS_DEFAULT : ProformaInvoiceLineTableMap::OM_CLASS;
     }
 
     /**
@@ -270,22 +287,22 @@ class ProductCustomerTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (ProductCustomer object, last column rank)
+     * @return array           (ProformaInvoiceLine object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = ProductCustomerTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = ProductCustomerTableMap::getInstanceFromPool($key))) {
+        $key = ProformaInvoiceLineTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = ProformaInvoiceLineTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + ProductCustomerTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + ProformaInvoiceLineTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = ProductCustomerTableMap::OM_CLASS;
-            /** @var ProductCustomer $obj */
+            $cls = ProformaInvoiceLineTableMap::OM_CLASS;
+            /** @var ProformaInvoiceLine $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            ProductCustomerTableMap::addInstanceToPool($obj, $key);
+            ProformaInvoiceLineTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -308,18 +325,18 @@ class ProductCustomerTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = ProductCustomerTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = ProductCustomerTableMap::getInstanceFromPool($key))) {
+            $key = ProformaInvoiceLineTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = ProformaInvoiceLineTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var ProductCustomer $obj */
+                /** @var ProformaInvoiceLine $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                ProductCustomerTableMap::addInstanceToPool($obj, $key);
+                ProformaInvoiceLineTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -340,21 +357,29 @@ class ProductCustomerTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(ProductCustomerTableMap::COL_ID);
-            $criteria->addSelectColumn(ProductCustomerTableMap::COL_NAME);
-            $criteria->addSelectColumn(ProductCustomerTableMap::COL_PARTNER_ID);
-            $criteria->addSelectColumn(ProductCustomerTableMap::COL_PRODUCT_ID);
-            $criteria->addSelectColumn(ProductCustomerTableMap::COL_PRODUCT_PRICE);
-            $criteria->addSelectColumn(ProductCustomerTableMap::COL_DESCRIPTION);
-            $criteria->addSelectColumn(ProductCustomerTableMap::COL_CREATED_AT);
-            $criteria->addSelectColumn(ProductCustomerTableMap::COL_UPDATED_AT);
+            $criteria->addSelectColumn(ProformaInvoiceLineTableMap::COL_ID);
+            $criteria->addSelectColumn(ProformaInvoiceLineTableMap::COL_PROFORMA_INVOICE_ID);
+            $criteria->addSelectColumn(ProformaInvoiceLineTableMap::COL_PRODUCT_CUSTOMER_ID);
+            $criteria->addSelectColumn(ProformaInvoiceLineTableMap::COL_DESCRIPTION);
+            $criteria->addSelectColumn(ProformaInvoiceLineTableMap::COL_QTY);
+            $criteria->addSelectColumn(ProformaInvoiceLineTableMap::COL_QTY_ON_CONTAINER);
+            $criteria->addSelectColumn(ProformaInvoiceLineTableMap::COL_CUBIC_DIMENSION);
+            $criteria->addSelectColumn(ProformaInvoiceLineTableMap::COL_TOTAL_CUBIC_DIMENSION);
+            $criteria->addSelectColumn(ProformaInvoiceLineTableMap::COL_PRICE);
+            $criteria->addSelectColumn(ProformaInvoiceLineTableMap::COL_TOTAL_PRICE);
+            $criteria->addSelectColumn(ProformaInvoiceLineTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(ProformaInvoiceLineTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.name');
-            $criteria->addSelectColumn($alias . '.partner_id');
-            $criteria->addSelectColumn($alias . '.product_id');
-            $criteria->addSelectColumn($alias . '.product_price');
+            $criteria->addSelectColumn($alias . '.proforma_invoice_id');
+            $criteria->addSelectColumn($alias . '.product_customer_id');
             $criteria->addSelectColumn($alias . '.description');
+            $criteria->addSelectColumn($alias . '.qty');
+            $criteria->addSelectColumn($alias . '.qty_on_container');
+            $criteria->addSelectColumn($alias . '.cubic_dimension');
+            $criteria->addSelectColumn($alias . '.total_cubic_dimension');
+            $criteria->addSelectColumn($alias . '.price');
+            $criteria->addSelectColumn($alias . '.total_price');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }
@@ -369,7 +394,7 @@ class ProductCustomerTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(ProductCustomerTableMap::DATABASE_NAME)->getTable(ProductCustomerTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(ProformaInvoiceLineTableMap::DATABASE_NAME)->getTable(ProformaInvoiceLineTableMap::TABLE_NAME);
     }
 
     /**
@@ -377,16 +402,16 @@ class ProductCustomerTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(ProductCustomerTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(ProductCustomerTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new ProductCustomerTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(ProformaInvoiceLineTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(ProformaInvoiceLineTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new ProformaInvoiceLineTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a ProductCustomer or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a ProformaInvoiceLine or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or ProductCustomer object or primary key or array of primary keys
+     * @param mixed               $values Criteria or ProformaInvoiceLine object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -397,27 +422,27 @@ class ProductCustomerTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductCustomerTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ProformaInvoiceLineTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \ProductCustomer) { // it's a model object
+        } elseif ($values instanceof \ProformaInvoiceLine) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(ProductCustomerTableMap::DATABASE_NAME);
-            $criteria->add(ProductCustomerTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(ProformaInvoiceLineTableMap::DATABASE_NAME);
+            $criteria->add(ProformaInvoiceLineTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
-        $query = ProductCustomerQuery::create()->mergeWith($criteria);
+        $query = ProformaInvoiceLineQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            ProductCustomerTableMap::clearInstancePool();
+            ProformaInvoiceLineTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                ProductCustomerTableMap::removeInstanceFromPool($singleval);
+                ProformaInvoiceLineTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -425,20 +450,20 @@ class ProductCustomerTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the product_customer table.
+     * Deletes all rows from the proforma_invoice_line table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return ProductCustomerQuery::create()->doDeleteAll($con);
+        return ProformaInvoiceLineQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a ProductCustomer or Criteria object.
+     * Performs an INSERT on the database, given a ProformaInvoiceLine or Criteria object.
      *
-     * @param mixed               $criteria Criteria or ProductCustomer object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or ProformaInvoiceLine object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -447,22 +472,22 @@ class ProductCustomerTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductCustomerTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ProformaInvoiceLineTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from ProductCustomer object
+            $criteria = $criteria->buildCriteria(); // build Criteria from ProformaInvoiceLine object
         }
 
-        if ($criteria->containsKey(ProductCustomerTableMap::COL_ID) && $criteria->keyContainsValue(ProductCustomerTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.ProductCustomerTableMap::COL_ID.')');
+        if ($criteria->containsKey(ProformaInvoiceLineTableMap::COL_ID) && $criteria->keyContainsValue(ProformaInvoiceLineTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.ProformaInvoiceLineTableMap::COL_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = ProductCustomerQuery::create()->mergeWith($criteria);
+        $query = ProformaInvoiceLineQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -471,7 +496,7 @@ class ProductCustomerTableMap extends TableMap
         });
     }
 
-} // ProductCustomerTableMap
+} // ProformaInvoiceLineTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-ProductCustomerTableMap::buildTableMap();
+ProformaInvoiceLineTableMap::buildTableMap();

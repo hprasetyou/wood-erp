@@ -12,6 +12,19 @@ class Manage_products extends CI_Controller{
       $this->template->render('admin/products/index');
   }
 
+  function get_detail_json($id){
+    $product = ProductQuery::create();
+    $sproduct = $product->findPk($id);
+    if($this->input->get('customer_id')){
+      $productcustomer = $product->useProductCustomerQuery()
+        ->filterByPartnerId($this->input->get('customer_id'))
+      ->endUse()
+      ->leftJoinWith('Product.ProductCustomer');
+    }
+    $productcustomer = $productcustomer->findPk($id);
+    echo $productcustomer? $productcustomer->toJSON(): $sproduct->toJSON();
+  }
+
 	function get_json(){
 		$products = ProductQuery::create();
 		$maxPerPage = $this->input->get('length');
@@ -39,7 +52,6 @@ class Manage_products extends CI_Controller{
 		$o['data'][$i]['is_kdn'] = $product->getIsKdn();
 		$o['data'][$i]['cost_price'] = $product->getCostPrice();
 		$o['data'][$i]['list_price'] = $product->getListPrice();
-		$o['data'][$i]['article'] = $product->getArticle();
 		$o['data'][$i]['image'] = $imgurl;
 		$o['data'][$i]['cubic_asb'] = $product->getCubicAsb();
 		$o['data'][$i]['cubic_kdn'] = $product->getIsKdn()?$product->getCubicKdn():string('not_knockdown');
@@ -99,7 +111,6 @@ class Manage_products extends CI_Controller{
 		$product->setDescription($this->input->post('Description'));
 		$product->setIsKdn($this->input->post('IsKdn')?true:false);
 		$product->setHasComponent($this->input->post('HasComponent'));
-		$product->setArticle($this->input->post('Article'));
 		$product->setNetCubic($this->input->post('NetCubic'));
 		$product->setCostPrice($this->input->post('CostPrice'));
 		$product->setListPrice($this->input->post('ListPrice'));

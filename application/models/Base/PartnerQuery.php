@@ -102,7 +102,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
  * @method     ChildPartnerQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
  *
- * @method     \PartnerQuery|\ProductCustomerQuery|\UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildPartnerQuery leftJoinProformaInvoice($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProformaInvoice relation
+ * @method     ChildPartnerQuery rightJoinProformaInvoice($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProformaInvoice relation
+ * @method     ChildPartnerQuery innerJoinProformaInvoice($relationAlias = null) Adds a INNER JOIN clause to the query using the ProformaInvoice relation
+ *
+ * @method     ChildPartnerQuery joinWithProformaInvoice($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ProformaInvoice relation
+ *
+ * @method     ChildPartnerQuery leftJoinWithProformaInvoice() Adds a LEFT JOIN clause and with to the query using the ProformaInvoice relation
+ * @method     ChildPartnerQuery rightJoinWithProformaInvoice() Adds a RIGHT JOIN clause and with to the query using the ProformaInvoice relation
+ * @method     ChildPartnerQuery innerJoinWithProformaInvoice() Adds a INNER JOIN clause and with to the query using the ProformaInvoice relation
+ *
+ * @method     \PartnerQuery|\ProductCustomerQuery|\UserQuery|\ProformaInvoiceQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildPartner findOne(ConnectionInterface $con = null) Return the first ChildPartner matching the query
  * @method     ChildPartner findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPartner matching the query, or a new ChildPartner object populated from the query conditions when no match is found
@@ -1119,6 +1129,79 @@ abstract class PartnerQuery extends ModelCriteria
         return $this
             ->joinUser($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'User', '\UserQuery');
+    }
+
+    /**
+     * Filter the query by a related \ProformaInvoice object
+     *
+     * @param \ProformaInvoice|ObjectCollection $proformaInvoice the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildPartnerQuery The current query, for fluid interface
+     */
+    public function filterByProformaInvoice($proformaInvoice, $comparison = null)
+    {
+        if ($proformaInvoice instanceof \ProformaInvoice) {
+            return $this
+                ->addUsingAlias(PartnerTableMap::COL_ID, $proformaInvoice->getCustomerId(), $comparison);
+        } elseif ($proformaInvoice instanceof ObjectCollection) {
+            return $this
+                ->useProformaInvoiceQuery()
+                ->filterByPrimaryKeys($proformaInvoice->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByProformaInvoice() only accepts arguments of type \ProformaInvoice or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ProformaInvoice relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildPartnerQuery The current query, for fluid interface
+     */
+    public function joinProformaInvoice($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ProformaInvoice');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ProformaInvoice');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ProformaInvoice relation ProformaInvoice object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \ProformaInvoiceQuery A secondary query class using the current class as primary query
+     */
+    public function useProformaInvoiceQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinProformaInvoice($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ProformaInvoice', '\ProformaInvoiceQuery');
     }
 
     /**

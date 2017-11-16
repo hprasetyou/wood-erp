@@ -21,6 +21,7 @@ function create_number($setting = array('separator'=>'-','number_len'=>3)){
   $o = "";
   $code_len_before_num = 0;
   $code_len = 0;
+  $whereclause= " where ";
   foreach ($ftpls as $key => $value) {
     # code...
     switch ($value) {
@@ -43,6 +44,8 @@ function create_number($setting = array('separator'=>'-','number_len'=>3)){
       case 'y':
         # code...
         $o .= date('y');
+        $clb = $code_len+1;
+        $whereclause .= "substring(`$tb_field`,$clb,2)='".date('y')."' and ";
         $code_len += 2;
       break;
       default:
@@ -57,9 +60,11 @@ function create_number($setting = array('separator'=>'-','number_len'=>3)){
     }
 
   }
+  $whereclause .= "1";
 
   $code_len_before_num = $code_len_before_num+1;
-  $sql = "SELECT max(substring(`$tb_field`, $code_len_before_num,$number_len)) as max_$tb_field FROM `$tb_name`";
+  $sql = "SELECT max(substring(`$tb_field`, $code_len_before_num,$number_len))
+   as max_$tb_field FROM `$tb_name` $whereclause";
       $con = Propel::getConnection();
       $stmt = $con->prepare($sql);
       $stmt->execute();

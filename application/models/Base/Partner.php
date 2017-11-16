@@ -6,6 +6,8 @@ use \Partner as ChildPartner;
 use \PartnerQuery as ChildPartnerQuery;
 use \ProductCustomer as ChildProductCustomer;
 use \ProductCustomerQuery as ChildProductCustomerQuery;
+use \ProformaInvoice as ChildProformaInvoice;
+use \ProformaInvoiceQuery as ChildProformaInvoiceQuery;
 use \User as ChildUser;
 use \UserQuery as ChildUserQuery;
 use \DateTime;
@@ -13,6 +15,7 @@ use \Exception;
 use \PDO;
 use Map\PartnerTableMap;
 use Map\ProductCustomerTableMap;
+use Map\ProformaInvoiceTableMap;
 use Map\UserTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -210,6 +213,12 @@ abstract class Partner implements ActiveRecordInterface
     protected $collUsersPartial;
 
     /**
+     * @var        ObjectCollection|ChildProformaInvoice[] Collection to store aggregation of ChildProformaInvoice objects.
+     */
+    protected $collProformaInvoices;
+    protected $collProformaInvoicesPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -234,6 +243,12 @@ abstract class Partner implements ActiveRecordInterface
      * @var ObjectCollection|ChildUser[]
      */
     protected $usersScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildProformaInvoice[]
+     */
+    protected $proformaInvoicesScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -1213,6 +1228,8 @@ abstract class Partner implements ActiveRecordInterface
 
             $this->collUsers = null;
 
+            $this->collProformaInvoices = null;
+
         } // if (deep)
     }
 
@@ -1385,6 +1402,23 @@ abstract class Partner implements ActiveRecordInterface
 
             if ($this->collUsers !== null) {
                 foreach ($this->collUsers as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->proformaInvoicesScheduledForDeletion !== null) {
+                if (!$this->proformaInvoicesScheduledForDeletion->isEmpty()) {
+                    \ProformaInvoiceQuery::create()
+                        ->filterByPrimaryKeys($this->proformaInvoicesScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->proformaInvoicesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collProformaInvoices !== null) {
+                foreach ($this->collProformaInvoices as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1754,6 +1788,21 @@ abstract class Partner implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->collUsers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collProformaInvoices) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'proformaInvoices';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'proforma_invoices';
+                        break;
+                    default:
+                        $key = 'ProformaInvoices';
+                }
+
+                $result[$key] = $this->collProformaInvoices->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -2125,6 +2174,12 @@ abstract class Partner implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getProformaInvoices() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addProformaInvoice($relObj->copy($deepCopy));
+                }
+            }
+
         } // if ($deepCopy)
 
         if ($makeNew) {
@@ -2227,6 +2282,10 @@ abstract class Partner implements ActiveRecordInterface
         }
         if ('User' == $relationName) {
             $this->initUsers();
+            return;
+        }
+        if ('ProformaInvoice' == $relationName) {
+            $this->initProformaInvoices();
             return;
         }
     }
@@ -2932,6 +2991,231 @@ abstract class Partner implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collProformaInvoices collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addProformaInvoices()
+     */
+    public function clearProformaInvoices()
+    {
+        $this->collProformaInvoices = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collProformaInvoices collection loaded partially.
+     */
+    public function resetPartialProformaInvoices($v = true)
+    {
+        $this->collProformaInvoicesPartial = $v;
+    }
+
+    /**
+     * Initializes the collProformaInvoices collection.
+     *
+     * By default this just sets the collProformaInvoices collection to an empty array (like clearcollProformaInvoices());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initProformaInvoices($overrideExisting = true)
+    {
+        if (null !== $this->collProformaInvoices && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = ProformaInvoiceTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collProformaInvoices = new $collectionClassName;
+        $this->collProformaInvoices->setModel('\ProformaInvoice');
+    }
+
+    /**
+     * Gets an array of ChildProformaInvoice objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPartner is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildProformaInvoice[] List of ChildProformaInvoice objects
+     * @throws PropelException
+     */
+    public function getProformaInvoices(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collProformaInvoicesPartial && !$this->isNew();
+        if (null === $this->collProformaInvoices || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collProformaInvoices) {
+                // return empty collection
+                $this->initProformaInvoices();
+            } else {
+                $collProformaInvoices = ChildProformaInvoiceQuery::create(null, $criteria)
+                    ->filterByPartner($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collProformaInvoicesPartial && count($collProformaInvoices)) {
+                        $this->initProformaInvoices(false);
+
+                        foreach ($collProformaInvoices as $obj) {
+                            if (false == $this->collProformaInvoices->contains($obj)) {
+                                $this->collProformaInvoices->append($obj);
+                            }
+                        }
+
+                        $this->collProformaInvoicesPartial = true;
+                    }
+
+                    return $collProformaInvoices;
+                }
+
+                if ($partial && $this->collProformaInvoices) {
+                    foreach ($this->collProformaInvoices as $obj) {
+                        if ($obj->isNew()) {
+                            $collProformaInvoices[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collProformaInvoices = $collProformaInvoices;
+                $this->collProformaInvoicesPartial = false;
+            }
+        }
+
+        return $this->collProformaInvoices;
+    }
+
+    /**
+     * Sets a collection of ChildProformaInvoice objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $proformaInvoices A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildPartner The current object (for fluent API support)
+     */
+    public function setProformaInvoices(Collection $proformaInvoices, ConnectionInterface $con = null)
+    {
+        /** @var ChildProformaInvoice[] $proformaInvoicesToDelete */
+        $proformaInvoicesToDelete = $this->getProformaInvoices(new Criteria(), $con)->diff($proformaInvoices);
+
+
+        $this->proformaInvoicesScheduledForDeletion = $proformaInvoicesToDelete;
+
+        foreach ($proformaInvoicesToDelete as $proformaInvoiceRemoved) {
+            $proformaInvoiceRemoved->setPartner(null);
+        }
+
+        $this->collProformaInvoices = null;
+        foreach ($proformaInvoices as $proformaInvoice) {
+            $this->addProformaInvoice($proformaInvoice);
+        }
+
+        $this->collProformaInvoices = $proformaInvoices;
+        $this->collProformaInvoicesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related ProformaInvoice objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related ProformaInvoice objects.
+     * @throws PropelException
+     */
+    public function countProformaInvoices(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collProformaInvoicesPartial && !$this->isNew();
+        if (null === $this->collProformaInvoices || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collProformaInvoices) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getProformaInvoices());
+            }
+
+            $query = ChildProformaInvoiceQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByPartner($this)
+                ->count($con);
+        }
+
+        return count($this->collProformaInvoices);
+    }
+
+    /**
+     * Method called to associate a ChildProformaInvoice object to this object
+     * through the ChildProformaInvoice foreign key attribute.
+     *
+     * @param  ChildProformaInvoice $l ChildProformaInvoice
+     * @return $this|\Partner The current object (for fluent API support)
+     */
+    public function addProformaInvoice(ChildProformaInvoice $l)
+    {
+        if ($this->collProformaInvoices === null) {
+            $this->initProformaInvoices();
+            $this->collProformaInvoicesPartial = true;
+        }
+
+        if (!$this->collProformaInvoices->contains($l)) {
+            $this->doAddProformaInvoice($l);
+
+            if ($this->proformaInvoicesScheduledForDeletion and $this->proformaInvoicesScheduledForDeletion->contains($l)) {
+                $this->proformaInvoicesScheduledForDeletion->remove($this->proformaInvoicesScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildProformaInvoice $proformaInvoice The ChildProformaInvoice object to add.
+     */
+    protected function doAddProformaInvoice(ChildProformaInvoice $proformaInvoice)
+    {
+        $this->collProformaInvoices[]= $proformaInvoice;
+        $proformaInvoice->setPartner($this);
+    }
+
+    /**
+     * @param  ChildProformaInvoice $proformaInvoice The ChildProformaInvoice object to remove.
+     * @return $this|ChildPartner The current object (for fluent API support)
+     */
+    public function removeProformaInvoice(ChildProformaInvoice $proformaInvoice)
+    {
+        if ($this->getProformaInvoices()->contains($proformaInvoice)) {
+            $pos = $this->collProformaInvoices->search($proformaInvoice);
+            $this->collProformaInvoices->remove($pos);
+            if (null === $this->proformaInvoicesScheduledForDeletion) {
+                $this->proformaInvoicesScheduledForDeletion = clone $this->collProformaInvoices;
+                $this->proformaInvoicesScheduledForDeletion->clear();
+            }
+            $this->proformaInvoicesScheduledForDeletion[]= clone $proformaInvoice;
+            $proformaInvoice->setPartner(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -2991,11 +3275,17 @@ abstract class Partner implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collProformaInvoices) {
+                foreach ($this->collProformaInvoices as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         $this->collPartnersRelatedById = null;
         $this->collProductCustomers = null;
         $this->collUsers = null;
+        $this->collProformaInvoices = null;
         $this->aCompany = null;
     }
 

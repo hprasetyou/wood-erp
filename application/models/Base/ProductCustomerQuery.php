@@ -21,17 +21,19 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  * @method     ChildProductCustomerQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildProductCustomerQuery orderByCode($order = Criteria::ASC) Order by the code column
+ * @method     ChildProductCustomerQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method     ChildProductCustomerQuery orderByPartnerId($order = Criteria::ASC) Order by the partner_id column
  * @method     ChildProductCustomerQuery orderByProductId($order = Criteria::ASC) Order by the product_id column
+ * @method     ChildProductCustomerQuery orderByProductPrice($order = Criteria::ASC) Order by the product_price column
  * @method     ChildProductCustomerQuery orderByDescription($order = Criteria::ASC) Order by the description column
  * @method     ChildProductCustomerQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildProductCustomerQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildProductCustomerQuery groupById() Group by the id column
- * @method     ChildProductCustomerQuery groupByCode() Group by the code column
+ * @method     ChildProductCustomerQuery groupByName() Group by the name column
  * @method     ChildProductCustomerQuery groupByPartnerId() Group by the partner_id column
  * @method     ChildProductCustomerQuery groupByProductId() Group by the product_id column
+ * @method     ChildProductCustomerQuery groupByProductPrice() Group by the product_price column
  * @method     ChildProductCustomerQuery groupByDescription() Group by the description column
  * @method     ChildProductCustomerQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildProductCustomerQuery groupByUpdatedAt() Group by the updated_at column
@@ -64,15 +66,26 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductCustomerQuery rightJoinWithProduct() Adds a RIGHT JOIN clause and with to the query using the Product relation
  * @method     ChildProductCustomerQuery innerJoinWithProduct() Adds a INNER JOIN clause and with to the query using the Product relation
  *
- * @method     \PartnerQuery|\ProductQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildProductCustomerQuery leftJoinProformaInvoiceLine($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProformaInvoiceLine relation
+ * @method     ChildProductCustomerQuery rightJoinProformaInvoiceLine($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProformaInvoiceLine relation
+ * @method     ChildProductCustomerQuery innerJoinProformaInvoiceLine($relationAlias = null) Adds a INNER JOIN clause to the query using the ProformaInvoiceLine relation
+ *
+ * @method     ChildProductCustomerQuery joinWithProformaInvoiceLine($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ProformaInvoiceLine relation
+ *
+ * @method     ChildProductCustomerQuery leftJoinWithProformaInvoiceLine() Adds a LEFT JOIN clause and with to the query using the ProformaInvoiceLine relation
+ * @method     ChildProductCustomerQuery rightJoinWithProformaInvoiceLine() Adds a RIGHT JOIN clause and with to the query using the ProformaInvoiceLine relation
+ * @method     ChildProductCustomerQuery innerJoinWithProformaInvoiceLine() Adds a INNER JOIN clause and with to the query using the ProformaInvoiceLine relation
+ *
+ * @method     \PartnerQuery|\ProductQuery|\ProformaInvoiceLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildProductCustomer findOne(ConnectionInterface $con = null) Return the first ChildProductCustomer matching the query
  * @method     ChildProductCustomer findOneOrCreate(ConnectionInterface $con = null) Return the first ChildProductCustomer matching the query, or a new ChildProductCustomer object populated from the query conditions when no match is found
  *
  * @method     ChildProductCustomer findOneById(int $id) Return the first ChildProductCustomer filtered by the id column
- * @method     ChildProductCustomer findOneByCode(string $code) Return the first ChildProductCustomer filtered by the code column
+ * @method     ChildProductCustomer findOneByName(string $name) Return the first ChildProductCustomer filtered by the name column
  * @method     ChildProductCustomer findOneByPartnerId(int $partner_id) Return the first ChildProductCustomer filtered by the partner_id column
  * @method     ChildProductCustomer findOneByProductId(int $product_id) Return the first ChildProductCustomer filtered by the product_id column
+ * @method     ChildProductCustomer findOneByProductPrice(int $product_price) Return the first ChildProductCustomer filtered by the product_price column
  * @method     ChildProductCustomer findOneByDescription(string $description) Return the first ChildProductCustomer filtered by the description column
  * @method     ChildProductCustomer findOneByCreatedAt(string $created_at) Return the first ChildProductCustomer filtered by the created_at column
  * @method     ChildProductCustomer findOneByUpdatedAt(string $updated_at) Return the first ChildProductCustomer filtered by the updated_at column *
@@ -81,18 +94,20 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductCustomer requireOne(ConnectionInterface $con = null) Return the first ChildProductCustomer matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildProductCustomer requireOneById(int $id) Return the first ChildProductCustomer filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildProductCustomer requireOneByCode(string $code) Return the first ChildProductCustomer filtered by the code column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProductCustomer requireOneByName(string $name) Return the first ChildProductCustomer filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductCustomer requireOneByPartnerId(int $partner_id) Return the first ChildProductCustomer filtered by the partner_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductCustomer requireOneByProductId(int $product_id) Return the first ChildProductCustomer filtered by the product_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProductCustomer requireOneByProductPrice(int $product_price) Return the first ChildProductCustomer filtered by the product_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductCustomer requireOneByDescription(string $description) Return the first ChildProductCustomer filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductCustomer requireOneByCreatedAt(string $created_at) Return the first ChildProductCustomer filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductCustomer requireOneByUpdatedAt(string $updated_at) Return the first ChildProductCustomer filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildProductCustomer[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildProductCustomer objects based on current ModelCriteria
  * @method     ChildProductCustomer[]|ObjectCollection findById(int $id) Return ChildProductCustomer objects filtered by the id column
- * @method     ChildProductCustomer[]|ObjectCollection findByCode(string $code) Return ChildProductCustomer objects filtered by the code column
+ * @method     ChildProductCustomer[]|ObjectCollection findByName(string $name) Return ChildProductCustomer objects filtered by the name column
  * @method     ChildProductCustomer[]|ObjectCollection findByPartnerId(int $partner_id) Return ChildProductCustomer objects filtered by the partner_id column
  * @method     ChildProductCustomer[]|ObjectCollection findByProductId(int $product_id) Return ChildProductCustomer objects filtered by the product_id column
+ * @method     ChildProductCustomer[]|ObjectCollection findByProductPrice(int $product_price) Return ChildProductCustomer objects filtered by the product_price column
  * @method     ChildProductCustomer[]|ObjectCollection findByDescription(string $description) Return ChildProductCustomer objects filtered by the description column
  * @method     ChildProductCustomer[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildProductCustomer objects filtered by the created_at column
  * @method     ChildProductCustomer[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildProductCustomer objects filtered by the updated_at column
@@ -194,7 +209,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, code, partner_id, product_id, description, created_at, updated_at FROM product_customer WHERE id = :p0';
+        $sql = 'SELECT id, name, partner_id, product_id, product_price, description, created_at, updated_at FROM product_customer WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -326,28 +341,28 @@ abstract class ProductCustomerQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the code column
+     * Filter the query on the name column
      *
      * Example usage:
      * <code>
-     * $query->filterByCode('fooValue');   // WHERE code = 'fooValue'
-     * $query->filterByCode('%fooValue%', Criteria::LIKE); // WHERE code LIKE '%fooValue%'
+     * $query->filterByName('fooValue');   // WHERE name = 'fooValue'
+     * $query->filterByName('%fooValue%', Criteria::LIKE); // WHERE name LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $code The value to use as filter.
+     * @param     string $name The value to use as filter.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildProductCustomerQuery The current query, for fluid interface
      */
-    public function filterByCode($code = null, $comparison = null)
+    public function filterByName($name = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($code)) {
+            if (is_array($name)) {
                 $comparison = Criteria::IN;
             }
         }
 
-        return $this->addUsingAlias(ProductCustomerTableMap::COL_CODE, $code, $comparison);
+        return $this->addUsingAlias(ProductCustomerTableMap::COL_NAME, $name, $comparison);
     }
 
     /**
@@ -434,6 +449,47 @@ abstract class ProductCustomerQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProductCustomerTableMap::COL_PRODUCT_ID, $productId, $comparison);
+    }
+
+    /**
+     * Filter the query on the product_price column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByProductPrice(1234); // WHERE product_price = 1234
+     * $query->filterByProductPrice(array(12, 34)); // WHERE product_price IN (12, 34)
+     * $query->filterByProductPrice(array('min' => 12)); // WHERE product_price > 12
+     * </code>
+     *
+     * @param     mixed $productPrice The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProductCustomerQuery The current query, for fluid interface
+     */
+    public function filterByProductPrice($productPrice = null, $comparison = null)
+    {
+        if (is_array($productPrice)) {
+            $useMinMax = false;
+            if (isset($productPrice['min'])) {
+                $this->addUsingAlias(ProductCustomerTableMap::COL_PRODUCT_PRICE, $productPrice['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($productPrice['max'])) {
+                $this->addUsingAlias(ProductCustomerTableMap::COL_PRODUCT_PRICE, $productPrice['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProductCustomerTableMap::COL_PRODUCT_PRICE, $productPrice, $comparison);
     }
 
     /**
@@ -699,6 +755,79 @@ abstract class ProductCustomerQuery extends ModelCriteria
         return $this
             ->joinProduct($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Product', '\ProductQuery');
+    }
+
+    /**
+     * Filter the query by a related \ProformaInvoiceLine object
+     *
+     * @param \ProformaInvoiceLine|ObjectCollection $proformaInvoiceLine the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildProductCustomerQuery The current query, for fluid interface
+     */
+    public function filterByProformaInvoiceLine($proformaInvoiceLine, $comparison = null)
+    {
+        if ($proformaInvoiceLine instanceof \ProformaInvoiceLine) {
+            return $this
+                ->addUsingAlias(ProductCustomerTableMap::COL_ID, $proformaInvoiceLine->getProductCustomerId(), $comparison);
+        } elseif ($proformaInvoiceLine instanceof ObjectCollection) {
+            return $this
+                ->useProformaInvoiceLineQuery()
+                ->filterByPrimaryKeys($proformaInvoiceLine->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByProformaInvoiceLine() only accepts arguments of type \ProformaInvoiceLine or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ProformaInvoiceLine relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildProductCustomerQuery The current query, for fluid interface
+     */
+    public function joinProformaInvoiceLine($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ProformaInvoiceLine');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ProformaInvoiceLine');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ProformaInvoiceLine relation ProformaInvoiceLine object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \ProformaInvoiceLineQuery A secondary query class using the current class as primary query
+     */
+    public function useProformaInvoiceLineQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinProformaInvoiceLine($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ProformaInvoiceLine', '\ProformaInvoiceLineQuery');
     }
 
     /**

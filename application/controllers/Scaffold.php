@@ -32,6 +32,7 @@ class Scaffold extends CI_Controller {
 				$menu->setUrl("manage_$var");
 				$menu->setIcon("fa fa-cube");
 				$menu->setController("manage_$var");
+				$menu->setParentId(3);
 				$menu->save();
 			}
 		$table = $this->find_table($tb_name);

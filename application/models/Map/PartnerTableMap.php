@@ -252,6 +252,13 @@ class PartnerTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'Users', false);
+        $this->addRelation('ProformaInvoice', '\\ProformaInvoice', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':customer_id',
+    1 => ':id',
+  ),
+), null, null, 'ProformaInvoices', false);
     } // buildRelations()
 
     /**

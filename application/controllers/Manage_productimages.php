@@ -33,7 +33,7 @@ class Manage_productimages extends CI_Controller{
 				$o['data'][$i]['name'] = $productimage->getName();
 				$o['data'][$i]['url'] = $productimage->getUrl();
 				$o['data'][$i]['description'] = $productimage->getDescription();
-				$o['data'][$i]['product_id'] = $productimage->getProductId();
+				$o['data'][$i]['product_id'] = $productimage->getProduct()->getName();
 
 				$i++;
     }
@@ -42,36 +42,38 @@ class Manage_productimages extends CI_Controller{
 
   function create(){
 		
-		$this->template->render('admin/productimages/form',array());
+		$products = ProductQuery::create()->find();
+			
+		$this->template->render('admin/productimages/form',array(
+		'products'=> $products,
+			));
   }
 
   function detail($id){
 		
+		$products = ProductQuery::create()->find();
+			
 		$productimage = ProductImageQuery::create()->findPK($id);
-		$this->template->render('admin/productimages/form',array('productimages'=>$productimage,));
+		$this->template->render('admin/productimages/form',array('productimages'=>$productimage,
+		'products'=> $products,
+			));
   }
 
   function write($id=null){
-		$input_data = json_decode(file_get_contents("php://input"));
 		if($id){
 			$productimage = ProductImageQuery::create()->findPK($id);
 		}else{
 			$productimage = new ProductImage;
 		}
-		$productimage->setName($input_data->name);
-		if($input_data->url){
-      if(strpos($input_data->url,'base64')){
-        $this->load->helper('base64toimage');
-    		$productimage->setUrl(base64_to_img($input_data->url));
-      }
-    }
-		$productimage->setDescription($input_data->description);
-		$productimage->setProductId($input_data->product_id);
+		$productimage->setName($this->input->post('Name'));
+		$productimage->setUrl($this->input->post('Url'));
+		$productimage->setDescription($this->input->post('Description'));
+		$productimage->setProductId($this->input->post('ProductId'));
 
 		$productimage->save();
-		//$this->loging->add_entry('productimages',$productimage->getId(),($id?'melakukan perubahan pada data':'membuat data baru'));
-		echo $productimage->toJSON();
-	}
+		$this->loging->add_entry('productimages',$productimage->getId(),($id?'activity_modify':'activity_create'));
+		redirect('manage_productimages/detail/'.$productimage->getId());
+  }
 
   function delete($id){
 		if($this->input->post('confirm')){

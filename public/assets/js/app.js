@@ -1,6 +1,9 @@
 var base_url = window.location.href.split('index.php');
 jQuery.fn
-jQuery.fn.loadTableData = function(conf = {search:true}){
+jQuery.fn.loadTableData = function(
+  conf = {search:true,
+    serverSide:true,
+    paging:true}){
   var tt = $(this)
   var c = tt.data('controller')
   var bdm = tt.data('domain')
@@ -51,20 +54,41 @@ jQuery.fn.loadTableData = function(conf = {search:true}){
       z++
     }
   }
-  tt.DataTable({
+  var dtconf = {
     "processing": true,
-    "serverSide": true,
+    "serverSide": conf.serverSide,
     "searching": conf.search,
+    "paging": conf.paging,
     "searchDelay": 1000,
     "ordering": false,
-    "ajax": base_url[0]+"index.php/"+c+"/get_json"+params,
-    "columns": fl,
-    "initComplete": function(settings, json) {
+  }
+  if(conf.serverSide){
+    dtconf.ajax =  base_url[0]+"index.php/"+c+"/get_json"+params
+    dtconf.columns = fl
+    dtconf.initComplete = function(settings, json) {
       tt.css('width','100%')
     }
-  });
+  }
+  tt.DataTable(dtconf);
 }
 
+
+jQuery.fn.simpleValidation =  function(){
+  var d = $(this)
+  d.on('keyup','input',function(e){
+    var valid = true;
+    d.find('input').each(function(){
+      if(!$(this).val()){
+        valid = false
+      }
+    })
+    if(valid){
+      $('#'+d.data('target')).removeClass('disabled')
+    }else{
+      $('#'+d.data('target')).addClass('disabled')
+    }
+  })
+}
 function init_modal_selection(){
   console.log(base_url);
   $('.btnModal').click(function(){
@@ -151,21 +175,15 @@ $('.form-select').select2()
 $('#btn-edit').click(function(e){
   e.preventDefault();
   $('input:checkbox').removeAttr('disabled')
-$('#btn-canceledit').show()
-$('#btn-save').show()
-$('.input-wrap').show()
-$('.img-layer').hide()
-$('.control-value').hide()
+$('.input-wrap, #btn-save, #btn-canceledit, .embed-form').show()
+$('.img-layer, .control-value').hide()
 $(this).hide()
 })
 $('#btn-canceledit').click(function(e){
   e.preventDefault();
 $('input:checkbox').attr('disabled','disabled')
-$('#btn-edit').show()
-$('.img-layer').show()
-$('#btn-save').hide()
-$('.input-wrap').hide()
-$('.control-value').show()
+$('#btn-edit, .img-layer, .control-value').show()
+$('#btn-save, .input-wrap, .embed-form').hide()
 $(this).hide()
 })
 $(function() {

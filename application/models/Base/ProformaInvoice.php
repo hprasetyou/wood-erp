@@ -4,17 +4,15 @@ namespace Base;
 
 use \Partner as ChildPartner;
 use \PartnerQuery as ChildPartnerQuery;
-use \Product as ChildProduct;
-use \ProductCustomer as ChildProductCustomer;
-use \ProductCustomerQuery as ChildProductCustomerQuery;
-use \ProductQuery as ChildProductQuery;
+use \ProformaInvoice as ChildProformaInvoice;
 use \ProformaInvoiceLine as ChildProformaInvoiceLine;
 use \ProformaInvoiceLineQuery as ChildProformaInvoiceLineQuery;
+use \ProformaInvoiceQuery as ChildProformaInvoiceQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
-use Map\ProductCustomerTableMap;
 use Map\ProformaInvoiceLineTableMap;
+use Map\ProformaInvoiceTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -30,18 +28,18 @@ use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'product_customer' table.
+ * Base class that represents a row from the 'proforma_invoice' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class ProductCustomer implements ActiveRecordInterface
+abstract class ProformaInvoice implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Map\\ProductCustomerTableMap';
+    const TABLE_MAP = '\\Map\\ProformaInvoiceTableMap';
 
 
     /**
@@ -85,25 +83,18 @@ abstract class ProductCustomer implements ActiveRecordInterface
     protected $name;
 
     /**
-     * The value for the partner_id field.
+     * The value for the customer_id field.
      *
      * @var        int
      */
-    protected $partner_id;
+    protected $customer_id;
 
     /**
-     * The value for the product_id field.
+     * The value for the date field.
      *
-     * @var        int
+     * @var        DateTime
      */
-    protected $product_id;
-
-    /**
-     * The value for the product_price field.
-     *
-     * @var        int
-     */
-    protected $product_price;
+    protected $date;
 
     /**
      * The value for the description field.
@@ -111,6 +102,14 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * @var        string
      */
     protected $description;
+
+    /**
+     * The value for the state field.
+     *
+     * Note: this column has a database default value of: 'draft'
+     * @var        string
+     */
+    protected $state;
 
     /**
      * The value for the created_at field.
@@ -132,11 +131,6 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * @var        ChildPartner
      */
     protected $aPartner;
-
-    /**
-     * @var        ChildProduct
-     */
-    protected $aProduct;
 
     /**
      * @var        ObjectCollection|ChildProformaInvoiceLine[] Collection to store aggregation of ChildProformaInvoiceLine objects.
@@ -166,10 +160,11 @@ abstract class ProductCustomer implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
+        $this->state = 'draft';
     }
 
     /**
-     * Initializes internal state of Base\ProductCustomer object.
+     * Initializes internal state of Base\ProformaInvoice object.
      * @see applyDefaults()
      */
     public function __construct()
@@ -266,9 +261,9 @@ abstract class ProductCustomer implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>ProductCustomer</code> instance.  If
-     * <code>obj</code> is an instance of <code>ProductCustomer</code>, delegates to
-     * <code>equals(ProductCustomer)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>ProformaInvoice</code> instance.  If
+     * <code>obj</code> is an instance of <code>ProformaInvoice</code>, delegates to
+     * <code>equals(ProformaInvoice)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -334,7 +329,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|ProductCustomer The current object, for fluid interface
+     * @return $this|ProformaInvoice The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -416,33 +411,33 @@ abstract class ProductCustomer implements ActiveRecordInterface
     }
 
     /**
-     * Get the [partner_id] column value.
+     * Get the [customer_id] column value.
      *
      * @return int
      */
-    public function getPartnerId()
+    public function getCustomerId()
     {
-        return $this->partner_id;
+        return $this->customer_id;
     }
 
     /**
-     * Get the [product_id] column value.
+     * Get the [optionally formatted] temporal [date] column value.
      *
-     * @return int
-     */
-    public function getProductId()
-    {
-        return $this->product_id;
-    }
-
-    /**
-     * Get the [product_price] column value.
      *
-     * @return int
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getProductPrice()
+    public function getDate($format = NULL)
     {
-        return $this->product_price;
+        if ($format === null) {
+            return $this->date;
+        } else {
+            return $this->date instanceof \DateTimeInterface ? $this->date->format($format) : null;
+        }
     }
 
     /**
@@ -453,6 +448,16 @@ abstract class ProductCustomer implements ActiveRecordInterface
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Get the [state] column value.
+     *
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
     }
 
     /**
@@ -499,7 +504,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param int $v new value
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @return $this|\ProformaInvoice The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -509,7 +514,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[ProductCustomerTableMap::COL_ID] = true;
+            $this->modifiedColumns[ProformaInvoiceTableMap::COL_ID] = true;
         }
 
         return $this;
@@ -519,7 +524,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * Set the value of [name] column.
      *
      * @param string $v new value
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @return $this|\ProformaInvoice The current object (for fluent API support)
      */
     public function setName($v)
     {
@@ -529,27 +534,27 @@ abstract class ProductCustomer implements ActiveRecordInterface
 
         if ($this->name !== $v) {
             $this->name = $v;
-            $this->modifiedColumns[ProductCustomerTableMap::COL_NAME] = true;
+            $this->modifiedColumns[ProformaInvoiceTableMap::COL_NAME] = true;
         }
 
         return $this;
     } // setName()
 
     /**
-     * Set the value of [partner_id] column.
+     * Set the value of [customer_id] column.
      *
      * @param int $v new value
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @return $this|\ProformaInvoice The current object (for fluent API support)
      */
-    public function setPartnerId($v)
+    public function setCustomerId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->partner_id !== $v) {
-            $this->partner_id = $v;
-            $this->modifiedColumns[ProductCustomerTableMap::COL_PARTNER_ID] = true;
+        if ($this->customer_id !== $v) {
+            $this->customer_id = $v;
+            $this->modifiedColumns[ProformaInvoiceTableMap::COL_CUSTOMER_ID] = true;
         }
 
         if ($this->aPartner !== null && $this->aPartner->getId() !== $v) {
@@ -557,57 +562,33 @@ abstract class ProductCustomer implements ActiveRecordInterface
         }
 
         return $this;
-    } // setPartnerId()
+    } // setCustomerId()
 
     /**
-     * Set the value of [product_id] column.
+     * Sets the value of [date] column to a normalized version of the date/time value specified.
      *
-     * @param int $v new value
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\ProformaInvoice The current object (for fluent API support)
      */
-    public function setProductId($v)
+    public function setDate($v)
     {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->product_id !== $v) {
-            $this->product_id = $v;
-            $this->modifiedColumns[ProductCustomerTableMap::COL_PRODUCT_ID] = true;
-        }
-
-        if ($this->aProduct !== null && $this->aProduct->getId() !== $v) {
-            $this->aProduct = null;
-        }
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->date !== null || $dt !== null) {
+            if ($this->date === null || $dt === null || $dt->format("Y-m-d") !== $this->date->format("Y-m-d")) {
+                $this->date = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[ProformaInvoiceTableMap::COL_DATE] = true;
+            }
+        } // if either are not null
 
         return $this;
-    } // setProductId()
-
-    /**
-     * Set the value of [product_price] column.
-     *
-     * @param int $v new value
-     * @return $this|\ProductCustomer The current object (for fluent API support)
-     */
-    public function setProductPrice($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->product_price !== $v) {
-            $this->product_price = $v;
-            $this->modifiedColumns[ProductCustomerTableMap::COL_PRODUCT_PRICE] = true;
-        }
-
-        return $this;
-    } // setProductPrice()
+    } // setDate()
 
     /**
      * Set the value of [description] column.
      *
      * @param string $v new value
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @return $this|\ProformaInvoice The current object (for fluent API support)
      */
     public function setDescription($v)
     {
@@ -617,18 +598,38 @@ abstract class ProductCustomer implements ActiveRecordInterface
 
         if ($this->description !== $v) {
             $this->description = $v;
-            $this->modifiedColumns[ProductCustomerTableMap::COL_DESCRIPTION] = true;
+            $this->modifiedColumns[ProformaInvoiceTableMap::COL_DESCRIPTION] = true;
         }
 
         return $this;
     } // setDescription()
 
     /**
+     * Set the value of [state] column.
+     *
+     * @param string $v new value
+     * @return $this|\ProformaInvoice The current object (for fluent API support)
+     */
+    public function setState($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->state !== $v) {
+            $this->state = $v;
+            $this->modifiedColumns[ProformaInvoiceTableMap::COL_STATE] = true;
+        }
+
+        return $this;
+    } // setState()
+
+    /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @return $this|\ProformaInvoice The current object (for fluent API support)
      */
     public function setCreatedAt($v)
     {
@@ -636,7 +637,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
         if ($this->created_at !== null || $dt !== null) {
             if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_at->format("Y-m-d H:i:s.u")) {
                 $this->created_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[ProductCustomerTableMap::COL_CREATED_AT] = true;
+                $this->modifiedColumns[ProformaInvoiceTableMap::COL_CREATED_AT] = true;
             }
         } // if either are not null
 
@@ -648,7 +649,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @return $this|\ProformaInvoice The current object (for fluent API support)
      */
     public function setUpdatedAt($v)
     {
@@ -656,7 +657,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
         if ($this->updated_at !== null || $dt !== null) {
             if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated_at->format("Y-m-d H:i:s.u")) {
                 $this->updated_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[ProductCustomerTableMap::COL_UPDATED_AT] = true;
+                $this->modifiedColumns[ProformaInvoiceTableMap::COL_UPDATED_AT] = true;
             }
         } // if either are not null
 
@@ -673,6 +674,10 @@ abstract class ProductCustomer implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->state !== 'draft') {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -699,31 +704,34 @@ abstract class ProductCustomer implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProductCustomerTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProformaInvoiceTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProductCustomerTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProformaInvoiceTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProductCustomerTableMap::translateFieldName('PartnerId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->partner_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProformaInvoiceTableMap::translateFieldName('CustomerId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->customer_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProductCustomerTableMap::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->product_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProformaInvoiceTableMap::translateFieldName('Date', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00') {
+                $col = null;
+            }
+            $this->date = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProductCustomerTableMap::translateFieldName('ProductPrice', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->product_price = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ProductCustomerTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProformaInvoiceTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
             $this->description = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ProductCustomerTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ProformaInvoiceTableMap::translateFieldName('State', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->state = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ProformaInvoiceTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : ProductCustomerTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : ProformaInvoiceTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -736,10 +744,10 @@ abstract class ProductCustomer implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 8; // 8 = ProductCustomerTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = ProformaInvoiceTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\ProductCustomer'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\ProformaInvoice'), 0, $e);
         }
     }
 
@@ -758,11 +766,8 @@ abstract class ProductCustomer implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aPartner !== null && $this->partner_id !== $this->aPartner->getId()) {
+        if ($this->aPartner !== null && $this->customer_id !== $this->aPartner->getId()) {
             $this->aPartner = null;
-        }
-        if ($this->aProduct !== null && $this->product_id !== $this->aProduct->getId()) {
-            $this->aProduct = null;
         }
     } // ensureConsistency
 
@@ -787,13 +792,13 @@ abstract class ProductCustomer implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(ProductCustomerTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(ProformaInvoiceTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildProductCustomerQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildProformaInvoiceQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -804,7 +809,6 @@ abstract class ProductCustomer implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aPartner = null;
-            $this->aProduct = null;
             $this->collProformaInvoiceLines = null;
 
         } // if (deep)
@@ -816,8 +820,8 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see ProductCustomer::setDeleted()
-     * @see ProductCustomer::isDeleted()
+     * @see ProformaInvoice::setDeleted()
+     * @see ProformaInvoice::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -826,11 +830,11 @@ abstract class ProductCustomer implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductCustomerTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ProformaInvoiceTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildProductCustomerQuery::create()
+            $deleteQuery = ChildProformaInvoiceQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -865,7 +869,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductCustomerTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ProformaInvoiceTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -884,7 +888,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                ProductCustomerTableMap::addInstanceToPool($this);
+                ProformaInvoiceTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -920,13 +924,6 @@ abstract class ProductCustomer implements ActiveRecordInterface
                     $affectedRows += $this->aPartner->save($con);
                 }
                 $this->setPartner($this->aPartner);
-            }
-
-            if ($this->aProduct !== null) {
-                if ($this->aProduct->isModified() || $this->aProduct->isNew()) {
-                    $affectedRows += $this->aProduct->save($con);
-                }
-                $this->setProduct($this->aProduct);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -977,39 +974,39 @@ abstract class ProductCustomer implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[ProductCustomerTableMap::COL_ID] = true;
+        $this->modifiedColumns[ProformaInvoiceTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ProductCustomerTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ProformaInvoiceTableMap::COL_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_ID)) {
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_NAME)) {
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'name';
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_PARTNER_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'partner_id';
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_CUSTOMER_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'customer_id';
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_PRODUCT_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'product_id';
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_DATE)) {
+            $modifiedColumns[':p' . $index++]  = 'date';
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_PRODUCT_PRICE)) {
-            $modifiedColumns[':p' . $index++]  = 'product_price';
-        }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_DESCRIPTION)) {
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_DESCRIPTION)) {
             $modifiedColumns[':p' . $index++]  = 'description';
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_CREATED_AT)) {
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_STATE)) {
+            $modifiedColumns[':p' . $index++]  = 'state';
+        }
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_UPDATED_AT)) {
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_UPDATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'updated_at';
         }
 
         $sql = sprintf(
-            'INSERT INTO product_customer (%s) VALUES (%s)',
+            'INSERT INTO proforma_invoice (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -1024,17 +1021,17 @@ abstract class ProductCustomer implements ActiveRecordInterface
                     case 'name':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
-                    case 'partner_id':
-                        $stmt->bindValue($identifier, $this->partner_id, PDO::PARAM_INT);
+                    case 'customer_id':
+                        $stmt->bindValue($identifier, $this->customer_id, PDO::PARAM_INT);
                         break;
-                    case 'product_id':
-                        $stmt->bindValue($identifier, $this->product_id, PDO::PARAM_INT);
-                        break;
-                    case 'product_price':
-                        $stmt->bindValue($identifier, $this->product_price, PDO::PARAM_INT);
+                    case 'date':
+                        $stmt->bindValue($identifier, $this->date ? $this->date->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                     case 'description':
                         $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
+                        break;
+                    case 'state':
+                        $stmt->bindValue($identifier, $this->state, PDO::PARAM_STR);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -1088,7 +1085,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = ProductCustomerTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = ProformaInvoiceTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -1111,16 +1108,16 @@ abstract class ProductCustomer implements ActiveRecordInterface
                 return $this->getName();
                 break;
             case 2:
-                return $this->getPartnerId();
+                return $this->getCustomerId();
                 break;
             case 3:
-                return $this->getProductId();
+                return $this->getDate();
                 break;
             case 4:
-                return $this->getProductPrice();
+                return $this->getDescription();
                 break;
             case 5:
-                return $this->getDescription();
+                return $this->getState();
                 break;
             case 6:
                 return $this->getCreatedAt();
@@ -1152,21 +1149,25 @@ abstract class ProductCustomer implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['ProductCustomer'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['ProformaInvoice'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['ProductCustomer'][$this->hashCode()] = true;
-        $keys = ProductCustomerTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['ProformaInvoice'][$this->hashCode()] = true;
+        $keys = ProformaInvoiceTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
-            $keys[2] => $this->getPartnerId(),
-            $keys[3] => $this->getProductId(),
-            $keys[4] => $this->getProductPrice(),
-            $keys[5] => $this->getDescription(),
+            $keys[2] => $this->getCustomerId(),
+            $keys[3] => $this->getDate(),
+            $keys[4] => $this->getDescription(),
+            $keys[5] => $this->getState(),
             $keys[6] => $this->getCreatedAt(),
             $keys[7] => $this->getUpdatedAt(),
         );
+        if ($result[$keys[3]] instanceof \DateTimeInterface) {
+            $result[$keys[3]] = $result[$keys[3]]->format('c');
+        }
+
         if ($result[$keys[6]] instanceof \DateTimeInterface) {
             $result[$keys[6]] = $result[$keys[6]]->format('c');
         }
@@ -1195,21 +1196,6 @@ abstract class ProductCustomer implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aPartner->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->aProduct) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'product';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'product';
-                        break;
-                    default:
-                        $key = 'Product';
-                }
-
-                $result[$key] = $this->aProduct->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->collProformaInvoiceLines) {
 
@@ -1240,11 +1226,11 @@ abstract class ProductCustomer implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\ProductCustomer
+     * @return $this|\ProformaInvoice
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = ProductCustomerTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = ProformaInvoiceTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1255,7 +1241,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\ProductCustomer
+     * @return $this|\ProformaInvoice
      */
     public function setByPosition($pos, $value)
     {
@@ -1267,16 +1253,16 @@ abstract class ProductCustomer implements ActiveRecordInterface
                 $this->setName($value);
                 break;
             case 2:
-                $this->setPartnerId($value);
+                $this->setCustomerId($value);
                 break;
             case 3:
-                $this->setProductId($value);
+                $this->setDate($value);
                 break;
             case 4:
-                $this->setProductPrice($value);
+                $this->setDescription($value);
                 break;
             case 5:
-                $this->setDescription($value);
+                $this->setState($value);
                 break;
             case 6:
                 $this->setCreatedAt($value);
@@ -1308,7 +1294,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = ProductCustomerTableMap::getFieldNames($keyType);
+        $keys = ProformaInvoiceTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setId($arr[$keys[0]]);
@@ -1317,16 +1303,16 @@ abstract class ProductCustomer implements ActiveRecordInterface
             $this->setName($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setPartnerId($arr[$keys[2]]);
+            $this->setCustomerId($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setProductId($arr[$keys[3]]);
+            $this->setDate($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setProductPrice($arr[$keys[4]]);
+            $this->setDescription($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setDescription($arr[$keys[5]]);
+            $this->setState($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
             $this->setCreatedAt($arr[$keys[6]]);
@@ -1353,7 +1339,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\ProductCustomer The current object, for fluid interface
+     * @return $this|\ProformaInvoice The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1373,31 +1359,31 @@ abstract class ProductCustomer implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(ProductCustomerTableMap::DATABASE_NAME);
+        $criteria = new Criteria(ProformaInvoiceTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_ID)) {
-            $criteria->add(ProductCustomerTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_ID)) {
+            $criteria->add(ProformaInvoiceTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_NAME)) {
-            $criteria->add(ProductCustomerTableMap::COL_NAME, $this->name);
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_NAME)) {
+            $criteria->add(ProformaInvoiceTableMap::COL_NAME, $this->name);
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_PARTNER_ID)) {
-            $criteria->add(ProductCustomerTableMap::COL_PARTNER_ID, $this->partner_id);
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_CUSTOMER_ID)) {
+            $criteria->add(ProformaInvoiceTableMap::COL_CUSTOMER_ID, $this->customer_id);
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_PRODUCT_ID)) {
-            $criteria->add(ProductCustomerTableMap::COL_PRODUCT_ID, $this->product_id);
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_DATE)) {
+            $criteria->add(ProformaInvoiceTableMap::COL_DATE, $this->date);
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_PRODUCT_PRICE)) {
-            $criteria->add(ProductCustomerTableMap::COL_PRODUCT_PRICE, $this->product_price);
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_DESCRIPTION)) {
+            $criteria->add(ProformaInvoiceTableMap::COL_DESCRIPTION, $this->description);
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_DESCRIPTION)) {
-            $criteria->add(ProductCustomerTableMap::COL_DESCRIPTION, $this->description);
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_STATE)) {
+            $criteria->add(ProformaInvoiceTableMap::COL_STATE, $this->state);
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_CREATED_AT)) {
-            $criteria->add(ProductCustomerTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_CREATED_AT)) {
+            $criteria->add(ProformaInvoiceTableMap::COL_CREATED_AT, $this->created_at);
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_UPDATED_AT)) {
-            $criteria->add(ProductCustomerTableMap::COL_UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_UPDATED_AT)) {
+            $criteria->add(ProformaInvoiceTableMap::COL_UPDATED_AT, $this->updated_at);
         }
 
         return $criteria;
@@ -1415,8 +1401,8 @@ abstract class ProductCustomer implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildProductCustomerQuery::create();
-        $criteria->add(ProductCustomerTableMap::COL_ID, $this->id);
+        $criteria = ChildProformaInvoiceQuery::create();
+        $criteria->add(ProformaInvoiceTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1478,7 +1464,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \ProductCustomer (or compatible) type.
+     * @param      object $copyObj An object of \ProformaInvoice (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1486,10 +1472,10 @@ abstract class ProductCustomer implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setName($this->getName());
-        $copyObj->setPartnerId($this->getPartnerId());
-        $copyObj->setProductId($this->getProductId());
-        $copyObj->setProductPrice($this->getProductPrice());
+        $copyObj->setCustomerId($this->getCustomerId());
+        $copyObj->setDate($this->getDate());
         $copyObj->setDescription($this->getDescription());
+        $copyObj->setState($this->getState());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
 
@@ -1521,7 +1507,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \ProductCustomer Clone of current object.
+     * @return \ProformaInvoice Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1538,15 +1524,15 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * Declares an association between this object and a ChildPartner object.
      *
      * @param  ChildPartner $v
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @return $this|\ProformaInvoice The current object (for fluent API support)
      * @throws PropelException
      */
     public function setPartner(ChildPartner $v = null)
     {
         if ($v === null) {
-            $this->setPartnerId(NULL);
+            $this->setCustomerId(NULL);
         } else {
-            $this->setPartnerId($v->getId());
+            $this->setCustomerId($v->getId());
         }
 
         $this->aPartner = $v;
@@ -1554,7 +1540,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildPartner object, it will not be re-added.
         if ($v !== null) {
-            $v->addProductCustomer($this);
+            $v->addProformaInvoice($this);
         }
 
 
@@ -1571,69 +1557,18 @@ abstract class ProductCustomer implements ActiveRecordInterface
      */
     public function getPartner(ConnectionInterface $con = null)
     {
-        if ($this->aPartner === null && ($this->partner_id != 0)) {
-            $this->aPartner = ChildPartnerQuery::create()->findPk($this->partner_id, $con);
+        if ($this->aPartner === null && ($this->customer_id != 0)) {
+            $this->aPartner = ChildPartnerQuery::create()->findPk($this->customer_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aPartner->addProductCustomers($this);
+                $this->aPartner->addProformaInvoices($this);
              */
         }
 
         return $this->aPartner;
-    }
-
-    /**
-     * Declares an association between this object and a ChildProduct object.
-     *
-     * @param  ChildProduct $v
-     * @return $this|\ProductCustomer The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setProduct(ChildProduct $v = null)
-    {
-        if ($v === null) {
-            $this->setProductId(NULL);
-        } else {
-            $this->setProductId($v->getId());
-        }
-
-        $this->aProduct = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildProduct object, it will not be re-added.
-        if ($v !== null) {
-            $v->addProductCustomer($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildProduct object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildProduct The associated ChildProduct object.
-     * @throws PropelException
-     */
-    public function getProduct(ConnectionInterface $con = null)
-    {
-        if ($this->aProduct === null && ($this->product_id != 0)) {
-            $this->aProduct = ChildProductQuery::create()->findPk($this->product_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aProduct->addProductCustomers($this);
-             */
-        }
-
-        return $this->aProduct;
     }
 
 
@@ -1705,7 +1640,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildProductCustomer is new, it will return
+     * If this ChildProformaInvoice is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
@@ -1722,7 +1657,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
                 $this->initProformaInvoiceLines();
             } else {
                 $collProformaInvoiceLines = ChildProformaInvoiceLineQuery::create(null, $criteria)
-                    ->filterByProductCustomer($this)
+                    ->filterByProformaInvoice($this)
                     ->find($con);
 
                 if (null !== $criteria) {
@@ -1765,7 +1700,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      *
      * @param      Collection $proformaInvoiceLines A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildProductCustomer The current object (for fluent API support)
+     * @return $this|ChildProformaInvoice The current object (for fluent API support)
      */
     public function setProformaInvoiceLines(Collection $proformaInvoiceLines, ConnectionInterface $con = null)
     {
@@ -1776,7 +1711,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
         $this->proformaInvoiceLinesScheduledForDeletion = $proformaInvoiceLinesToDelete;
 
         foreach ($proformaInvoiceLinesToDelete as $proformaInvoiceLineRemoved) {
-            $proformaInvoiceLineRemoved->setProductCustomer(null);
+            $proformaInvoiceLineRemoved->setProformaInvoice(null);
         }
 
         $this->collProformaInvoiceLines = null;
@@ -1817,7 +1752,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
             }
 
             return $query
-                ->filterByProductCustomer($this)
+                ->filterByProformaInvoice($this)
                 ->count($con);
         }
 
@@ -1829,7 +1764,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * through the ChildProformaInvoiceLine foreign key attribute.
      *
      * @param  ChildProformaInvoiceLine $l ChildProformaInvoiceLine
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @return $this|\ProformaInvoice The current object (for fluent API support)
      */
     public function addProformaInvoiceLine(ChildProformaInvoiceLine $l)
     {
@@ -1855,12 +1790,12 @@ abstract class ProductCustomer implements ActiveRecordInterface
     protected function doAddProformaInvoiceLine(ChildProformaInvoiceLine $proformaInvoiceLine)
     {
         $this->collProformaInvoiceLines[]= $proformaInvoiceLine;
-        $proformaInvoiceLine->setProductCustomer($this);
+        $proformaInvoiceLine->setProformaInvoice($this);
     }
 
     /**
      * @param  ChildProformaInvoiceLine $proformaInvoiceLine The ChildProformaInvoiceLine object to remove.
-     * @return $this|ChildProductCustomer The current object (for fluent API support)
+     * @return $this|ChildProformaInvoice The current object (for fluent API support)
      */
     public function removeProformaInvoiceLine(ChildProformaInvoiceLine $proformaInvoiceLine)
     {
@@ -1872,7 +1807,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
                 $this->proformaInvoiceLinesScheduledForDeletion->clear();
             }
             $this->proformaInvoiceLinesScheduledForDeletion[]= clone $proformaInvoiceLine;
-            $proformaInvoiceLine->setProductCustomer(null);
+            $proformaInvoiceLine->setProformaInvoice(null);
         }
 
         return $this;
@@ -1882,23 +1817,23 @@ abstract class ProductCustomer implements ActiveRecordInterface
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this ProductCustomer is new, it will return
-     * an empty collection; or if this ProductCustomer has previously
+     * Otherwise if this ProformaInvoice is new, it will return
+     * an empty collection; or if this ProformaInvoice has previously
      * been saved, it will retrieve related ProformaInvoiceLines from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in ProductCustomer.
+     * actually need in ProformaInvoice.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildProformaInvoiceLine[] List of ChildProformaInvoiceLine objects
      */
-    public function getProformaInvoiceLinesJoinProformaInvoice(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getProformaInvoiceLinesJoinProductCustomer(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildProformaInvoiceLineQuery::create(null, $criteria);
-        $query->joinWith('ProformaInvoice', $joinBehavior);
+        $query->joinWith('ProductCustomer', $joinBehavior);
 
         return $this->getProformaInvoiceLines($query, $con);
     }
@@ -1911,17 +1846,14 @@ abstract class ProductCustomer implements ActiveRecordInterface
     public function clear()
     {
         if (null !== $this->aPartner) {
-            $this->aPartner->removeProductCustomer($this);
-        }
-        if (null !== $this->aProduct) {
-            $this->aProduct->removeProductCustomer($this);
+            $this->aPartner->removeProformaInvoice($this);
         }
         $this->id = null;
         $this->name = null;
-        $this->partner_id = null;
-        $this->product_id = null;
-        $this->product_price = null;
+        $this->customer_id = null;
+        $this->date = null;
         $this->description = null;
+        $this->state = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;
@@ -1952,7 +1884,6 @@ abstract class ProductCustomer implements ActiveRecordInterface
 
         $this->collProformaInvoiceLines = null;
         $this->aPartner = null;
-        $this->aProduct = null;
     }
 
     /**
@@ -1962,7 +1893,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(ProductCustomerTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(ProformaInvoiceTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

@@ -22,7 +22,6 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildProductQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildProductQuery orderByName($order = Criteria::ASC) Order by the name column
- * @method     ChildProductQuery orderByArticle($order = Criteria::ASC) Order by the article column
  * @method     ChildProductQuery orderByDescription($order = Criteria::ASC) Order by the description column
  * @method     ChildProductQuery orderByIsKdn($order = Criteria::ASC) Order by the is_kdn column
  * @method     ChildProductQuery orderByHasComponent($order = Criteria::ASC) Order by the has_component column
@@ -42,7 +41,6 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildProductQuery groupById() Group by the id column
  * @method     ChildProductQuery groupByName() Group by the name column
- * @method     ChildProductQuery groupByArticle() Group by the article column
  * @method     ChildProductQuery groupByDescription() Group by the description column
  * @method     ChildProductQuery groupByIsKdn() Group by the is_kdn column
  * @method     ChildProductQuery groupByHasComponent() Group by the has_component column
@@ -115,7 +113,6 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildProduct findOneById(int $id) Return the first ChildProduct filtered by the id column
  * @method     ChildProduct findOneByName(string $name) Return the first ChildProduct filtered by the name column
- * @method     ChildProduct findOneByArticle(string $article) Return the first ChildProduct filtered by the article column
  * @method     ChildProduct findOneByDescription(string $description) Return the first ChildProduct filtered by the description column
  * @method     ChildProduct findOneByIsKdn(boolean $is_kdn) Return the first ChildProduct filtered by the is_kdn column
  * @method     ChildProduct findOneByHasComponent(boolean $has_component) Return the first ChildProduct filtered by the has_component column
@@ -138,7 +135,6 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildProduct requireOneById(int $id) Return the first ChildProduct filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByName(string $name) Return the first ChildProduct filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildProduct requireOneByArticle(string $article) Return the first ChildProduct filtered by the article column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByDescription(string $description) Return the first ChildProduct filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByIsKdn(boolean $is_kdn) Return the first ChildProduct filtered by the is_kdn column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByHasComponent(boolean $has_component) Return the first ChildProduct filtered by the has_component column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -159,7 +155,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildProduct objects based on current ModelCriteria
  * @method     ChildProduct[]|ObjectCollection findById(int $id) Return ChildProduct objects filtered by the id column
  * @method     ChildProduct[]|ObjectCollection findByName(string $name) Return ChildProduct objects filtered by the name column
- * @method     ChildProduct[]|ObjectCollection findByArticle(string $article) Return ChildProduct objects filtered by the article column
  * @method     ChildProduct[]|ObjectCollection findByDescription(string $description) Return ChildProduct objects filtered by the description column
  * @method     ChildProduct[]|ObjectCollection findByIsKdn(boolean $is_kdn) Return ChildProduct objects filtered by the is_kdn column
  * @method     ChildProduct[]|ObjectCollection findByHasComponent(boolean $has_component) Return ChildProduct objects filtered by the has_component column
@@ -274,7 +269,7 @@ abstract class ProductQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, article, description, is_kdn, has_component, cost_price, list_price, cubic_asb, cubic_kdn, width_asb, height_asb, depth_asb, width_kdn, height_kdn, depth_kdn, net_cubic, created_at, updated_at FROM product WHERE id = :p0';
+        $sql = 'SELECT id, name, description, is_kdn, has_component, cost_price, list_price, cubic_asb, cubic_kdn, width_asb, height_asb, depth_asb, width_kdn, height_kdn, depth_kdn, net_cubic, created_at, updated_at FROM product WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -428,31 +423,6 @@ abstract class ProductQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProductTableMap::COL_NAME, $name, $comparison);
-    }
-
-    /**
-     * Filter the query on the article column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByArticle('fooValue');   // WHERE article = 'fooValue'
-     * $query->filterByArticle('%fooValue%', Criteria::LIKE); // WHERE article LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $article The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildProductQuery The current query, for fluid interface
-     */
-    public function filterByArticle($article = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($article)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(ProductTableMap::COL_ARTICLE, $article, $comparison);
     }
 
     /**

@@ -22,7 +22,9 @@ class Authorization {
           $access = true;
         }
         if(!$access){
-          die('access denied');
+          if(!in_array($this->CI->uri->segment(2),$except)){
+            die('access denied');
+          }
         }
     }
 }

@@ -50,7 +50,6 @@
   <table name="product" idMethod="native" phpName="Product">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
-    <column name="article" phpName="Article" type="VARCHAR" size="255"/>
     <column name="description" phpName="Description" type="LONGVARCHAR"/>
     <column name="is_kdn" phpName="IsKdn" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
     <column name="has_component" phpName="HasComponent" type="BOOLEAN" size="1" defaultValue="false"/>
@@ -94,11 +93,16 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
+  <!--
+  Product price here was to identify, wether this customer reorder this product
+  again we can use "their special" price for them
+ -->
   <table name="product_customer" idMethod="native" phpName="ProductCustomer">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="code" phpName="Code" type="VARCHAR" size="255" required="true"/>
+    <column name="name" phpName="Name" type="VARCHAR" size="255"/>
     <column name="partner_id" phpName="PartnerId" type="INTEGER" required="true"/>
     <column name="product_id" phpName="ProductId" type="INTEGER" required="true"/>
+    <column name="product_price" phpName="ProductPrice" type="INTEGER" required="true"/>
     <column name="description" phpName="Description" type="LONGVARCHAR"/>
     <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
     <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
@@ -227,6 +231,39 @@
     <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
     <foreign-key foreignTable="product">
       <reference local="product_id" foreign="id"/>
+    </foreign-key>
+  </table>
+  <table name="proforma_invoice" phpName="ProformaInvoice">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="name" phpName="Name" type="VARCHAR" size="255"/>
+    <column name="customer_id" phpName="CustomerId" type="INTEGER" required="true"/>
+    <column name="date" phpName="Date" type="DATE"/>
+    <column name="description" phpName="Description" size="255" type="VARCHAR"/>
+    <column name="state" phpName="State" type="CHAR" sqlType="ENUM('draft','confirm')" defaultValue="draft"/>
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
+    <foreign-key foreignTable="partner">
+      <reference local="customer_id" foreign="id"/>
+    </foreign-key>
+  </table>
+  <table name="proforma_invoice_line" phpName="ProformaInvoiceLine">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="proforma_invoice_id" phpName="ProformaInvoiceId" type="INTEGER" required="true"/>
+    <column name="product_customer_id" phpName="ProductCustomerId" type="INTEGER" required="true"/>
+    <column name="description" phpName="Description" size="255" type="VARCHAR"/>
+    <column name="qty" phpName="Qty" type="INTEGER"/>
+    <column name="qty_on_container" phpName="QtyOnContainer" type="INTEGER"/>
+    <column name="cubic_dimension" phpName="CubicDimension" type="FLOAT"/>
+    <column name="total_cubic_dimension" phpName="TotalCubicDimension" type="FLOAT"/>
+    <column name="price" phpName="Price" type="FLOAT"/>
+    <column name="total_price" phpName="TotalPrice" type="FLOAT"/>
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
+    <foreign-key foreignTable="proforma_invoice">
+      <reference local="proforma_invoice_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="product_customer">
+      <reference local="product_customer_id" foreign="id"/>
     </foreign-key>
   </table>
 

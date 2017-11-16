@@ -21,13 +21,14 @@
 				'title': res.string.productimage,
 				'delete_url':'/index.php/manage_productimages/delete/{{ productimages.Id }}',
 				'object':productimages} %}
+				</div>
 				<div class="box-body">
 					
 					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.name}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if productimages %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" id="Name" value="{{ productimages.Name }}"
+							<input type="text" placeholder="{{ res.string.name }}" id="Name" value="{{ productimages.Name }}"
 							name="Name"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if productimages %}
@@ -37,10 +38,10 @@
 						</div>
 
 					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.url}}</label>
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Url">{{res.string.url}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if productimages %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" id="Url" value="{{ productimages.Url }}"
+							<input type="text" placeholder="{{ res.string.url }}" id="Url" value="{{ productimages.Url }}"
 							name="Url"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if productimages %}
@@ -50,10 +51,10 @@
 						</div>
 
 					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.description}}</label>
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Description">{{res.string.description}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if productimages %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" id="Description" value="{{ productimages.Description }}"
+							<input type="text" placeholder="{{ res.string.description }}" id="Description" value="{{ productimages.Description }}"
 							name="Description"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if productimages %}
@@ -63,24 +64,27 @@
 						</div>
 
 					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.product_id}}</label>
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProductId">{{res.string.product_id}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if productimages %}style="display:none"{% endif %} class="input-wrap">
-							<input type="number" id="ProductId" value="{{ productimages.ProductId }}"
-							name="ProductId" required="required" class="form-control  col-md-7 col-xs-12">
+						<div {% if productimages %}style="display:none"{% endif %} class="input-wrap input-group">
+							<input type="hidden" type="text" id="ProductId" value="{{ productimages.ProductId }}" name="ProductId"  >
+							<input type="text" required="required" name="displayProductId" id="displayProductId"  placeholder="{{ res.string.product_id }}" value="{{ productimages.Product }}" class="form-control" />
+							<span class="input-group-btn">
+								<button class="btn btnModal btn-default" id="btnProductId"  data-target="ModalProduct" type="button">{{res.string.search}}</button>
+							</span>
 						</div>
 								{% if productimages %}
-									<p class="control-value">{{ productimages.ProductId  }}</p>
+									<p class="control-value">{{ productimages.Product.Name  }}</p>
 								{% endif %}
 							</div>
 						</div>
 
 				</div>
-			</div>
 		</form>
 	</div>
 </div>
 <!-- Modal -->
+{% include "admin/products/_modal.html" %}
 
 {% endblock %}
 {% block bottom%}

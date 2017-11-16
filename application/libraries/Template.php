@@ -49,4 +49,18 @@ class Template {
 
         echo $twig->render($tpl.'.html',$out);
     }
+    public function render_pdf($tpl, $data = array() ,$config = array('docname'=>'document','header'=>'nota'))
+    {
+        $dompdf = new Dompdf();
+        $out = $data;
+        $out['header'] = 'nota';
+        $dompdf->loadHtml($this->twig->render($tpl.'.html', $out));
+        // (Optional) Setup the paper size and orientation
+        $dompdf->setPaper('A4', 'portrait');
+        // Render the HTML as PDF
+        $dompdf->render();
+        // Output the generated PDF to Browser
+        $docname = $config['docname'];
+        $dompdf->stream("$docname.pdf");
+    }
 }
