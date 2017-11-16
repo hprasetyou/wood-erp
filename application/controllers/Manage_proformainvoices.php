@@ -53,14 +53,19 @@ class Manage_proformainvoices extends CI_Controller{
 			));
   }
 
-  function detail($id){
+  function detail($id,$render = "html"){
 
 		$partners = PartnerQuery::create()->find();
 
 		$proformainvoice = ProformaInvoiceQuery::create()->findPK($id);
-		$this->template->render('admin/proformainvoices/form',array('proformainvoices'=>$proformainvoice,
-		'partners'=> $partners,
-			));
+    if($render=="pdf"){
+      $this->template->render_pdf("admin/proformainvoices/pdf/report");
+    }else{
+      $this->template->render('admin/proformainvoices/form',array('proformainvoices'=>$proformainvoice,
+      'partners'=> $partners,
+        ));
+    }
+
   }
 
   function write($id=null){

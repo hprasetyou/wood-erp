@@ -4,12 +4,21 @@ v1.0
 This is library for accessing twig, make sure you have intall twig via composer
 and enable composer autoloading
 */
+use Dompdf\Dompdf;
+
 class Template {
+  public function __construct()
+  {
+      $loader = new Twig_Loader_Filesystem('./application/views');
+          $this->twig = new Twig_Environment($loader);
+      $this->twig = new Twig_Environment($loader, array(
+      'cache' => false,// '/application/cache'
+  ));
+  }
+  private $twig;
     function render($tpl,$data=array(),$ext="html"){
 
 		$this->CI =& get_instance();
-        $loader = new Twig_Loader_Filesystem('./application/views');
-        $twig = new Twig_Environment($loader);
         $this->CI->load->helper('url');
         $session = [];
         if($this->CI->session->userdata('logged_in')){
@@ -47,8 +56,10 @@ class Template {
         );
         $out = array_merge($pdata,$data);
 
-        echo $twig->render($tpl.'.html',$out);
+        echo $this->twig->render($tpl.'.html',$out);
     }
+
+
     public function render_pdf($tpl, $data = array() ,$config = array('docname'=>'document','header'=>'nota'))
     {
         $dompdf = new Dompdf();
@@ -61,6 +72,6 @@ class Template {
         $dompdf->render();
         // Output the generated PDF to Browser
         $docname = $config['docname'];
-        $dompdf->stream("$docname.pdf");
+        $dompdf->stream("$docname.pdf" , array( 'Attachment'=>0 ) );
     }
 }
