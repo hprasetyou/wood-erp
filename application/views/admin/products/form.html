@@ -8,7 +8,7 @@
 			<div class="box box-info">
 				<div class="box-header with-border">
 					{% include 'common/_form_header.html' with {'back_url':'/index.php/manage_products'~back_link, 'title': res.string.product,
-					'delete_url':'/index.php/manage_products/delete/{{ products.Id }}', 'object':products} %}
+					'delete_url':'/index.php/manage_products/delete/'~products.Id, 'object':products} %}
 				</div>
 				<div class="box-body">
 					<div class="row">

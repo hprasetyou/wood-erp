@@ -204,10 +204,19 @@ class Manage_products extends CI_Controller{
 
   function delete($id){
 		if($this->input->post('confirm')){
-			$product = ProductQuery::create()->findPK($id);
-			$product->delete();
+      try {
+        $product = ProductQuery::create()->findPK($id);
+        $product->getProductCustomers()->delete();
+        $product->getProductFinishings()->delete();
+        $product->getProductImages()->delete();
+        $product->getProductComponents()->delete();
+        $product->delete();
+        $this->loging->add_entry('products',$product->getId(),('activity_delete'));
+      } catch (Exception $e) {
+      $this->loging->add_entry('products',$product->getId(),('activity_delete_failed'));
+      }
 		}
-		redirect('manage_products');
+    redirect('manage_products');
   }
 
 

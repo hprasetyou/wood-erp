@@ -36,7 +36,7 @@ jQuery.fn.loadTableData = function(
    })
    fl.push({
     "data":"id",
-    "render":new Function("data", "type","row","meta", "return '<a data-id=\"'+data+'\" class=\"btn btn-sm btn-default pulloginl-right btn-select\" href=\"'+meta.settings.ajax.split('get_json')[0]+'detail/'+data+'\"><i class=\"fa fa-search\"></i> </a>'")
+    "render":new Function("data", "type","row","meta", "return '<a data-id=\"'+data+'\" class=\"btn btn-sm btn-default pulloginl-right btn-select\" href=\"'+meta.settings.ajax.split('get_json')[0]+'detail/'+data+'\"><i class=\"fa fa-search\"></i> Detail</a>'")
   })
   var params = ''
   if(bdm){
@@ -170,6 +170,10 @@ $(document).ready(function(){
       window.history.back();
     }
   })
+  $('.lightGallery').lightGallery({
+     thumbnail:true,
+     animateThumb:true
+  });
 })
 $('.form-select').select2()
 $('#btn-edit').click(function(e){

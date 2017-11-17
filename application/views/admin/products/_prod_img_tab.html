@@ -55,11 +55,13 @@
     <div class="box-body">
       <div class="img-list">
         {% for Images in products.ProductImages%}
-        <div data-id="{{Images.Id}}" class="image col-sm-2 col-xs-6">
-          <a class="close close-img">&times;</a>
-          <a href="#/" data-toggle="modal" class="thumbnail prod-image-thumbnail" data-target="#modalImgProduct">
-            <img class='' src="{% if Images.Url %}{{Images.Url}}{% else %}/public/upload/images/default-thumbnail.jpg{% endif %}" alt="...">
-          </a>
+        <div data-id="{{Images.Id}}" class=" col-sm-2 col-xs-6 image">
+          <a {% if products %}style="display:none"{% endif %} class="close input-wrap close-img">&times;</a>
+          <div class="lightGallery">
+            <a href="{{Images.Url}}" data-sub-html="<h4>{{Images.Name}}</h4><p>{{Images.Description}}</p>" class="thumbnail prod-image-thumbnail">
+              <img class='image-item' src="{% if Images.Url %}{{ Images.Url | replace({'original':'120x120'})}}{% else %}/public/upload/images/default-thumbnail.jpg{% endif %}" alt="...">
+            </a>
+          </div>
         </div>
         {% endfor %}
       </div>
