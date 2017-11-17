@@ -1,75 +1,64 @@
- {% extends "dashboard.html" %} {% set title= res.string.supplier %}
- {% if suppliers %} {% set bc_text = suppliers.name %}
- {% else %} {% set bc_text = 'Baru' %}
-  {% endif %}
-	 {% set breadcrumbs = [
-		 {'link': base_url~'index.php/manage_suppliers','text':res.string.supplier},
-		 {'link':'#','text':bc_text }] %}
-		  {% block content %}
+ {% extends "dashboard.html" %} {% set title= res.string.supplier %} {% if suppliers %} {% set bc_text = suppliers.name %} {% else %} {% set bc_text = 'Baru' %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_suppliers','text':res.string.supplier},
+{'link':'#','text':bc_text }] %} {% block content %}
 <div class="row">
-	<div class="col-md-12 col-sm-12 col-xs-12">
-		<form id="form_Partner" method="post" action="{{base_url}}index.php/manage_suppliers/write/{{ suppliers.id }}" data-parsley-validate class="form-horizontal form-label-left">
-			<div class="box box-info">
-				<div class="box-header with-border">
-          {% set back_link = suppliers.CompanyId?'/detail/'~suppliers.CompanyId:''%}
-          {% include 'common/_form_header.html'
-          with {'back_url':'/index.php/manage_suppliers'~back_link,
-          'title': res.string.supplier,
-          'delete_url':'/index.php/manage_suppliers/delete/'~suppliers.Id,
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <form id="form_Partner" method="post" action="{{base_url}}index.php/manage_suppliers/write/{{ suppliers.id }}" data-parsley-validate class="form-horizontal form-label-left">
+      <div class="box box-info">
+        <div class="box-header with-border">
+          {% set back_link = suppliers.CompanyId?'/detail/'~suppliers.CompanyId:''%} {% include 'common/_form_header.html' with {'back_url':'/index.php/manage_suppliers'~back_link, 'title': res.string.supplier, 'delete_url':'/index.php/manage_suppliers/delete/'~suppliers.Id,
           'object':suppliers} %}
           <div class="clearfix"></div>
-				</div>
-				<div class="box-body">
-					<div class="col-sm-12">
-						<input type="hidden" name="CompanyId" value="{{res.query_params.company_id}}">
-            {% include 'common/_img_input.html' with { 'value':suppliers.Image,name:'Image' } %}
+        </div>
+        <div class="box-body">
+          <div class="col-sm-12">
+            <input type="hidden" name="CompanyId" value="{{res.query_params.company_id}}"> {% include 'common/_img_input.html' with { 'value':suppliers.Image,name:'Image' } %}
 
-						<div class="row">
-							<div class="col-sm-6">
+            <div class="row">
+              <div class="col-sm-6">
 
-								<div class="form-group">
-									<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
-									<div class="col-md-6 col-sm-6 col-xs-12">
-										<div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
-											<input type="text" id="Name" value="{{ suppliers.Name }}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
-										</div>
-										{% if suppliers %}
-										<p class="control-value">{{ suppliers.Name }}</p>
-										{% endif %}
-									</div>
-								</div>
-
-								<div class="form-group">
-									<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.address}}</label>
-									<div class="col-md-6 col-sm-6 col-xs-12">
-										<div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
-											<input type="text" id="Address" value="{{ suppliers.Address }}" name="Address" class="form-control  col-md-7 col-xs-12">
-										</div>
-										{% if suppliers %}
-										<p class="control-value">{{ suppliers.Address }}</p>
-										{% endif %}
-									</div>
-								</div>
-
-								<div class="form-group">
-									<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.phone}}</label>
-									<div class="col-md-6 col-sm-6 col-xs-12">
-										<div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
-											<input type="text" id="Phone" value="{{ suppliers.Phone }}" name="Phone" class="form-control  col-md-7 col-xs-12">
-										</div>
-										{% if suppliers %}
-										<p class="control-value">{{ suppliers.Phone }}</p>
-										{% endif %}
-									</div>
-								</div>
                 <div class="form-group">
-                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.website}}</label>
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
                     <div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
-                      <input type="text" id="Website" value="{{ suppliers.Website }}" name="Website" class="form-control  col-md-7 col-xs-12">
+                      <input type="text" id="Name" value="{{ suppliers.Name }}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
                     </div>
                     {% if suppliers %}
-                    <p class="control-value">{{ suppliers.Website }}</p>
+                    <p class="control-value">{{ suppliers.Name }}</p>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.address}}</label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
+                      <input type="text" id="Address" value="{{ suppliers.Address }}" name="Address" class="form-control  col-md-7 col-xs-12">
+                    </div>
+                    {% if suppliers %}
+                    <p class="control-value">{{ suppliers.Address }}</p>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.phone}}</label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
+                      <input type="text" id="Phone" value="{{ suppliers.Phone }}" name="Phone" class="form-control  col-md-7 col-xs-12">
+                    </div>
+                    {% if suppliers %}
+                    <p class="control-value">{{ suppliers.Phone }}</p>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.fax}}</label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
+                      <input type="text" id="Fax" value="{{ suppliers.Fax }}" name="Fax" class="form-control  col-md-7 col-xs-12">
+                    </div>
+                    {% if suppliers %}
+                    <p class="control-value">{{ suppliers.Fax }}</p>
                     {% endif %}
                   </div>
                 </div>
@@ -84,84 +73,82 @@
                     {% endif %}
                   </div>
                 </div>
-							</div>
-							<div class="col-sm-6">
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.website}}</label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
+                      <input type="text" id="Website" value="{{ suppliers.Website }}" name="Website" class="form-control  col-md-7 col-xs-12">
+                    </div>
+                    {% if suppliers %}
+                    <p class="control-value">{{ suppliers.Website }}</p>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
 
 
-								<div class="form-group">
-									<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.fax}}</label>
-									<div class="col-md-6 col-sm-6 col-xs-12">
-										<div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
-											<input type="text" id="Fax" value="{{ suppliers.Fax }}" name="Fax" class="form-control  col-md-7 col-xs-12">
-										</div>
-										{% if suppliers %}
-										<p class="control-value">{{ suppliers.Fax }}</p>
-										{% endif %}
-									</div>
-								</div>
                 <div class="form-group">
                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.tax_number}}</label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
-                  <div {% if suppliers %}style="display:none"{% endif %} class="input-wrap">
-                    <input type="text" id="TaxNumber" value="{{ suppliers.TaxNumber }}"
-                    name="TaxNumber"  class="form-control  col-md-7 col-xs-12">
-                  </div>
-                      {% if suppliers %}
-                        <p class="control-value">{{ suppliers.TaxNumber  }}</p>
-                      {% endif %}
+                    <div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
+                      <input type="text" id="TaxNumber" value="{{ suppliers.TaxNumber }}" name="TaxNumber" class="form-control  col-md-7 col-xs-12">
                     </div>
+                    {% if suppliers %}
+                    <p class="control-value">{{ suppliers.TaxNumber }}</p>
+                    {% endif %}
                   </div>
+                </div>
 
                 <div class="form-group">
                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.bank_detail}}</label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
-                  <div {% if suppliers %}style="display:none"{% endif %} class="input-wrap">
-                    <input type="text" id="BankDetail" value="{{ suppliers.BankDetail }}"
-                    name="BankDetail"  class="form-control  col-md-7 col-xs-12">
-                  </div>
-                      {% if suppliers %}
-                        <p class="control-value">{{ suppliers.BankDetail  }}</p>
-                      {% endif %}
+                    <div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
+                      <input type="text" id="BankDetail" value="{{ suppliers.BankDetail }}" name="BankDetail" class="form-control  col-md-7 col-xs-12">
                     </div>
+                    {% if suppliers %}
+                    <p class="control-value">{{ suppliers.BankDetail }}</p>
+                    {% endif %}
                   </div>
-							</div>
-						</div>
+                </div>
+              </div>
+            </div>
 
-					</div>
-				</div>
-			</div>
-		</form>
-	</div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 {% if suppliers and suppliers.CompanyId is null %}
 <div class="">
-	<div class="clearfix"></div>
-	<div class="row">
-		<div class="col-md-12 col-sm-12 col-xs-12">
-			<div class="box">
-				<div class="box-header">
-					<h3 class="box-title"> {{res.string.contact_person}} </h3>
-					<a href="{{base_url}}index.php/manage_suppliers/create?company_id={{suppliers.Id}}" class="btn btn-primary pull-right">{{res.string.new_data}}</a>
-					<div class="clearfix"></div>
-				</div>
-				<div class="box-body">
-					<p class="text-muted font-13 m-b-30"></p>
-					<table data-controller="manage_suppliers" data-domain='{"company_id":{{suppliers.Id}}}' class="table table-striped " id="table_Partner">
-						<thead>
-							<tr>
-								<th data-fieldname="name">{{res.string.name}}</th>
-								<th data-fieldname="address">{{res.string.address}}</th>
-								<th data-fieldname="phone">{{res.string.phone}}</th>
-								<th data-fieldname="website">{{res.string.website}}</th>
-								<th data-fieldname="email">{{res.string.email}}</th>
-								<th></th>
-							</tr>
-						</thead>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div class="clearfix"></div>
+  <div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="box">
+        <div class="box-header">
+          <h3 class="box-title"> {{res.string.contact_person}} </h3>
+          <a href="{{base_url}}index.php/manage_suppliers/create?company_id={{suppliers.Id}}" class="btn btn-primary pull-right">{{res.string.new_data}}</a>
+          <div class="clearfix"></div>
+        </div>
+        <div class="box-body">
+          <p class="text-muted font-13 m-b-30"></p>
+          <table data-controller="manage_suppliers" data-domain='{"company_id":{{suppliers.Id}}}' class="table table-striped " id="table_Partner">
+            <thead>
+              <tr>
+                <th data-fieldname="name">{{res.string.name}}</th>
+                <th data-fieldname="address">{{res.string.address}}</th>
+                <th data-fieldname="phone">{{res.string.phone}}</th>
+                <th data-fieldname="website">{{res.string.website}}</th>
+                <th data-fieldname="email">{{res.string.email}}</th>
+                <th></th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endif %}
 <!-- Modal -->
