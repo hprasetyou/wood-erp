@@ -76,7 +76,7 @@ class Manage_products extends CI_Controller{
       'new_number'=>create_number(
           array('format'=>'WDX-i',
           'tb_name'=>'product',
-          'tb_field'=>'article'))));
+          'tb_field'=>'name'))));
   }
 
   function detail($id){
@@ -98,7 +98,7 @@ class Manage_products extends CI_Controller{
       'new_number'=>create_number(
         array('format'=>'WDX-i',
         'tb_name'=>'product',
-        'tb_field'=>'article'))));
+        'tb_field'=>'name'))));
   }
 
   function write($id=null){
@@ -110,9 +110,11 @@ class Manage_products extends CI_Controller{
 		$product->setName($this->input->post('Name'));
 		$product->setDescription($this->input->post('Description'));
 		$product->setIsKdn($this->input->post('IsKdn')?true:false);
-		$product->setHasComponent($this->input->post('HasComponent'));
+		$product->setIsFlegt($this->input->post('IsFlegt')?true:false);
+		$product->setHasComponent($this->input->post('HasComponent')?true:false);
 		$product->setNetCubic($this->input->post('NetCubic'));
 		$product->setCostPrice($this->input->post('CostPrice'));
+		$product->setQtyPerPack($this->input->post('QtyPerPack'));
 		$product->setListPrice($this->input->post('ListPrice'));
 		$product->setCubicAsb($this->input->post('CubicAsb'));
 		$product->setCubicKdn($this->input->post('CubicKdn'));
@@ -122,6 +124,7 @@ class Manage_products extends CI_Controller{
 		$product->setWidthKdn($this->input->post('WidthKdn'));
 		$product->setHeightKdn($this->input->post('HeightKdn'));
 		$product->setDepthKdn($this->input->post('DepthKdn'));
+		$product->setNote($this->input->post('Note'));
 		$product->save();
 		$this->load->helper('base64toimage');
 		$prod_img = json_decode($this->input->post('imgProduct'));

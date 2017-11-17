@@ -48,6 +48,17 @@
 								</div>
 							</div>
 							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.is_flegt}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if products %}style="display:none" {% endif %} class="input-wrap">
+										<input type="checkbox" id="IsFlegt" value="1" {{ products.IsFlegt ? "checked": "" }} name="IsFlegt" class="form-checkbox">
+									</div>
+									{% if products %}
+									<p class="control-value">{{ products.IsFlegt ? res.string.yes : res.string.no }}</p>
+									{% endif %}
+								</div>
+							</div>
+							<div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.has_component}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
 									<div {% if products %}style="display:none" {% endif %} class="input-wrap">
@@ -61,6 +72,17 @@
 						</div>
 						<div class="col-sm-6">
 
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.qty_per_pack}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if products %}style="display:none" {% endif %} class="input-wrap">
+                    <input type="number" id="QtyPerPack" value="{{ products.QtyPerPack }}" name="QtyPerPack" required="required" class="form-control  col-md-7 col-xs-12">
+                  </div>
+                  {% if products %}
+                  <p class="control-value">{{ products.QtyPerPack }}</p>
+                  {% endif %}
+                </div>
+              </div>
               <div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.cost_price}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
@@ -115,6 +137,9 @@
 									<li>
 										<a href="#tab_4" data-toggle="tab">{{ res.string.available_finishing }}</a>
 									</li>
+									<li>
+										<a href="#tab_5" data-toggle="tab">{{ res.string.note }}</a>
+									</li>
 								</ul>
 								<div class="tab-content">
                   <!-- /.tab-pane -->
@@ -132,6 +157,10 @@
 									<!-- /.tab-pane -->
 									<div class="tab-pane" id="tab_4">
                     {% include "admin/products/_finishing_tab.html"%}
+                  </div>
+									<!-- /.tab-pane -->
+									<div class="tab-pane" id="tab_5">
+                    {% include "admin/products/_note_tab.html"%}
                   </div>
 								</div>
 							</div>

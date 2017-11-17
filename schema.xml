@@ -50,11 +50,14 @@
   <table name="product" idMethod="native" phpName="Product">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
-    <column name="description" phpName="Description" type="LONGVARCHAR"/>
+    <column name="description" phpName="Description" type="VARCHAR" size="255"/>
     <column name="is_kdn" phpName="IsKdn" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
+    <column name="is_flegt" phpName="IsFlegt" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
     <column name="has_component" phpName="HasComponent" type="BOOLEAN" size="1" defaultValue="false"/>
+    <column name="qty_per_pack" phpName="QtyPerPack" type="INTEGER" required="true" defaultValue="1"/>
     <column name="cost_price" phpName="CostPrice" type="FLOAT" required="true"/>
     <column name="list_price" phpName="ListPrice" type="FLOAT" required="true"/>
+    <column name="note" phpName="Note" type="LONGVARCHAR"/>
     <column name="cubic_asb" phpName="CubicAsb" type="FLOAT" required="true"/>
     <column name="cubic_kdn" phpName="CubicKdn" type="FLOAT" required="true"/>
     <column name="width_asb" phpName="WidthAsb" type="FLOAT" required="true"/>
