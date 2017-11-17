@@ -183,7 +183,7 @@ $('.form-select').select2()
 $('#btn-edit').click(function(e){
   e.preventDefault();
   $('input:checkbox').removeAttr('disabled')
-$('.input-wrap, #btn-save, #btn-canceledit, .embed-form').show()
+$('.input-wrap, #btn-save, #btn-canceledit, .embed-form, .btn-delete-row').show()
 $('.img-layer, .control-value').hide()
 $(this).hide()
 })
@@ -191,7 +191,7 @@ $('#btn-canceledit').click(function(e){
   e.preventDefault();
 $('input:checkbox').attr('disabled','disabled')
 $('#btn-edit, .img-layer, .control-value').show()
-$('#btn-save, .input-wrap, .embed-form').hide()
+$('#btn-save, .input-wrap, .embed-form, .btn-delete-row').hide()
 $(this).hide()
 })
 $(function() {

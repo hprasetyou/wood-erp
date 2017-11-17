@@ -137,13 +137,13 @@
     <tr>
       <th >{{res.string.article_number}}</th>
       <th >{{res.string.description}}</th>
+      <th ></th>
       <th >{{res.string.qty}}</th>
       <th >CTN</th>
       <th >{{res.string.cubic_dimension}}</th>
       <th >{{res.string.total_cubic_dimension}}</th>
       <th >{{res.string.price}}</th>
       <th >{{res.string.total_price}}</th>
-      <th ></th>
       <th></th>
     </tr>
   </thead>
@@ -152,16 +152,16 @@
       <tr>
         <td data-fieldname="name">{{line.ProductCustomer.Name}}</td>
         <td data-fieldname="name">{{line.ProductCustomer.Description}}</td>
+        <td data-fieldname="total_price">
+          {% if line.IsSample %} {{res.string.sample_product}}, {% endif %}
+          {% if line.IsNeedBox %} {{res.string.with_box}} {% endif %}
+        </td>
         <td data-fieldname="qty">{{line.Qty}}</td>
         <td data-fieldname="qty_on_container">{{ (line.Qty/line.QtyPerPack) | round }}</td>
         <td data-fieldname="cubic_dimension">{{line.CubicDimension}}</td>
         <td data-fieldname="total_cubic_dimension">{{line.TotalCubicDimension}}</td>
         <td data-fieldname="price">{{line.Price}}</td>
         <td data-fieldname="total_price">{{ line.TotalPrice}}</td>
-        <td data-fieldname="total_price">
-          {% if line.IsSample %} {{res.string.is_sample}}, {% endif %}
-          {% if line.IsNeedBox %} {{res.string.with_box}} {% endif %}
-        </td>
         <td><a href="#" data-id="{{line.Id}}" class="btn btn-danger btn-delete-row"><i class="fa fa-trash"></i></a></td>
       </tr>
     {% endfor %}

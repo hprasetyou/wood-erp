@@ -184,13 +184,13 @@ $(document).ready(function(){
       t.row.add([
         data.Name,
         data.Description,
+        special,
         data.Qty,
         Math.ceil(data.Qty/data.QtyPerPack),
         data.CubicDimension,
         data.CubicDimension*data.Qty,
         data.Price,
         data.Price*data.Qty,
-        special,
         '<a href="#" data-index="'+ data.index+'" '+
         'class="btn btn-danger btn-delete-row">'+
         '<i class="fa fa-trash"></i></a>'

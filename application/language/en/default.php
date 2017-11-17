@@ -75,6 +75,7 @@
 'qty_on_container' => 'Qty On Container',
 'qty_per_pack'=>'Qty Per Pack',
 'save' => 'Save',
+'sample_product'=>'Sample Product',
 'search' => 'Search',
 'status' => 'Status',
 'supplier' => 'Supplier',
