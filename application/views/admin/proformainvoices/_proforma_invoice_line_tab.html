@@ -56,6 +56,14 @@
               </div>
             </div>
           </div>
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="CalculatedDiscount">{{res.string.calculated_discount}}</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <div class="input-wrap">
+                <input type="text" placeholder="{{ res.string.calculated_discount }}" disabled value="0" id="CalculatedDiscount" name="CalculatedDiscount" class="form-control  col-md-7 col-xs-12">
+              </div>
+            </div>
+          </div>
         </div>
         <div class="col-sm-6">
           <div class="form-group" style="display:none">
@@ -84,12 +92,34 @@
             </div>
             <div class="form-group">
               <label class="control-label col-md-3 col-sm-3 col-xs-12"
-              for="QtyOnContainer">{{res.string.qty_on_container}}</label>
+              for="QtyPerPack">{{res.string.qty_per_pack}}</label>
               <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="input-wrap">
                   <input type="number" placeholder="{{ res.string.qty_on_container }}"
-                  id="QtyOnContainer" name="QtyOnContainer" class="form-control col-md-7 col-xs-12">
+                  id="QtyPerPack" name="QtyPerPack" class="form-control col-md-7 col-xs-12">
                 </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.is_sample}}</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <div {% if products %}style="display:none" {% endif %} class="input-wrap">
+                  <input type="checkbox" value="1" id="IsSample" value="1" {{ products.IsSample ? "checked": "" }} name="IsSample" class="form-checkbox">
+                </div>
+                {% if products %}
+                <p class="control-value">{{ products.IsSample ? res.string.yes : res.string.no }}</p>
+                {% endif %}
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.with_box}}</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <div {% if products %}style="display:none" {% endif %} class="input-wrap">
+                  <input type="checkbox" value="1" id="IsNeedBox" value="1" {{ products.IsNeedBoxIsNeedBox ? "checked": "" }} name="IsKdn" class="form-checkbox">
+                </div>
+                {% if products %}
+                <p class="control-value">{{ products.IsNeedBox ? res.string.yes : res.string.no }}</p>
+                {% endif %}
               </div>
             </div>
         </div>
@@ -105,14 +135,15 @@
 <table data-controller="manage_proformainvoicelines" class="table table-striped " id="table_ProformaInvoiceLine">
   <thead>
     <tr>
-      <th data-fieldname="name">{{res.string.article_number}}</th>
-      <th data-fieldname="name">{{res.string.description}}</th>
-      <th data-fieldname="qty">{{res.string.qty}}</th>
-      <th data-fieldname="qty_on_container">{{res.string.qty_on_container}}</th>
-      <th data-fieldname="cubic_dimension">{{res.string.cubic_dimension}}</th>
-      <th data-fieldname="total_cubic_dimension">{{res.string.total_cubic_dimension}}</th>
-      <th data-fieldname="price">{{res.string.price}}</th>
-      <th data-fieldname="total_price">{{res.string.total_price}}</th>
+      <th >{{res.string.article_number}}</th>
+      <th >{{res.string.description}}</th>
+      <th >{{res.string.qty}}</th>
+      <th >CTN</th>
+      <th >{{res.string.cubic_dimension}}</th>
+      <th >{{res.string.total_cubic_dimension}}</th>
+      <th >{{res.string.price}}</th>
+      <th >{{res.string.total_price}}</th>
+      <th ></th>
       <th></th>
     </tr>
   </thead>
@@ -122,11 +153,15 @@
         <td data-fieldname="name">{{line.ProductCustomer.Name}}</td>
         <td data-fieldname="name">{{line.ProductCustomer.Description}}</td>
         <td data-fieldname="qty">{{line.Qty}}</td>
-        <td data-fieldname="qty_on_container">{{line.QtyOnContainer}}</td>
+        <td data-fieldname="qty_on_container">{{ (line.Qty/line.QtyPerPack) | round }}</td>
         <td data-fieldname="cubic_dimension">{{line.CubicDimension}}</td>
         <td data-fieldname="total_cubic_dimension">{{line.TotalCubicDimension}}</td>
         <td data-fieldname="price">{{line.Price}}</td>
         <td data-fieldname="total_price">{{ line.TotalPrice}}</td>
+        <td data-fieldname="total_price">
+          {% if line.IsSample %} {{res.string.is_sample}}, {% endif %}
+          {% if line.IsNeedBox %} {{res.string.with_box}} {% endif %}
+        </td>
         <td><a href="#" data-id="{{line.Id}}" class="btn btn-danger btn-delete-row"><i class="fa fa-trash"></i></a></td>
       </tr>
     {% endfor %}

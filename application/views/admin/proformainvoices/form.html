@@ -88,6 +88,13 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
 var Lines = [];
 var idx =0;
 $(document).ready(function(){
+  $('#Price').on('keyup change',function(e){
+    var disc = 0;
+    var price = $(this).val()
+    var normal_price = $('#ListPrice').val()
+    var gap = normal_price - price
+    $('#CalculatedDiscount').val(((gap/normal_price)*100).toFixed(2))
+  })
     $('#table_ProformaInvoiceLine').loadTableData(
       {
         search:false,
@@ -103,7 +110,9 @@ $(document).ready(function(){
         Description:$('#Description').val(),
         Price:$('#Price').val(),
         CubicDimension:$('#CubicDimension').val(),
-        QtyOnContainer:$('#QtyOnContainer').val(),
+        QtyPerPack:$('#QtyPerPack').val(),
+        IsSample:$('#IsSample').is(":checked"),
+        IsNeedBox:$('#IsNeedBox').is(":checked")
       },'write')
       $('.pi_lines').find('input').val('')
     })
@@ -111,6 +120,7 @@ $(document).ready(function(){
     $('#ModalProduct, #ModalCustomer').on('hidden.bs.modal', function () {
           // do something…
           $('#ProductId').trigger('change')
+
       })
     $('.pi_lines').simpleValidation()
   })
@@ -123,21 +133,23 @@ $(document).ready(function(){
         success:function(o){
           var art = o.Name
           var price = o.ListPrice
+          var desc = o.Description
 
           if(o.ProductCustomers){
             price = o.ProductCustomers[0].ProductPrice
             art = o.ProductCustomers[0].Name
+            desc = o.ProductCustomers[0].Description
           }
           for (var i in o) {
             if (o.hasOwnProperty(i)) {
-              if(!$('#'+i).val()){
-                $('#'+i).val(o[i])
-              }
+              $('#'+i).val(o[i])
             }
           }
           $('#CubicDimension').val(o.IsKdn?o.CubicKdn:o.CubicAsb)
           $('#LineName').val(art)
+          $('#Description').val(desc)
           $('#Price').val(price)
+          $('#Price').trigger('change')
         }
       })
   })
@@ -156,18 +168,29 @@ $(document).ready(function(){
         Qty: data.Qty,
         CubicDimension: data.CubicDimension,
         Price: data.Price,
-        QtyOnContainer: data.QtyOnContainer,
+        QtyPerPack: data.QtyPerPack,
+        IsSample: data.IsSample,
+        IsNeedBox: data.IsNeedBox,
         Type:method
       })
+      var special = ""
+      if(data.IsSample){
+        special += "{{res.string.is_sample}}"
+      }
+      if(data.IsNeedBox){
+        special += "{{res.string.with_box}}"
+      }
+
       t.row.add([
         data.Name,
         data.Description,
         data.Qty,
-        data.QtyOnContainer,
+        Math.ceil(data.Qty/data.QtyPerPack),
         data.CubicDimension,
         data.CubicDimension*data.Qty,
         data.Price,
         data.Price*data.Qty,
+        special,
         '<a href="#" data-index="'+ data.index+'" '+
         'class="btn btn-danger btn-delete-row">'+
         '<i class="fa fa-trash"></i></a>'

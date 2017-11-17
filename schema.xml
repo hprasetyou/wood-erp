@@ -255,11 +255,13 @@
     <column name="product_customer_id" phpName="ProductCustomerId" type="INTEGER" required="true"/>
     <column name="description" phpName="Description" size="255" type="VARCHAR"/>
     <column name="qty" phpName="Qty" type="INTEGER"/>
-    <column name="qty_on_container" phpName="QtyOnContainer" type="INTEGER"/>
+    <column name="qty_per_pack" phpName="QtyPerPack" type="INTEGER"/>
     <column name="cubic_dimension" phpName="CubicDimension" type="FLOAT"/>
     <column name="total_cubic_dimension" phpName="TotalCubicDimension" type="FLOAT"/>
     <column name="price" phpName="Price" type="FLOAT"/>
     <column name="total_price" phpName="TotalPrice" type="FLOAT"/>
+    <column name="is_sample" phpName="IsSample" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
+    <column name="is_need_box" phpName="IsNeedBox" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
     <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
     <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
     <foreign-key foreignTable="proforma_invoice">

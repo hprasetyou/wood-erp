@@ -25,11 +25,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceLineQuery orderByProductCustomerId($order = Criteria::ASC) Order by the product_customer_id column
  * @method     ChildProformaInvoiceLineQuery orderByDescription($order = Criteria::ASC) Order by the description column
  * @method     ChildProformaInvoiceLineQuery orderByQty($order = Criteria::ASC) Order by the qty column
- * @method     ChildProformaInvoiceLineQuery orderByQtyOnContainer($order = Criteria::ASC) Order by the qty_on_container column
+ * @method     ChildProformaInvoiceLineQuery orderByQtyPerPack($order = Criteria::ASC) Order by the qty_per_pack column
  * @method     ChildProformaInvoiceLineQuery orderByCubicDimension($order = Criteria::ASC) Order by the cubic_dimension column
  * @method     ChildProformaInvoiceLineQuery orderByTotalCubicDimension($order = Criteria::ASC) Order by the total_cubic_dimension column
  * @method     ChildProformaInvoiceLineQuery orderByPrice($order = Criteria::ASC) Order by the price column
  * @method     ChildProformaInvoiceLineQuery orderByTotalPrice($order = Criteria::ASC) Order by the total_price column
+ * @method     ChildProformaInvoiceLineQuery orderByIsSample($order = Criteria::ASC) Order by the is_sample column
+ * @method     ChildProformaInvoiceLineQuery orderByIsNeedBox($order = Criteria::ASC) Order by the is_need_box column
  * @method     ChildProformaInvoiceLineQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildProformaInvoiceLineQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -38,11 +40,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceLineQuery groupByProductCustomerId() Group by the product_customer_id column
  * @method     ChildProformaInvoiceLineQuery groupByDescription() Group by the description column
  * @method     ChildProformaInvoiceLineQuery groupByQty() Group by the qty column
- * @method     ChildProformaInvoiceLineQuery groupByQtyOnContainer() Group by the qty_on_container column
+ * @method     ChildProformaInvoiceLineQuery groupByQtyPerPack() Group by the qty_per_pack column
  * @method     ChildProformaInvoiceLineQuery groupByCubicDimension() Group by the cubic_dimension column
  * @method     ChildProformaInvoiceLineQuery groupByTotalCubicDimension() Group by the total_cubic_dimension column
  * @method     ChildProformaInvoiceLineQuery groupByPrice() Group by the price column
  * @method     ChildProformaInvoiceLineQuery groupByTotalPrice() Group by the total_price column
+ * @method     ChildProformaInvoiceLineQuery groupByIsSample() Group by the is_sample column
+ * @method     ChildProformaInvoiceLineQuery groupByIsNeedBox() Group by the is_need_box column
  * @method     ChildProformaInvoiceLineQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildProformaInvoiceLineQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -84,11 +88,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceLine findOneByProductCustomerId(int $product_customer_id) Return the first ChildProformaInvoiceLine filtered by the product_customer_id column
  * @method     ChildProformaInvoiceLine findOneByDescription(string $description) Return the first ChildProformaInvoiceLine filtered by the description column
  * @method     ChildProformaInvoiceLine findOneByQty(int $qty) Return the first ChildProformaInvoiceLine filtered by the qty column
- * @method     ChildProformaInvoiceLine findOneByQtyOnContainer(int $qty_on_container) Return the first ChildProformaInvoiceLine filtered by the qty_on_container column
+ * @method     ChildProformaInvoiceLine findOneByQtyPerPack(int $qty_per_pack) Return the first ChildProformaInvoiceLine filtered by the qty_per_pack column
  * @method     ChildProformaInvoiceLine findOneByCubicDimension(double $cubic_dimension) Return the first ChildProformaInvoiceLine filtered by the cubic_dimension column
  * @method     ChildProformaInvoiceLine findOneByTotalCubicDimension(double $total_cubic_dimension) Return the first ChildProformaInvoiceLine filtered by the total_cubic_dimension column
  * @method     ChildProformaInvoiceLine findOneByPrice(double $price) Return the first ChildProformaInvoiceLine filtered by the price column
  * @method     ChildProformaInvoiceLine findOneByTotalPrice(double $total_price) Return the first ChildProformaInvoiceLine filtered by the total_price column
+ * @method     ChildProformaInvoiceLine findOneByIsSample(boolean $is_sample) Return the first ChildProformaInvoiceLine filtered by the is_sample column
+ * @method     ChildProformaInvoiceLine findOneByIsNeedBox(boolean $is_need_box) Return the first ChildProformaInvoiceLine filtered by the is_need_box column
  * @method     ChildProformaInvoiceLine findOneByCreatedAt(string $created_at) Return the first ChildProformaInvoiceLine filtered by the created_at column
  * @method     ChildProformaInvoiceLine findOneByUpdatedAt(string $updated_at) Return the first ChildProformaInvoiceLine filtered by the updated_at column *
 
@@ -100,11 +106,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceLine requireOneByProductCustomerId(int $product_customer_id) Return the first ChildProformaInvoiceLine filtered by the product_customer_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoiceLine requireOneByDescription(string $description) Return the first ChildProformaInvoiceLine filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoiceLine requireOneByQty(int $qty) Return the first ChildProformaInvoiceLine filtered by the qty column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildProformaInvoiceLine requireOneByQtyOnContainer(int $qty_on_container) Return the first ChildProformaInvoiceLine filtered by the qty_on_container column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProformaInvoiceLine requireOneByQtyPerPack(int $qty_per_pack) Return the first ChildProformaInvoiceLine filtered by the qty_per_pack column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoiceLine requireOneByCubicDimension(double $cubic_dimension) Return the first ChildProformaInvoiceLine filtered by the cubic_dimension column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoiceLine requireOneByTotalCubicDimension(double $total_cubic_dimension) Return the first ChildProformaInvoiceLine filtered by the total_cubic_dimension column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoiceLine requireOneByPrice(double $price) Return the first ChildProformaInvoiceLine filtered by the price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoiceLine requireOneByTotalPrice(double $total_price) Return the first ChildProformaInvoiceLine filtered by the total_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProformaInvoiceLine requireOneByIsSample(boolean $is_sample) Return the first ChildProformaInvoiceLine filtered by the is_sample column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProformaInvoiceLine requireOneByIsNeedBox(boolean $is_need_box) Return the first ChildProformaInvoiceLine filtered by the is_need_box column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoiceLine requireOneByCreatedAt(string $created_at) Return the first ChildProformaInvoiceLine filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoiceLine requireOneByUpdatedAt(string $updated_at) Return the first ChildProformaInvoiceLine filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -114,11 +122,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByProductCustomerId(int $product_customer_id) Return ChildProformaInvoiceLine objects filtered by the product_customer_id column
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByDescription(string $description) Return ChildProformaInvoiceLine objects filtered by the description column
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByQty(int $qty) Return ChildProformaInvoiceLine objects filtered by the qty column
- * @method     ChildProformaInvoiceLine[]|ObjectCollection findByQtyOnContainer(int $qty_on_container) Return ChildProformaInvoiceLine objects filtered by the qty_on_container column
+ * @method     ChildProformaInvoiceLine[]|ObjectCollection findByQtyPerPack(int $qty_per_pack) Return ChildProformaInvoiceLine objects filtered by the qty_per_pack column
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByCubicDimension(double $cubic_dimension) Return ChildProformaInvoiceLine objects filtered by the cubic_dimension column
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByTotalCubicDimension(double $total_cubic_dimension) Return ChildProformaInvoiceLine objects filtered by the total_cubic_dimension column
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByPrice(double $price) Return ChildProformaInvoiceLine objects filtered by the price column
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByTotalPrice(double $total_price) Return ChildProformaInvoiceLine objects filtered by the total_price column
+ * @method     ChildProformaInvoiceLine[]|ObjectCollection findByIsSample(boolean $is_sample) Return ChildProformaInvoiceLine objects filtered by the is_sample column
+ * @method     ChildProformaInvoiceLine[]|ObjectCollection findByIsNeedBox(boolean $is_need_box) Return ChildProformaInvoiceLine objects filtered by the is_need_box column
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildProformaInvoiceLine objects filtered by the created_at column
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildProformaInvoiceLine objects filtered by the updated_at column
  * @method     ChildProformaInvoiceLine[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -219,7 +229,7 @@ abstract class ProformaInvoiceLineQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, proforma_invoice_id, product_customer_id, description, qty, qty_on_container, cubic_dimension, total_cubic_dimension, price, total_price, created_at, updated_at FROM proforma_invoice_line WHERE id = :p0';
+        $sql = 'SELECT id, proforma_invoice_id, product_customer_id, description, qty, qty_per_pack, cubic_dimension, total_cubic_dimension, price, total_price, is_sample, is_need_box, created_at, updated_at FROM proforma_invoice_line WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -503,16 +513,16 @@ abstract class ProformaInvoiceLineQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the qty_on_container column
+     * Filter the query on the qty_per_pack column
      *
      * Example usage:
      * <code>
-     * $query->filterByQtyOnContainer(1234); // WHERE qty_on_container = 1234
-     * $query->filterByQtyOnContainer(array(12, 34)); // WHERE qty_on_container IN (12, 34)
-     * $query->filterByQtyOnContainer(array('min' => 12)); // WHERE qty_on_container > 12
+     * $query->filterByQtyPerPack(1234); // WHERE qty_per_pack = 1234
+     * $query->filterByQtyPerPack(array(12, 34)); // WHERE qty_per_pack IN (12, 34)
+     * $query->filterByQtyPerPack(array('min' => 12)); // WHERE qty_per_pack > 12
      * </code>
      *
-     * @param     mixed $qtyOnContainer The value to use as filter.
+     * @param     mixed $qtyPerPack The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -520,16 +530,16 @@ abstract class ProformaInvoiceLineQuery extends ModelCriteria
      *
      * @return $this|ChildProformaInvoiceLineQuery The current query, for fluid interface
      */
-    public function filterByQtyOnContainer($qtyOnContainer = null, $comparison = null)
+    public function filterByQtyPerPack($qtyPerPack = null, $comparison = null)
     {
-        if (is_array($qtyOnContainer)) {
+        if (is_array($qtyPerPack)) {
             $useMinMax = false;
-            if (isset($qtyOnContainer['min'])) {
-                $this->addUsingAlias(ProformaInvoiceLineTableMap::COL_QTY_ON_CONTAINER, $qtyOnContainer['min'], Criteria::GREATER_EQUAL);
+            if (isset($qtyPerPack['min'])) {
+                $this->addUsingAlias(ProformaInvoiceLineTableMap::COL_QTY_PER_PACK, $qtyPerPack['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($qtyOnContainer['max'])) {
-                $this->addUsingAlias(ProformaInvoiceLineTableMap::COL_QTY_ON_CONTAINER, $qtyOnContainer['max'], Criteria::LESS_EQUAL);
+            if (isset($qtyPerPack['max'])) {
+                $this->addUsingAlias(ProformaInvoiceLineTableMap::COL_QTY_PER_PACK, $qtyPerPack['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -540,7 +550,7 @@ abstract class ProformaInvoiceLineQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ProformaInvoiceLineTableMap::COL_QTY_ON_CONTAINER, $qtyOnContainer, $comparison);
+        return $this->addUsingAlias(ProformaInvoiceLineTableMap::COL_QTY_PER_PACK, $qtyPerPack, $comparison);
     }
 
     /**
@@ -705,6 +715,60 @@ abstract class ProformaInvoiceLineQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProformaInvoiceLineTableMap::COL_TOTAL_PRICE, $totalPrice, $comparison);
+    }
+
+    /**
+     * Filter the query on the is_sample column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIsSample(true); // WHERE is_sample = true
+     * $query->filterByIsSample('yes'); // WHERE is_sample = true
+     * </code>
+     *
+     * @param     boolean|string $isSample The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProformaInvoiceLineQuery The current query, for fluid interface
+     */
+    public function filterByIsSample($isSample = null, $comparison = null)
+    {
+        if (is_string($isSample)) {
+            $isSample = in_array(strtolower($isSample), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(ProformaInvoiceLineTableMap::COL_IS_SAMPLE, $isSample, $comparison);
+    }
+
+    /**
+     * Filter the query on the is_need_box column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIsNeedBox(true); // WHERE is_need_box = true
+     * $query->filterByIsNeedBox('yes'); // WHERE is_need_box = true
+     * </code>
+     *
+     * @param     boolean|string $isNeedBox The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProformaInvoiceLineQuery The current query, for fluid interface
+     */
+    public function filterByIsNeedBox($isNeedBox = null, $comparison = null)
+    {
+        if (is_string($isNeedBox)) {
+            $isNeedBox = in_array(strtolower($isNeedBox), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(ProformaInvoiceLineTableMap::COL_IS_NEED_BOX, $isNeedBox, $comparison);
     }
 
     /**

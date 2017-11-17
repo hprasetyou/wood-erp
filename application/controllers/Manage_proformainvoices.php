@@ -109,11 +109,13 @@ class Manage_proformainvoices extends CI_Controller{
       $proformainvoiceline->setProductCustomerId($productcust->getId());
       $proformainvoiceline->setQty($line->Qty);
       $proformainvoiceline->setDescription($line->Description);
-      $proformainvoiceline->setQtyOnContainer($line->QtyOnContainer);
+      $proformainvoiceline->setQtyPerPack($line->QtyPerPack);
       $proformainvoiceline->setCubicDimension($cbm);
       $proformainvoiceline->setTotalCubicDimension($cbm * $line->Qty);
       $proformainvoiceline->setPrice($line->Price);
       $proformainvoiceline->setTotalPrice($line->Price *$line->Qty);
+      $proformainvoiceline->setIsSample($line->IsSample);
+      $proformainvoiceline->setIsNeedBox($line->IsNeedBox);
       $proformainvoiceline->save();
 
       }else if($line->Type == 'delete'){

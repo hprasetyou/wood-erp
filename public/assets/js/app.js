@@ -78,9 +78,13 @@ jQuery.fn.simpleValidation =  function(){
   d.on('keyup','input',function(e){
     var valid = true;
     d.find('input').each(function(){
-      if(!$(this).val()){
-        valid = false
+      if($(this).attr('type')=='text' || $(this).attr('type')=='number'){
+        if(!$(this).val()){
+          console.log($(this).attr('id'));
+          valid = false
+        }
       }
+
     })
     if(valid){
       $('#'+d.data('target')).removeClass('disabled')

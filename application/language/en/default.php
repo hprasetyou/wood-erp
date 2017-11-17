@@ -10,6 +10,7 @@
 'bank' => 'Bank',
 'bank_detail' => 'Bank Detail',
 'cancel' => 'Cancel',
+'calculated_discount'=>'Calculated Discount',
 'company_id' => 'Company Id',
 'component' => 'Component',
 'component_id' => 'Component Id',
@@ -42,6 +43,7 @@
 'img_upload_error_msg' => 'Maximum filesize is 1mb',
 'is_customer' => 'Is Customer',
 'is_employee' => 'Is Employee',
+'is_sample' => 'Is a Sample',
 'is_flegt' => 'Is Flegt Item',
 'is_kdn' => 'Is Knockdown',
 'is_supplier' => 'Is Supplier',
@@ -85,6 +87,7 @@
 'website' => 'Website',
 'width_asb' => 'Width Assembled',
 'width_kdn' => 'Width Knockdown',
+'with_box'=>'With Carton Box',
 'yes' => 'Yes',
 'total_price' => 'Total Price'
 );
