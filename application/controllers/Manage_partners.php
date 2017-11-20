@@ -6,7 +6,7 @@ class Manage_partners extends CI_Controller{
 
   function __construct(){
     parent::__construct();
-   $this->authorization->check_authorization('manage_partners');
+    // $this->authorization->check_authorization('manage_partners');
   }
   function index(){
       $this->template->render('admin/partners/index');
@@ -15,41 +15,39 @@ class Manage_partners extends CI_Controller{
 	function get_json(){
 		$partners = PartnerQuery::create();
 		$maxPerPage = $this->input->get('length');
+    $colls = $this->schema->extract_fields('Partner');
 		if($this->input->get('search[value]')){
 			$partners->condition('cond1' ,'Partner.name LIKE ?', "%".$this->input->get('search[value]')."%");
-			$partners->condition('cond2' ,'Partner.phone LIKE ?', "%".$this->input->get('search[value]')."%");
-			$partners->condition('cond3' ,'Partner.website LIKE ?', "%".$this->input->get('search[value]')."%");
-			$partners->condition('cond4' ,'Partner.fax LIKE ?', "%".$this->input->get('search[value]')."%");
-			$partners->condition('cond5' ,'Partner.tax_number LIKE ?', "%".$this->input->get('search[value]')."%");
-			$partners->condition('cond6' ,'Partner.bank_detail LIKE ?', "%".$this->input->get('search[value]')."%");
+			$partners->condition('cond2' ,'Partner.email LIKE ?', "%".$this->input->get('search[value]')."%");
+			$partners->condition('cond3' ,'Partner.phone LIKE ?', "%".$this->input->get('search[value]')."%");
+			$partners->condition('cond4' ,'Partner.website LIKE ?', "%".$this->input->get('search[value]')."%");
+			$partners->condition('cond5' ,'Partner.fax LIKE ?', "%".$this->input->get('search[value]')."%");
+			$partners->condition('cond6' ,'Partner.tax_number LIKE ?', "%".$this->input->get('search[value]')."%");
+			$partners->condition('cond7' ,'Partner.bank_detail LIKE ?', "%".$this->input->get('search[value]')."%");
 
-			$partners->where(array('cond1','cond2','cond3','cond4','cond5','cond6',),'or');
+			$partners->where(array('cond1','cond2','cond3','cond4','cond5','cond6','cond7',),'or');
     }
+		$fields = json_decode($this->input->get('fields'));
+
+		$orderbycol = "orderBy".$fields[$this->input->get('order[0][column]')];
+		$partners->$orderbycol($this->input->get('order[0][dir]'));
+
 		$offset = ($this->input->get('start')?$this->input->get('start'):0);
 		$partners = $partners->paginate(($offset/10)+1, $maxPerPage);
+
+
     $o = [];
     $o['recordsTotal']=$partners->getNbResults();
     $o['recordsFiltered']=$partners->getNbResults();
     $o['draw']=$this->input->get('draw');
     $o['data']=[];
     $i=0;
-    foreach ($partners as $partner) {
-				$o['data'][$i]['id'] = $partner->getId();
-				$o['data'][$i]['name'] = $partner->getName();
-				$o['data'][$i]['address'] = $partner->getAddress();
-				$o['data'][$i]['phone'] = $partner->getPhone();
-				$o['data'][$i]['website'] = $partner->getWebsite();
-				$o['data'][$i]['fax'] = $partner->getFax();
-				$o['data'][$i]['image'] = $partner->getImage();
-				$o['data'][$i]['tax_number'] = $partner->getTaxNumber();
-				$o['data'][$i]['bank_detail'] = $partner->getBankDetail();
-				$o['data'][$i]['company_id'] = $partner->getCompanyId();
-				$o['data'][$i]['is_employee'] = $partner->getIsEmployee();
-				$o['data'][$i]['is_customer'] = $partner->getIsCustomer();
-				$o['data'][$i]['is_supplier'] = $partner->getIsSupplier();
-
-				$i++;
-    }
+			foreach ($partners as $partner) {
+				foreach ($colls as $key => $coll) {
+					$f = "get".$coll;
+					$o['data'][$i][$key] = $partner->$f();
+				}
+			}
 		echo json_encode($o);
 	}
 
@@ -71,6 +69,7 @@ class Manage_partners extends CI_Controller{
 			$partner = new Partner;
 		}
 		$partner->setName($this->input->post('Name'));
+		$partner->setEmail($this->input->post('Email'));
 		$partner->setAddress($this->input->post('Address'));
 		$partner->setPhone($this->input->post('Phone'));
 		$partner->setWebsite($this->input->post('Website'));
@@ -84,7 +83,7 @@ class Manage_partners extends CI_Controller{
 		$partner->setIsSupplier($this->input->post('IsSupplier'));
 
 		$partner->save();
-		//$this->loging->add_entry('partners',$partner->getId(),($id?'melakukan perubahan pada data':'membuat data baru'));
+		$this->loging->add_entry('partners',$partner->getId(),($id?'activity_modify':'activity_create'));
 		redirect('manage_partners/detail/'.$partner->getId());
   }
 

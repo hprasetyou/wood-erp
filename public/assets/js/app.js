@@ -8,14 +8,17 @@ jQuery.fn.loadTableData = function(
   var c = tt.data('controller')
   var bdm = tt.data('domain')
   var fl = []
+  var fd= []
    tt.find('th').each(function(){
      if($(this).data('fieldname')){
+       fd.push($(this).data('fieldname'))
        if($(this).data('fieldtype')){
          var ft = $(this).data('fieldtype')
          switch (ft) {
            case 'image':
              fl.push({
               "data":$(this).data('fieldname'),
+              "orderable": false,
               "render":new Function("data", "type","row","meta",
               "return '<img src=\"'+data.replace('original','120x120')+'\" "+
               "class=\"img img-row\" />'")
@@ -36,19 +39,16 @@ jQuery.fn.loadTableData = function(
    })
    fl.push({
     "data":"id",
+    "orderable": false,
     "render":new Function("data", "type","row","meta", "return '<a data-id=\"'+data+'\" class=\"btn btn-sm btn-default pulloginl-right btn-select\" href=\"'+meta.settings.ajax.split('get_json')[0]+'detail/'+data+'\"><i class=\"fa fa-search\"></i> Detail</a>'")
   })
-  var params = ''
+  var params = '?fields='+JSON.stringify(fd)
   if(bdm){
     var z = 0
     for (var prop in bdm) {
       // d.cond = []
       if (bdm.hasOwnProperty(prop)) {
-        if(z>0){
          params += '&'
-      }else{
-         params += '?'
-      }
         params += prop+'='+bdm[prop]
       }
       z++
@@ -60,7 +60,7 @@ jQuery.fn.loadTableData = function(
     "searching": conf.search,
     "paging": conf.paging,
     "searchDelay": 1000,
-    "ordering": false,
+    "ordering": true,
   }
   if(conf.serverSide){
     dtconf.ajax =  base_url[0]+"index.php/"+c+"/get_json"+params

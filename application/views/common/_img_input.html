@@ -1,4 +1,4 @@
-<div class='row'>
+<div {% if withoutrow %}{%else%} class='row'{% endif %}>
   <div class="image col-sm-2 col-xs-6">
     <div class="img-layer" {% if value is null %} style="display:none" {% endif %} ></div>
     <a href="#/" data-toggle="modal" class="thumbnail avatar-thumbnail" data-target="#modalAvatar">

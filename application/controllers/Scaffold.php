@@ -492,6 +492,7 @@ class Manage_$var extends CI_Controller{
 	function get_json(){
 		\$$var = $queryclass::create();
 		\$maxPerPage = \$this->input->get('length');
+    \$colls = \$this->schema->extract_fields('$tb_name');
 		if(\$this->input->get('search[value]')){\n$get_json_filter";
 			if(!$get_json_filter == ""){
 			$template .= "
@@ -499,18 +500,28 @@ class Manage_$var extends CI_Controller{
 			}
 			$template .= "
     }
+		\$fields = json_decode(\$this->input->get('fields'));
+
+		\$orderbycol = \"orderBy\".\$fields[\$this->input->get('order[0][column]')];
+		\$$var->\$orderbycol(\$this->input->get('order[0][dir]'));
+
 		\$offset = (\$this->input->get('start')?\$this->input->get('start'):0);
 		\$$var = \$$var$dash>paginate((\$offset/10)+1, \$maxPerPage);
+
+
     \$o = [];
     \$o['recordsTotal']=\$$var$dash>getNbResults();
     \$o['recordsFiltered']=\$$var$dash>getNbResults();
     \$o['draw']=\$this->input->get('draw');
     \$o['data']=[];
     \$i=0;
-    foreach (\$$var as \$$singular_var) {
-\t\t\t\t\$o['data'][\$i]['id'] = \$$singular_var$dash>getId();\n$get_json_field_list\n\t\t\t\t\$i++;
-    }
-		echo json_encode(\$o);
+\t\t\tforeach (\$$var as \$$singular_var) {
+\t\t\t\tforeach (\$colls as \$key => \$coll) {
+\t\t\t\t\t\$f = \"get\".\$coll;
+\t\t\t\t\t\$o['data'][\$i][\$key] = \$$singular_var->\$f();
+\t\t\t\t}
+\t\t\t}
+\t\techo json_encode(\$o);
 	}
 
   function create(){

@@ -11,34 +11,27 @@
         </div>
         <div class="box-body">
           <div class="col-sm-12">
-            <input type="hidden" name="CompanyId" value="{{res.query_params.company_id}}"> {% include 'common/_img_input.html' with { 'value':suppliers.Image,name:'Image' } %}
-
+            <input type="hidden" name="CompanyId" value="{{res.query_params.company_id}}">
+            <div class="row">
+              {% include 'common/_img_input.html' with { 'value':suppliers.Image,name:'Image','withoutrow':true } %}
+              <div class="col-sm-10">
+                <div class="form-group">
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
+                      <input type="text" id="Name" value="{{ suppliers.Name }}" placeholder="{{res.string.name}}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
+                    </div>
+                    {% if suppliers %}
+                    <h3 class="control-value">{{ suppliers.Name }}</h3>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="row">
               <div class="col-sm-6">
 
-                <div class="form-group">
-                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
-                  <div class="col-md-6 col-sm-6 col-xs-12">
-                    <div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
-                      <input type="text" id="Name" value="{{ suppliers.Name }}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
-                    </div>
-                    {% if suppliers %}
-                    <p class="control-value">{{ suppliers.Name }}</p>
-                    {% endif %}
-                  </div>
-                </div>
 
-                <div class="form-group">
-                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.address}}</label>
-                  <div class="col-md-6 col-sm-6 col-xs-12">
-                    <div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
-                      <input type="text" id="Address" value="{{ suppliers.Address }}" name="Address" class="form-control  col-md-7 col-xs-12">
-                    </div>
-                    {% if suppliers %}
-                    <p class="control-value">{{ suppliers.Address }}</p>
-                    {% endif %}
-                  </div>
-                </div>
+
 
                 <div class="form-group">
                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.phone}}</label>
@@ -87,6 +80,17 @@
               </div>
               <div class="col-sm-6">
 
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.address}}</label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
+                      <input type="text" id="Address" value="{{ suppliers.Address }}" name="Address" class="form-control  col-md-7 col-xs-12">
+                    </div>
+                    {% if suppliers %}
+                    <p class="control-value">{{ suppliers.Address }}</p>
+                    {% endif %}
+                  </div>
+                </div>
 
                 <div class="form-group">
                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.tax_number}}</label>

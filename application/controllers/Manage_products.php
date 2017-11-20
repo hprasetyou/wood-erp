@@ -28,12 +28,17 @@ class Manage_products extends CI_Controller{
 	function get_json(){
 		$products = ProductQuery::create();
 		$maxPerPage = $this->input->get('length');
+    $colls = $this->schema->extract_fields('Product');
 		if($this->input->get('search[value]')){
 			$products->condition('cond1' ,'Product.name LIKE ?', "%".$this->input->get('search[value]')."%");
-
 			$products->where(array('cond1',),'or');
     }
-		$offset = ($this->input->get('start')?$this->input->get('start'):0);
+    $fields = json_decode($this->input->get('fields'));
+
+    $orderbycol = "orderBy".$fields[$this->input->get('order[0][column]')];
+    $products->$orderbycol($this->input->get('order[0][dir]'));
+
+    $offset = ($this->input->get('start')?$this->input->get('start'):0);
 		$products = $products->paginate(($offset/10)+1, $maxPerPage);
     $o = [];
     $o['recordsTotal']=$products->getNbResults();
@@ -46,23 +51,13 @@ class Manage_products extends CI_Controller{
 	    if($product->getProductImages()->count()>0){
 	    	$imgurl = $product->getProductImages()[0]->getUrl();
 	    }
-	    	$o['data'][$i]['id'] = $product->getId();
-		$o['data'][$i]['name'] = $product->getName();
-		$o['data'][$i]['description'] = $product->getDescription();
-		$o['data'][$i]['is_kdn'] = $product->getIsKdn();
-		$o['data'][$i]['cost_price'] = $product->getCostPrice();
-		$o['data'][$i]['list_price'] = $product->getListPrice();
-		$o['data'][$i]['image'] = $imgurl;
-		$o['data'][$i]['cubic_asb'] = $product->getCubicAsb();
-		$o['data'][$i]['cubic_kdn'] = $product->getIsKdn()?$product->getCubicKdn():string('not_knockdown');
-		$o['data'][$i]['width_asb'] = $product->getWidthAsb();
-		$o['data'][$i]['height_asb'] = $product->getHeightAsb();
-		$o['data'][$i]['depth_asb'] = $product->getDepthAsb();
-		$o['data'][$i]['width_kdn'] = $product->getWidthKdn();
-		$o['data'][$i]['height_kdn'] = $product->getHeightKdn();
-		$o['data'][$i]['depth_kdn'] = $product->getDepthKdn();
-
-				$i++;
+      foreach ($colls as $key => $coll) {
+        # code...
+        $f = "get".$coll;
+        $o['data'][$i][$key] = $product->$f();
+      }
+		  $o['data'][$i]['image'] = $imgurl;
+			$i++;
     }
 		echo json_encode($o);
 	}
