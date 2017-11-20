@@ -20,3 +20,10 @@ textarea {
 .image-item{
   width: 100%
 }
+.measure{
+  text-align: left;
+  font-weight: 400;
+}
+.nopadding{
+  padding: 0 !important;
+}

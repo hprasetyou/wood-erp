@@ -5,6 +5,7 @@
 'add_image' => 'Add Image',
 'address' => 'Address',
 'article_number' => 'Article Number',
+'assembled'=>'Assembled',
 'available_finishing' => 'Available Finishing',
 'back' => 'Back',
 'bank' => 'Bank',
@@ -47,6 +48,7 @@
 'is_flegt' => 'Is Flegt Item',
 'is_kdn' => 'Is Knockdown',
 'is_supplier' => 'Is Supplier',
+'knockdown' => 'Knockdown',
 'last_login' => 'Last Login',
 'list_price' => 'List Price',
 'login' => 'Login',
@@ -89,6 +91,11 @@
 'width_asb' => 'Width Assembled',
 'width_kdn' => 'Width Knockdown',
 'with_box'=>'With Carton Box',
+'width_asb' => 'Width Assembled',
+'width_kdn' => 'Width Knockdown',
+'width'=>'Width',
+'height'=>'Height',
+'depth'=>'Depth',
 'yes' => 'Yes',
 'total_price' => 'Total Price'
 );
