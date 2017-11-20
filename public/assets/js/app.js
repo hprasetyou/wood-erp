@@ -113,11 +113,13 @@ function init_modal_selection(){
       "data":"id",
       "render":new Function("data", "type","row","meta", "return '<a data-id=\"'+data+'\" class=\"btn btn-sm btn-default pull-right btn-select\" href=\"#\"><i class=\"fa fa-search\"></i> </a>'")
     }]
+    var fd= []
      $('#'+target).find('th').each(function(){
        if($(this).data('fieldname')){
          fl.push({
            data:$(this).data('fieldname')
          })
+         fd.push($(this).data('fieldname'))
        }
      })
     var mtt = $('#'+target).find('table');
@@ -125,10 +127,11 @@ function init_modal_selection(){
       "processing": true,
       "serverSide": true,
       "searchDelay": 1000,
-      "ordering": false,
+      "ordering": true,
       "ajax": {
           "url": base_url[0]+"index.php/"+c+"/get_json",
           "data": function ( d ) {
+            d['fields']= JSON.stringify(fd)
             if(bdm){
               for (var prop in bdm) {
                 // d.cond = []
@@ -183,7 +186,8 @@ $('.form-select').select2()
 $('#btn-edit').click(function(e){
   e.preventDefault();
   $('input:checkbox').removeAttr('disabled')
-$('.input-wrap, #btn-save, #btn-canceledit, .embed-form, .btn-delete-row').show()
+$('.input-wrap, #btn-save, #btn-canceledit, .embed-form').show()
+$('.btn-delete-row , .btn-edit-row').css('display','block')
 $('.img-layer, .control-value').hide()
 $(this).hide()
 })
@@ -191,7 +195,7 @@ $('#btn-canceledit').click(function(e){
   e.preventDefault();
 $('input:checkbox').attr('disabled','disabled')
 $('#btn-edit, .img-layer, .control-value').show()
-$('#btn-save, .input-wrap, .embed-form, .btn-delete-row').hide()
+$('#btn-save, .input-wrap, .embed-form, .btn-delete-row, .btn-edit-row').hide()
 $(this).hide()
 })
 $(function() {

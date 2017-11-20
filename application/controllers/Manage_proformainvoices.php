@@ -12,6 +12,11 @@ class Manage_proformainvoices extends MY_Controller{
     $this->authorization->check_authorization('manage_proformainvoices');
   }
 
+  function get_line_detail($id){
+    $line = ProformaInvoiceLineQuery::create()->joinWith('ProductCustomer')->joinWith('ProductCustomer.Product')->findPk($id);
+    echo $line->toJSON();
+  }
+
   function create(){
     $this->load->helper('good_numbering');
 		$partners = PartnerQuery::create()->find();
@@ -61,19 +66,25 @@ class Manage_proformainvoices extends MY_Controller{
         $productcust = new ProductCustomer();
         $productcust->setProductId($line->ProductId);
         $productcust->setPartnerId($data->getCustomerId());
+      }
         $productcust->setName($line->Name);
         $productcust->setDescription($line->Description);
         $productcust->setProductPrice($line->Price);
         $productcust->save();
-      }
+
       $cbm = 0;
       if($productcust->getProduct()->getIsKdn()){
         $cbm = $productcust->getProduct()->getCubicKdn();
       }else{
         $cbm = $productcust->getProduct()->getCubicAsb();
       }
-      $proformainvoiceline = new ProformaInvoiceLine;
-      $proformainvoiceline->setProformaInvoiceId($data->getId());
+      if($line->Id>0){
+        $proformainvoiceline = ProformaInvoiceLineQuery::create()
+        ->findPk($id);
+      }else{
+        $proformainvoiceline = new ProformaInvoiceLine;
+        $proformainvoiceline->setProformaInvoiceId($data->getId());
+      }
       $proformainvoiceline->setProductCustomerId($productcust->getId());
       $proformainvoiceline->setQty($line->Qty);
       $proformainvoiceline->setDescription($line->Description);

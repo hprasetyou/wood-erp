@@ -55,7 +55,7 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
 					</div>
 
             <textarea name="Lines" style="display:none" id="Lines"></textarea>
-          <div class="row">
+          <div class="row" id="detail">
             <div class="col-sm-12">
               <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
@@ -95,6 +95,7 @@ $(document).ready(function(){
     var gap = normal_price - price
     $('#CalculatedDiscount').val(((gap/normal_price)*100).toFixed(2))
   })
+  get_total()
     $('#table_ProformaInvoiceLine').loadTableData(
       {
         search:false,
@@ -104,11 +105,14 @@ $(document).ready(function(){
     $('#saveLine').click(function(e){
       e.preventDefault();
       mod_line({
+        Id:$('#LineId').val(),
         Name:$('#LineName').val(),
         ProductId: $('#ProductId').val(),
         Qty:$('#Qty').val(),
         Description:$('#Description').val(),
         Price:$('#Price').val(),
+        CostPrice:$('#CostPrice').val(),
+        ListPrice:$('#ListPrice').val(),
         CubicDimension:$('#CubicDimension').val(),
         QtyPerPack:$('#QtyPerPack').val(),
         IsSample:$('#IsSample').is(":checked"),
@@ -153,21 +157,34 @@ $(document).ready(function(){
         }
       })
   })
+  function get_total(){
+    var tot= 0;
+    $('#table_ProformaInvoiceLine').find('tbody tr').each(function(i){
+      var stot = $(this).find("td").eq(8).text();
+      if(stot>0){
+        tot = tot+(stot*1)
+      }
+    })
+    $('#TotalCol').text(tot)
+  }
 
   function mod_line(data,method){
-
+$('#LineId').val("")
     idx = idx+1
     var t = $('#table_ProformaInvoiceLine').DataTable();
+
     if(method == 'write'){
       Lines.push({
         index:idx,
-        Id:$(data._selector).data('id'),
+        Id: data.Id,
         Name: data.Name,
         Description:data.Description,
         ProductId: data.ProductId,
         Qty: data.Qty,
         CubicDimension: data.CubicDimension,
         Price: data.Price,
+        CostPrice: data.CostPrice,
+        ListPrice: data.ListPrice,
         QtyPerPack: data.QtyPerPack,
         IsSample: data.IsSample,
         IsNeedBox: data.IsNeedBox,
@@ -180,8 +197,7 @@ $(document).ready(function(){
       if(data.IsNeedBox){
         special += "{{res.string.with_box}}"
       }
-
-      t.row.add([
+      var nr = [
         data.Name,
         data.Description,
         special,
@@ -191,10 +207,22 @@ $(document).ready(function(){
         data.CubicDimension*data.Qty,
         data.Price,
         data.Price*data.Qty,
-        '<a href="#" data-index="'+ data.index+'" '+
+        '<a href="#" data-index="'+ idx+'" '+
+        'class="btn btn-default btn-edit-row">'+
+        '<i class="fa fa-pencil"></i></a>'+
+        '<a href="#" data-index="'+ idx+'" '+
         'class="btn btn-danger btn-delete-row">'+
         '<i class="fa fa-trash"></i></a>'
-      ]).draw()
+      ];
+      if(data.Id > 0 || $('#LineId').data('edit')>0){
+        Lines.splice(Lines.map(function(x) {return x.index; }).indexOf($(edrow).data('index')),1)
+
+        t.row( $(edrow).parents('tr') )
+          .remove()
+          .draw();
+        $('#LineId').data('edit',0);
+      }
+        t.row.add(nr).draw()
     }else if (method=='delete') {
       console.log($(data._selector));
 
@@ -213,7 +241,7 @@ $(document).ready(function(){
           .draw();
     }
     $('#Lines').text(JSON.stringify(Lines))
-
+    get_total()
   }
   $('#table_ProformaInvoiceLine').on( 'click','.btn-delete-row',function(e){
     e.preventDefault()
@@ -225,5 +253,66 @@ $(document).ready(function(){
       _selector:this
     },'delete')
   })
+  var edrow = false;
+
+  $('#table_ProformaInvoiceLine').on( 'click','.btn-edit-row',function(e){
+    e.preventDefault()
+    edrow = this
+    if($(this).data('id')){
+      $.ajax({
+        url:'/index.php/manage_proformainvoices/get_line_detail/'+$(this).data('id'),
+        dataType:'JSON',
+        success:function(o){
+          console.log(o);
+          populate_form_line(o);
+        }
+      })
+    }else{
+      var d = Lines[Lines.map(function(x) {return x.index; }).indexOf($(this).data('index'))];
+      console.log(d);
+      populate_form_line({
+        index:$(this).data('index'),
+        ProductCustomer:{
+          Name:d.Name,
+          ProductId:d.ProductId,
+          Product:{
+            CostPrice:d.CostPrice,
+            ListPrice:d.ListPrice,
+            Name:d.Name,
+            Description:d.Description,
+            NetCubic:d.CubicDimension
+          },
+          ProductPrice:d.Price,
+          Description:d.Description
+        },
+        Qty:d.Qty,
+        QtyPerPack:d.QtyPerPack,
+        IsSample:d.IsSample,
+        IsNeedBox:d.IsNeedBox
+      })
+      // populate_form_line()
+    }
+  })
+
+  function populate_form_line(data){
+      $('#LineId').val(data.Id)
+      $('#LineId').data('edit',1)
+      $('#LineName').val(data.ProductCustomer.Name)
+      $('#ProductId').val(data.ProductCustomer.ProductId)
+      $('#CostPrice').val(data.ProductCustomer.Product.CostPrice)
+      $('#ListPrice').val(data.ProductCustomer.Product.ListPrice)
+      $('#displayProductId').val(data.ProductCustomer.Product.Name+' - '+data.ProductCustomer.Product.Description)
+      $('#Price').val(data.ProductCustomer.ProductPrice)
+      $('#CubicDimension').val(data.ProductCustomer.Product.NetCubic)
+      $('#Description').val(data.ProductCustomer.Description)
+      $('#Qty').val(data.Qty)
+      $('#QtyPerPack').val(data.QtyPerPack)
+      $('#IsSample').prop('checked', data.IsSample);
+      $('#IsNeedBox').prop('checked', data.IsNeedBox);
+      $('#Price').trigger('change')
+      $('html, body').animate({
+          scrollTop: $("#detail").offset().top
+      }, 200);
+  }
 </script>
 {% endblock %}

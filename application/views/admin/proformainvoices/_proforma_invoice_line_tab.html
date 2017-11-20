@@ -9,6 +9,7 @@
     <div class="box-body pi_lines" data-target="saveLine">
       <div class="row ">
         <div class="col-sm-6">
+          <input type="hidden" name="LineId" id="LineId">
           <div class="form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="LineName">{{res.string.article_number}}</label>
             <div class="col-md-6 col-sm-6 col-xs-12">
@@ -151,7 +152,7 @@
     {% for line in proformainvoices.ProformaInvoiceLines %}
       <tr>
         <td data-fieldname="name">{{line.ProductCustomer.Name}}</td>
-        <td data-fieldname="name">{{line.ProductCustomer.Description}}</td>
+        <td data-fieldname="name">{{line.Description}}</td>
         <td data-fieldname="total_price">
           {% if line.IsSample %} {{res.string.sample_product}}, {% endif %}
           {% if line.IsNeedBox %} {{res.string.with_box}} {% endif %}
@@ -162,8 +163,17 @@
         <td data-fieldname="total_cubic_dimension">{{line.TotalCubicDimension}}</td>
         <td data-fieldname="price">{{line.Price}}</td>
         <td data-fieldname="total_price">{{ line.TotalPrice}}</td>
-        <td><a href="#" data-id="{{line.Id}}" class="btn btn-danger btn-delete-row"><i class="fa fa-trash"></i></a></td>
+        <td>
+          <a style="display:none" href="#" data-id="{{line.Id}}" class="btn btn-default btn-edit-row"><i class="fa fa-pencil"></i></a>
+          <a style="display:none" href="#" data-id="{{line.Id}}" class="btn btn-danger btn-delete-row"><i class="fa fa-trash"></i></a>
+        </td>
       </tr>
     {% endfor %}
   </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="8">Total</td>
+      <td colspan="2"><span id="TotalCol"></span></td>
+    </tr>
+  </tfoot>
 </table>
