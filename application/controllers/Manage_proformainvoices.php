@@ -1,44 +1,16 @@
 <?php
 
 
-class Manage_proformainvoices extends CI_Controller{
+class Manage_proformainvoices extends MY_Controller{
 
 
   function __construct(){
+    $this->objname = 'ProformaInvoice';
+    $this->tpl = 'proformainvoices';
+
     parent::__construct();
     $this->authorization->check_authorization('manage_proformainvoices');
   }
-  function index(){
-      $this->template->render('admin/proformainvoices/index');
-  }
-
-	function get_json(){
-		$proformainvoices = ProformaInvoiceQuery::create();
-		$maxPerPage = $this->input->get('length');
-		if($this->input->get('search[value]')){
-			$proformainvoices->condition('cond1' ,'ProformaInvoice.name LIKE ?', "%".$this->input->get('search[value]')."%");
-
-			$proformainvoices->where(array('cond1',),'or');
-    }
-		$offset = ($this->input->get('start')?$this->input->get('start'):0);
-		$proformainvoices = $proformainvoices->paginate(($offset/10)+1, $maxPerPage);
-    $o = [];
-    $o['recordsTotal']=$proformainvoices->getNbResults();
-    $o['recordsFiltered']=$proformainvoices->getNbResults();
-    $o['draw']=$this->input->get('draw');
-    $o['data']=[];
-    $i=0;
-    foreach ($proformainvoices as $proformainvoice) {
-				$o['data'][$i]['id'] = $proformainvoice->getId();
-				$o['data'][$i]['name'] = $proformainvoice->getName();
-				$o['data'][$i]['customer_id'] = $proformainvoice->getPartner()->getName();
-				$o['data'][$i]['date'] = $proformainvoice->getDate()?date_format($proformainvoice->getDate(),'d M Y'):"";
-				$o['data'][$i]['description'] = $proformainvoice->getDescription();
-
-				$i++;
-    }
-		echo json_encode($o);
-	}
 
   function create(){
     $this->load->helper('good_numbering');
@@ -68,18 +40,14 @@ class Manage_proformainvoices extends CI_Controller{
 
   }
 
-  function write($id=null){
-		if($id){
-			$proformainvoice = ProformaInvoiceQuery::create()->findPK($id);
-		}else{
-			$proformainvoice = new ProformaInvoice;
-		}
-		$proformainvoice->setName($this->input->post('Name'));
-		$proformainvoice->setCustomerId($this->input->post('CustomerId'));
-		$proformainvoice->setDate($this->input->post('Date'));
-		$proformainvoice->setDescription($this->input->post('Description'));
+  function write($id=null,$fields =array(
+    'Name'=>'Name',
+    'CustomerId'=>'CustomerId',
+    'Date'=>'Date',
+    'Description'=>'Description'
+  )){
+    $data = parent::write($id,$fields);
 
-		$proformainvoice->save();
     $lines = json_decode($this->input->post('Lines'));
 
     foreach ($lines as $key => $line) {
@@ -87,12 +55,12 @@ class Manage_proformainvoices extends CI_Controller{
       if($line->Type == 'write'){
       $productcust = ProductCustomerQuery::create()
       ->filterByProductId($line->ProductId)
-      ->filterByPartnerId($proformainvoice->getCustomerId())
+      ->filterByPartnerId($data->getCustomerId())
       ->findOne();
       if(!$productcust){
         $productcust = new ProductCustomer();
         $productcust->setProductId($line->ProductId);
-        $productcust->setPartnerId($proformainvoice->getCustomerId());
+        $productcust->setPartnerId($data->getCustomerId());
         $productcust->setName($line->Name);
         $productcust->setDescription($line->Description);
         $productcust->setProductPrice($line->Price);
@@ -105,7 +73,7 @@ class Manage_proformainvoices extends CI_Controller{
         $cbm = $productcust->getProduct()->getCubicAsb();
       }
       $proformainvoiceline = new ProformaInvoiceLine;
-      $proformainvoiceline->setProformaInvoiceId($proformainvoice->getId());
+      $proformainvoiceline->setProformaInvoiceId($data->getId());
       $proformainvoiceline->setProductCustomerId($productcust->getId());
       $proformainvoiceline->setQty($line->Qty);
       $proformainvoiceline->setDescription($line->Description);
@@ -123,9 +91,8 @@ class Manage_proformainvoices extends CI_Controller{
         ProformaInvoiceLineQuery::create()->findPk($line->Id)->delete();
       }
     }
-		$this->loging->add_entry('proformainvoices',$proformainvoice->getId(),($id?'activity_modify':'activity_create'));
 
-    redirect('manage_proformainvoices/detail/'.$proformainvoice->getId());
+    redirect('manage_proformainvoices/detail/'.$data->getId());
   }
 
   function delete($id){

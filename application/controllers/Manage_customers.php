@@ -12,6 +12,13 @@ class Manage_customers extends MY_Controller{
     $this->authorization->check_authorization('manage_customers');
   }
 
+  function get_json(){
+    if($this->input->get('company_id')){
+      $this->objobj = PartnerQuery::create()->filterByCompanyId($this->input->get('company_id'));
+    }
+    parent::get_json();
+  }
+
   function write($id=null,$fields=array(
     'Name'=>'Name',
     'Address'=>'Address',
@@ -22,7 +29,8 @@ class Manage_customers extends MY_Controller{
     'Fax'=>'Fax',
     'TaxNumber'=>'TaxNumber',
     'BankDetail'=>'BankDetail',
-    'CompanyId'=>'CompanyId'
+    'CompanyId'=>'CompanyId',
+    'IsCustomer'=>array('value'=>1)
   )){
     $data = parent::write($id,$fields);
     if($this->input->post('Image')){

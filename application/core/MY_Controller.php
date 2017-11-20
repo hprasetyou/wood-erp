@@ -6,11 +6,13 @@ class MY_Controller extends CI_Controller{
   public $objname;
   public $objobj;
   public $tpl;
+  public $o2m_def;
 
 
  function __construct()
  {
    parent::__construct();
+   $this->o2m_def = [];
  }
  function index(){
     $vars = $this->tpl;
@@ -22,11 +24,6 @@ class MY_Controller extends CI_Controller{
    $objs = $qobj::create();
    if($this->objobj){
      $objs = $this->objobj;
-   }
-   if($this->input->get('company_id')){
-     $objs->filterByCompanyId($this->input->get('company_id'));
-   }else{
-     $objs->filterByCompanyId(null);
    }
    $maxPerPage = $this->input->get('length');
    $colls = $this->schema->extract_fields($this->objname);
@@ -54,11 +51,34 @@ class MY_Controller extends CI_Controller{
    foreach ($objs as $obj) {
        foreach ($colls as $key => $coll) {
          # code...
-         $f = "get".$coll;
-         $o['data'][$i][$key] = $obj->$f();
+         $f = "get".$coll['Name'];
+         switch ($coll['type']) {
+           case 'rel':
+           $o['data'][$i][$key] = $obj->$f()?$obj->$f()->getName():'';
+             break;
+
+           case 'DATE':
+           $o['data'][$i][$key] = $obj->$f()?date_format($obj->$f(),'d M Y'):'';
+             break;
+           default:
+            $o['data'][$i][$key] = $obj->$f();
+             break;
+         }
+       }
+       foreach ($this->o2m_def as $key => $value) {
+         $f = "get".$value['rel'];
+         $field = "get".$value['field'];
+         $val = false;
+         if($value['single']){
+           $val = count($obj->$f())>0?$obj->$f()[0]->$field():'';
+         }else{
+           $val = $obj->$f();
+         }
+         $o['data'][$i][$value['index']] = $val;
        }
        $i++;
    }
+
    echo json_encode($o);
  }
 
@@ -90,15 +110,14 @@ class MY_Controller extends CI_Controller{
    foreach ($pair as $key => $value) {
      # code...
      $func = "set$key";
-     if($this->input->post($value)){
-       if($value=="Image"){
-         if(strpos($this->input->post('Image'),'base64')){
-         $this->load->helper('base64toimage');
-         $obj->$func(base64_to_img($this->input->post($value)));
-       }
-       }else{
-         $obj->$func($this->input->post($value));
-       }
+     if($value=="Image"){
+       if(strpos($this->input->post('Image'),'base64')){
+       $this->load->helper('base64toimage');
+       $obj->$func(base64_to_img($this->input->post($value)));
+     }
+     }else{
+       $value = is_array($value)?$value['value']:$this->input->post($value);
+       $obj->$func($value);
      }
    }
 
