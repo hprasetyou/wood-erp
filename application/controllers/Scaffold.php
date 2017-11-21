@@ -506,14 +506,8 @@ class Manage_$var extends MY_Controller{
   }
 
 	function write(\$id=null,\$fields=$fls){
-		$data = parent::write($id,$fields);
-		if($this->input->post('Image')){
-			if(strpos($this->input->post('Image'),'base64')){
-				$this->load->helper('base64toimage');
-				$data->setImage(base64_to_img($this->input->post('Image')));
-			}
-		}
-		redirect('manage_customers/detail/'.$data->getId());
+		\$data = parent::write(\$id,$\fields);
+		redirect('manage_customers/detail/'.\$data->getId());
 	}
 
   function delete(\$id){

@@ -3,7 +3,12 @@ jQuery.fn
 jQuery.fn.loadTableData = function(
   conf = {search:true,
     serverSide:true,
-    paging:true}){
+    paging:true,
+    button:['show']
+  }){
+    if(!conf.button){
+      conf.button = ['show'];
+    }
   var tt = $(this)
   var c = tt.data('controller')
   var bdm = tt.data('domain')
@@ -37,10 +42,20 @@ jQuery.fn.loadTableData = function(
 
      }
    })
+   var btns = "return "
+   for (var b in conf.button) {
+     switch (conf.button[b]) {
+       case 'show':
+          btns += "'<a data-id=\"'+data+'\" class=\"btn btn-sm btn-default pulloginl-right btn-select\" href=\""+base_url[0]+"index.php/"+c+"/detail/'+data+'\"><i class=\"fa fa-search\"></i> Detail</a>'"
+         break;
+       default:
+
+     }
+   }
    fl.push({
     "data":"id",
     "orderable": false,
-    "render":new Function("data", "type","row","meta", "return '<a data-id=\"'+data+'\" class=\"btn btn-sm btn-default pulloginl-right btn-select\" href=\"'+meta.settings.ajax.split('get_json')[0]+'detail/'+data+'\"><i class=\"fa fa-search\"></i> Detail</a>'")
+    "render":new Function("data", "type","row","meta", btns)
   })
   var params = '?fields='+JSON.stringify(fd)
   if(bdm){

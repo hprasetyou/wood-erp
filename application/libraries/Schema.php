@@ -42,9 +42,14 @@ class Schema
     }
     foreach ($tb->{'foreign-key'} as $key => $value) {
       # code...
+      $relname = $value->attributes()->foreignTable;
+      if($value->attributes()->phpName){
+        $relname = $value->attributes()->phpName;
+      }
+
       $o[$value->reference[0]->attributes()->local.""] = array(
         'type'=>'rel',
-        'Name'=>ucfirst($value->attributes()->foreignTable."")
+        'Name'=>ucfirst($relname."")
       );
     }
     return $o;

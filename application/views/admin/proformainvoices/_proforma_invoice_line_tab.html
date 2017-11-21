@@ -153,9 +153,11 @@
       <tr>
         <td data-fieldname="name">{{line.ProductCustomer.Name}}</td>
         <td data-fieldname="name">{{line.Description}}</td>
-        <td data-fieldname="total_price">
-          {% if line.IsSample %} {{res.string.sample_product}}, {% endif %}
-          {% if line.IsNeedBox %} {{res.string.with_box}} {% endif %}
+        <td data-fieldname="total_price"><ul>
+          {% if line.IsSample %}<li>{{res.string.sample_product}}</li> {% endif %}
+          {% if line.IsNeedBox %} <li>{{res.string.with_box}}</li> {% endif %}
+        </ul>
+
         </td>
         <td data-fieldname="qty">{{line.Qty}}</td>
         <td data-fieldname="qty_on_container">{{ (line.Qty/line.QtyPerPack) | round }}</td>
@@ -172,7 +174,9 @@
   </tbody>
   <tfoot>
     <tr>
-      <td colspan="8">Total</td>
+      <td colspan="6">Total</td>
+      <td><span id="TotalCd"></span></td>
+      <td></td>
       <td colspan="2"><span id="TotalCol"></span></td>
     </tr>
   </tfoot>

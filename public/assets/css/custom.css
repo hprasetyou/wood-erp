@@ -27,3 +27,6 @@ textarea {
 .nopadding{
   padding: 0 !important;
 }
+.sorting::after{
+    display: none !important;
+}
