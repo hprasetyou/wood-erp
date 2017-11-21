@@ -27,10 +27,10 @@ $hook['pre_system'] = function() {
    $manager->setName('default');
 
    $defaultLogger = new Logger('defaultLogger');
-   $defaultLogger->pushHandler(new StreamHandler('application/logs/propel.log', Logger::WARNING));
+   $defaultLogger->pushHandler(new StreamHandler('application/logs/propel_error.log', Logger::WARNING));
    Propel::getServiceContainer()->setLogger('defaultLogger', $defaultLogger);
    $queryLogger = new Logger('default');
-   $queryLogger->pushHandler(new StreamHandler('application/logs/default.log'));
+   $queryLogger->pushHandler(new StreamHandler('application/logs/propel_default.log'));
    Propel::getServiceContainer()->setLogger('default', $queryLogger);
     // Add the connection manager to the service container
    $serviceContainer = Propel::getServiceContainer();
