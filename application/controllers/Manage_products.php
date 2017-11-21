@@ -75,26 +75,27 @@ class Manage_products extends MY_Controller{
         'tb_field'=>'name'))));
   }
 
-  function write($id=null,$fields=array(
-    'Name'=>'Name',
-    'Description'=>'Description',
-    'IsKdn'=>'IsKdn',
-    'IsFlegt'=>'IsFlegt',
-    'HasComponent'=>'HasComponent',
-    'NetCubic'=>'NetCubic',
-    'CostPrice'=>'CostPrice',
-    'QtyPerPack'=>'QtyPerPack',
-    'ListPrice'=>'ListPrice',
-    'CubicAsb'=>'CubicAsb',
-    'CubicKdn'=>'CubicKdn',
-    'WidthAsb'=>'WidthAsb',
-    'HeightAsb'=>'HeightAsb',
-    'DepthAsb'=>'DepthAsb',
-    'WidthKdn'=>'WidthKdn',
-    'HeightKdn'=>'HeightKdn',
-    'DepthKdn'=>'DepthKdn',
-    'Note'=>'Note'
-  )){
+  function write($id=null){
+    $this->form = array(
+      'Name'=>'Name',
+      'Description'=>'Description',
+      'IsKdn'=>'IsKdn',
+      'IsFlegt'=>'IsFlegt',
+      'HasComponent'=>'HasComponent',
+      'NetCubic'=>'NetCubic',
+      'CostPrice'=>'CostPrice',
+      'QtyPerPack'=>'QtyPerPack',
+      'ListPrice'=>'ListPrice',
+      'CubicAsb'=>'CubicAsb',
+      'CubicKdn'=>'CubicKdn',
+      'WidthAsb'=>'WidthAsb',
+      'HeightAsb'=>'HeightAsb',
+      'DepthAsb'=>'DepthAsb',
+      'WidthKdn'=>'WidthKdn',
+      'HeightKdn'=>'HeightKdn',
+      'DepthKdn'=>'DepthKdn',
+      'Note'=>'Note'
+    );
     $data = parent::write($id,$fields);
 		$this->load->helper('base64toimage');
 		$prod_img = json_decode($this->input->post('imgProduct'));

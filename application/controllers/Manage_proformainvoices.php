@@ -45,12 +45,12 @@ class Manage_proformainvoices extends MY_Controller{
 
   }
 
-  function write($id=null,$fields =array(
+  function write($id=null){
+    $this->form = array(
     'Name'=>'Name',
     'CustomerId'=>'CustomerId',
     'Date'=>'Date',
-    'Description'=>'Description'
-  )){
+    'Description'=>'Description')
     $data = parent::write($id,$fields);
 
     $lines = json_decode($this->input->post('Lines'));

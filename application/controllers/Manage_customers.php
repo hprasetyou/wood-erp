@@ -7,7 +7,7 @@ class Manage_customers extends MY_Controller{
   function __construct(){
     $this->objname = 'Partner';
     $this->tpl = 'customers';
-    $this->objobj = PartnerQuery::create()->filterByIsCustomer(true);
+    $this->objobj = PartnerQuery::create()->filterByIsCustomer(true)->filterByCompanyId(null);
     parent::__construct();
     $this->authorization->check_authorization('manage_customers');
   }
@@ -19,19 +19,22 @@ class Manage_customers extends MY_Controller{
     parent::get_json();
   }
 
-  function write($id=null,$fields=array(
-    'Name'=>'Name',
-    'Address'=>'Address',
-    'Phone'=>'Phone',
-    'Website'=>'Website',
-    'Email'=>'Email',
-    'Image'=>'Image',
-    'Fax'=>'Fax',
-    'TaxNumber'=>'TaxNumber',
-    'BankDetail'=>'BankDetail',
-    'CompanyId'=>'CompanyId',
-    'IsCustomer'=>array('value'=>1)
-  )){
+  function write($id=null){
+    $this->form = array(
+      'Name'=>'Name',
+      'Address'=>'Address',
+      'Phone'=>'Phone',
+      'Website'=>'Website',
+      'Email'=>'Email',
+      'Image'=>'Image',
+      'Fax'=>'Fax',
+      'TaxNumber'=>'TaxNumber',
+      'BankDetail'=>'BankDetail',
+      'IsCustomer'=>array('value'=>1)
+    );
+    if(!$id){
+      $this->form['CompanyId']='CompanyId';
+    }
     $data = parent::write($id,$fields);
     if($this->input->post('Image')){
       if(strpos($this->input->post('Image'),'base64')){

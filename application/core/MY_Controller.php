@@ -3,10 +3,11 @@
 use Doctrine\Common\Inflector\Inflector;
 
 class MY_Controller extends CI_Controller{
-  public $objname;
-  public $objobj;
-  public $tpl;
-  public $o2m_def;
+  protected $objname;
+  protected $objobj;
+  protected $tpl;
+  protected $o2m_def;
+  protected $form;
 
 
  function __construct()
@@ -102,7 +103,8 @@ class MY_Controller extends CI_Controller{
      ));
  }
 
- function write($id=null,$pair){
+ function write($id=null){
+   $pair = $this->form;
    $colls = $this->schema->extract_fields($this->objname);
 
    if($id){
