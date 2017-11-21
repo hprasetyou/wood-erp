@@ -6,6 +6,7 @@
 'address' => 'Address',
 'article_number' => 'Article Number',
 'assembled'=>'Assembled',
+'assembled_dimension'=>'Assembled Dimension',
 'available_finishing' => 'Available Finishing',
 'back' => 'Back',
 'bank' => 'Bank',

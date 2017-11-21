@@ -3,15 +3,17 @@
 use Doctrine\Common\Inflector\Inflector;
 
 class MY_Controller extends CI_Controller{
-  public $objname;
-  public $objobj;
-  public $tpl;
-  public $o2m_def;
+  protected $objname;
+  protected $objobj;
+  protected $tpl;
+  protected $o2m_def;
+  protected $custom_column;
 
 
  function __construct()
  {
    parent::__construct();
+   $this->custom_column = [];
    $this->o2m_def = [];
  }
  function index(){
@@ -61,7 +63,6 @@ class MY_Controller extends CI_Controller{
            case 'rel':
            $o['data'][$i][$key] = $obj->$f()?$obj->$f()->getName():'';
              break;
-
            case 'DATE':
            $o['data'][$i][$key] = $obj->$f()?date_format($obj->$f(),'d M Y'):'';
              break;
@@ -69,6 +70,24 @@ class MY_Controller extends CI_Controller{
             $o['data'][$i][$key] = $obj->$f();
              break;
          }
+       }
+       foreach ($this->custom_column as $key => $value) {
+         # code...
+         //extract all {variable} from input to array
+         $var_cols = extract_surround_text($value,'{','}');
+         //create new variable and assign value by field
+         foreach ($var_cols as $v) {
+           $fsv = "get".$v;
+           $$v = $obj->$fsv();
+           # code...
+         }
+         $value = str_replace('}','',$value);
+         $value = str_replace('{','$',$value);
+          eval("\$value = $value;");
+          $o['data'][$i][$key] =  $value;
+         //apply by replacing {variable} to $variable
+
+
        }
        foreach ($this->o2m_def as $key => $value) {
          $f = "get".$value['rel'];
