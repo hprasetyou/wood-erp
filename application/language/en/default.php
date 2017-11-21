@@ -1,4 +1,4 @@
-<?php 
+<?php
  return array(
 'access' => 'Access',
 'add' => 'Add',
@@ -50,6 +50,7 @@
 'is_customer' => 'Is Customer',
 'is_employee' => 'Is Employee',
 'is_flegt' => 'Is Flegt Item',
+'is_round' => 'Is Rounded',
 'is_kdn' => 'Is Knockdown',
 'is_sample' => 'Is a Sample',
 'is_supplier' => 'Is Supplier',

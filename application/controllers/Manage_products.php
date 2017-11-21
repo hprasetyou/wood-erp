@@ -12,7 +12,8 @@ class Manage_products extends MY_Controller{
     $this->authorization->check_authorization('manage_products');
   }
   function get_json(){
-    $this->custom_column = array('dimension'=>"\"{WidthAsb} x {HeightAsb} x {DepthAsb}\"");
+    $this->custom_column = array('dimension'=>
+    " {WidthAsb}.' x '. ({IsRound}?'':{HeightAsb}.' x '). {DepthAsb}");
     $this->objobj = ProductQuery::create();
     $this->o2m_def = array(
       array(
@@ -83,6 +84,7 @@ class Manage_products extends MY_Controller{
       'IsKdn'=>'IsKdn',
       'IsFlegt'=>'IsFlegt',
       'HasComponent'=>'HasComponent',
+      'IsRound'=>'IsRound',
       'NetCubic'=>'NetCubic',
       'CostPrice'=>'CostPrice',
       'QtyPerPack'=>'QtyPerPack',

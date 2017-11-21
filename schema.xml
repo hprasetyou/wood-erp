@@ -52,6 +52,7 @@
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
     <column name="description" phpName="Description" type="VARCHAR" size="255"/>
+    <column name="is_round" phpName="IsRound" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
     <column name="is_kdn" phpName="IsKdn" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
     <column name="is_flegt" phpName="IsFlegt" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
     <column name="has_component" phpName="HasComponent" type="BOOLEAN" size="1" defaultValue="false"/>

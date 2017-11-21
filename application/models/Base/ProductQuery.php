@@ -23,6 +23,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildProductQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method     ChildProductQuery orderByDescription($order = Criteria::ASC) Order by the description column
+ * @method     ChildProductQuery orderByIsRound($order = Criteria::ASC) Order by the is_round column
  * @method     ChildProductQuery orderByIsKdn($order = Criteria::ASC) Order by the is_kdn column
  * @method     ChildProductQuery orderByIsFlegt($order = Criteria::ASC) Order by the is_flegt column
  * @method     ChildProductQuery orderByHasComponent($order = Criteria::ASC) Order by the has_component column
@@ -45,6 +46,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery groupById() Group by the id column
  * @method     ChildProductQuery groupByName() Group by the name column
  * @method     ChildProductQuery groupByDescription() Group by the description column
+ * @method     ChildProductQuery groupByIsRound() Group by the is_round column
  * @method     ChildProductQuery groupByIsKdn() Group by the is_kdn column
  * @method     ChildProductQuery groupByIsFlegt() Group by the is_flegt column
  * @method     ChildProductQuery groupByHasComponent() Group by the has_component column
@@ -120,6 +122,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct findOneById(int $id) Return the first ChildProduct filtered by the id column
  * @method     ChildProduct findOneByName(string $name) Return the first ChildProduct filtered by the name column
  * @method     ChildProduct findOneByDescription(string $description) Return the first ChildProduct filtered by the description column
+ * @method     ChildProduct findOneByIsRound(boolean $is_round) Return the first ChildProduct filtered by the is_round column
  * @method     ChildProduct findOneByIsKdn(boolean $is_kdn) Return the first ChildProduct filtered by the is_kdn column
  * @method     ChildProduct findOneByIsFlegt(boolean $is_flegt) Return the first ChildProduct filtered by the is_flegt column
  * @method     ChildProduct findOneByHasComponent(boolean $has_component) Return the first ChildProduct filtered by the has_component column
@@ -145,6 +148,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct requireOneById(int $id) Return the first ChildProduct filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByName(string $name) Return the first ChildProduct filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByDescription(string $description) Return the first ChildProduct filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProduct requireOneByIsRound(boolean $is_round) Return the first ChildProduct filtered by the is_round column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByIsKdn(boolean $is_kdn) Return the first ChildProduct filtered by the is_kdn column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByIsFlegt(boolean $is_flegt) Return the first ChildProduct filtered by the is_flegt column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByHasComponent(boolean $has_component) Return the first ChildProduct filtered by the has_component column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -168,6 +172,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct[]|ObjectCollection findById(int $id) Return ChildProduct objects filtered by the id column
  * @method     ChildProduct[]|ObjectCollection findByName(string $name) Return ChildProduct objects filtered by the name column
  * @method     ChildProduct[]|ObjectCollection findByDescription(string $description) Return ChildProduct objects filtered by the description column
+ * @method     ChildProduct[]|ObjectCollection findByIsRound(boolean $is_round) Return ChildProduct objects filtered by the is_round column
  * @method     ChildProduct[]|ObjectCollection findByIsKdn(boolean $is_kdn) Return ChildProduct objects filtered by the is_kdn column
  * @method     ChildProduct[]|ObjectCollection findByIsFlegt(boolean $is_flegt) Return ChildProduct objects filtered by the is_flegt column
  * @method     ChildProduct[]|ObjectCollection findByHasComponent(boolean $has_component) Return ChildProduct objects filtered by the has_component column
@@ -284,7 +289,7 @@ abstract class ProductQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, description, is_kdn, is_flegt, has_component, qty_per_pack, cost_price, list_price, note, cubic_asb, cubic_kdn, width_asb, height_asb, depth_asb, width_kdn, height_kdn, depth_kdn, net_cubic, created_at, updated_at FROM product WHERE id = :p0';
+        $sql = 'SELECT id, name, description, is_round, is_kdn, is_flegt, has_component, qty_per_pack, cost_price, list_price, note, cubic_asb, cubic_kdn, width_asb, height_asb, depth_asb, width_kdn, height_kdn, depth_kdn, net_cubic, created_at, updated_at FROM product WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -463,6 +468,33 @@ abstract class ProductQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProductTableMap::COL_DESCRIPTION, $description, $comparison);
+    }
+
+    /**
+     * Filter the query on the is_round column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIsRound(true); // WHERE is_round = true
+     * $query->filterByIsRound('yes'); // WHERE is_round = true
+     * </code>
+     *
+     * @param     boolean|string $isRound The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProductQuery The current query, for fluid interface
+     */
+    public function filterByIsRound($isRound = null, $comparison = null)
+    {
+        if (is_string($isRound)) {
+            $isRound = in_array(strtolower($isRound), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(ProductTableMap::COL_IS_ROUND, $isRound, $comparison);
     }
 
     /**
