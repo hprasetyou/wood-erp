@@ -7,7 +7,7 @@
 	 {% set bc_text = 'Baru' %}
 {% endif %}
 {% set breadcrumbs = [
-	{'link': base_url~'index.php/manage_components','text':' Component '},
+	{'link': base_url~'index.php/manage_components','text': res.string.component },
 	{'link':'#','text':bc_text  }]
 %}
 {% block content %}
@@ -16,20 +16,19 @@
 		<form id="form_Component" method="post" action="{{base_url}}index.php/manage_components/write/{{ components.id }}" data-parsley-validate class="form-horizontal form-label-left">
 			<div class="box box-info">
 				<div class="box-header with-border">
-					{% include 'common/_form_header.html'
-					with {'back_url':'/index.php/manage_components',
-					'title': res.string.component,
-					'delete_url':'/index.php/manage_components/delete/'~components.Id,
-					'object':components} %}
-					<div class="clearfix"></div>
+				{% include 'common/_form_header.html'
+				with {'back_url':'/index.php/manage_components'~back_link,
+				'title': res.string.component,
+				'delete_url':'/index.php/manage_components/delete/' ~ components.Id,
+				'object':components} %}
 				</div>
 				<div class="box-body">
-
+					
 					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.name}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if components %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" id="Name" value="{{ components.Name }}"
+							<input type="text" placeholder="{{ res.string.name }}" id="Name" value="{{ components.Name }}"
 							name="Name" required="required" class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if components %}
@@ -39,10 +38,10 @@
 						</div>
 
 					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.description}}</label>
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Description">{{res.string.description}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if components %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" id="Description" value="{{ components.Description }}"
+							<input type="text" placeholder="{{ res.string.description }}" id="Description" value="{{ components.Description }}"
 							name="Description"  class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if components %}
@@ -51,8 +50,20 @@
 							</div>
 						</div>
 
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Material">{{res.string.material}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if components %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" placeholder="{{ res.string.material }}" id="Material" value="{{ components.Material }}"
+							name="Material"  class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if components %}
+									<p class="control-value">{{ components.Material  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
 				</div>
-			</div>
 		</form>
 	</div>
 </div>

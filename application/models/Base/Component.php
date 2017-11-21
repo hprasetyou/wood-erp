@@ -88,6 +88,13 @@ abstract class Component implements ActiveRecordInterface
     protected $description;
 
     /**
+     * The value for the material field.
+     *
+     * @var        string
+     */
+    protected $material;
+
+    /**
      * The value for the created_at field.
      *
      * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
@@ -391,6 +398,16 @@ abstract class Component implements ActiveRecordInterface
     }
 
     /**
+     * Get the [material] column value.
+     *
+     * @return string
+     */
+    public function getMaterial()
+    {
+        return $this->material;
+    }
+
+    /**
      * Get the [optionally formatted] temporal [created_at] column value.
      *
      *
@@ -491,6 +508,26 @@ abstract class Component implements ActiveRecordInterface
     } // setDescription()
 
     /**
+     * Set the value of [material] column.
+     *
+     * @param string $v new value
+     * @return $this|\Component The current object (for fluent API support)
+     */
+    public function setMaterial($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->material !== $v) {
+            $this->material = $v;
+            $this->modifiedColumns[ComponentTableMap::COL_MATERIAL] = true;
+        }
+
+        return $this;
+    } // setMaterial()
+
+    /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
@@ -575,13 +612,16 @@ abstract class Component implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ComponentTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
             $this->description = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ComponentTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ComponentTableMap::translateFieldName('Material', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->material = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ComponentTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ComponentTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ComponentTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -594,7 +634,7 @@ abstract class Component implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = ComponentTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 6; // 6 = ComponentTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Component'), 0, $e);
@@ -823,6 +863,9 @@ abstract class Component implements ActiveRecordInterface
         if ($this->isColumnModified(ComponentTableMap::COL_DESCRIPTION)) {
             $modifiedColumns[':p' . $index++]  = 'description';
         }
+        if ($this->isColumnModified(ComponentTableMap::COL_MATERIAL)) {
+            $modifiedColumns[':p' . $index++]  = 'material';
+        }
         if ($this->isColumnModified(ComponentTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
@@ -848,6 +891,9 @@ abstract class Component implements ActiveRecordInterface
                         break;
                     case 'description':
                         $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
+                        break;
+                    case 'material':
+                        $stmt->bindValue($identifier, $this->material, PDO::PARAM_STR);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -927,9 +973,12 @@ abstract class Component implements ActiveRecordInterface
                 return $this->getDescription();
                 break;
             case 3:
-                return $this->getCreatedAt();
+                return $this->getMaterial();
                 break;
             case 4:
+                return $this->getCreatedAt();
+                break;
+            case 5:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -965,15 +1014,16 @@ abstract class Component implements ActiveRecordInterface
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
             $keys[2] => $this->getDescription(),
-            $keys[3] => $this->getCreatedAt(),
-            $keys[4] => $this->getUpdatedAt(),
+            $keys[3] => $this->getMaterial(),
+            $keys[4] => $this->getCreatedAt(),
+            $keys[5] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[3]] instanceof \DateTimeInterface) {
-            $result[$keys[3]] = $result[$keys[3]]->format('c');
-        }
-
         if ($result[$keys[4]] instanceof \DateTimeInterface) {
             $result[$keys[4]] = $result[$keys[4]]->format('c');
+        }
+
+        if ($result[$keys[5]] instanceof \DateTimeInterface) {
+            $result[$keys[5]] = $result[$keys[5]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1041,9 +1091,12 @@ abstract class Component implements ActiveRecordInterface
                 $this->setDescription($value);
                 break;
             case 3:
-                $this->setCreatedAt($value);
+                $this->setMaterial($value);
                 break;
             case 4:
+                $this->setCreatedAt($value);
+                break;
+            case 5:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1082,10 +1135,13 @@ abstract class Component implements ActiveRecordInterface
             $this->setDescription($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setCreatedAt($arr[$keys[3]]);
+            $this->setMaterial($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setUpdatedAt($arr[$keys[4]]);
+            $this->setCreatedAt($arr[$keys[4]]);
+        }
+        if (array_key_exists($keys[5], $arr)) {
+            $this->setUpdatedAt($arr[$keys[5]]);
         }
     }
 
@@ -1136,6 +1192,9 @@ abstract class Component implements ActiveRecordInterface
         }
         if ($this->isColumnModified(ComponentTableMap::COL_DESCRIPTION)) {
             $criteria->add(ComponentTableMap::COL_DESCRIPTION, $this->description);
+        }
+        if ($this->isColumnModified(ComponentTableMap::COL_MATERIAL)) {
+            $criteria->add(ComponentTableMap::COL_MATERIAL, $this->material);
         }
         if ($this->isColumnModified(ComponentTableMap::COL_CREATED_AT)) {
             $criteria->add(ComponentTableMap::COL_CREATED_AT, $this->created_at);
@@ -1231,6 +1290,7 @@ abstract class Component implements ActiveRecordInterface
     {
         $copyObj->setName($this->getName());
         $copyObj->setDescription($this->getDescription());
+        $copyObj->setMaterial($this->getMaterial());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
 
@@ -1552,6 +1612,7 @@ abstract class Component implements ActiveRecordInterface
         $this->id = null;
         $this->name = null;
         $this->description = null;
+        $this->material = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;

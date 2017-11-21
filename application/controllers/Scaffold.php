@@ -116,6 +116,7 @@ class Scaffold extends CI_Controller {
 	private function _view_index_template($tb_name,$fields){
 		$humanize_tb_name = $this->split_camel(Inflector::singularize($tb_name));
 		$tb_name_lower = strtolower(Inflector::pluralize($tb_name));
+		$singular_tb_name = strtolower($tb_name);
 		$table =  "\t<table data-controller=\"manage_$tb_name_lower\" class=\"table table-striped \" id=\"table_$tb_name\">\n";
 		$table .= "\t\t<thead>\n";
 		$table .= "\t\t\t<tr>\n";
@@ -161,7 +162,7 @@ class Scaffold extends CI_Controller {
 {% set title=\"$humanize_tb_name\" %}
 
 {% set breadcrumbs = [
-	{'link':'#','text':res.string.$tb_name_lower  }]
+	{'link':'#','text':res.string.$singular_tb_name  }]
 %}
 {% block content %}
 \t<div class=\"\">
@@ -343,7 +344,7 @@ echo "=========================";
 	 {% set bc_text = 'Baru' %}
 {% endif %}
 {% set breadcrumbs = [
-	{'link': base_url~'index.php/manage_$tb_name_lower','text': res.string.$tb_name_lower },
+	{'link': base_url~'index.php/manage_$tb_name_lower','text': res.string.$tb_name_singular },
 	{'link':'#','text':bc_text  }]
 %}
 {% block content %}
@@ -355,7 +356,7 @@ echo "=========================";
 \t\t\t\t{% include 'common/_form_header.html'
 \t\t\t\twith {'back_url':'/index.php/manage_$tb_name_lower'~back_link,
 \t\t\t\t'title': res.string.$tb_name_singular,
-\t\t\t\t'delete_url':'/index.php/manage_$tb_name_lower/delete/{{ $tb_name_lower.Id }}',
+\t\t\t\t'delete_url':'/index.php/manage_$tb_name_lower/delete/' ~ $tb_name_lower.Id,
 \t\t\t\t'object':$tb_name_lower} %}
 \t\t\t\t</div>
 \t\t\t\t<div class=\"box-body\">
@@ -445,8 +446,12 @@ private function _view_modal_template($tb_name,$fields){
 		$fls = "array(\n";
 		foreach ($fields as $field) {
 			$i = 0;
-			$fls .= " '$field_name' => '".$field->attributes()->name."', \n";
-			$fls[$field->attributes()->phpName]=$field->attributes()->phpName;
+			$field_name = $field->attributes()->phpName;
+			if(!in_array($field->attributes()->phpName,
+			['Id','CreatedAt','UpdatedAt'])){
+			$fls .= " '$field_name' => '$field_name', \n";
+			}
+			// $fls[$field->attributes()->phpName]=$field->attributes()->phpName;
 			foreach ($fk as $foreign) {
 				$ourfield = $foreign['field'];
 				$theirmodel = $foreign['model']->attributes()->name;
@@ -477,9 +482,8 @@ private function _view_modal_template($tb_name,$fields){
 
 			}
 		}
-		$fls .=");"
+		$fls .=")";
     $template = "<?php
-
 
 class Manage_$var extends MY_Controller{
 
@@ -489,7 +493,6 @@ class Manage_$var extends MY_Controller{
 		\$this->objname = '$tb_name';
 		\$this->tpl = '$var';
 
-		parent::__construct();
     \$this->authorization->check_authorization('manage_$var');
   }
 
@@ -507,15 +510,12 @@ class Manage_$var extends MY_Controller{
 
 	function write(\$id=null){
 		\$this->form = $fls;
-		\$data = parent::write(\$id,$\fields);
-		redirect('manage_customers/detail/'.\$data->getId());
+		\$data = parent::write(\$id);
+		redirect('manage_$var/detail/'.\$data->getId());
 	}
 
   function delete(\$id){
-		if(\$this->input->post('confirm')){
-			\$$singular_var = $queryclass::create()->findPK(\$id);
-			\$$singular_var$dash>delete();
-		}
+		\$data = parent::delete(\$id);
 		redirect('manage_$var');
   }
 

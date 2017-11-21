@@ -16,6 +16,7 @@ class MY_Controller extends CI_Controller{
    parent::__construct();
    $this->custom_column = [];
    $this->o2m_def = [];
+   $this->form = [];
  }
  function index(){
     $vars = $this->tpl;
@@ -168,7 +169,7 @@ class MY_Controller extends CI_Controller{
    }
 
    $obj->save();
-   $this->loging->add_entry($this->tpl,$obj->getId(),($id?'activity_modify':'activity_create'));
+   $this->loging->add_entry($this->tpl,$id,($id?'activity_modify':'activity_create'));
    return $obj;
  }
 

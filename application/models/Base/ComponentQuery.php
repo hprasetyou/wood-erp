@@ -23,12 +23,14 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildComponentQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildComponentQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method     ChildComponentQuery orderByDescription($order = Criteria::ASC) Order by the description column
+ * @method     ChildComponentQuery orderByMaterial($order = Criteria::ASC) Order by the material column
  * @method     ChildComponentQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildComponentQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildComponentQuery groupById() Group by the id column
  * @method     ChildComponentQuery groupByName() Group by the name column
  * @method     ChildComponentQuery groupByDescription() Group by the description column
+ * @method     ChildComponentQuery groupByMaterial() Group by the material column
  * @method     ChildComponentQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildComponentQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -58,6 +60,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildComponent findOneById(int $id) Return the first ChildComponent filtered by the id column
  * @method     ChildComponent findOneByName(string $name) Return the first ChildComponent filtered by the name column
  * @method     ChildComponent findOneByDescription(string $description) Return the first ChildComponent filtered by the description column
+ * @method     ChildComponent findOneByMaterial(string $material) Return the first ChildComponent filtered by the material column
  * @method     ChildComponent findOneByCreatedAt(string $created_at) Return the first ChildComponent filtered by the created_at column
  * @method     ChildComponent findOneByUpdatedAt(string $updated_at) Return the first ChildComponent filtered by the updated_at column *
 
@@ -67,6 +70,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildComponent requireOneById(int $id) Return the first ChildComponent filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildComponent requireOneByName(string $name) Return the first ChildComponent filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildComponent requireOneByDescription(string $description) Return the first ChildComponent filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildComponent requireOneByMaterial(string $material) Return the first ChildComponent filtered by the material column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildComponent requireOneByCreatedAt(string $created_at) Return the first ChildComponent filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildComponent requireOneByUpdatedAt(string $updated_at) Return the first ChildComponent filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -74,6 +78,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildComponent[]|ObjectCollection findById(int $id) Return ChildComponent objects filtered by the id column
  * @method     ChildComponent[]|ObjectCollection findByName(string $name) Return ChildComponent objects filtered by the name column
  * @method     ChildComponent[]|ObjectCollection findByDescription(string $description) Return ChildComponent objects filtered by the description column
+ * @method     ChildComponent[]|ObjectCollection findByMaterial(string $material) Return ChildComponent objects filtered by the material column
  * @method     ChildComponent[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildComponent objects filtered by the created_at column
  * @method     ChildComponent[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildComponent objects filtered by the updated_at column
  * @method     ChildComponent[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -174,7 +179,7 @@ abstract class ComponentQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, description, created_at, updated_at FROM component WHERE id = :p0';
+        $sql = 'SELECT id, name, description, material, created_at, updated_at FROM component WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -353,6 +358,31 @@ abstract class ComponentQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ComponentTableMap::COL_DESCRIPTION, $description, $comparison);
+    }
+
+    /**
+     * Filter the query on the material column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByMaterial('fooValue');   // WHERE material = 'fooValue'
+     * $query->filterByMaterial('%fooValue%', Criteria::LIKE); // WHERE material LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $material The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildComponentQuery The current query, for fluid interface
+     */
+    public function filterByMaterial($material = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($material)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ComponentTableMap::COL_MATERIAL, $material, $comparison);
     }
 
     /**
