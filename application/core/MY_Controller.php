@@ -28,12 +28,17 @@ class MY_Controller extends CI_Controller{
    $maxPerPage = $this->input->get('length');
    $colls = $this->schema->extract_fields($this->objname);
    $fields = json_decode($this->input->get('fields'));
-
+   $except = array('image');
+   $cond = [];
    if($this->input->get('search[value]')){
      foreach ($fields as $key => $value) {
-       $objs->condition($value ,"Partner.$value LIKE ?", "%".$this->input->get('search[value]')."%");
+       if(!in_array($value,$except)){
+         $cond[] = $value;
+         $obj = $this->objname;
+         $objs->condition($value ,"$obj.$value LIKE ?", "%".$this->input->get('search[value]')."%");
+       }
      }
-     $objs->where($fields,'or');
+     $objs->where($cond,'or');
    }
 
    $orderbycol = "orderBy".$fields[$this->input->get('order[0][column]')];

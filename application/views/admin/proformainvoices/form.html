@@ -111,7 +111,6 @@ $(document).ready(function(){
         Qty:$('#Qty').val(),
         Description:$('#Description').val(),
         Price:$('#Price').val(),
-        CostPrice:$('#CostPrice').val(),
         ListPrice:$('#ListPrice').val(),
         CubicDimension:$('#CubicDimension').val(),
         QtyPerPack:$('#QtyPerPack').val(),
@@ -185,7 +184,6 @@ $('#LineId').val("")
         Qty: data.Qty,
         CubicDimension: data.CubicDimension,
         Price: data.Price,
-        CostPrice: data.CostPrice,
         ListPrice: data.ListPrice,
         QtyPerPack: data.QtyPerPack,
         IsSample: data.IsSample,
@@ -279,7 +277,6 @@ $('#LineId').val("")
           Name:d.Name,
           ProductId:d.ProductId,
           Product:{
-            CostPrice:d.CostPrice,
             ListPrice:d.ListPrice,
             Name:d.Name,
             Description:d.Description,
@@ -302,7 +299,6 @@ $('#LineId').val("")
       $('#LineId').data('edit',1)
       $('#LineName').val(data.ProductCustomer.Name)
       $('#ProductId').val(data.ProductCustomer.ProductId)
-      $('#CostPrice').val(data.ProductCustomer.Product.CostPrice)
       $('#ListPrice').val(data.ProductCustomer.Product.ListPrice)
       $('#displayProductId').val(data.ProductCustomer.Product.Name+' - '+data.ProductCustomer.Product.Description)
       $('#Price').val(data.ProductCustomer.ProductPrice)

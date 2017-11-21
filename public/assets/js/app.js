@@ -9,6 +9,15 @@ jQuery.fn.loadTableData = function(
     if(!conf.button){
       conf.button = ['show'];
     }
+    if(!conf.hasOwnProperty('search')){
+      conf.search = true;
+    }
+    if(!conf.hasOwnProperty('serverSide')){
+      conf.serverSide = true;
+    }
+    if(!conf.hasOwnProperty('paging')){
+      conf.paging = true;
+    }
   var tt = $(this)
   var c = tt.data('controller')
   var bdm = tt.data('domain')
@@ -76,6 +85,9 @@ jQuery.fn.loadTableData = function(
     "paging": conf.paging,
     "searchDelay": 1000,
     "ordering": true,
+  }
+  if(conf.order){
+    dtconf.order = [[conf.order.col, conf.order.order]]
   }
   if(conf.serverSide){
     dtconf.ajax =  base_url[0]+"index.php/"+c+"/get_json"+params

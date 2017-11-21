@@ -30,7 +30,12 @@
 {% endblock %} {% block bottom %}
 <script>
 	$(document).ready(function() {
-		$('#table_ProformaInvoice').loadTableData()
+		$('#table_ProformaInvoice').loadTableData({
+      order:{
+        col:2,
+        order:"desc"
+      }
+    })
 	})
 </script>
 {% endblock %}
