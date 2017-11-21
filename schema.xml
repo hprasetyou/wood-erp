@@ -125,12 +125,9 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-  <table name="product_finishing" idMethod="native" phpName="ProductFinishing">
-    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="product_id" phpName="ProductId" type="INTEGER" required="true"/>
-    <column name="finishing_id" phpName="FinishingId" type="INTEGER" required="true"/>
-    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
-    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
+  <table name="product_finishing" idMethod="native" isCrossRef="true" phpName="ProductFinishing">
+    <column name="product_id" phpName="ProductId" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="finishing_id" phpName="FinishingId" type="INTEGER" primaryKey="true" required="true"/>
     <foreign-key foreignTable="product" name="product_finishing_ibfk_1">
       <reference local="product_id" foreign="id"/>
     </foreign-key>
@@ -253,6 +250,7 @@
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="proforma_invoice_id" phpName="ProformaInvoiceId" type="INTEGER" required="true"/>
     <column name="product_customer_id" phpName="ProductCustomerId" type="INTEGER" required="true"/>
+    <column name="product_finishing" phpName="ProductFinishing" size="255" type="VARCHAR"/>
     <column name="description" phpName="Description" size="255" type="VARCHAR"/>
     <column name="qty" phpName="Qty" type="INTEGER"/>
     <column name="qty_per_pack" phpName="QtyPerPack" type="INTEGER"/>

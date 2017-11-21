@@ -25,6 +25,8 @@ class Manage_products extends MY_Controller{
 
   function get_detail_json($id){
     $product = ProductQuery::create();
+    // $product->leftJoinWith('ProductFinishing')
+    // ->joinWith('ProductFinishing.Finishing');
     $sproduct = $product->findPk($id);
     if($this->input->get('customer_id')){
       $productcustomer = $product->useProductCustomerQuery()
@@ -33,7 +35,10 @@ class Manage_products extends MY_Controller{
       ->leftJoinWith('Product.ProductCustomer');
     }
     $productcustomer = $productcustomer->findPk($id);
-    echo $productcustomer? $productcustomer->toJSON(): $sproduct->toJSON();
+    $o = $productcustomer? $productcustomer: $sproduct;
+    $p = json_decode($o->toJSON());
+    $p->Finishings = json_decode($o->getFinishings()->toJSON())->Finishings;
+    echo json_encode($p);
   }
 
   function create(){

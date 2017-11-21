@@ -110,6 +110,7 @@ $(document).ready(function(){
         ProductId: $('#ProductId').val(),
         Qty:$('#Qty').val(),
         Description:$('#Description').val(),
+        Finishing:$('#Finishing').val(),
         Price:$('#Price').val(),
         ListPrice:$('#ListPrice').val(),
         CubicDimension:$('#CubicDimension').val(),
@@ -137,6 +138,14 @@ $(document).ready(function(){
           var art = o.Name
           var price = o.ListPrice
           var desc = o.Description
+          var sdf= []
+          for (var f in o.Finishings) {
+            sdf.push({
+              id:o.Finishings[f].Name,
+              text:o.Finishings[f].Name
+            })
+          }
+          repopulate_select2('#Finishing',sdf)
 
           if(o.ProductCustomers){
             price = o.ProductCustomers[0].ProductPrice
@@ -180,6 +189,7 @@ $('#LineId').val("")
         Id: data.Id,
         Name: data.Name,
         Description:data.Description,
+        Finishing: data.Finishing,
         ProductId: data.ProductId,
         Qty: data.Qty,
         CubicDimension: data.CubicDimension,
@@ -201,6 +211,7 @@ $('#LineId').val("")
       var nr = [
         data.Name,
         data.Description,
+        data.Finishing,
         special,
         data.Qty,
         Math.ceil(data.Qty/data.QtyPerPack),
@@ -216,7 +227,9 @@ $('#LineId').val("")
         '<i class="fa fa-trash"></i></a>'
       ];
       if(data.Id > 0 || $('#LineId').data('edit')>0){
-        Lines.splice(Lines.map(function(x) {return x.index; }).indexOf($(edrow).data('index')),1)
+        if($('#LineId').data('edit')>0){
+          Lines.splice(Lines.map(function(x) {return x.index; }).indexOf($(edrow).data('index')),1)
+        }
 
         t.row( $(edrow).parents('tr') )
           .remove()
@@ -269,6 +282,7 @@ $('#LineId').val("")
         }
       })
     }else{
+    $('#LineId').data('edit',1)
       var d = Lines[Lines.map(function(x) {return x.index; }).indexOf($(this).data('index'))];
       console.log(d);
       populate_form_line({
@@ -296,7 +310,6 @@ $('#LineId').val("")
 
   function populate_form_line(data){
       $('#LineId').val(data.Id)
-      $('#LineId').data('edit',1)
       $('#LineName').val(data.ProductCustomer.Name)
       $('#ProductId').val(data.ProductCustomer.ProductId)
       $('#ListPrice').val(data.ProductCustomer.Product.ListPrice)
@@ -309,6 +322,7 @@ $('#LineId').val("")
       $('#IsSample').prop('checked', data.IsSample);
       $('#IsNeedBox').prop('checked', data.IsNeedBox);
       $('#Price').trigger('change')
+      $('#ProductId').trigger('change')
       $('html, body').animate({
           scrollTop: $("#detail").offset().top
       }, 200);

@@ -20,17 +20,11 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  *
- * @method     ChildProductFinishingQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildProductFinishingQuery orderByProductId($order = Criteria::ASC) Order by the product_id column
  * @method     ChildProductFinishingQuery orderByFinishingId($order = Criteria::ASC) Order by the finishing_id column
- * @method     ChildProductFinishingQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
- * @method     ChildProductFinishingQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
- * @method     ChildProductFinishingQuery groupById() Group by the id column
  * @method     ChildProductFinishingQuery groupByProductId() Group by the product_id column
  * @method     ChildProductFinishingQuery groupByFinishingId() Group by the finishing_id column
- * @method     ChildProductFinishingQuery groupByCreatedAt() Group by the created_at column
- * @method     ChildProductFinishingQuery groupByUpdatedAt() Group by the updated_at column
  *
  * @method     ChildProductFinishingQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildProductFinishingQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -65,27 +59,18 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductFinishing findOne(ConnectionInterface $con = null) Return the first ChildProductFinishing matching the query
  * @method     ChildProductFinishing findOneOrCreate(ConnectionInterface $con = null) Return the first ChildProductFinishing matching the query, or a new ChildProductFinishing object populated from the query conditions when no match is found
  *
- * @method     ChildProductFinishing findOneById(int $id) Return the first ChildProductFinishing filtered by the id column
  * @method     ChildProductFinishing findOneByProductId(int $product_id) Return the first ChildProductFinishing filtered by the product_id column
- * @method     ChildProductFinishing findOneByFinishingId(int $finishing_id) Return the first ChildProductFinishing filtered by the finishing_id column
- * @method     ChildProductFinishing findOneByCreatedAt(string $created_at) Return the first ChildProductFinishing filtered by the created_at column
- * @method     ChildProductFinishing findOneByUpdatedAt(string $updated_at) Return the first ChildProductFinishing filtered by the updated_at column *
+ * @method     ChildProductFinishing findOneByFinishingId(int $finishing_id) Return the first ChildProductFinishing filtered by the finishing_id column *
 
  * @method     ChildProductFinishing requirePk($key, ConnectionInterface $con = null) Return the ChildProductFinishing by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductFinishing requireOne(ConnectionInterface $con = null) Return the first ChildProductFinishing matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildProductFinishing requireOneById(int $id) Return the first ChildProductFinishing filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductFinishing requireOneByProductId(int $product_id) Return the first ChildProductFinishing filtered by the product_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductFinishing requireOneByFinishingId(int $finishing_id) Return the first ChildProductFinishing filtered by the finishing_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildProductFinishing requireOneByCreatedAt(string $created_at) Return the first ChildProductFinishing filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildProductFinishing requireOneByUpdatedAt(string $updated_at) Return the first ChildProductFinishing filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildProductFinishing[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildProductFinishing objects based on current ModelCriteria
- * @method     ChildProductFinishing[]|ObjectCollection findById(int $id) Return ChildProductFinishing objects filtered by the id column
  * @method     ChildProductFinishing[]|ObjectCollection findByProductId(int $product_id) Return ChildProductFinishing objects filtered by the product_id column
  * @method     ChildProductFinishing[]|ObjectCollection findByFinishingId(int $finishing_id) Return ChildProductFinishing objects filtered by the finishing_id column
- * @method     ChildProductFinishing[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildProductFinishing objects filtered by the created_at column
- * @method     ChildProductFinishing[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildProductFinishing objects filtered by the updated_at column
  * @method     ChildProductFinishing[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -135,10 +120,10 @@ abstract class ProductFinishingQuery extends ModelCriteria
      * Go fast if the query is untouched.
      *
      * <code>
-     * $obj  = $c->findPk(12, $con);
+     * $obj = $c->findPk(array(12, 34), $con);
      * </code>
      *
-     * @param mixed $key Primary key to use for the query
+     * @param array[$product_id, $finishing_id] $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
      * @return ChildProductFinishing|array|mixed the result, formatted by the current formatter
@@ -163,7 +148,7 @@ abstract class ProductFinishingQuery extends ModelCriteria
             return $this->findPkComplex($key, $con);
         }
 
-        if ((null !== ($obj = ProductFinishingTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+        if ((null !== ($obj = ProductFinishingTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]))))) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -184,10 +169,11 @@ abstract class ProductFinishingQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, product_id, finishing_id, created_at, updated_at FROM product_finishing WHERE id = :p0';
+        $sql = 'SELECT product_id, finishing_id FROM product_finishing WHERE product_id = :p0 AND finishing_id = :p1';
         try {
             $stmt = $con->prepare($sql);
-            $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
+            $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
+            $stmt->bindValue(':p1', $key[1], PDO::PARAM_INT);
             $stmt->execute();
         } catch (Exception $e) {
             Propel::log($e->getMessage(), Propel::LOG_ERR);
@@ -198,7 +184,7 @@ abstract class ProductFinishingQuery extends ModelCriteria
             /** @var ChildProductFinishing $obj */
             $obj = new ChildProductFinishing();
             $obj->hydrate($row);
-            ProductFinishingTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            ProductFinishingTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
         }
         $stmt->closeCursor();
 
@@ -227,7 +213,7 @@ abstract class ProductFinishingQuery extends ModelCriteria
     /**
      * Find objects by primary key
      * <code>
-     * $objs = $c->findPks(array(12, 56, 832), $con);
+     * $objs = $c->findPks(array(array(12, 56), array(832, 123), array(123, 456)), $con);
      * </code>
      * @param     array $keys Primary keys to use for the query
      * @param     ConnectionInterface $con an optional connection object
@@ -257,8 +243,10 @@ abstract class ProductFinishingQuery extends ModelCriteria
      */
     public function filterByPrimaryKey($key)
     {
+        $this->addUsingAlias(ProductFinishingTableMap::COL_PRODUCT_ID, $key[0], Criteria::EQUAL);
+        $this->addUsingAlias(ProductFinishingTableMap::COL_FINISHING_ID, $key[1], Criteria::EQUAL);
 
-        return $this->addUsingAlias(ProductFinishingTableMap::COL_ID, $key, Criteria::EQUAL);
+        return $this;
     }
 
     /**
@@ -270,49 +258,17 @@ abstract class ProductFinishingQuery extends ModelCriteria
      */
     public function filterByPrimaryKeys($keys)
     {
-
-        return $this->addUsingAlias(ProductFinishingTableMap::COL_ID, $keys, Criteria::IN);
-    }
-
-    /**
-     * Filter the query on the id column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterById(1234); // WHERE id = 1234
-     * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
-     * $query->filterById(array('min' => 12)); // WHERE id > 12
-     * </code>
-     *
-     * @param     mixed $id The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildProductFinishingQuery The current query, for fluid interface
-     */
-    public function filterById($id = null, $comparison = null)
-    {
-        if (is_array($id)) {
-            $useMinMax = false;
-            if (isset($id['min'])) {
-                $this->addUsingAlias(ProductFinishingTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($id['max'])) {
-                $this->addUsingAlias(ProductFinishingTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
+        if (empty($keys)) {
+            return $this->add(null, '1<>1', Criteria::CUSTOM);
+        }
+        foreach ($keys as $key) {
+            $cton0 = $this->getNewCriterion(ProductFinishingTableMap::COL_PRODUCT_ID, $key[0], Criteria::EQUAL);
+            $cton1 = $this->getNewCriterion(ProductFinishingTableMap::COL_FINISHING_ID, $key[1], Criteria::EQUAL);
+            $cton0->addAnd($cton1);
+            $this->addOr($cton0);
         }
 
-        return $this->addUsingAlias(ProductFinishingTableMap::COL_ID, $id, $comparison);
+        return $this;
     }
 
     /**
@@ -399,92 +355,6 @@ abstract class ProductFinishingQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProductFinishingTableMap::COL_FINISHING_ID, $finishingId, $comparison);
-    }
-
-    /**
-     * Filter the query on the created_at column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
-     * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
-     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
-     * </code>
-     *
-     * @param     mixed $createdAt The value to use as filter.
-     *              Values can be integers (unix timestamps), DateTime objects, or strings.
-     *              Empty strings are treated as NULL.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildProductFinishingQuery The current query, for fluid interface
-     */
-    public function filterByCreatedAt($createdAt = null, $comparison = null)
-    {
-        if (is_array($createdAt)) {
-            $useMinMax = false;
-            if (isset($createdAt['min'])) {
-                $this->addUsingAlias(ProductFinishingTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($createdAt['max'])) {
-                $this->addUsingAlias(ProductFinishingTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(ProductFinishingTableMap::COL_CREATED_AT, $createdAt, $comparison);
-    }
-
-    /**
-     * Filter the query on the updated_at column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
-     * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
-     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
-     * </code>
-     *
-     * @param     mixed $updatedAt The value to use as filter.
-     *              Values can be integers (unix timestamps), DateTime objects, or strings.
-     *              Empty strings are treated as NULL.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildProductFinishingQuery The current query, for fluid interface
-     */
-    public function filterByUpdatedAt($updatedAt = null, $comparison = null)
-    {
-        if (is_array($updatedAt)) {
-            $useMinMax = false;
-            if (isset($updatedAt['min'])) {
-                $this->addUsingAlias(ProductFinishingTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($updatedAt['max'])) {
-                $this->addUsingAlias(ProductFinishingTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(ProductFinishingTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
     }
 
     /**
@@ -651,7 +521,9 @@ abstract class ProductFinishingQuery extends ModelCriteria
     public function prune($productFinishing = null)
     {
         if ($productFinishing) {
-            $this->addUsingAlias(ProductFinishingTableMap::COL_ID, $productFinishing->getId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond0', $this->getAliasedColName(ProductFinishingTableMap::COL_PRODUCT_ID), $productFinishing->getProductId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(ProductFinishingTableMap::COL_FINISHING_ID), $productFinishing->getFinishingId(), Criteria::NOT_EQUAL);
+            $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 
         return $this;

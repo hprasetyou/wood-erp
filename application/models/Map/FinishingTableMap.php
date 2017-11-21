@@ -165,6 +165,7 @@ class FinishingTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'ProductFinishings', false);
+        $this->addRelation('Product', '\\Product', RelationMap::MANY_TO_MANY, array(), null, null, 'Products');
     } // buildRelations()
 
     /**

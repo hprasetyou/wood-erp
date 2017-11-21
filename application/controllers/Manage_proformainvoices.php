@@ -80,7 +80,7 @@ class Manage_proformainvoices extends MY_Controller{
       }
       if($line->Id>0){
         $proformainvoiceline = ProformaInvoiceLineQuery::create()
-        ->findPk($id);
+        ->findPk($line->Id);
       }else{
         $proformainvoiceline = new ProformaInvoiceLine;
         $proformainvoiceline->setProformaInvoiceId($data->getId());
@@ -92,6 +92,7 @@ class Manage_proformainvoices extends MY_Controller{
       $proformainvoiceline->setCubicDimension($cbm);
       $proformainvoiceline->setTotalCubicDimension($cbm * $line->Qty);
       $proformainvoiceline->setPrice($line->Price);
+      $proformainvoiceline->setProductFinishing($line->Finishing);
       $proformainvoiceline->setTotalPrice($line->Price *$line->Qty);
       $proformainvoiceline->setIsSample($line->IsSample);
       $proformainvoiceline->setIsNeedBox($line->IsNeedBox);

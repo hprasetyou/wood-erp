@@ -282,6 +282,7 @@ class ProductTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'ProductImages', false);
+        $this->addRelation('Finishing', '\\Finishing', RelationMap::MANY_TO_MANY, array(), null, null, 'Finishings');
     } // buildRelations()
 
     /**

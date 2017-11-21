@@ -103,6 +103,7 @@ class MY_Controller extends CI_Controller{
  }
 
  function write($id=null,$pair){
+   $colls = $this->schema->extract_fields($this->objname);
 
    if($id){
      $qq = $this->objname."Query";
@@ -114,16 +115,31 @@ class MY_Controller extends CI_Controller{
 
    foreach ($pair as $key => $value) {
      # code...
+     $isValidCol = false;
+     $type = false;
+     foreach ($colls as $key => $value) {
+       if($value['Name'] == $key){
+         $isValidCol = true;
+         $type = $value['type'];
+       }
+     }
      $func = "set$key";
-     if($value=="Image"){
-       if(strpos($this->input->post('Image'),'base64')){
-       $this->load->helper('base64toimage');
-       $obj->$func(base64_to_img($this->input->post($value)));
+     if($isValidCol){
+       if($value=="Image"){
+           if(strpos($this->input->post('Image'),'base64')){
+           $this->load->helper('base64toimage');
+           $obj->$func(base64_to_img($this->input->post($value)));
+         }
+       }else{
+         $value = is_array($value)?$value['value']:$this->input->post($value);
+         if($type == 'BOOLEAN'){
+           $obj->$func($value?true:false);
+         }else{
+           $obj->$func($value);
+         }
+       }
      }
-     }else{
-       $value = is_array($value)?$value['value']:$this->input->post($value);
-       $obj->$func($value);
-     }
+
    }
 
    $obj->save();

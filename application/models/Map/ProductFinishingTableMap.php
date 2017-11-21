@@ -59,7 +59,7 @@ class ProductFinishingTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 5;
+    const NUM_COLUMNS = 2;
 
     /**
      * The number of lazy-loaded columns
@@ -69,12 +69,7 @@ class ProductFinishingTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 5;
-
-    /**
-     * the column name for the id field
-     */
-    const COL_ID = 'product_finishing.id';
+    const NUM_HYDRATE_COLUMNS = 2;
 
     /**
      * the column name for the product_id field
@@ -85,16 +80,6 @@ class ProductFinishingTableMap extends TableMap
      * the column name for the finishing_id field
      */
     const COL_FINISHING_ID = 'product_finishing.finishing_id';
-
-    /**
-     * the column name for the created_at field
-     */
-    const COL_CREATED_AT = 'product_finishing.created_at';
-
-    /**
-     * the column name for the updated_at field
-     */
-    const COL_UPDATED_AT = 'product_finishing.updated_at';
 
     /**
      * The default string format for model objects of the related table
@@ -108,11 +93,11 @@ class ProductFinishingTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'ProductId', 'FinishingId', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'productId', 'finishingId', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ProductFinishingTableMap::COL_ID, ProductFinishingTableMap::COL_PRODUCT_ID, ProductFinishingTableMap::COL_FINISHING_ID, ProductFinishingTableMap::COL_CREATED_AT, ProductFinishingTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'product_id', 'finishing_id', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('ProductId', 'FinishingId', ),
+        self::TYPE_CAMELNAME     => array('productId', 'finishingId', ),
+        self::TYPE_COLNAME       => array(ProductFinishingTableMap::COL_PRODUCT_ID, ProductFinishingTableMap::COL_FINISHING_ID, ),
+        self::TYPE_FIELDNAME     => array('product_id', 'finishing_id', ),
+        self::TYPE_NUM           => array(0, 1, )
     );
 
     /**
@@ -122,11 +107,11 @@ class ProductFinishingTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'ProductId' => 1, 'FinishingId' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'productId' => 1, 'finishingId' => 2, 'createdAt' => 3, 'updatedAt' => 4, ),
-        self::TYPE_COLNAME       => array(ProductFinishingTableMap::COL_ID => 0, ProductFinishingTableMap::COL_PRODUCT_ID => 1, ProductFinishingTableMap::COL_FINISHING_ID => 2, ProductFinishingTableMap::COL_CREATED_AT => 3, ProductFinishingTableMap::COL_UPDATED_AT => 4, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'product_id' => 1, 'finishing_id' => 2, 'created_at' => 3, 'updated_at' => 4, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('ProductId' => 0, 'FinishingId' => 1, ),
+        self::TYPE_CAMELNAME     => array('productId' => 0, 'finishingId' => 1, ),
+        self::TYPE_COLNAME       => array(ProductFinishingTableMap::COL_PRODUCT_ID => 0, ProductFinishingTableMap::COL_FINISHING_ID => 1, ),
+        self::TYPE_FIELDNAME     => array('product_id' => 0, 'finishing_id' => 1, ),
+        self::TYPE_NUM           => array(0, 1, )
     );
 
     /**
@@ -144,13 +129,11 @@ class ProductFinishingTableMap extends TableMap
         $this->setIdentifierQuoting(false);
         $this->setClassName('\\ProductFinishing');
         $this->setPackage('');
-        $this->setUseIdGenerator(true);
+        $this->setUseIdGenerator(false);
+        $this->setIsCrossRef(true);
         // columns
-        $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addForeignKey('product_id', 'ProductId', 'INTEGER', 'product', 'id', true, null, null);
-        $this->addForeignKey('finishing_id', 'FinishingId', 'INTEGER', 'finishing', 'id', true, null, null);
-        $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
-        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
+        $this->addForeignPrimaryKey('product_id', 'ProductId', 'INTEGER' , 'product', 'id', true, null, null);
+        $this->addForeignPrimaryKey('finishing_id', 'FinishingId', 'INTEGER' , 'finishing', 'id', true, null, null);
     } // initialize()
 
     /**
@@ -175,6 +158,59 @@ class ProductFinishingTableMap extends TableMap
     } // buildRelations()
 
     /**
+     * Adds an object to the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database. In some cases you may need to explicitly add objects
+     * to the cache in order to ensure that the same objects are always returned by find*()
+     * and findPk*() calls.
+     *
+     * @param \ProductFinishing $obj A \ProductFinishing object.
+     * @param string $key             (optional) key to use for instance map (for performance boost if key was already calculated externally).
+     */
+    public static function addInstanceToPool($obj, $key = null)
+    {
+        if (Propel::isInstancePoolingEnabled()) {
+            if (null === $key) {
+                $key = serialize([(null === $obj->getProductId() || is_scalar($obj->getProductId()) || is_callable([$obj->getProductId(), '__toString']) ? (string) $obj->getProductId() : $obj->getProductId()), (null === $obj->getFinishingId() || is_scalar($obj->getFinishingId()) || is_callable([$obj->getFinishingId(), '__toString']) ? (string) $obj->getFinishingId() : $obj->getFinishingId())]);
+            } // if key === null
+            self::$instances[$key] = $obj;
+        }
+    }
+
+    /**
+     * Removes an object from the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database.  In some cases -- especially when you override doDelete
+     * methods in your stub classes -- you may need to explicitly remove objects
+     * from the cache in order to prevent returning objects that no longer exist.
+     *
+     * @param mixed $value A \ProductFinishing object or a primary key value.
+     */
+    public static function removeInstanceFromPool($value)
+    {
+        if (Propel::isInstancePoolingEnabled() && null !== $value) {
+            if (is_object($value) && $value instanceof \ProductFinishing) {
+                $key = serialize([(null === $value->getProductId() || is_scalar($value->getProductId()) || is_callable([$value->getProductId(), '__toString']) ? (string) $value->getProductId() : $value->getProductId()), (null === $value->getFinishingId() || is_scalar($value->getFinishingId()) || is_callable([$value->getFinishingId(), '__toString']) ? (string) $value->getFinishingId() : $value->getFinishingId())]);
+
+            } elseif (is_array($value) && count($value) === 2) {
+                // assume we've been passed a primary key";
+                $key = serialize([(null === $value[0] || is_scalar($value[0]) || is_callable([$value[0], '__toString']) ? (string) $value[0] : $value[0]), (null === $value[1] || is_scalar($value[1]) || is_callable([$value[1], '__toString']) ? (string) $value[1] : $value[1])]);
+            } elseif ($value instanceof Criteria) {
+                self::$instances = [];
+
+                return;
+            } else {
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \ProductFinishing object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
+                throw $e;
+            }
+
+            unset(self::$instances[$key]);
+        }
+    }
+
+    /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
      *
      * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -190,11 +226,11 @@ class ProductFinishingTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('FinishingId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('FinishingId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('FinishingId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('FinishingId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('FinishingId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('FinishingId', TableMap::TYPE_PHPNAME, $indexType)])]);
     }
 
     /**
@@ -211,11 +247,20 @@ class ProductFinishingTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return (int) $row[
+            $pks = [];
+
+        $pks[] = (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
-                : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)
         ];
+        $pks[] = (int) $row[
+            $indexType == TableMap::TYPE_NUM
+                ? 1 + $offset
+                : self::translateFieldName('FinishingId', TableMap::TYPE_PHPNAME, $indexType)
+        ];
+
+        return $pks;
     }
 
     /**
@@ -315,17 +360,11 @@ class ProductFinishingTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(ProductFinishingTableMap::COL_ID);
             $criteria->addSelectColumn(ProductFinishingTableMap::COL_PRODUCT_ID);
             $criteria->addSelectColumn(ProductFinishingTableMap::COL_FINISHING_ID);
-            $criteria->addSelectColumn(ProductFinishingTableMap::COL_CREATED_AT);
-            $criteria->addSelectColumn(ProductFinishingTableMap::COL_UPDATED_AT);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.product_id');
             $criteria->addSelectColumn($alias . '.finishing_id');
-            $criteria->addSelectColumn($alias . '.created_at');
-            $criteria->addSelectColumn($alias . '.updated_at');
         }
     }
 
@@ -377,7 +416,17 @@ class ProductFinishingTableMap extends TableMap
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(ProductFinishingTableMap::DATABASE_NAME);
-            $criteria->add(ProductFinishingTableMap::COL_ID, (array) $values, Criteria::IN);
+            // primary key is composite; we therefore, expect
+            // the primary key passed to be an array of pkey values
+            if (count($values) == count($values, COUNT_RECURSIVE)) {
+                // array is not multi-dimensional
+                $values = array($values);
+            }
+            foreach ($values as $value) {
+                $criterion = $criteria->getNewCriterion(ProductFinishingTableMap::COL_PRODUCT_ID, $value[0]);
+                $criterion->addAnd($criteria->getNewCriterion(ProductFinishingTableMap::COL_FINISHING_ID, $value[1]));
+                $criteria->addOr($criterion);
+            }
         }
 
         $query = ProductFinishingQuery::create()->mergeWith($criteria);
@@ -423,10 +472,6 @@ class ProductFinishingTableMap extends TableMap
             $criteria = clone $criteria; // rename for clarity
         } else {
             $criteria = $criteria->buildCriteria(); // build Criteria from ProductFinishing object
-        }
-
-        if ($criteria->containsKey(ProductFinishingTableMap::COL_ID) && $criteria->keyContainsValue(ProductFinishingTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.ProductFinishingTableMap::COL_ID.')');
         }
 
 

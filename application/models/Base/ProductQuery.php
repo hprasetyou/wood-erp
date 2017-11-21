@@ -1442,6 +1442,23 @@ abstract class ProductQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related Finishing object
+     * using the product_finishing table as cross reference
+     *
+     * @param Finishing $finishing the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildProductQuery The current query, for fluid interface
+     */
+    public function filterByFinishing($finishing, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useProductFinishingQuery()
+            ->filterByFinishing($finishing, $comparison)
+            ->endUse();
+    }
+
+    /**
      * Exclude object from result
      *
      * @param   ChildProduct $product Object to remove from the list of results

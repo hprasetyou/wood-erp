@@ -102,10 +102,10 @@ jQuery.fn.loadTableData = function(
 
 jQuery.fn.simpleValidation =  function(){
   var d = $(this)
-  d.on('keyup','input',function(e){
+  d.on('keyup change','input, select',function(e){
     var valid = true;
     d.find('input').each(function(){
-      if($(this).attr('type')=='text' || $(this).attr('type')=='number'){
+      if($(this).data('required')){
         if(!$(this).val()){
           console.log($(this).attr('id'));
           valid = false
@@ -262,3 +262,15 @@ $(this).children().each(function(){
   }
 })
 })
+
+
+
+//repopulate select2
+
+function repopulate_select2(el,newdata){
+ $(el).select2('destroy');
+ $(el).html('')
+ $(el).select2({
+   data:newdata
+ })
+}

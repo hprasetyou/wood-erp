@@ -4,8 +4,10 @@ namespace Base;
 
 use \Finishing as ChildFinishing;
 use \FinishingQuery as ChildFinishingQuery;
+use \Product as ChildProduct;
 use \ProductFinishing as ChildProductFinishing;
 use \ProductFinishingQuery as ChildProductFinishingQuery;
+use \ProductQuery as ChildProductQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
@@ -110,12 +112,28 @@ abstract class Finishing implements ActiveRecordInterface
     protected $collProductFinishingsPartial;
 
     /**
+     * @var        ObjectCollection|ChildProduct[] Cross Collection to store aggregation of ChildProduct objects.
+     */
+    protected $collProducts;
+
+    /**
+     * @var bool
+     */
+    protected $collProductsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildProduct[]
+     */
+    protected $productsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -657,6 +675,7 @@ abstract class Finishing implements ActiveRecordInterface
 
             $this->collProductFinishings = null;
 
+            $this->collProducts = null;
         } // if (deep)
     }
 
@@ -770,6 +789,35 @@ abstract class Finishing implements ActiveRecordInterface
                 }
                 $this->resetModified();
             }
+
+            if ($this->productsScheduledForDeletion !== null) {
+                if (!$this->productsScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->productsScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \ProductFinishingQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->productsScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collProducts) {
+                foreach ($this->collProducts as $product) {
+                    if (!$product->isDeleted() && ($product->isNew() || $product->isModified())) {
+                        $product->save($con);
+                    }
+                }
+            }
+
 
             if ($this->productFinishingsScheduledForDeletion !== null) {
                 if (!$this->productFinishingsScheduledForDeletion->isEmpty()) {
@@ -1412,7 +1460,10 @@ abstract class Finishing implements ActiveRecordInterface
         $productFinishingsToDelete = $this->getProductFinishings(new Criteria(), $con)->diff($productFinishings);
 
 
-        $this->productFinishingsScheduledForDeletion = $productFinishingsToDelete;
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->productFinishingsScheduledForDeletion = clone $productFinishingsToDelete;
 
         foreach ($productFinishingsToDelete as $productFinishingRemoved) {
             $productFinishingRemoved->setFinishing(null);
@@ -1543,6 +1594,249 @@ abstract class Finishing implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collProducts collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addProducts()
+     */
+    public function clearProducts()
+    {
+        $this->collProducts = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collProducts crossRef collection.
+     *
+     * By default this just sets the collProducts collection to an empty collection (like clearProducts());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initProducts()
+    {
+        $collectionClassName = ProductFinishingTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collProducts = new $collectionClassName;
+        $this->collProductsPartial = true;
+        $this->collProducts->setModel('\Product');
+    }
+
+    /**
+     * Checks if the collProducts collection is loaded.
+     *
+     * @return bool
+     */
+    public function isProductsLoaded()
+    {
+        return null !== $this->collProducts;
+    }
+
+    /**
+     * Gets a collection of ChildProduct objects related by a many-to-many relationship
+     * to the current object by way of the product_finishing cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildFinishing is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildProduct[] List of ChildProduct objects
+     */
+    public function getProducts(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collProductsPartial && !$this->isNew();
+        if (null === $this->collProducts || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collProducts) {
+                    $this->initProducts();
+                }
+            } else {
+
+                $query = ChildProductQuery::create(null, $criteria)
+                    ->filterByFinishing($this);
+                $collProducts = $query->find($con);
+                if (null !== $criteria) {
+                    return $collProducts;
+                }
+
+                if ($partial && $this->collProducts) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collProducts as $obj) {
+                        if (!$collProducts->contains($obj)) {
+                            $collProducts[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collProducts = $collProducts;
+                $this->collProductsPartial = false;
+            }
+        }
+
+        return $this->collProducts;
+    }
+
+    /**
+     * Sets a collection of Product objects related by a many-to-many relationship
+     * to the current object by way of the product_finishing cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $products A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildFinishing The current object (for fluent API support)
+     */
+    public function setProducts(Collection $products, ConnectionInterface $con = null)
+    {
+        $this->clearProducts();
+        $currentProducts = $this->getProducts();
+
+        $productsScheduledForDeletion = $currentProducts->diff($products);
+
+        foreach ($productsScheduledForDeletion as $toDelete) {
+            $this->removeProduct($toDelete);
+        }
+
+        foreach ($products as $product) {
+            if (!$currentProducts->contains($product)) {
+                $this->doAddProduct($product);
+            }
+        }
+
+        $this->collProductsPartial = false;
+        $this->collProducts = $products;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Product objects related by a many-to-many relationship
+     * to the current object by way of the product_finishing cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Product objects
+     */
+    public function countProducts(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collProductsPartial && !$this->isNew();
+        if (null === $this->collProducts || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collProducts) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getProducts());
+                }
+
+                $query = ChildProductQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByFinishing($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collProducts);
+        }
+    }
+
+    /**
+     * Associate a ChildProduct to this object
+     * through the product_finishing cross reference table.
+     *
+     * @param ChildProduct $product
+     * @return ChildFinishing The current object (for fluent API support)
+     */
+    public function addProduct(ChildProduct $product)
+    {
+        if ($this->collProducts === null) {
+            $this->initProducts();
+        }
+
+        if (!$this->getProducts()->contains($product)) {
+            // only add it if the **same** object is not already associated
+            $this->collProducts->push($product);
+            $this->doAddProduct($product);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildProduct $product
+     */
+    protected function doAddProduct(ChildProduct $product)
+    {
+        $productFinishing = new ChildProductFinishing();
+
+        $productFinishing->setProduct($product);
+
+        $productFinishing->setFinishing($this);
+
+        $this->addProductFinishing($productFinishing);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$product->isFinishingsLoaded()) {
+            $product->initFinishings();
+            $product->getFinishings()->push($this);
+        } elseif (!$product->getFinishings()->contains($this)) {
+            $product->getFinishings()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove product of this object
+     * through the product_finishing cross reference table.
+     *
+     * @param ChildProduct $product
+     * @return ChildFinishing The current object (for fluent API support)
+     */
+    public function removeProduct(ChildProduct $product)
+    {
+        if ($this->getProducts()->contains($product)) {
+            $productFinishing = new ChildProductFinishing();
+            $productFinishing->setProduct($product);
+            if ($product->isFinishingsLoaded()) {
+                //remove the back reference if available
+                $product->getFinishings()->removeObject($this);
+            }
+
+            $productFinishing->setFinishing($this);
+            $this->removeProductFinishing(clone $productFinishing);
+            $productFinishing->clear();
+
+            $this->collProducts->remove($this->collProducts->search($product));
+
+            if (null === $this->productsScheduledForDeletion) {
+                $this->productsScheduledForDeletion = clone $this->collProducts;
+                $this->productsScheduledForDeletion->clear();
+            }
+
+            $this->productsScheduledForDeletion->push($product);
+        }
+
+
+        return $this;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -1578,9 +1872,15 @@ abstract class Finishing implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collProducts) {
+                foreach ($this->collProducts as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         $this->collProductFinishings = null;
+        $this->collProducts = null;
     }
 
     /**
