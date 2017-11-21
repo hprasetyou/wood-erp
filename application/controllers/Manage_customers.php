@@ -23,19 +23,22 @@ class Manage_customers extends MY_Controller{
     parent::get_json();
   }
 
-  function write($id=null,$fields=array(
-    'Name'=>'Name',
-    'Address'=>'Address',
-    'Phone'=>'Phone',
-    'Website'=>'Website',
-    'Email'=>'Email',
-    'Image'=>'Image',
-    'Fax'=>'Fax',
-    'TaxNumber'=>'TaxNumber',
-    'BankDetail'=>'BankDetail',
-    'CompanyId'=>'CompanyId',
-    'IsCustomer'=>array('value'=>1)
-  )){
+  function write($id=null){
+    $this->form = array(
+      'Name'=>'Name',
+      'Address'=>'Address',
+      'Phone'=>'Phone',
+      'Website'=>'Website',
+      'Email'=>'Email',
+      'Image'=>'Image',
+      'Fax'=>'Fax',
+      'TaxNumber'=>'TaxNumber',
+      'BankDetail'=>'BankDetail',
+      'IsCustomer'=>array('value'=>1)
+    );
+    if(!$id){
+      $this->form['CompanyId']='CompanyId';
+    }
     $data = parent::write($id,$fields);
     redirect('manage_customers/detail/'.$data->getId());
   }

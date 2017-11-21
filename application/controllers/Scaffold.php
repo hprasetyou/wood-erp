@@ -505,7 +505,8 @@ class Manage_$var extends MY_Controller{
 		\$this->template->render('admin/$var/form',array('$var'=>\$$singular_var,$m2opass));
   }
 
-	function write(\$id=null,\$fields=$fls){
+	function write(\$id=null){
+		\$this->form = $fls;
 		\$data = parent::write(\$id,$\fields);
 		redirect('manage_customers/detail/'.\$data->getId());
 	}

@@ -7,6 +7,7 @@ class MY_Controller extends CI_Controller{
   protected $objobj;
   protected $tpl;
   protected $o2m_def;
+  protected $form;
   protected $custom_column;
 
 
@@ -121,7 +122,8 @@ class MY_Controller extends CI_Controller{
      ));
  }
 
- function write($id=null,$pair){
+ function write($id=null){
+   $pair = $this->form;
    $colls = $this->schema->extract_fields($this->objname);
 
    if($id){
