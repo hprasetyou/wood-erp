@@ -3,24 +3,33 @@
     <div class="box-header with-border">
       <!-- /.box-tools -->
       {{res.string.available_finishing}}
-      <a class="btn btn-default pull-right" 
+      <a class="btn btn-default pull-right"
 	      href="/index.php/manage_finishings/create?ref={{res.uri}}">
 	      {{res.string.new_data}}
-      </a>      
+      </a>
     </div>
     <!-- /.box-header -->
     <div class="box-body">
-      {% for finishing in finishings %}
-      <div class="col-sm-2">
-        <div class="form-group">
-          <label for="Finishing[{{finishing.Id}}]">
-		<input {% if products %} disabled {% endif %} {{finishing.have?'checked':''}}
-		 type="checkbox" name="Finishing[{{finishing.Id}}]"
-		 id="Finishing[{{finishing.Id}}]"> {{finishing.Name}}
-	  </label>
+      <div {% if products %}style="display:none" {% endif %} class="input-wrap">
+        {% for finishing in finishings %}
+        <div class="col-sm-2">
+          <div class="form-group">
+            <label for="Finishing[{{finishing.Id}}]">
+            <input {% if products %} disabled {% endif %} {{finishing.have?'checked':''}}
+             type="checkbox" name="Finishing[{{finishing.Id}}]"
+             id="Finishing[{{finishing.Id}}]"> {{finishing.Name}}
+            </label>
+          </div>
         </div>
+        {% endfor %}
       </div>
-      {% endfor %}
+      <div class="control-value">
+        <ul>
+          {% for finishing in products.Finishings %}
+            <li><i class="fa fa-check-square-o"></i> {{finishing.Name}}</li>
+          {% endfor %}
+        </ul>
+      </div>
     </div>
   </div>
 </div>
