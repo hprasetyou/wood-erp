@@ -442,9 +442,11 @@ private function _view_modal_template($tb_name,$fields){
 		$get_json_filter = "";
 		$get_json_filter_cond = "";
 		$a=1;
+		$fls = "array(\n";
 		foreach ($fields as $field) {
 			$i = 0;
-			$field_name = $field->attributes()->name;
+			$fls .= " '$field_name' => '".$field->attributes()->name."', \n";
+			$fls[$field->attributes()->phpName]=$field->attributes()->phpName;
 			foreach ($fk as $foreign) {
 				$ourfield = $foreign['field'];
 				$theirmodel = $foreign['model']->attributes()->name;
@@ -475,54 +477,22 @@ private function _view_modal_template($tb_name,$fields){
 
 			}
 		}
+		$fls .=");"
     $template = "<?php
 
 
-class Manage_$var extends CI_Controller{
+class Manage_$var extends MY_Controller{
 
 
   function __construct(){
     parent::__construct();
+		\$this->objname = '$tb_name';
+		\$this->tpl = '$var';
+
+		parent::__construct();
     \$this->authorization->check_authorization('manage_$var');
   }
-  function index(){
-      \$this->template->render('admin/$var/index');
-  }
 
-	function get_json(){
-		\$$var = $queryclass::create();
-		\$maxPerPage = \$this->input->get('length');
-    \$colls = \$this->schema->extract_fields('$tb_name');
-		if(\$this->input->get('search[value]')){\n$get_json_filter";
-			if(!$get_json_filter == ""){
-			$template .= "
-			\$$var$dash>where(array($get_json_filter_cond),'or');";
-			}
-			$template .= "
-    }
-		\$fields = json_decode(\$this->input->get('fields'));
-
-		\$orderbycol = \"orderBy\".\$fields[\$this->input->get('order[0][column]')];
-		\$$var->\$orderbycol(\$this->input->get('order[0][dir]'));
-
-		\$offset = (\$this->input->get('start')?\$this->input->get('start'):0);
-		\$$var = \$$var$dash>paginate((\$offset/10)+1, \$maxPerPage);
-
-
-    \$o = [];
-    \$o['recordsTotal']=\$$var$dash>getNbResults();
-    \$o['recordsFiltered']=\$$var$dash>getNbResults();
-    \$o['draw']=\$this->input->get('draw');
-    \$o['data']=[];
-    \$i=0;
-\t\t\tforeach (\$$var as \$$singular_var) {
-\t\t\t\tforeach (\$colls as \$key => \$coll) {
-\t\t\t\t\t\$f = \"get\".\$coll;
-\t\t\t\t\t\$o['data'][\$i][\$key] = \$$singular_var->\$f();
-\t\t\t\t}
-\t\t\t}
-\t\techo json_encode(\$o);
-	}
 
   function create(){
 		$m2odef
@@ -535,25 +505,16 @@ class Manage_$var extends CI_Controller{
 		\$this->template->render('admin/$var/form',array('$var'=>\$$singular_var,$m2opass));
   }
 
-  function write(\$id=null){
-		if(\$id){
-			\$$singular_var = $queryclass::create()->findPK(\$id);
-		}else{
-			\$$singular_var = new $tb_name;
-		}\n";
-
-		foreach ($fields as $field) {
-			# code...
-			$field_name = $field->attributes()->phpName;
-			if($this->check_field($field_name)){
-			$template .= "\t\t\$$singular_var$dash>set".ucfirst($this->camelize($field_name))."(\$this->input->post('$field_name'));\n";
+	function write(\$id=null,\$fields=$fls){
+		$data = parent::write($id,$fields);
+		if($this->input->post('Image')){
+			if(strpos($this->input->post('Image'),'base64')){
+				$this->load->helper('base64toimage');
+				$data->setImage(base64_to_img($this->input->post('Image')));
 			}
 		}
-$template .= "
-		\$$singular_var$dash>save();
-		\$this->loging->add_entry('$var',\$$singular_var$dash>getId(),(\$id?'activity_modify':'activity_create'));
-		redirect('manage_$var/detail/'.\$$singular_var$dash>getId());
-  }
+		redirect('manage_customers/detail/'.$data->getId());
+	}
 
   function delete(\$id){
 		if(\$this->input->post('confirm')){
