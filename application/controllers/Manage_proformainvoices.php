@@ -9,6 +9,11 @@ class Manage_proformainvoices extends MY_Controller{
     $this->tpl = 'proformainvoices';
 
     parent::__construct();
+    $this->form = array(
+    'Name'=>'Name',
+    'CustomerId'=>'CustomerId',
+    'Date'=>'Date',
+    'Description'=>'Description');
     $this->authorization->check_authorization('manage_proformainvoices');
   }
 
@@ -46,11 +51,6 @@ class Manage_proformainvoices extends MY_Controller{
   }
 
   function write($id=null){
-    $this->form = array(
-    'Name'=>'Name',
-    'CustomerId'=>'CustomerId',
-    'Date'=>'Date',
-    'Description'=>'Description')
     $data = parent::write($id,$fields);
 
     $lines = json_decode($this->input->post('Lines'));
