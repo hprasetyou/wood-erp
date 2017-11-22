@@ -1,0 +1,210 @@
+ {% extends "dashboard.html" %} {% set title=" Packing List " %} {% if packinglists %} {% set bc_text = packinglists.id %} {% else %} {% set bc_text = 'Baru' %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_packinglists','text':
+res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<form id="form_PackingList" method="post" action="{{base_url}}index.php/manage_packinglists/write/{{ packinglists.id }}" data-parsley-validate class="form-horizontal form-label-left">
+			<div class="box box-info">
+				<div class="box-header with-border">
+					{% include 'common/_form_header.html' with {'back_url':'/index.php/manage_packinglists'~back_link, 'title': res.string.packinglist, 'delete_url':'/index.php/manage_packinglists/delete/' ~ packinglists.Id, 'object':packinglists} %}
+				</div>
+				<div class="box-body">
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.name}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.name }}" id="Name" value="{{ packinglists.Name }}" name="Name" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if packinglists %}
+									<p class="control-value">{{ packinglists.Name }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.date}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.date }}" id="Date" value="{{ packinglists.Date  | date('Y/m/d') }}" name="Date" class="form-control input-date col-md-7 col-xs-12">
+									</div>
+									{% if packinglists %}
+									<p class="control-value">{{ packinglists.Date | date('d M Y') }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="LoadingDate">{{res.string.loading_date}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.loading_date }}" id="LoadingDate" value="{{ packinglists.LoadingDate  | date('Y/m/d') }}" name="LoadingDate" class="form-control input-date col-md-7 col-xs-12">
+									</div>
+									{% if packinglists %}
+									<p class="control-value">{{ packinglists.LoadingDate | date('d M Y') }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="CustomerId">{{res.string.customer_id}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap input-group">
+										<input type="hidden" type="text" id="CustomerId" value="{{ packinglists.CustomerId }}" name="CustomerId">
+										<input type="text" required="required" name="displayCustomerId" id="displayCustomerId" placeholder="{{ res.string.customer_id }}" value="{{ packinglists.Customer }}" class="form-control" />
+										<span class="input-group-btn">
+								<button class="btn btnModal btn-default" id="btnCustomerId"  data-target="ModalCustomer" type="button">{{res.string.search}}</button>
+							</span>
+									</div>
+									{% if packinglists %}
+									<p class="control-value">{{ packinglists.Customer.Name }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="OceanVessel">{{res.string.ocean_vessel}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.ocean_vessel }}" id="OceanVessel" value="{{ packinglists.OceanVessel }}" name="OceanVessel" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if packinglists %}
+									<p class="control-value">{{ packinglists.OceanVessel }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="SrcLoc">{{res.string.src_loc}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.src_loc }}" id="SrcLoc" value="{{ packinglists.SrcLoc }}" name="SrcLoc" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if packinglists %}
+									<p class="control-value">{{ packinglists.SrcLoc }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="BlNo">{{res.string.bl_no}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.bl_no }}" id="BlNo" value="{{ packinglists.BlNo }}" name="BlNo" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if packinglists %}
+									<p class="control-value">{{ packinglists.BlNo }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="GoodsDescription">{{res.string.goods_description}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.goods_description }}" id="GoodsDescription" value="{{ packinglists.GoodsDescription }}" name="GoodsDescription" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if packinglists %}
+									<p class="control-value">{{ packinglists.GoodsDescription }}</p>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="CntrNo">{{res.string.cntr_no}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.cntr_no }}" id="CntrNo" value="{{ packinglists.CntrNo }}" name="CntrNo" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if packinglists %}
+									<p class="control-value">{{ packinglists.CntrNo }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="SealNo">{{res.string.seal_no}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.seal_no }}" id="SealNo" value="{{ packinglists.SealNo }}" name="SealNo" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if packinglists %}
+									<p class="control-value">{{ packinglists.SealNo }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Pod">{{res.string.pod}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.pod }}" id="Pod" value="{{ packinglists.Pod }}" name="Pod" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if packinglists %}
+									<p class="control-value">{{ packinglists.Pod }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="EtdSrg">{{res.string.etd_srg}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.etd_srg }}" id="EtdSrg" value="{{ packinglists.EtdSrg }}" name="EtdSrg" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if packinglists %}
+									<p class="control-value">{{ packinglists.EtdSrg }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="RefDoc">{{res.string.ref_doc}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.ref_doc }}" id="RefDoc" value="{{ packinglists.RefDoc }}" name="RefDoc" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if packinglists %}
+									<p class="control-value">{{ packinglists.RefDoc }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="State">{{res.string.state}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.state }}" id="State" value="{{ packinglists.State }}" name="State" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if packinglists %}
+									<p class="control-value">{{ packinglists.State }}</p>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row" id="detail">
+            <div class="col-sm-12">
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active">
+                    <a href="#tab_1" data-toggle="tab">{{res.string.packing_list_line}}</a>
+                  </li>
+                </ul>
+                <div class="tab-content">
+                  <!-- /.tab-pane -->
+                  <div class="tab-pane clearfix active" id="tab_1">
+                    {% include "admin/packinglists/_packing_list_line_tab.html"%}
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+				</div>
+		</form>
+		</div>
+	</div>
+	<!-- Modal -->
+	{% include "admin/customers/_modal.html" %} {% endblock %} {% block bottom%} {% endblock %}

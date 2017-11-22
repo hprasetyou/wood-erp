@@ -208,6 +208,9 @@ $(document).ready(function(){
      thumbnail:true,
      animateThumb:true
   });
+  $('.input-group').on('click','input',function(){
+    $(this).parents('.input-group').find('button').trigger('click')
+  })
 })
 $('.form-select').select2()
 $('#btn-edit').click(function(e){
