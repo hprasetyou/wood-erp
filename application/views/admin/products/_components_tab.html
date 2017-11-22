@@ -52,9 +52,11 @@
   </thead>
   <tbody>
     {% for component in products.ProductComponents %}
-    <td>{{component.Component.Name}}</td>
-    <td>{{component.Qty}}</td>
-    <td><a href="#" data-id="{{component.Id}}" class="btn btn-danger btn-delete-row"><i class="fa fa-trash"></i></a></td>
-    {% endfor %}
+    <tr>
+      <td>{{component.Component.Name}}</td>
+      <td>{{component.Qty}}</td>
+      <td><a href="#" data-id="{{component.Id}}" class="btn btn-danger btn-delete-row"><i class="fa fa-trash"></i></a></td>
+    </tr>
+  {% endfor %}
   </tbody>
 </table>

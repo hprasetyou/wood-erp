@@ -10,13 +10,24 @@ class Template {
   public function __construct()
   {
       $loader = new Twig_Loader_Filesystem('./application/views');
-          $this->twig = new Twig_Environment($loader);
+      $this->twig = new Twig_Environment($loader);
       $this->twig = new Twig_Environment($loader, array(
       'cache' => false,// '/application/cache'
-  ));
+      ));
+      $this->apply_filter();
   }
+
+  function apply_filter(){
+    // an anonymous function
+    $filter_cubic = new Twig_Filter('cubic', function ($string) {
+        return number_format(($string/1000000), 3, '.', '').' m3';
+    });
+    $this->twig->addFilter($filter_cubic);
+
+  }
+
   private $twig;
-    function render($tpl,$data=array(),$ext="html"){
+  function render($tpl,$data=array(),$ext="html"){
 
 		$this->CI =& get_instance();
         $this->CI->load->helper('url');
