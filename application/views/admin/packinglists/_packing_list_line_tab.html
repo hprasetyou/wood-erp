@@ -1,0 +1,53 @@
+<div class="box box-info">
+  <div class="box-body">
+
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="form-group">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProformaInvoiceId">{{res.string.proforma_invoice}}</label>
+          <div class="col-md-6 col-sm-6 col-xs-12">
+            <div {% if packinglistlines %}style="display:none" {% endif %} class="input-wrap input-group">
+              <input type="hidden" type="text" id="ProformaInvoiceId" value="{{ packinglistlines.ProformaInvoiceId }}" name="ProformaInvoiceId">
+              <input type="text" required="required" name="displayProformaInvoiceId" id="displayProformaInvoiceId" placeholder="{{ res.string.proforma_invoice_line_id }}" value="{{ packinglistlines.ProformaInvoice }}" class="form-control" />
+              <span class="input-group-btn">
+              <button data-domain='{"customer_id":13}' class="btn btnModal btn-default" id="btnProformaInvoiceId"  data-target="ModalProformaInvoice" type="button">{{res.string.search}}</button>
+            </span>
+            </div>
+            {% if packinglistlines %}
+            <p class="control-value">{{ packinglistlines.ProformaInvoice.id }}</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <table class="table table-striped " id="table_PILine">
+            <thead>
+              <tr>
+                <th>{{res.string.article_number}}</th>
+                <th>{{res.string.description}}</th>
+                <th>{{res.string.qty}}</th>
+                <th></th>
+              </tr>
+            </thead>
+        </table>
+      </div>
+      <div class="col-sm-6"></div>
+    </div>
+
+  </div>
+</div>
+<div class="row">
+  <table data-controller="manage_packinglistlines" class="table table-striped " id="table_PackingListLine">
+      <thead>
+        <tr>
+          <th data-fieldname="packing_list_id">{{res.string.packing_list_id}}</th>
+          <th data-fieldname="proforma_invoice_line_id">{{res.string.proforma_invoice_line_id}}</th>
+          <th data-fieldname="qty">{{res.string.qty}}</th>
+          <th></th>
+        </tr>
+      </thead>
+  </table>
+
+</div>

@@ -241,7 +241,7 @@
     <column name="customer_id" phpName="CustomerId" type="INTEGER" required="true"/>
     <column name="date" phpName="Date" type="DATE"/>
     <column name="description" phpName="Description" size="255" type="VARCHAR"/>
-    <column name="state" phpName="State" type="CHAR" sqlType="ENUM('draft','confirm')" defaultValue="draft"/>
+    <column name="state" phpName="State" type="CHAR" sqlType="ENUM('draft','confirm','done')" defaultValue="draft"/>
     <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
     <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
     <foreign-key foreignTable="partner">
@@ -271,5 +271,40 @@
       <reference local="product_customer_id" foreign="id"/>
     </foreign-key>
   </table>
-
+  <table name="packing_list" phpName="PackingList">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="name" phpName="Name" type="VARCHAR" size="255"/>
+    <column name="date" phpName="Date" type="DATE"/>
+    <column name="loading_date" phpName="LoadingDate" type="DATE"/>
+    <column name="customer_id" phpName="CustomerId" type="INTEGER" required="true"/>
+    <column name="ocean_vessel" phpName="OceanVessel" type="VARCHAR" size="255"/>
+    <column name="src_loc" phpName="SrcLoc" type="VARCHAR" size="255"/>
+    <column name="bl_no" phpName="BlNo" type="VARCHAR" size="255"/>
+    <column name="goods_description" phpName="GoodsDescription" type="VARCHAR" size="255"/>
+    <column name="cntr_no" phpName="CntrNo" type="VARCHAR" size="255"/>
+    <column name="seal_no" phpName="SealNo" type="VARCHAR" size="255"/>
+    <column name="pod" phpName="Pod" type="VARCHAR" size="255"/>
+    <column name="etd_srg" phpName="EtdSrg" type="VARCHAR" size="255"/>
+    <column name="ref_doc" phpName="RefDoc" type="VARCHAR" size="255"/>
+    <column name="state" phpName="State" type="CHAR" sqlType="ENUM('draft','confirm','done')" defaultValue="draft"/>
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
+    <foreign-key foreignTable="partner">
+      <reference local="customer_id" foreign="id"/>
+    </foreign-key>
+  </table>
+  <table name="packing_list_line" phpName="PackingListLine">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="packing_list_id" phpName="PackingListId" type="INTEGER" required="true"/>
+    <column name="proforma_invoice_line_id" phpName="ProformaInvoiceLineId" type="INTEGER" required="true"/>
+    <column name="qty" phpName="Qty" type="INTEGER"/>
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
+    <foreign-key foreignTable="packing_list">
+      <reference local="packing_list_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="proforma_invoice_line">
+      <reference local="proforma_invoice_line_id" foreign="id"/>
+    </foreign-key>
+  </table>
 </database>

@@ -18,6 +18,10 @@ jQuery.fn.loadTableData = function(
     if(!conf.hasOwnProperty('paging')){
       conf.paging = true;
     }
+    if(!conf.hasOwnProperty('backendfunc')){
+      conf.backendfunc = 'get_json';
+    }
+    var fs = conf.backendfunc
   var tt = $(this)
   var c = tt.data('controller')
   var bdm = tt.data('domain')
@@ -90,7 +94,7 @@ jQuery.fn.loadTableData = function(
     dtconf.order = [[conf.order.col, conf.order.order]]
   }
   if(conf.serverSide){
-    dtconf.ajax =  base_url[0]+"index.php/"+c+"/get_json"+params
+    dtconf.ajax =  base_url[0]+"index.php/"+c+"/"+fs+params
     dtconf.columns = fl
     dtconf.initComplete = function(settings, json) {
       tt.css('width','100%')
@@ -120,8 +124,10 @@ jQuery.fn.simpleValidation =  function(){
     }
   })
 }
+
 function init_modal_selection(){
   console.log(base_url);
+
   $('.btnModal').click(function(){
     var target = $(this).data('target')
     var bdm = $(this).data('domain')
@@ -133,9 +139,6 @@ function init_modal_selection(){
     $('#'+target).find('table').attr('data-thide',thide)
     $('#'+target).find('table').attr('data-ttext',ttext)
     var c = $('#'+target).data('controller')
-    if($('#'+target).data('init') != 1){
-      $('#'+target).data('init',1)
-
     var fl = [{
       "data":"id",
       "render":new Function("data", "type","row","meta", "return '<a data-id=\"'+data+'\" class=\"btn btn-sm btn-default pull-right btn-select\" href=\"#\"><i class=\"fa fa-search\"></i> </a>'")
@@ -149,29 +152,27 @@ function init_modal_selection(){
          fd.push($(this).data('fieldname'))
        }
      })
-    var mtt = $('#'+target).find('table');
+    var url = base_url[0]+"index.php/"+c+"/get_json?fields="+JSON.stringify(fd)
+    for (var prop in bdm) {
+      // d.cond = []
+      if (bdm.hasOwnProperty(prop)) {
+        url += "&"+prop+"="+bdm[prop]
+      }
+    }
+   var mtt = $('#'+target).find('table');
+    if($('#'+target).data('init') != 1){
+      $('#'+target).data('init',1)
     mtt.DataTable({
       "processing": true,
       "serverSide": true,
       "searchDelay": 1000,
       "ordering": true,
-      "ajax": {
-          "url": base_url[0]+"index.php/"+c+"/get_json",
-          "data": function ( d ) {
-            d['fields']= JSON.stringify(fd)
-            if(bdm){
-              for (var prop in bdm) {
-                // d.cond = []
-                if (bdm.hasOwnProperty(prop)) {
-                  d[prop] = bdm[prop]
-                }
-              }
-            }
-          }
-      },
+      "ajax": url,
       "columns": fl
     });
-    }
+  }else{
+    mtt.DataTable().ajax.url(url).load()
+  }
 
     $('#'+target).find('table').css('width','100%')
     $('#'+target).modal('show')
@@ -189,6 +190,7 @@ function init_modal_selection(){
       }
       $('#'+$(this).parents('table').data('ttext')).val(so)
       $(this).parents('.modal').modal('hide')
+      $('#'+$(this).parents('table').data('thide')).trigger('change')
   })
 }
 $(document).ready(function(){
@@ -208,6 +210,9 @@ $(document).ready(function(){
      thumbnail:true,
      animateThumb:true
   });
+  $('.input-group').on('click','input',function(){
+    $(this).parents('.input-group').find('button').trigger('click')
+  })
 })
 $('.form-select').select2()
 $('#btn-edit').click(function(e){

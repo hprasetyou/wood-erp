@@ -9,11 +9,40 @@ class Manage_proformainvoices extends MY_Controller{
     $this->tpl = 'proformainvoices';
 
     parent::__construct();
+    $this->form = array(
+    'Name'=>'Name',
+    'CustomerId'=>'CustomerId',
+    'Date'=>'Date',
+    'Description'=>'Description');
     $this->authorization->check_authorization('manage_proformainvoices');
   }
 
+  function get_json(){
+    if($this->input->get('customer_id')){
+      $this->objobj = ProformaInvoiceQuery::create()
+      ->filterByCustomerId($this->input->get('customer_id'));
+    }
+    parent::get_json();
+  }
+
+  function get_line_json($id = null){
+    if($id){
+      $line = ProformaInvoiceLineQuery::create()
+      ->joinWith('ProductCustomer')
+      ->findByProformaInvoiceId($id);
+      echo json_encode(array('data'=>json_decode($line->toJSON())->ProformaInvoiceLines));
+
+    }else{
+      echo json_encode(array('data'=>[]));
+    }
+
+  }
+
+
   function get_line_detail($id){
-    $line = ProformaInvoiceLineQuery::create()->joinWith('ProductCustomer')->joinWith('ProductCustomer.Product')->findPk($id);
+    $line = ProformaInvoiceLineQuery::create()
+    ->joinWith('ProductCustomer')
+    ->joinWith('ProductCustomer.Product')->findPk($id);
     echo $line->toJSON();
   }
 
@@ -46,11 +75,6 @@ class Manage_proformainvoices extends MY_Controller{
   }
 
   function write($id=null){
-    $this->form = array(
-    'Name'=>'Name',
-    'CustomerId'=>'CustomerId',
-    'Date'=>'Date',
-    'Description'=>'Description')
     $data = parent::write($id,$fields);
 
     $lines = json_decode($this->input->post('Lines'));
