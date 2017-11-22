@@ -1,4 +1,4 @@
-<?php 
+<?php
  return array(
 'access' => 'Access',
 'add' => 'Add',
@@ -7,7 +7,6 @@
 'article_number' => 'Article Number',
 'assembled' => 'Assembled',
 'assembled_dimension' => 'Assembled Dimension',
-'assembled_in_cm' => 'Assembled (in cm)',
 'available_finishing' => 'Available Finishing',
 'back' => 'Back',
 'bank' => 'Bank',
@@ -60,6 +59,7 @@
 'is_sample' => 'Is a Sample',
 'is_supplier' => 'Is Supplier',
 'knockdown' => 'Knockdown',
+'in_cm' => 'In cm',
 'last_login' => 'Last Login',
 'list_price' => 'List Price',
 'loading_date' => 'Loading Date',
