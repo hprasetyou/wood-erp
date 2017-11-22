@@ -17,8 +17,32 @@ class Manage_proformainvoices extends MY_Controller{
     $this->authorization->check_authorization('manage_proformainvoices');
   }
 
+  function get_json(){
+    if($this->input->get('customer_id')){
+      $this->objobj = ProformaInvoiceQuery::create()
+      ->filterByCustomerId($this->input->get('customer_id'));
+    }
+    parent::get_json();
+  }
+
+  function get_line_json($id = null){
+    if($id){
+      $line = ProformaInvoiceLineQuery::create()
+      ->joinWith('ProductCustomer')
+      ->findByProformaInvoiceId($id);
+      echo json_encode(array('data'=>json_decode($line->toJSON())->ProformaInvoiceLines));
+
+    }else{
+      echo json_encode(array('data'=>[]));
+    }
+
+  }
+
+
   function get_line_detail($id){
-    $line = ProformaInvoiceLineQuery::create()->joinWith('ProductCustomer')->joinWith('ProductCustomer.Product')->findPk($id);
+    $line = ProformaInvoiceLineQuery::create()
+    ->joinWith('ProductCustomer')
+    ->joinWith('ProductCustomer.Product')->findPk($id);
     echo $line->toJSON();
   }
 

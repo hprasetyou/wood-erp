@@ -1,4 +1,4 @@
-<?php
+<?php 
  return array(
 'access' => 'Access',
 'add' => 'Add',
@@ -77,8 +77,9 @@
 'note' => 'Note',
 'ocean_vessel' => 'Ocean Vessel',
 'ok' => 'Ok',
-'packinglist'=>'Packing List',
-'packing_list_line'=>'Packing List Line',
+'packing_list_id' => 'Packing List Id',
+'packing_list_line' => 'Packing List Line',
+'packinglist' => 'Packing List',
 'partner_id' => 'Partner Id',
 'password' => 'Password',
 'people' => 'People',
@@ -100,6 +101,7 @@
 'search' => 'Search',
 'select_data' => 'Select data',
 'src_loc' => 'Src Loc',
+'state' => 'State',
 'status' => 'Status',
 'supplier' => 'Supplier',
 'tax_number' => 'Tax Number',
@@ -115,5 +117,5 @@
 'width_kdn' => 'Width Knockdown',
 'with_box' => 'With Carton Box',
 'yes' => 'Yes',
-'state' => 'State'
+'proforma_invoice_line_id' => 'Proforma Invoice Line Id'
 );

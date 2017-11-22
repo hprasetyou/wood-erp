@@ -207,4 +207,33 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
 		</div>
 	</div>
 	<!-- Modal -->
-	{% include "admin/customers/_modal.html" %} {% endblock %} {% block bottom%} {% endblock %}
+	{% include "admin/customers/_modal.html" %}
+	{% include "admin/proformainvoices/_modal.html" %} {% endblock %} {% block bottom%}
+<script type="text/javascript">
+  var line_url = "/index.php/manage_proformainvoices/get_line_json/"
+
+	$('#CustomerId').change(function(e){
+		$('#btnProformaInvoiceId').data('domain',{customer_id: $(this).val()})
+	})
+  $('#ProformaInvoiceId').change(function(e){
+    $('#table_PILine').DataTable().ajax.url(line_url+$(this).val()).load()
+  })
+  $('#table_PILine').DataTable({
+    "processing": true,
+    "serverSide":true,
+    "searching": false,
+    "paging": false,
+    "ordering": false,
+    "ajax": line_url,
+    "columns":[
+      {"data":"ProductCustomer.Name"},
+      {"data":"Description"},
+      {"data":"Qty"},
+      {"data":"Id",
+      "render":function(data){
+        return "<a class=\"btn btn-default\" data-id\""+data+"\">{{res.string.add}}</a>"
+      }
+      } ]
+  })
+</script>
+	 {% endblock %}
