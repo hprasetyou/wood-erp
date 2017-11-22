@@ -3,7 +3,7 @@
     <div class="box-header with-border">
       <!-- /.box-tools -->
       {{res.string.available_finishing}}
-      <a class="btn btn-default pull-right"
+      <a {%if products %}style="display:none"{%endif%} class="btn btn-default pull-right input-wrap"
 	      href="/index.php/manage_finishings/create?ref={{res.uri}}">
 	      {{res.string.new_data}}
       </a>
