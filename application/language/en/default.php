@@ -87,6 +87,7 @@
 'save' => 'Save',
 'search' => 'Search',
 'status' => 'Status',
+'select_data' => 'Select data',
 'supplier' => 'Supplier',
 'tax_number' => 'Tax Number',
 'total_cubic_dimension' => 'Total Cubic Dimension',

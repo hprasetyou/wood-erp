@@ -139,9 +139,7 @@ class MY_Controller extends CI_Controller{
      # code...
      $type = false;
      foreach ($colls as $ckey => $cvalue) {
-       echo $cvalue['Name'];
        if($cvalue['Name'] == $key){
-         echo "valid";
          $type = $cvalue['type'];
        }
      }
@@ -169,7 +167,7 @@ class MY_Controller extends CI_Controller{
    }
 
    $obj->save();
-   $this->loging->add_entry($this->tpl,$id,($id?'activity_modify':'activity_create'));
+   $this->loging->add_entry($this->tpl,$obj->getId(),($id?'activity_modify':'activity_create'));
    return $obj;
  }
 

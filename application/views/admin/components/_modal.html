@@ -1,25 +1,88 @@
+<div class="modal fade" id="ModalComponent" data-init="0" data-controller="manage_components" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Component</h4>
+			</div>
+			<div class="modal-body">
 
-	<div class="modal fade" id="ModalComponent" data-init="0" data-controller="manage_components" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-		<div class="modal-dialog modal-lg" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="myModalLabel">Component</h4>
+				<div class="box-group" id="accordion">
+					<!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
+					<div class="panel box box-primary">
+						<div class="box-header with-border">
+							<h4 class="box-title">
+														<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+															{{res.string.new_data}}
+														</a>
+													</h4>
+						</div>
+						<div id="collapseOne" class="panel-collapse collapse">
+							<div class="box-body">
+								<form id="form_Component_modal" method="post" action="{{base_url}}index.php/manage_components/write/{{ components.id }}" data-parsley-validate class="form-horizontal form-label-left">
+									<div class="row">
+										<div class="col-sm-11">
+											{% include "admin/components/_form_piece.html" %}
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-11">
+											<button class="btn btn-primary pull-right" type="submit" name="button">{{res.string.save}}</button>
+										</div>
+									</div>
+							</form>
+							</div>
+						</div>
+					</div>
+					<div class="panel box box-danger">
+						<div class="box-header with-border">
+							<h4 class="box-title">
+														<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+															{{res.string.select_data}}
+														</a>
+													</h4>
+						</div>
+						<div id="collapseTwo" class="panel-collapse collapse in">
+							<div class="box-body">
+								<table data-display="2" data-controller="manage_components" class="table table-striped " id="table_Component">
+									<thead>
+										<tr>
+											<th></th>
+											<th data-fieldname="name">{{res.string.name }}</th>
+											<th data-fieldname="description">{{res.string.description }}</th>
+											<th data-fieldname="material">{{res.string.material }}</th>
+										</tr>
+									</thead>
+								</table>
+							</div>
+						</div>
+					</div>
 				</div>
-				<div class="modal-body">
-					<table data-display="2" data-controller="manage_components" class="table table-striped " id="table_Component">
-		<thead>
-			<tr>
-				<th></th>
-				<th data-fieldname="name">{{res.string.name }}</th>
-				<th data-fieldname="description">{{res.string.description }}</th>
-				<th data-fieldname="material">{{res.string.material }}</th>
-			</tr>
-		</thead>
-	</table>
 
-				</div>
 			</div>
 		</div>
 	</div>
-	
+
+
+<script type="text/javascript">
+	$('#form_Component_modal').submit(function(e){
+		e.preventDefault()
+		var comp_form = $(this);
+		$.ajax({
+			url:comp_form.attr('action'),
+			data:comp_form.serialize(),
+			dataType:'JSON',
+			method:'POST',
+			success:function(o){
+				console.log(o);
+				var tb = comp_form.parents('.modal-body').find('table')
+				var hidInp = tb.data('thide');
+				var shoInp = tb.data('ttext');
+				$('#'+hidInp).val(o.Id);
+				$('#'+shoInp).val(o.Name);
+				tb.DataTable().ajax.reload();
+				comp_form.parents('.modal').modal('hide')
+			}
+		})
+	})
+</script>

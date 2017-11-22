@@ -140,7 +140,7 @@ function init_modal_selection(){
       "data":"id",
       "render":new Function("data", "type","row","meta", "return '<a data-id=\"'+data+'\" class=\"btn btn-sm btn-default pull-right btn-select\" href=\"#\"><i class=\"fa fa-search\"></i> </a>'")
     }]
-    var fd= []
+    var fd= ['id']
      $('#'+target).find('th').each(function(){
        if($(this).data('fieldname')){
          fl.push({
