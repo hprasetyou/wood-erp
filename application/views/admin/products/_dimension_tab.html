@@ -2,12 +2,15 @@
   <div class="col-sm-6 form-dimension">
     <h3>{{res.string.assembled_in_cm}}</h3>
     <div class="row">
-      <div class="col-sm-2">
+      <div class="col-sm-2 WCol">
         <div class="form-group">
           <label class="control-label col-sm-12" for="first-name">W</label>
           <div class="col-sm-10">
             <div {% if products %}style="display:none" {% endif %} class="input-wrap">
-              <input type="number" id="WidthAsb" value="{{ products.WidthAsb }}" name="WidthAsb" required="required" class="form-control form-dimension-input col-md-7 col-xs-12">
+              <input type="number" id="WidthAsb"
+              value="{{ products.WidthAsb }}"
+              name="WidthAsb" required="required"
+              class="form-control inp-w form-dimension-input col-md-7 col-xs-12">
             </div>
             {% if products %}
             <p class="control-value">{{ products.WidthAsb }}</p>
@@ -16,12 +19,15 @@
           <div class="col-sm-2 nopadding"><span class="measure"><i class="fa fa-times" aria-hidden="true"></i></span></div>
         </div>
       </div>
-      <div class="col-sm-2" id="HAsb">
+      <div class="col-sm-2">
         <div class="form-group">
           <label class="control-label col-sm-12" for="first-name">H</label>
           <div class="col-sm-10">
             <div {% if products %}style="display:none" {% endif %} class="input-wrap">
-              <input type="number" id="HeightAsb" value="{{ products.HeightAsb }}" name="HeightAsb" required="required" class="form-control form-dimension-input col-md-7 col-xs-12">
+              <input type="number"
+              id="HeightAsb" value="{{ products.HeightAsb }}"
+              name="HeightAsb" required="required"
+              class="form-control form-dimension-input inp-h col-md-7 col-xs-12">
             </div>
             {% if products %}
             <p class="control-value">{{ products.HeightAsb }}</p>
@@ -35,7 +41,10 @@
           <label class="control-label col-sm-12" for="first-name">D</label>
           <div class="col-md-10">
             <div {% if products %}style="display:none" {% endif %} class="input-wrap">
-              <input type="number" id="DepthAsb" value="{{ products.DepthAsb }}" name="DepthAsb" required="required" class="form-control form-dimension-input col-md-7 col-xs-12">
+              <input type="number" id="DepthAsb"
+              value="{{ products.DepthAsb }}" name="DepthAsb"
+              required="required"
+              class="form-control form-dimension-input inp-d col-md-7 col-xs-12">
             </div>
             {% if products %}
             <p class="control-value">{{ products.DepthAsb }}</p>
@@ -58,13 +67,17 @@
   </div>
   <div class="col-sm-6 form-dimension form-knockdown">
     <h3>{{res.string.knockdown}}</h3>
-    <div class="row">
-      <div class="col-sm-3">
+    <div class="row" >
+      <div class="col-sm-3 WCol">
         <div class="form-group">
           <label class="control-label col-sm-12" for="first-name">{{res.string.width}}</label>
           <div class="col-sm-10">
             <div {% if products %}style="display:none" {% endif %} class="input-wrap">
-              <input type="number" id="WidthKdn" value="{{ products.WidthKdn }}" name="WidthKdn" required="required" class="form-control form-dimension-input col-md-7 col-xs-12">
+              <input type="number"
+              id="WidthKdn"
+              value="{{ products.WidthKdn }}"
+              name="WidthKdn" required="required"
+              class="form-control form-dimension-input inp-w col-md-7 col-xs-12">
             </div>
             {% if products %}
             <p class="control-value">{{ products.WidthKdn }}</p>
@@ -78,7 +91,10 @@
           <label class="control-label col-sm-12" for="first-name">{{res.string.height}}</label>
           <div class="col-sm-10">
             <div {% if products %}style="display:none" {% endif %} class="input-wrap">
-              <input type="number" id="HeightKdn" value="{{ products.HeightKdn }}" name="HeightKdn" required="required" class="form-control form-dimension-input col-md-7 col-xs-12">
+              <input type="number" id="HeightKdn"
+              value="{{ products.HeightKdn }}"
+              name="HeightKdn" required="required"
+              class="form-control form-dimension-input inp-h col-md-7 col-xs-12">
             </div>
             {% if products %}
             <p class="control-value">{{ products.HeightKdn }}</p>
@@ -92,7 +108,9 @@
           <label class="control-label col-sm-12" for="first-name">{{res.string.depth}}</label>
           <div class="col-md-8">
             <div {% if products %}style="display:none" {% endif %} class="input-wrap">
-              <input type="number" id="DepthKdn" value="{{ products.DepthKdn }}" name="DepthKdn" required="required" class="form-control form-dimension-input col-md-7 col-xs-12">
+              <input type="number" id="DepthKdn"
+              value="{{ products.DepthKdn }}" name="DepthKdn"
+              required="required" class="form-control inp-d form-dimension-input col-md-7 col-xs-12">
             </div>
             {% if products %}
             <p class="control-value">{{ products.DepthKdn }}</p>

@@ -201,18 +201,33 @@
       $('#component_tab').toggle($(this).prop('checked'))
 		})
 		$('#IsRound').change(function (e) {
-      $('#HAsb').toggle(!$(this).prop('checked'))
+      $('.WCol').toggle(!$(this).prop('checked'))
 		})
 
 
 		$('.form-dimension-input').on('change keyup paste', function () {
 			var r = 1;
 			var b = $(this).parents('.form-dimension');
-			b.find('.form-dimension-input').each(function () {
-				r = r * $(this).val()
-			})
+
+      var w = b.find('.inp-w').val()
+      var h = b.find('.inp-h').val()
+      var d = b.find('.inp-d').val()
+      if(!$('#IsRound').prop('checked')){
+        r = vol_balok(w,h,d)
+      }else{
+        r = vol_tabung(h,d)
+      }
 			b.find('.form-dimension-result').val(r)
 		})
+
+    function vol_balok(w,h,d){
+      return w*h*d
+    }
+
+    function vol_tabung(h,d){
+      var r = d/2;
+      return (22/7)*r*r*h;
+    }
 
     	var imgProd = []
     	var compProd = []
