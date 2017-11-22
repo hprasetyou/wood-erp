@@ -2,8 +2,8 @@
 
 namespace Map;
 
-use \Partner;
-use \PartnerQuery;
+use \PackingList;
+use \PackingListQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'partner' table.
+ * This class defines the structure of the 'packing_list' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class PartnerTableMap extends TableMap
+class PackingListTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class PartnerTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.PartnerTableMap';
+    const CLASS_NAME = '.Map.PackingListTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class PartnerTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'partner';
+    const TABLE_NAME = 'packing_list';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\Partner';
+    const OM_CLASS = '\\PackingList';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Partner';
+    const CLASS_DEFAULT = 'PackingList';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 16;
+    const NUM_COLUMNS = 17;
 
     /**
      * The number of lazy-loaded columns
@@ -69,87 +69,92 @@ class PartnerTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 16;
+    const NUM_HYDRATE_COLUMNS = 17;
 
     /**
      * the column name for the id field
      */
-    const COL_ID = 'partner.id';
+    const COL_ID = 'packing_list.id';
 
     /**
      * the column name for the name field
      */
-    const COL_NAME = 'partner.name';
+    const COL_NAME = 'packing_list.name';
 
     /**
-     * the column name for the email field
+     * the column name for the date field
      */
-    const COL_EMAIL = 'partner.email';
+    const COL_DATE = 'packing_list.date';
 
     /**
-     * the column name for the address field
+     * the column name for the loading_date field
      */
-    const COL_ADDRESS = 'partner.address';
+    const COL_LOADING_DATE = 'packing_list.loading_date';
 
     /**
-     * the column name for the phone field
+     * the column name for the customer_id field
      */
-    const COL_PHONE = 'partner.phone';
+    const COL_CUSTOMER_ID = 'packing_list.customer_id';
 
     /**
-     * the column name for the website field
+     * the column name for the ocean_vessel field
      */
-    const COL_WEBSITE = 'partner.website';
+    const COL_OCEAN_VESSEL = 'packing_list.ocean_vessel';
 
     /**
-     * the column name for the fax field
+     * the column name for the src_loc field
      */
-    const COL_FAX = 'partner.fax';
+    const COL_SRC_LOC = 'packing_list.src_loc';
 
     /**
-     * the column name for the image field
+     * the column name for the bl_no field
      */
-    const COL_IMAGE = 'partner.image';
+    const COL_BL_NO = 'packing_list.bl_no';
 
     /**
-     * the column name for the tax_number field
+     * the column name for the goods_description field
      */
-    const COL_TAX_NUMBER = 'partner.tax_number';
+    const COL_GOODS_DESCRIPTION = 'packing_list.goods_description';
 
     /**
-     * the column name for the bank_detail field
+     * the column name for the cntr_no field
      */
-    const COL_BANK_DETAIL = 'partner.bank_detail';
+    const COL_CNTR_NO = 'packing_list.cntr_no';
 
     /**
-     * the column name for the company_id field
+     * the column name for the seal_no field
      */
-    const COL_COMPANY_ID = 'partner.company_id';
+    const COL_SEAL_NO = 'packing_list.seal_no';
 
     /**
-     * the column name for the is_employee field
+     * the column name for the pod field
      */
-    const COL_IS_EMPLOYEE = 'partner.is_employee';
+    const COL_POD = 'packing_list.pod';
 
     /**
-     * the column name for the is_customer field
+     * the column name for the etd_srg field
      */
-    const COL_IS_CUSTOMER = 'partner.is_customer';
+    const COL_ETD_SRG = 'packing_list.etd_srg';
 
     /**
-     * the column name for the is_supplier field
+     * the column name for the ref_doc field
      */
-    const COL_IS_SUPPLIER = 'partner.is_supplier';
+    const COL_REF_DOC = 'packing_list.ref_doc';
+
+    /**
+     * the column name for the state field
+     */
+    const COL_STATE = 'packing_list.state';
 
     /**
      * the column name for the created_at field
      */
-    const COL_CREATED_AT = 'partner.created_at';
+    const COL_CREATED_AT = 'packing_list.created_at';
 
     /**
      * the column name for the updated_at field
      */
-    const COL_UPDATED_AT = 'partner.updated_at';
+    const COL_UPDATED_AT = 'packing_list.updated_at';
 
     /**
      * The default string format for model objects of the related table
@@ -163,11 +168,11 @@ class PartnerTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Email', 'Address', 'Phone', 'Website', 'Fax', 'Image', 'TaxNumber', 'BankDetail', 'CompanyId', 'IsEmployee', 'IsCustomer', 'IsSupplier', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'email', 'address', 'phone', 'website', 'fax', 'image', 'taxNumber', 'bankDetail', 'companyId', 'isEmployee', 'isCustomer', 'isSupplier', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(PartnerTableMap::COL_ID, PartnerTableMap::COL_NAME, PartnerTableMap::COL_EMAIL, PartnerTableMap::COL_ADDRESS, PartnerTableMap::COL_PHONE, PartnerTableMap::COL_WEBSITE, PartnerTableMap::COL_FAX, PartnerTableMap::COL_IMAGE, PartnerTableMap::COL_TAX_NUMBER, PartnerTableMap::COL_BANK_DETAIL, PartnerTableMap::COL_COMPANY_ID, PartnerTableMap::COL_IS_EMPLOYEE, PartnerTableMap::COL_IS_CUSTOMER, PartnerTableMap::COL_IS_SUPPLIER, PartnerTableMap::COL_CREATED_AT, PartnerTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'email', 'address', 'phone', 'website', 'fax', 'image', 'tax_number', 'bank_detail', 'company_id', 'is_employee', 'is_customer', 'is_supplier', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Date', 'LoadingDate', 'CustomerId', 'OceanVessel', 'SrcLoc', 'BlNo', 'GoodsDescription', 'CntrNo', 'SealNo', 'Pod', 'EtdSrg', 'RefDoc', 'State', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'date', 'loadingDate', 'customerId', 'oceanVessel', 'srcLoc', 'blNo', 'goodsDescription', 'cntrNo', 'sealNo', 'pod', 'etdSrg', 'refDoc', 'state', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(PackingListTableMap::COL_ID, PackingListTableMap::COL_NAME, PackingListTableMap::COL_DATE, PackingListTableMap::COL_LOADING_DATE, PackingListTableMap::COL_CUSTOMER_ID, PackingListTableMap::COL_OCEAN_VESSEL, PackingListTableMap::COL_SRC_LOC, PackingListTableMap::COL_BL_NO, PackingListTableMap::COL_GOODS_DESCRIPTION, PackingListTableMap::COL_CNTR_NO, PackingListTableMap::COL_SEAL_NO, PackingListTableMap::COL_POD, PackingListTableMap::COL_ETD_SRG, PackingListTableMap::COL_REF_DOC, PackingListTableMap::COL_STATE, PackingListTableMap::COL_CREATED_AT, PackingListTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'date', 'loading_date', 'customer_id', 'ocean_vessel', 'src_loc', 'bl_no', 'goods_description', 'cntr_no', 'seal_no', 'pod', 'etd_srg', 'ref_doc', 'state', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, )
     );
 
     /**
@@ -177,11 +182,11 @@ class PartnerTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Email' => 2, 'Address' => 3, 'Phone' => 4, 'Website' => 5, 'Fax' => 6, 'Image' => 7, 'TaxNumber' => 8, 'BankDetail' => 9, 'CompanyId' => 10, 'IsEmployee' => 11, 'IsCustomer' => 12, 'IsSupplier' => 13, 'CreatedAt' => 14, 'UpdatedAt' => 15, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'email' => 2, 'address' => 3, 'phone' => 4, 'website' => 5, 'fax' => 6, 'image' => 7, 'taxNumber' => 8, 'bankDetail' => 9, 'companyId' => 10, 'isEmployee' => 11, 'isCustomer' => 12, 'isSupplier' => 13, 'createdAt' => 14, 'updatedAt' => 15, ),
-        self::TYPE_COLNAME       => array(PartnerTableMap::COL_ID => 0, PartnerTableMap::COL_NAME => 1, PartnerTableMap::COL_EMAIL => 2, PartnerTableMap::COL_ADDRESS => 3, PartnerTableMap::COL_PHONE => 4, PartnerTableMap::COL_WEBSITE => 5, PartnerTableMap::COL_FAX => 6, PartnerTableMap::COL_IMAGE => 7, PartnerTableMap::COL_TAX_NUMBER => 8, PartnerTableMap::COL_BANK_DETAIL => 9, PartnerTableMap::COL_COMPANY_ID => 10, PartnerTableMap::COL_IS_EMPLOYEE => 11, PartnerTableMap::COL_IS_CUSTOMER => 12, PartnerTableMap::COL_IS_SUPPLIER => 13, PartnerTableMap::COL_CREATED_AT => 14, PartnerTableMap::COL_UPDATED_AT => 15, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'email' => 2, 'address' => 3, 'phone' => 4, 'website' => 5, 'fax' => 6, 'image' => 7, 'tax_number' => 8, 'bank_detail' => 9, 'company_id' => 10, 'is_employee' => 11, 'is_customer' => 12, 'is_supplier' => 13, 'created_at' => 14, 'updated_at' => 15, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Date' => 2, 'LoadingDate' => 3, 'CustomerId' => 4, 'OceanVessel' => 5, 'SrcLoc' => 6, 'BlNo' => 7, 'GoodsDescription' => 8, 'CntrNo' => 9, 'SealNo' => 10, 'Pod' => 11, 'EtdSrg' => 12, 'RefDoc' => 13, 'State' => 14, 'CreatedAt' => 15, 'UpdatedAt' => 16, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'date' => 2, 'loadingDate' => 3, 'customerId' => 4, 'oceanVessel' => 5, 'srcLoc' => 6, 'blNo' => 7, 'goodsDescription' => 8, 'cntrNo' => 9, 'sealNo' => 10, 'pod' => 11, 'etdSrg' => 12, 'refDoc' => 13, 'state' => 14, 'createdAt' => 15, 'updatedAt' => 16, ),
+        self::TYPE_COLNAME       => array(PackingListTableMap::COL_ID => 0, PackingListTableMap::COL_NAME => 1, PackingListTableMap::COL_DATE => 2, PackingListTableMap::COL_LOADING_DATE => 3, PackingListTableMap::COL_CUSTOMER_ID => 4, PackingListTableMap::COL_OCEAN_VESSEL => 5, PackingListTableMap::COL_SRC_LOC => 6, PackingListTableMap::COL_BL_NO => 7, PackingListTableMap::COL_GOODS_DESCRIPTION => 8, PackingListTableMap::COL_CNTR_NO => 9, PackingListTableMap::COL_SEAL_NO => 10, PackingListTableMap::COL_POD => 11, PackingListTableMap::COL_ETD_SRG => 12, PackingListTableMap::COL_REF_DOC => 13, PackingListTableMap::COL_STATE => 14, PackingListTableMap::COL_CREATED_AT => 15, PackingListTableMap::COL_UPDATED_AT => 16, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'date' => 2, 'loading_date' => 3, 'customer_id' => 4, 'ocean_vessel' => 5, 'src_loc' => 6, 'bl_no' => 7, 'goods_description' => 8, 'cntr_no' => 9, 'seal_no' => 10, 'pod' => 11, 'etd_srg' => 12, 'ref_doc' => 13, 'state' => 14, 'created_at' => 15, 'updated_at' => 16, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, )
     );
 
     /**
@@ -194,27 +199,28 @@ class PartnerTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('partner');
-        $this->setPhpName('Partner');
+        $this->setName('packing_list');
+        $this->setPhpName('PackingList');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\Partner');
+        $this->setClassName('\\PackingList');
         $this->setPackage('');
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('name', 'Name', 'VARCHAR', true, 255, null);
-        $this->addColumn('email', 'Email', 'VARCHAR', false, 255, null);
-        $this->addColumn('address', 'Address', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('phone', 'Phone', 'VARCHAR', false, 255, null);
-        $this->addColumn('website', 'Website', 'VARCHAR', false, 255, null);
-        $this->addColumn('fax', 'Fax', 'VARCHAR', false, 255, null);
-        $this->addColumn('image', 'Image', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('tax_number', 'TaxNumber', 'VARCHAR', false, 255, null);
-        $this->addColumn('bank_detail', 'BankDetail', 'VARCHAR', false, 255, null);
-        $this->addForeignKey('company_id', 'CompanyId', 'INTEGER', 'partner', 'id', false, null, null);
-        $this->addColumn('is_employee', 'IsEmployee', 'BOOLEAN', true, 1, false);
-        $this->addColumn('is_customer', 'IsCustomer', 'BOOLEAN', true, 1, false);
-        $this->addColumn('is_supplier', 'IsSupplier', 'BOOLEAN', true, 1, false);
+        $this->addColumn('name', 'Name', 'VARCHAR', false, 255, null);
+        $this->addColumn('date', 'Date', 'DATE', false, null, null);
+        $this->addColumn('loading_date', 'LoadingDate', 'DATE', false, null, null);
+        $this->addForeignKey('customer_id', 'CustomerId', 'INTEGER', 'partner', 'id', true, null, null);
+        $this->addColumn('ocean_vessel', 'OceanVessel', 'VARCHAR', false, 255, null);
+        $this->addColumn('src_loc', 'SrcLoc', 'VARCHAR', false, 255, null);
+        $this->addColumn('bl_no', 'BlNo', 'VARCHAR', false, 255, null);
+        $this->addColumn('goods_description', 'GoodsDescription', 'VARCHAR', false, 255, null);
+        $this->addColumn('cntr_no', 'CntrNo', 'VARCHAR', false, 255, null);
+        $this->addColumn('seal_no', 'SealNo', 'VARCHAR', false, 255, null);
+        $this->addColumn('pod', 'Pod', 'VARCHAR', false, 255, null);
+        $this->addColumn('etd_srg', 'EtdSrg', 'VARCHAR', false, 255, null);
+        $this->addColumn('ref_doc', 'RefDoc', 'VARCHAR', false, 255, null);
+        $this->addColumn('state', 'State', 'CHAR', false, null, 'draft');
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -224,48 +230,20 @@ class PartnerTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Company', '\\Partner', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('Partner', '\\Partner', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':company_id',
+    0 => ':customer_id',
     1 => ':id',
   ),
 ), null, null, null, false);
-        $this->addRelation('PartnerRelatedById', '\\Partner', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('PackingListLine', '\\PackingListLine', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
-    0 => ':company_id',
+    0 => ':packing_list_id',
     1 => ':id',
   ),
-), null, null, 'PartnersRelatedById', false);
-        $this->addRelation('ProductCustomer', '\\ProductCustomer', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':partner_id',
-    1 => ':id',
-  ),
-), null, null, 'ProductCustomers', false);
-        $this->addRelation('User', '\\User', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':partner_id',
-    1 => ':id',
-  ),
-), null, null, 'Users', false);
-        $this->addRelation('ProformaInvoice', '\\ProformaInvoice', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':customer_id',
-    1 => ':id',
-  ),
-), null, null, 'ProformaInvoices', false);
-        $this->addRelation('PackingList', '\\PackingList', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':customer_id',
-    1 => ':id',
-  ),
-), null, null, 'PackingLists', false);
+), null, null, 'PackingListLines', false);
     } // buildRelations()
 
     /**
@@ -325,7 +303,7 @@ class PartnerTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? PartnerTableMap::CLASS_DEFAULT : PartnerTableMap::OM_CLASS;
+        return $withPrefix ? PackingListTableMap::CLASS_DEFAULT : PackingListTableMap::OM_CLASS;
     }
 
     /**
@@ -339,22 +317,22 @@ class PartnerTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Partner object, last column rank)
+     * @return array           (PackingList object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = PartnerTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = PartnerTableMap::getInstanceFromPool($key))) {
+        $key = PackingListTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = PackingListTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + PartnerTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + PackingListTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = PartnerTableMap::OM_CLASS;
-            /** @var Partner $obj */
+            $cls = PackingListTableMap::OM_CLASS;
+            /** @var PackingList $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            PartnerTableMap::addInstanceToPool($obj, $key);
+            PackingListTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -377,18 +355,18 @@ class PartnerTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = PartnerTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = PartnerTableMap::getInstanceFromPool($key))) {
+            $key = PackingListTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = PackingListTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Partner $obj */
+                /** @var PackingList $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                PartnerTableMap::addInstanceToPool($obj, $key);
+                PackingListTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -409,37 +387,39 @@ class PartnerTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(PartnerTableMap::COL_ID);
-            $criteria->addSelectColumn(PartnerTableMap::COL_NAME);
-            $criteria->addSelectColumn(PartnerTableMap::COL_EMAIL);
-            $criteria->addSelectColumn(PartnerTableMap::COL_ADDRESS);
-            $criteria->addSelectColumn(PartnerTableMap::COL_PHONE);
-            $criteria->addSelectColumn(PartnerTableMap::COL_WEBSITE);
-            $criteria->addSelectColumn(PartnerTableMap::COL_FAX);
-            $criteria->addSelectColumn(PartnerTableMap::COL_IMAGE);
-            $criteria->addSelectColumn(PartnerTableMap::COL_TAX_NUMBER);
-            $criteria->addSelectColumn(PartnerTableMap::COL_BANK_DETAIL);
-            $criteria->addSelectColumn(PartnerTableMap::COL_COMPANY_ID);
-            $criteria->addSelectColumn(PartnerTableMap::COL_IS_EMPLOYEE);
-            $criteria->addSelectColumn(PartnerTableMap::COL_IS_CUSTOMER);
-            $criteria->addSelectColumn(PartnerTableMap::COL_IS_SUPPLIER);
-            $criteria->addSelectColumn(PartnerTableMap::COL_CREATED_AT);
-            $criteria->addSelectColumn(PartnerTableMap::COL_UPDATED_AT);
+            $criteria->addSelectColumn(PackingListTableMap::COL_ID);
+            $criteria->addSelectColumn(PackingListTableMap::COL_NAME);
+            $criteria->addSelectColumn(PackingListTableMap::COL_DATE);
+            $criteria->addSelectColumn(PackingListTableMap::COL_LOADING_DATE);
+            $criteria->addSelectColumn(PackingListTableMap::COL_CUSTOMER_ID);
+            $criteria->addSelectColumn(PackingListTableMap::COL_OCEAN_VESSEL);
+            $criteria->addSelectColumn(PackingListTableMap::COL_SRC_LOC);
+            $criteria->addSelectColumn(PackingListTableMap::COL_BL_NO);
+            $criteria->addSelectColumn(PackingListTableMap::COL_GOODS_DESCRIPTION);
+            $criteria->addSelectColumn(PackingListTableMap::COL_CNTR_NO);
+            $criteria->addSelectColumn(PackingListTableMap::COL_SEAL_NO);
+            $criteria->addSelectColumn(PackingListTableMap::COL_POD);
+            $criteria->addSelectColumn(PackingListTableMap::COL_ETD_SRG);
+            $criteria->addSelectColumn(PackingListTableMap::COL_REF_DOC);
+            $criteria->addSelectColumn(PackingListTableMap::COL_STATE);
+            $criteria->addSelectColumn(PackingListTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(PackingListTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.name');
-            $criteria->addSelectColumn($alias . '.email');
-            $criteria->addSelectColumn($alias . '.address');
-            $criteria->addSelectColumn($alias . '.phone');
-            $criteria->addSelectColumn($alias . '.website');
-            $criteria->addSelectColumn($alias . '.fax');
-            $criteria->addSelectColumn($alias . '.image');
-            $criteria->addSelectColumn($alias . '.tax_number');
-            $criteria->addSelectColumn($alias . '.bank_detail');
-            $criteria->addSelectColumn($alias . '.company_id');
-            $criteria->addSelectColumn($alias . '.is_employee');
-            $criteria->addSelectColumn($alias . '.is_customer');
-            $criteria->addSelectColumn($alias . '.is_supplier');
+            $criteria->addSelectColumn($alias . '.date');
+            $criteria->addSelectColumn($alias . '.loading_date');
+            $criteria->addSelectColumn($alias . '.customer_id');
+            $criteria->addSelectColumn($alias . '.ocean_vessel');
+            $criteria->addSelectColumn($alias . '.src_loc');
+            $criteria->addSelectColumn($alias . '.bl_no');
+            $criteria->addSelectColumn($alias . '.goods_description');
+            $criteria->addSelectColumn($alias . '.cntr_no');
+            $criteria->addSelectColumn($alias . '.seal_no');
+            $criteria->addSelectColumn($alias . '.pod');
+            $criteria->addSelectColumn($alias . '.etd_srg');
+            $criteria->addSelectColumn($alias . '.ref_doc');
+            $criteria->addSelectColumn($alias . '.state');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }
@@ -454,7 +434,7 @@ class PartnerTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(PartnerTableMap::DATABASE_NAME)->getTable(PartnerTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(PackingListTableMap::DATABASE_NAME)->getTable(PackingListTableMap::TABLE_NAME);
     }
 
     /**
@@ -462,16 +442,16 @@ class PartnerTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(PartnerTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(PartnerTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new PartnerTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(PackingListTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(PackingListTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new PackingListTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Partner or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a PackingList or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Partner object or primary key or array of primary keys
+     * @param mixed               $values Criteria or PackingList object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -482,27 +462,27 @@ class PartnerTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PartnerTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(PackingListTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \Partner) { // it's a model object
+        } elseif ($values instanceof \PackingList) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(PartnerTableMap::DATABASE_NAME);
-            $criteria->add(PartnerTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(PackingListTableMap::DATABASE_NAME);
+            $criteria->add(PackingListTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
-        $query = PartnerQuery::create()->mergeWith($criteria);
+        $query = PackingListQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            PartnerTableMap::clearInstancePool();
+            PackingListTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                PartnerTableMap::removeInstanceFromPool($singleval);
+                PackingListTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -510,20 +490,20 @@ class PartnerTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the partner table.
+     * Deletes all rows from the packing_list table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return PartnerQuery::create()->doDeleteAll($con);
+        return PackingListQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Partner or Criteria object.
+     * Performs an INSERT on the database, given a PackingList or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Partner object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or PackingList object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -532,22 +512,22 @@ class PartnerTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PartnerTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(PackingListTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Partner object
+            $criteria = $criteria->buildCriteria(); // build Criteria from PackingList object
         }
 
-        if ($criteria->containsKey(PartnerTableMap::COL_ID) && $criteria->keyContainsValue(PartnerTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.PartnerTableMap::COL_ID.')');
+        if ($criteria->containsKey(PackingListTableMap::COL_ID) && $criteria->keyContainsValue(PackingListTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.PackingListTableMap::COL_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = PartnerQuery::create()->mergeWith($criteria);
+        $query = PackingListQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -556,7 +536,7 @@ class PartnerTableMap extends TableMap
         });
     }
 
-} // PartnerTableMap
+} // PackingListTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-PartnerTableMap::buildTableMap();
+PackingListTableMap::buildTableMap();

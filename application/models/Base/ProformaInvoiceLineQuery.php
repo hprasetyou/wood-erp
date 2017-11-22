@@ -80,7 +80,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceLineQuery rightJoinWithProductCustomer() Adds a RIGHT JOIN clause and with to the query using the ProductCustomer relation
  * @method     ChildProformaInvoiceLineQuery innerJoinWithProductCustomer() Adds a INNER JOIN clause and with to the query using the ProductCustomer relation
  *
- * @method     \ProformaInvoiceQuery|\ProductCustomerQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildProformaInvoiceLineQuery leftJoinPackingListLine($relationAlias = null) Adds a LEFT JOIN clause to the query using the PackingListLine relation
+ * @method     ChildProformaInvoiceLineQuery rightJoinPackingListLine($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PackingListLine relation
+ * @method     ChildProformaInvoiceLineQuery innerJoinPackingListLine($relationAlias = null) Adds a INNER JOIN clause to the query using the PackingListLine relation
+ *
+ * @method     ChildProformaInvoiceLineQuery joinWithPackingListLine($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the PackingListLine relation
+ *
+ * @method     ChildProformaInvoiceLineQuery leftJoinWithPackingListLine() Adds a LEFT JOIN clause and with to the query using the PackingListLine relation
+ * @method     ChildProformaInvoiceLineQuery rightJoinWithPackingListLine() Adds a RIGHT JOIN clause and with to the query using the PackingListLine relation
+ * @method     ChildProformaInvoiceLineQuery innerJoinWithPackingListLine() Adds a INNER JOIN clause and with to the query using the PackingListLine relation
+ *
+ * @method     \ProformaInvoiceQuery|\ProductCustomerQuery|\PackingListLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildProformaInvoiceLine findOne(ConnectionInterface $con = null) Return the first ChildProformaInvoiceLine matching the query
  * @method     ChildProformaInvoiceLine findOneOrCreate(ConnectionInterface $con = null) Return the first ChildProformaInvoiceLine matching the query, or a new ChildProformaInvoiceLine object populated from the query conditions when no match is found
@@ -1039,6 +1049,79 @@ abstract class ProformaInvoiceLineQuery extends ModelCriteria
         return $this
             ->joinProductCustomer($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'ProductCustomer', '\ProductCustomerQuery');
+    }
+
+    /**
+     * Filter the query by a related \PackingListLine object
+     *
+     * @param \PackingListLine|ObjectCollection $packingListLine the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildProformaInvoiceLineQuery The current query, for fluid interface
+     */
+    public function filterByPackingListLine($packingListLine, $comparison = null)
+    {
+        if ($packingListLine instanceof \PackingListLine) {
+            return $this
+                ->addUsingAlias(ProformaInvoiceLineTableMap::COL_ID, $packingListLine->getProformaInvoiceLineId(), $comparison);
+        } elseif ($packingListLine instanceof ObjectCollection) {
+            return $this
+                ->usePackingListLineQuery()
+                ->filterByPrimaryKeys($packingListLine->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByPackingListLine() only accepts arguments of type \PackingListLine or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the PackingListLine relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildProformaInvoiceLineQuery The current query, for fluid interface
+     */
+    public function joinPackingListLine($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('PackingListLine');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'PackingListLine');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the PackingListLine relation PackingListLine object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \PackingListLineQuery A secondary query class using the current class as primary query
+     */
+    public function usePackingListLineQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinPackingListLine($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'PackingListLine', '\PackingListLineQuery');
     }
 
     /**

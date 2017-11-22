@@ -2,6 +2,8 @@
 
 namespace Base;
 
+use \PackingList as ChildPackingList;
+use \PackingListQuery as ChildPackingListQuery;
 use \Partner as ChildPartner;
 use \PartnerQuery as ChildPartnerQuery;
 use \ProductCustomer as ChildProductCustomer;
@@ -13,6 +15,7 @@ use \UserQuery as ChildUserQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
+use Map\PackingListTableMap;
 use Map\PartnerTableMap;
 use Map\ProductCustomerTableMap;
 use Map\ProformaInvoiceTableMap;
@@ -219,6 +222,12 @@ abstract class Partner implements ActiveRecordInterface
     protected $collProformaInvoicesPartial;
 
     /**
+     * @var        ObjectCollection|ChildPackingList[] Collection to store aggregation of ChildPackingList objects.
+     */
+    protected $collPackingLists;
+    protected $collPackingListsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -249,6 +258,12 @@ abstract class Partner implements ActiveRecordInterface
      * @var ObjectCollection|ChildProformaInvoice[]
      */
     protected $proformaInvoicesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildPackingList[]
+     */
+    protected $packingListsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -1230,6 +1245,8 @@ abstract class Partner implements ActiveRecordInterface
 
             $this->collProformaInvoices = null;
 
+            $this->collPackingLists = null;
+
         } // if (deep)
     }
 
@@ -1419,6 +1436,23 @@ abstract class Partner implements ActiveRecordInterface
 
             if ($this->collProformaInvoices !== null) {
                 foreach ($this->collProformaInvoices as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->packingListsScheduledForDeletion !== null) {
+                if (!$this->packingListsScheduledForDeletion->isEmpty()) {
+                    \PackingListQuery::create()
+                        ->filterByPrimaryKeys($this->packingListsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->packingListsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collPackingLists !== null) {
+                foreach ($this->collPackingLists as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1804,6 +1838,21 @@ abstract class Partner implements ActiveRecordInterface
 
                 $result[$key] = $this->collProformaInvoices->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
+            if (null !== $this->collPackingLists) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'packingLists';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'packing_lists';
+                        break;
+                    default:
+                        $key = 'PackingLists';
+                }
+
+                $result[$key] = $this->collPackingLists->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
         }
 
         return $result;
@@ -2180,6 +2229,12 @@ abstract class Partner implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getPackingLists() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addPackingList($relObj->copy($deepCopy));
+                }
+            }
+
         } // if ($deepCopy)
 
         if ($makeNew) {
@@ -2286,6 +2341,10 @@ abstract class Partner implements ActiveRecordInterface
         }
         if ('ProformaInvoice' == $relationName) {
             $this->initProformaInvoices();
+            return;
+        }
+        if ('PackingList' == $relationName) {
+            $this->initPackingLists();
             return;
         }
     }
@@ -3216,6 +3275,231 @@ abstract class Partner implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collPackingLists collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addPackingLists()
+     */
+    public function clearPackingLists()
+    {
+        $this->collPackingLists = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collPackingLists collection loaded partially.
+     */
+    public function resetPartialPackingLists($v = true)
+    {
+        $this->collPackingListsPartial = $v;
+    }
+
+    /**
+     * Initializes the collPackingLists collection.
+     *
+     * By default this just sets the collPackingLists collection to an empty array (like clearcollPackingLists());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initPackingLists($overrideExisting = true)
+    {
+        if (null !== $this->collPackingLists && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = PackingListTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collPackingLists = new $collectionClassName;
+        $this->collPackingLists->setModel('\PackingList');
+    }
+
+    /**
+     * Gets an array of ChildPackingList objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPartner is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildPackingList[] List of ChildPackingList objects
+     * @throws PropelException
+     */
+    public function getPackingLists(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPackingListsPartial && !$this->isNew();
+        if (null === $this->collPackingLists || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collPackingLists) {
+                // return empty collection
+                $this->initPackingLists();
+            } else {
+                $collPackingLists = ChildPackingListQuery::create(null, $criteria)
+                    ->filterByPartner($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collPackingListsPartial && count($collPackingLists)) {
+                        $this->initPackingLists(false);
+
+                        foreach ($collPackingLists as $obj) {
+                            if (false == $this->collPackingLists->contains($obj)) {
+                                $this->collPackingLists->append($obj);
+                            }
+                        }
+
+                        $this->collPackingListsPartial = true;
+                    }
+
+                    return $collPackingLists;
+                }
+
+                if ($partial && $this->collPackingLists) {
+                    foreach ($this->collPackingLists as $obj) {
+                        if ($obj->isNew()) {
+                            $collPackingLists[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collPackingLists = $collPackingLists;
+                $this->collPackingListsPartial = false;
+            }
+        }
+
+        return $this->collPackingLists;
+    }
+
+    /**
+     * Sets a collection of ChildPackingList objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $packingLists A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildPartner The current object (for fluent API support)
+     */
+    public function setPackingLists(Collection $packingLists, ConnectionInterface $con = null)
+    {
+        /** @var ChildPackingList[] $packingListsToDelete */
+        $packingListsToDelete = $this->getPackingLists(new Criteria(), $con)->diff($packingLists);
+
+
+        $this->packingListsScheduledForDeletion = $packingListsToDelete;
+
+        foreach ($packingListsToDelete as $packingListRemoved) {
+            $packingListRemoved->setPartner(null);
+        }
+
+        $this->collPackingLists = null;
+        foreach ($packingLists as $packingList) {
+            $this->addPackingList($packingList);
+        }
+
+        $this->collPackingLists = $packingLists;
+        $this->collPackingListsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related PackingList objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related PackingList objects.
+     * @throws PropelException
+     */
+    public function countPackingLists(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPackingListsPartial && !$this->isNew();
+        if (null === $this->collPackingLists || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collPackingLists) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getPackingLists());
+            }
+
+            $query = ChildPackingListQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByPartner($this)
+                ->count($con);
+        }
+
+        return count($this->collPackingLists);
+    }
+
+    /**
+     * Method called to associate a ChildPackingList object to this object
+     * through the ChildPackingList foreign key attribute.
+     *
+     * @param  ChildPackingList $l ChildPackingList
+     * @return $this|\Partner The current object (for fluent API support)
+     */
+    public function addPackingList(ChildPackingList $l)
+    {
+        if ($this->collPackingLists === null) {
+            $this->initPackingLists();
+            $this->collPackingListsPartial = true;
+        }
+
+        if (!$this->collPackingLists->contains($l)) {
+            $this->doAddPackingList($l);
+
+            if ($this->packingListsScheduledForDeletion and $this->packingListsScheduledForDeletion->contains($l)) {
+                $this->packingListsScheduledForDeletion->remove($this->packingListsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildPackingList $packingList The ChildPackingList object to add.
+     */
+    protected function doAddPackingList(ChildPackingList $packingList)
+    {
+        $this->collPackingLists[]= $packingList;
+        $packingList->setPartner($this);
+    }
+
+    /**
+     * @param  ChildPackingList $packingList The ChildPackingList object to remove.
+     * @return $this|ChildPartner The current object (for fluent API support)
+     */
+    public function removePackingList(ChildPackingList $packingList)
+    {
+        if ($this->getPackingLists()->contains($packingList)) {
+            $pos = $this->collPackingLists->search($packingList);
+            $this->collPackingLists->remove($pos);
+            if (null === $this->packingListsScheduledForDeletion) {
+                $this->packingListsScheduledForDeletion = clone $this->collPackingLists;
+                $this->packingListsScheduledForDeletion->clear();
+            }
+            $this->packingListsScheduledForDeletion[]= clone $packingList;
+            $packingList->setPartner(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -3280,12 +3564,18 @@ abstract class Partner implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collPackingLists) {
+                foreach ($this->collPackingLists as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         $this->collPartnersRelatedById = null;
         $this->collProductCustomers = null;
         $this->collUsers = null;
         $this->collProformaInvoices = null;
+        $this->collPackingLists = null;
         $this->aCompany = null;
     }
 
