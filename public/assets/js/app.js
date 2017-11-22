@@ -213,8 +213,7 @@ $('.form-select').select2()
 $('#btn-edit').click(function(e){
   e.preventDefault();
   $('input:checkbox').removeAttr('disabled')
-$('.input-wrap, #btn-save, #btn-canceledit, .embed-form').show()
-$('.btn-delete-row , .btn-edit-row').css('display','block')
+$('.input-wrap, #btn-save, #btn-canceledit, .embed-form, .btn-delete-row , .btn-edit-row').show()
 $('.img-layer, .control-value').hide()
 $(this).hide()
 })

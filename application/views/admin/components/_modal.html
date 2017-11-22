@@ -44,7 +44,7 @@
 						</div>
 						<div id="collapseTwo" class="panel-collapse collapse in">
 							<div class="box-body">
-								<table data-display="2" data-controller="manage_components" class="table table-striped " id="table_Component">
+								<table data-display="1" data-controller="manage_components" class="table table-striped " id="table_Component">
 									<thead>
 										<tr>
 											<th></th>
@@ -68,6 +68,7 @@
 	$('#form_Component_modal').submit(function(e){
 		e.preventDefault()
 		var comp_form = $(this);
+		comp_form.find('button').attr('disabled');
 		$.ajax({
 			url:comp_form.attr('action'),
 			data:comp_form.serialize(),
@@ -82,6 +83,8 @@
 				$('#'+shoInp).val(o.Name);
 				tb.DataTable().ajax.reload();
 				comp_form.parents('.modal').modal('hide')
+				comp_form.find('input').val('')
+				comp_form.find('button').removeAttr('disabled');
 			}
 		})
 	})

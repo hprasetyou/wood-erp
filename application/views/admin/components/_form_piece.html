@@ -1,38 +1,56 @@
 <div class="form-group">
   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.name}}</label>
   <div class="col-md-6 col-sm-6 col-xs-12">
-  <div {% if components %}style="display:none"{% endif %} class="input-wrap">
-    <input type="text" placeholder="{{ res.string.name }}" id="Name" value="{{ components.Name }}"
-    name="Name" required="required" class="form-control  col-md-7 col-xs-12">
-  </div>
-      {% if components %}
-        <p class="control-value">{{ components.Name  }}</p>
-      {% endif %}
+    <div {% if components %}style="display:none" {% endif %} class="input-wrap">
+      <input type="text" placeholder="{{ res.string.name }}" id="Name" value="{{ components.Name }}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
     </div>
+    {% if components %}
+    <p class="control-value">{{ components.Name }}</p>
+    {% endif %}
   </div>
+</div>
 
 <div class="form-group">
   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Description">{{res.string.description}}</label>
   <div class="col-md-6 col-sm-6 col-xs-12">
-  <div {% if components %}style="display:none"{% endif %} class="input-wrap">
-    <input type="text" placeholder="{{ res.string.description }}" id="Description" value="{{ components.Description }}"
-    name="Description"  class="form-control  col-md-7 col-xs-12">
-  </div>
-      {% if components %}
-        <p class="control-value">{{ components.Description  }}</p>
-      {% endif %}
+    <div {% if components %}style="display:none" {% endif %} class="input-wrap">
+      <input type="text" placeholder="{{ res.string.description }}" id="Description" value="{{ components.Description }}" name="Description" class="form-control  col-md-7 col-xs-12">
     </div>
+    {% if components %}
+    <p class="control-value">{{ components.Description }}</p>
+    {% endif %}
   </div>
+</div>
 
 <div class="form-group">
   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Material">{{res.string.material}}</label>
   <div class="col-md-6 col-sm-6 col-xs-12">
-  <div {% if components %}style="display:none"{% endif %} class="input-wrap">
-    <input type="text" placeholder="{{ res.string.material }}" id="Material" value="{{ components.Material }}"
-    name="Material"  class="form-control  col-md-7 col-xs-12">
-  </div>
-      {% if components %}
-        <p class="control-value">{{ components.Material  }}</p>
-      {% endif %}
+    <div {% if components %}style="display:none" {% endif %} class="input-wrap">
+      <select class="form-control form-select col-md-7 col-xs-12" placeholder="{{ res.string.material }}" id="Material" value="{{ components.Material }}" name="Material" name="">
+        <option value="">{{res.string.select}}</option>
+        <option>Acacia</option>
+        <option>Pulut</option>
+        <option>Recycled teak</option>
+        <option>Synthetic Rattan</option>
+        <option>Batyline</option>
+        <option>River stone</option>
+        <option>Albasia</option>
+        <option>Pine wood</option>
+        <option>Leather</option>
+        <option>SS</option>
+        <option>New Teak</option>
+        <option>fabric</option>
+        <option>bangkirai</option>
+        <option>suar</option>
+        <option>teak root</option>
+        <option>kubu</option>
+        <option>aluminium</option>
+        <option>driftwood</option>
+        <option>glass</option>
+      </select>
     </div>
+    {% if components %}
+    <p class="control-value">{{ components.Material }}</p>
+    {% endif %}
   </div>
+</div>
