@@ -48,9 +48,13 @@ jQuery.fn.loadTableData = function(
          }
 
        }else{
-         fl.push({
+         var fdt = {
            data:$(this).data('fieldname')
-         })
+         }
+         if($(this).data('disablesort')){
+           fdt.orderable = false
+         }
+         fl.push(fdt)
        }
 
      }
@@ -147,9 +151,13 @@ function init_modal_selection(){
     var fd= ['id']
      $('#'+target).find('th').each(function(){
        if($(this).data('fieldname')){
-         fl.push({
+         var fdt = {
            data:$(this).data('fieldname')
-         })
+         }
+         if($(this).data('disablesort')){
+           fdt.orderable = false
+         }
+         fl.push(fdt)
          fd.push($(this).data('fieldname'))
        }
      })
