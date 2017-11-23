@@ -165,8 +165,8 @@
         </td>
         <td data-fieldname="qty">{{line.Qty}}</td>
         <td data-fieldname="qty_on_container">{{ (line.Qty/line.QtyPerPack) | round }}</td>
-        <td data-fieldname="cubic_dimension">{{line.CubicDimension}}</td>
-        <td data-fieldname="total_cubic_dimension">{{line.TotalCubicDimension}}</td>
+        <td data-fieldname="cubic_dimension">{{line.CubicDimension | cubic}}</td>
+        <td data-fieldname="total_cubic_dimension">{{line.TotalCubicDimension | cubic}}</td>
         <td data-fieldname="price">{{line.Price}}</td>
         <td data-fieldname="total_price">{{ line.TotalPrice}}</td>
         <td>

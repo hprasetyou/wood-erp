@@ -171,6 +171,7 @@ $(document).ready(function(){
     $('#table_ProformaInvoiceLine').find('tbody tr').each(function(i){
       var stot = $(this).find("td").eq(8).text();
       var sctot = $(this).find("td").eq(6).text();
+      console.log(sctot);
       tot = tot + (stot>0?(stot*1):0)
       ctot = ctot +(sctot>0?(sctot*1):0)
     })
@@ -208,6 +209,8 @@ $('#LineId').val("")
         special += "<li>{{res.string.with_box}}</li>"
       }
       special += "</ul>"
+      console.log(data.CubicDimension/1000000);
+      var cd = parseFloat(data.CubicDimension/1000000).toFixed(3);
       var nr = [
         data.Name,
         data.Description,
@@ -215,8 +218,8 @@ $('#LineId').val("")
         special,
         data.Qty,
         Math.ceil(data.Qty/data.QtyPerPack),
-        data.CubicDimension,
-        data.CubicDimension*data.Qty,
+        cd + ' m3',
+        cd*data.Qty + ' m3',
         data.Price,
         data.Price*data.Qty,
         '<a href="#" data-index="'+ idx+'" '+

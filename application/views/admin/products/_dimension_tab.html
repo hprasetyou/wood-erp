@@ -57,7 +57,17 @@
       {% if products %}
       <div class="control-value">
         <label for="">
-          {{(products.IsRound?'':products.WidthAsb ~ ' W x ') ~ products.HeightAsb ~' H x ' ~ products.DepthAsb ~' D'}}
+          {% if products.IsRound == false %}
+          {{products.WidthAsb}} W x
+          {% endif %}
+          {{products.HeightAsb}} H
+           x
+          {{products.DepthAsb}}
+            {% if products.IsRound %}
+            <i class="fa fa-ban" aria-hidden="true"></i>
+            {%else%}
+            D
+            {%endif%}
         </label>
       </div>
       {% endif %}
@@ -132,7 +142,17 @@
       {% if products %}
       <div class="control-value">
         <label for="">
-          {{(products.IsRound?'':products.WidthKdn ~ ' W x ') ~ products.HeightKdn ~' H x ' ~ products.DepthKdn ~' D'}}
+          {% if products.IsRound == false %}
+          {{products.WidthKdn}} W x
+          {% endif %}
+          {{products.HeightKdn}} H
+           x
+          {{products.DepthKdn}}
+            {% if products.IsRound %}
+            <i class="fa fa-ban" aria-hidden="true"></i>
+            {%else%}
+            D
+            {%endif%}
         </label>
       </div>
       {% endif %}
