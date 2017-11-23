@@ -99,7 +99,7 @@ class Manage_products extends MY_Controller{
       'DepthKdn'=>'DepthKdn',
       'Note'=>'Note'
     );
-    $data = parent::write($id,$fields);
+    $data = parent::write($id);
 		$this->load->helper('base64toimage');
 		$prod_img = json_decode($this->input->post('imgProduct'));
     if($prod_img){

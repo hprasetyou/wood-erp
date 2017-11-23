@@ -209,10 +209,18 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
 	</div>
 	<!-- Modal -->
 	{% include "admin/customers/_modal.html" %}
-	{% include "admin/proformainvoices/_modal.html" %} {% endblock %} {% block bottom%}
+	{% include "admin/proformainvoices/_modal.html" %}
+	{% include "admin/packinglists/_modal_add_to_line.html" %} {% endblock %} {% block bottom%}
 <script type="text/javascript">
   var line_url = "/index.php/manage_proformainvoices/get_line_json/"
+  $('#table_PackingListLine').loadTableData({
+    search:false,
+    paging:false
+  })
 
+  $('.all_cb_pi').change(function(e){
+    $('.cb_pi').prop('checked',$(this).prop('checked'))
+  })
 	$('#CustomerId').change(function(e){
 		$('#btnProformaInvoiceId').data('domain',{customer_id: $(this).val()})
 	})
@@ -250,11 +258,57 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
       }
 
     })
-    console.log(mpi);
+    $('#tbPL').find('tbody').html('')
     for (var m in mpi) {
-      $('#formPL').html('')
-      $('#formPL').append('')
+      var frmpiline = "<tr>"+
+      "<td><input type=\"hidden\" name=\"PiLineId[]\" value=\""+mpi[m].id+"\"></td>"+
+      "<td>"+mpi[m].name+"</td>"+
+      "<td>"+mpi[m].desc+"</td>"+
+      "<td><input type=\"number\" min=\"1\" max=\""+mpi[m].qty+"\" class=\"PiLineQty form-control\" "+
+      "name=\"PiLineQty[]\" value=\""+mpi[m].qty+"\"></td></tr>"
+      $('#tbPL').find('tbody').append(frmpiline)
+    }
+    $('#modalAddPlLine').modal('show')
+  })
+  $('#tbPL').on('change keyup','.PiLineQty',function(){
+    if(($(this).val()*1) > ($(this).prop('max')*1)){
+      $(this).val($(this).prop('max'))
     }
   })
+  $("#formAddPlLine").submit(function(e){
+    e.preventDefault()
+    if($('#Id').val()){
+      console.log('pi exist');
+      save_pl_line($(this).val()).done(function(o){
+          $('#modalAddPlLine').modal('hide')
+
+        })
+    }else{
+      console.log('pi not exist');
+      $.ajax({
+        url:$('#form_PackingList').prop('action'),
+        data:$('#form_PackingList').serialize(),
+        dataType:'JSON',
+        method:'POST',
+        success:function(o){
+          var spl = save_pl_line(o.Id);
+          console.log(spl);
+          spl.done(function(){
+            console.log("HAHAHAHAHAHHAHAHAHAHHAHAHAHAHAHAHAHHAHA");
+            window.location.replace('/index.php/manage_packinglists/detail/'+o.Id)
+          });
+        }
+      })
+    }
+
+  })
+  function save_pl_line(pi){
+    return $.ajax({
+      url:$('#formAddPlLine').prop('action')+'?packing_list='+pi,
+      data:$('#formAddPlLine').serialize(),
+      dataType:'JSON',
+      method:'POST'
+    })
+  }
 </script>
 	 {% endblock %}

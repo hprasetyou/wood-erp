@@ -7,7 +7,21 @@ class Manage_packinglists extends MY_Controller{
     parent::__construct();
 		$this->objname = 'PackingList';
 		$this->tpl = 'packinglists';
-
+    $this->form = array(
+     'Name' => 'Name',
+     'Date' => 'Date',
+     'LoadingDate' => 'LoadingDate',
+     'CustomerId' => 'CustomerId',
+     'OceanVessel' => 'OceanVessel',
+     'SrcLoc' => 'SrcLoc',
+     'BlNo' => 'BlNo',
+     'GoodsDescription' => 'GoodsDescription',
+     'CntrNo' => 'CntrNo',
+     'SealNo' => 'SealNo',
+     'Pod' => 'Pod',
+     'EtdSrg' => 'EtdSrg',
+     'RefDoc' => 'RefDoc'
+    );
     $this->authorization->check_authorization('manage_packinglists');
   }
 
@@ -37,24 +51,12 @@ class Manage_packinglists extends MY_Controller{
   }
 
 	function write($id=null){
-		$this->form = array(
- 'Name' => 'Name',
- 'Date' => 'Date',
- 'LoadingDate' => 'LoadingDate',
- 'CustomerId' => 'CustomerId',
- 'OceanVessel' => 'OceanVessel',
- 'SrcLoc' => 'SrcLoc',
- 'BlNo' => 'BlNo',
- 'GoodsDescription' => 'GoodsDescription',
- 'CntrNo' => 'CntrNo',
- 'SealNo' => 'SealNo',
- 'Pod' => 'Pod',
- 'EtdSrg' => 'EtdSrg',
- 'RefDoc' => 'RefDoc',
- 'State' => 'State',
-);
 		$data = parent::write($id);
-		redirect('manage_packinglists/detail/'.$data->getId());
+    if($this->input->is_ajax_request()){
+        echo $data->toJSON();
+    }else{
+		    redirect('manage_packinglists/detail/'.$data->getId());
+    }
 	}
 
   function delete($id){

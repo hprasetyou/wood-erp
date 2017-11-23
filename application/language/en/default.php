@@ -15,6 +15,7 @@
 'bl_no' => 'Bl No',
 'calculated_discount' => 'Calculated Discount',
 'cancel' => 'Cancel',
+'close' => 'Close',
 'cntr_no' => 'Cntr No',
 'company_id' => 'Company Id',
 'component' => 'Component',

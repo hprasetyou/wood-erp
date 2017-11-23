@@ -11,7 +11,12 @@ class Manage_packinglistlines extends MY_Controller{
     $this->authorization->check_authorization('manage_packinglists');
   }
 
+  function get_json(){
+    $this->objobj = PackingListLineQuery::create()
+    ->filterByPackingListId($this->input->get('packing_list'));
+    parent::get_json();
 
+  }
   function create(){
 
 		$packing_lists = PackingListQuery::create()->find();
@@ -40,13 +45,26 @@ class Manage_packinglistlines extends MY_Controller{
   }
 
 	function write($id=null){
-		$this->form = array(
-     'PackingListId' => 'PackingListId',
-     'ProformaInvoiceLineId' => 'ProformaInvoiceLineId',
-     'Qty' => 'Qty',
-    );
-		$data = parent::write($id);
-		redirect('manage_packinglistlines/detail/'.$data->getId());
+
+		// $data = parent::write($id);
+    $qty = $this->input->post('PiLineQty') ;
+    foreach ($this->input->post('PiLineId') as $key => $value) {
+      # code...
+      $this->form = array(
+       'PackingListId' => array(
+         'value' =>  $this->input->get('packing_list')
+       ),
+       'ProformaInvoiceLineId' => array(
+         'value'=> $value
+       ),
+       'Qty' => array(
+         'value'=> $qty[$key]
+       ),
+      );
+      parent::write($id);
+    }
+    echo json_encode(array('status'=>'ok'));
+		// redirect('manage_packinglistlines/detail/'.$data->getId());
 	}
 
   function delete($id){
