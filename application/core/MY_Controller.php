@@ -63,7 +63,15 @@ class MY_Controller extends CI_Controller{
          $f = "get".$coll['Name'];
          switch ($coll['type']) {
            case 'rel':
-           $o['data'][$i][$key] = $obj->$f()?$obj->$f()->getName():'';
+           if($obj->$f()){
+             try {
+               $o['data'][$i][$key] = $obj->$f()->getName();
+             } catch (Exception $e) {
+               $o['data'][$i][$key] =  $obj->$f()->getDescription();
+             }
+           }else{
+             $o['data'][$i][$key] = "";
+           }
              break;
            case 'DATE':
            $o['data'][$i][$key] = $obj->$f()?date_format($obj->$f(),'d M Y'):'';

@@ -49,17 +49,17 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
 							</div>
 
 							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="CustomerId">{{res.string.customer_id}}</label>
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="CustomerId">{{res.string.customer}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
-									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap input-group">
+									<div {% if packinglists %}style="display:none" {% endif %} class="input-group">
 										<input type="hidden" type="text" id="CustomerId" value="{{ packinglists.CustomerId }}" name="CustomerId">
-										<input type="text" required="required" name="displayCustomerId" id="displayCustomerId" placeholder="{{ res.string.customer_id }}" value="{{ packinglists.Customer }}" class="form-control" />
+										<input type="text" required="required" name="displayCustomerId" id="displayCustomerId" placeholder="{{ res.string.customer_id }}" value="{{ packinglists.Partner.Name }}" class="form-control" />
 										<span class="input-group-btn">
-								<button class="btn btnModal btn-default" id="btnCustomerId"  data-target="ModalCustomer" type="button">{{res.string.search}}</button>
-							</span>
+      								<button class="btn btnModal btn-default" id="btnCustomerId"  data-target="ModalCustomer" type="button">{{res.string.search}}</button>
+      							</span>
 									</div>
 									{% if packinglists %}
-									<p class="control-value">{{ packinglists.Customer.Name }}</p>
+									<p class="value" >{{ packinglists.Partner.Name }}</p>
 									{% endif %}
 								</div>
 							</div>
@@ -214,10 +214,11 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
 <script type="text/javascript">
   var line_url = "/index.php/manage_proformainvoices/get_line_json/"
   $('#table_PackingListLine').loadTableData({
-    search:false,
-    paging:false
+    search:false
   })
-
+  $(document).ready(function(){
+$('#CustomerId').trigger('change')
+  })
   $('.all_cb_pi').change(function(e){
     $('.cb_pi').prop('checked',$(this).prop('checked'))
   })
@@ -279,9 +280,9 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
     e.preventDefault()
     if($('#Id').val()){
       console.log('pi exist');
-      save_pl_line($(this).val()).done(function(o){
+      save_pl_line($('#Id').val()).done(function(o){
           $('#modalAddPlLine').modal('hide')
-
+          $('#table_PackingListLine').DataTable().ajax.reload()
         })
     }else{
       console.log('pi not exist');

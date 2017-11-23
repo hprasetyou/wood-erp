@@ -15,13 +15,13 @@ class Schema
 
   }
 
-  private function find_table($tb_name){
+  private function find_table($tb_name,$ref='phpName'){
 		$f = fopen($this->file_path, "r");
 		$contents = fread($f, filesize($this->file_path));
 		$xml= new \SimpleXMLElement($contents);
 		$o = False;
 		foreach ($xml->table as $table) {
-			if($table->attributes()->phpName == $tb_name){
+			if($table->attributes()->$ref == $tb_name){
 				$o = $table;
 			}
 		}
@@ -45,13 +45,18 @@ class Schema
       $relname = $value->attributes()->foreignTable;
       if($value->attributes()->phpName){
         $relname = $value->attributes()->phpName;
-      }
+      }else{
+        $relmodel = $this->find_table($relname."",'name');
+        $relname = $relmodel->attributes()->phpName;
 
+      }
+      // echo $relmodel;
       $o[$value->reference[0]->attributes()->local.""] = array(
         'type'=>'rel',
-        'Name'=>ucfirst($relname."")
+        'Name'=> $relname
       );
     }
     return $o;
   }
+
 }
