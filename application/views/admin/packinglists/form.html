@@ -11,10 +11,12 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group">
+                <input type="hidden" name="Id" id="Id" value="{{ packinglists.Id }}">
+
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.name}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
 									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
-										<input type="text" placeholder="{{ res.string.name }}" id="Name" value="{{ packinglists.Name }}" name="Name" class="form-control  col-md-7 col-xs-12">
+										<input type="text" placeholder="{{ res.string.name }}" id="Name" value="{{ packinglists? packinglists.Name: code }}" name="Name" class="form-control  col-md-7 col-xs-12">
 									</div>
 									{% if packinglists %}
 									<p class="control-value">{{ packinglists.Name }}</p>

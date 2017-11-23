@@ -34,11 +34,13 @@ function create_number($setting = array('separator'=>'-','number_len'=>3)){
       case 'd':
         # code...
         $o .= date('d');
+        $whereclause .= "substring(`$tb_field`,($code_len+1),2)='".date('d')."' and ";
         $code_len += 2;
         break;
       case 'm':
         # code...
         $o .= date('m');
+        $whereclause .= "substring(`$tb_field`,($code_len+1),2)='".date('m')."' and ";
         $code_len += 2;
       break;
       case 'y':
