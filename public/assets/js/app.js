@@ -128,7 +128,8 @@ jQuery.fn.simpleValidation =  function(){
 function init_modal_selection(){
   console.log(base_url);
 
-  $('.btnModal').click(function(){
+  $('.btnModal').click(function(e){
+    e.preventDefault()
     var target = $(this).data('target')
     var bdm = $(this).data('domain')
 
@@ -177,7 +178,8 @@ function init_modal_selection(){
     $('#'+target).find('table').css('width','100%')
     $('#'+target).modal('show')
   })
-  $('.modal').on('click','.btn-select',function(){
+  $('.modal').on('click','.btn-select',function(e){
+    e.preventDefault()
       $('#'+$(this).parents('table').data('thide')).val($(this).data('id'))
       var ddis = $(this).parents('table').data('display')+"";
       var didx = ddis.split('-')

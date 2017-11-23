@@ -3,6 +3,7 @@
 'access' => 'Access',
 'add' => 'Add',
 'add_image' => 'Add Image',
+'add_to_pl'=>'Add to Packing List',
 'address' => 'Address',
 'article_number' => 'Article Number',
 'assembled' => 'Assembled',

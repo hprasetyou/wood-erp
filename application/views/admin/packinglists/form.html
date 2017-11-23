@@ -199,7 +199,6 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
                   <div class="tab-pane clearfix active" id="tab_1">
                     {% include "admin/packinglists/_packing_list_line_tab.html"%}
                   </div>
-
                 </div>
               </div>
             </div>
@@ -228,14 +227,34 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
     "ordering": false,
     "ajax": line_url,
     "columns":[
+      {"data":"Id",
+        "render":function(data){
+          return "<input type=\"checkbox\" data-id=\""+data+"\" class=\"cb_pi\" ></input>"
+        }
+      },
       {"data":"ProductCustomer.Name"},
       {"data":"Description"},
-      {"data":"Qty"},
-      {"data":"Id",
-      "render":function(data){
-        return "<a class=\"btn btn-default\" data-id\""+data+"\">{{res.string.add}}</a>"
+      {"data":"Qty"} ]
+  })
+  $('#btnAddPLLine').click(function(e){
+    e.preventDefault()
+    var mpi = []
+    $('#table_PILine').find('.cb_pi').each(function(i){
+      if($(this).prop('checked')){
+        mpi.push({
+          id:$(this).data('id'),
+          name:$(this).parents('tr').children('td:eq(1)').text(),
+          desc:$(this).parents('tr').children('td:eq(2)').text(),
+          qty:$(this).parents('tr').children('td:eq(3)').text()
+        })
       }
-      } ]
+
+    })
+    console.log(mpi);
+    for (var m in mpi) {
+      $('#formPL').html('')
+      $('#formPL').append('')
+    }
   })
 </script>
 	 {% endblock %}

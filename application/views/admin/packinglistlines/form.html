@@ -1,0 +1,83 @@
+
+{% extends "dashboard.html" %}
+{% set title=" Packing List Line " %}
+{% if packinglistlines %}
+	 {% set bc_text = packinglistlines.id  %}
+{% else %}
+	 {% set bc_text = 'Baru' %}
+{% endif %}
+{% set breadcrumbs = [
+	{'link': base_url~'index.php/manage_packinglistlines','text': res.string.packinglistline },
+	{'link':'#','text':bc_text  }]
+%}
+{% block content %}
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<form id="form_PackingListLine" method="post" action="{{base_url}}index.php/manage_packinglistlines/write/{{ packinglistlines.id }}" data-parsley-validate class="form-horizontal form-label-left">
+			<div class="box box-info">
+				<div class="box-header with-border">
+				{% include 'common/_form_header.html'
+				with {'back_url':'/index.php/manage_packinglistlines'~back_link,
+				'title': res.string.packinglistline,
+				'delete_url':'/index.php/manage_packinglistlines/delete/' ~ packinglistlines.Id,
+				'object':packinglistlines} %}
+				</div>
+				<div class="box-body">
+					
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="PackingListId">{{res.string.packing_list_id}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if packinglistlines %}style="display:none"{% endif %} class="input-wrap input-group">
+							<input type="hidden" type="text" id="PackingListId" value="{{ packinglistlines.PackingListId }}" name="PackingListId"  >
+							<input type="text" required="required" name="displayPackingListId" id="displayPackingListId"  placeholder="{{ res.string.packing_list_id }}" value="{{ packinglistlines.PackingList }}" class="form-control" />
+							<span class="input-group-btn">
+								<button class="btn btnModal btn-default" id="btnPackingListId"  data-target="ModalPackingList" type="button">{{res.string.search}}</button>
+							</span>
+						</div>
+								{% if packinglistlines %}
+									<p class="control-value">{{ packinglistlines.PackingList.Name  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProformaInvoiceLineId">{{res.string.proforma_invoice_line_id}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if packinglistlines %}style="display:none"{% endif %} class="input-wrap input-group">
+							<input type="hidden" type="text" id="ProformaInvoiceLineId" value="{{ packinglistlines.ProformaInvoiceLineId }}" name="ProformaInvoiceLineId"  >
+							<input type="text" required="required" name="displayProformaInvoiceLineId" id="displayProformaInvoiceLineId"  placeholder="{{ res.string.proforma_invoice_line_id }}" value="{{ packinglistlines.ProformaInvoiceLine }}" class="form-control" />
+							<span class="input-group-btn">
+								<button class="btn btnModal btn-default" id="btnProformaInvoiceLineId"  data-target="ModalProformaInvoiceLine" type="button">{{res.string.search}}</button>
+							</span>
+						</div>
+								{% if packinglistlines %}
+									<p class="control-value">{{ packinglistlines.ProformaInvoiceLine.id  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Qty">{{res.string.qty}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if packinglistlines %}style="display:none"{% endif %} class="input-wrap">
+							<input type="number" placeholder="{{ res.string.qty }}" id="Qty" value="{{ packinglistlines.Qty }}"
+							name="Qty"  class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if packinglistlines %}
+									<p class="control-value">{{ packinglistlines.Qty  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+				</div>
+		</form>
+	</div>
+</div>
+<!-- Modal -->
+{% include "admin/packing_lists/_modal.html" %}
+{% include "admin/proforma_invoice_lines/_modal.html" %}
+
+{% endblock %}
+{% block bottom%}
+
+{% endblock %}
