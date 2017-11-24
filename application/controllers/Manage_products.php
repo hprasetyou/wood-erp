@@ -16,7 +16,7 @@ class Manage_products extends MY_Controller{
     " _{HeightAsb}_ .'H x '.
      (_{IsRound}_?'': _{WidthAsb}_.'W x ').
      _{DepthAsb}_ .
-     (_{IsRound}_?' <i class=\"fa fa-ban\"></i>':'D') ");
+     (_{IsRound}_?' Ø':'D') ");
     $this->objobj = ProductQuery::create();
     $this->o2m_def = array(
       array(
