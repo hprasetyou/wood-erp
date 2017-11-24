@@ -22,6 +22,22 @@ class Manage_proformainvoices extends MY_Controller{
       $this->objobj = ProformaInvoiceQuery::create()
       ->filterByCustomerId($this->input->get('customer_id'));
     }
+    $this->custom_column = array(
+      'total_cbm' => "function() use(_{ProformaInvoiceLines}_){
+          \$o = 0;
+          foreach(_{ProformaInvoiceLines}_ as \$line){
+            \$o += \$line->getTotalCubicDimension();
+          }
+          return \$o;
+        }",
+      'total_price' => "function() use(_{ProformaInvoiceLines}_){
+            \$o = 0;
+            foreach(_{ProformaInvoiceLines}_ as \$line){
+              \$o += \$line->getTotalPrice();
+            }
+            return \$o;
+          }"
+    );
     parent::get_json();
   }
 
