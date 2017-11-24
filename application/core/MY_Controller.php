@@ -9,6 +9,7 @@ class MY_Controller extends CI_Controller{
   protected $o2m_def;
   protected $form;
   protected $custom_column;
+  protected $custom_code;
 
 
  function __construct()
@@ -29,7 +30,7 @@ class MY_Controller extends CI_Controller{
    if($this->objobj){
      $objs = $this->objobj;
    }
-   $maxPerPage = $this->input->get('length');
+   $maxPerPage = $this->input->get('length')>0?$this->input->get('length'):100;
    $colls = $this->schema->extract_fields($this->objname);
    $fields = json_decode($this->input->get('fields'));
    $except = array('image');
@@ -83,20 +84,22 @@ class MY_Controller extends CI_Controller{
              break;
          }
        }
+       eval($this->custom_code);
        foreach ($this->custom_column as $key => $value) {
          # code...
+         if($value)
          //extract all {variable} from input to array
-         $var_cols = extract_surround_text($value,'{','}');
+         $var_cols = extract_surround_text($value,'_{','}_');
          //create new variable and assign value by field
          foreach ($var_cols as $v) {
            $fsv = "get".$v;
            $$v = $obj->$fsv();
            # code...
          }
-         $value = str_replace('}','',$value);
-         $value = str_replace('{','$',$value);
+         $value = str_replace('}_','',$value);
+         $value = str_replace('_{','$',$value);
           eval("\$value = $value;");
-          $o['data'][$i][$key] =  $value;
+          $o['data'][$i][$key] =  is_callable($value)?$value():$value;
          //apply by replacing {variable} to $variable
 
 

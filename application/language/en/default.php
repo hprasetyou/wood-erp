@@ -1,9 +1,9 @@
-<?php
+<?php 
  return array(
 'access' => 'Access',
 'add' => 'Add',
 'add_image' => 'Add Image',
-'add_to_pl'=>'Add to Packing List',
+'add_to_pl' => 'Add to Packing List',
 'address' => 'Address',
 'article_number' => 'Article Number',
 'assembled' => 'Assembled',
@@ -53,6 +53,7 @@
 'image' => 'Image',
 'image_list' => 'Image List',
 'img_upload_error_msg' => 'Maximum filesize is 1mb',
+'in_cm' => 'In cm',
 'is_customer' => 'Is Customer',
 'is_employee' => 'Is Employee',
 'is_flegt' => 'Is Flegt Item',
@@ -61,7 +62,6 @@
 'is_sample' => 'Is a Sample',
 'is_supplier' => 'Is Supplier',
 'knockdown' => 'Knockdown',
-'in_cm' => 'In cm',
 'last_login' => 'Last Login',
 'list_price' => 'List Price',
 'loading_date' => 'Loading Date',
@@ -90,9 +90,12 @@
 'price' => 'Price',
 'product' => 'Product',
 'product_customer_id' => 'Product Customer Id',
+'product_finishing' => 'Product Finishing',
 'product_id' => 'Product Id',
 'proforma_invoice' => 'Proforma Invoice',
+'proforma_invoice_id' => 'Proforma Invoice Id',
 'proforma_invoice_line' => 'Proforma Invoice Line',
+'proforma_invoice_line_id' => 'Proforma Invoice Line Id',
 'qty' => 'Qty',
 'qty_on_container' => 'Qty On Container',
 'qty_per_pack' => 'Qty Per Pack',
@@ -119,5 +122,5 @@
 'width_kdn' => 'Width Knockdown',
 'with_box' => 'With Carton Box',
 'yes' => 'Yes',
-'proforma_invoice_line_id' => 'Proforma Invoice Line Id'
+'is_need_box' => 'Is Need Box'
 );

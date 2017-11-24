@@ -1,0 +1,54 @@
+
+{% extends "dashboard.html" %}
+{% set title=" Proforma Invoice Line " %}
+
+{% set breadcrumbs = [
+	{'link':'#','text':res.string.proformainvoiceline  }]
+%}
+{% block content %}
+	<div class="">
+		<div class="clearfix"></div>
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="box">
+					<div class="box-header">
+						<h3 class="box-title">{{res.string.proformainvoicelines}}</h3>
+						<a href="{{base_url}}index.php/manage_proformainvoicelines/create" class="btn btn-primary pull-right">{{res.string.new_data}}</a>
+						<div class="clearfix"></div>
+					</div>
+					<div class="box-body">
+						<p class="text-muted font-13 m-b-30"></p>
+							<table data-controller="manage_proformainvoicelines" class="table table-striped " id="table_ProformaInvoiceLine">
+		<thead>
+			<tr>
+				<th data-fieldname="proforma_invoice_id">{{res.string.proforma_invoice_id}}</th>
+				<th data-fieldname="product_customer_id">{{res.string.product_customer_id}}</th>
+				<th data-fieldname="product_finishing">{{res.string.product_finishing}}</th>
+				<th data-fieldname="description">{{res.string.description}}</th>
+				<th data-fieldname="qty">{{res.string.qty}}</th>
+				<th data-fieldname="qty_per_pack">{{res.string.qty_per_pack}}</th>
+				<th data-fieldname="cubic_dimension">{{res.string.cubic_dimension}}</th>
+				<th data-fieldname="total_cubic_dimension">{{res.string.total_cubic_dimension}}</th>
+				<th data-fieldname="price">{{res.string.price}}</th>
+				<th data-fieldname="total_price">{{res.string.total_price}}</th>
+				<th data-fieldname="is_sample">{{res.string.is_sample}}</th>
+				<th data-fieldname="is_need_box">{{res.string.is_need_box}}</th>
+				<th></th>
+			</tr>
+		</thead>
+</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+{% block bottom %}
+<script>
+
+$(document).ready(function(){
+    $('#table_ProformaInvoiceLine').loadTableData()
+  })
+</script>
+{% endblock %}

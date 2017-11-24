@@ -13,10 +13,10 @@ class Manage_products extends MY_Controller{
   }
   function get_json(){
     $this->custom_column = array('dimension'=>
-    " {HeightAsb} .'H x '.
-     ({IsRound}?'': {WidthAsb}.'W x ').
-     {DepthAsb} .
-     ({IsRound}?' <i class=\"fa fa-ban\"></i>':'D') ");
+    " _{HeightAsb}_ .'H x '.
+     (_{IsRound}_?'': _{WidthAsb}_.'W x ').
+     _{DepthAsb}_ .
+     (_{IsRound}_?' <i class=\"fa fa-ban\"></i>':'D') ");
     $this->objobj = ProductQuery::create();
     $this->o2m_def = array(
       array(

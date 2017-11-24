@@ -51,7 +51,7 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
 							<div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="CustomerId">{{res.string.customer}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
-									<div {% if packinglists %}style="display:none" {% endif %} class="input-group">
+									<div {% if packinglists %}style="display:none" {% endif %} class="input-group input-wrap">
 										<input type="hidden" type="text" id="CustomerId" value="{{ packinglists.CustomerId }}" name="CustomerId">
 										<input type="text" required="required" name="displayCustomerId" id="displayCustomerId" placeholder="{{ res.string.customer_id }}" value="{{ packinglists.Partner.Name }}" class="form-control" />
 										<span class="input-group-btn">
@@ -212,7 +212,7 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
 	{% include "admin/proformainvoices/_modal.html" %}
 	{% include "admin/packinglists/_modal_add_to_line.html" %} {% endblock %} {% block bottom%}
 <script type="text/javascript">
-  var line_url = "/index.php/manage_proformainvoices/get_line_json/"
+  var line_url = "/index.php/manage_proformainvoicelines/get_json/?check_qty_for_pl=1&proforma_invoice="
   $('#table_PackingListLine').loadTableData({
     search:false
   })
@@ -236,26 +236,29 @@ $('#CustomerId').trigger('change')
     "ordering": false,
     "ajax": line_url,
     "columns":[
-      {"data":"Id",
+      {"data":"id",
         "render":function(data){
           return "<input type=\"checkbox\" data-id=\""+data+"\" class=\"cb_pi\" ></input>"
         }
       },
-      {"data":"ProductCustomer.Name"},
-      {"data":"Description"},
-      {"data":"Qty"} ]
+      {"data":"product_customer_id"},
+      {"data":"description"},
+      {"data":"avail_qty"} ]
   })
   $('#btnAddPLLine').click(function(e){
     e.preventDefault()
     var mpi = []
     $('#table_PILine').find('.cb_pi').each(function(i){
       if($(this).prop('checked')){
-        mpi.push({
-          id:$(this).data('id'),
-          name:$(this).parents('tr').children('td:eq(1)').text(),
-          desc:$(this).parents('tr').children('td:eq(2)').text(),
-          qty:$(this).parents('tr').children('td:eq(3)').text()
-        })
+        if($(this).parents('tr').children('td:eq(3)').text()>0){
+          mpi.push({
+            id:$(this).data('id'),
+            name:$(this).parents('tr').children('td:eq(1)').text(),
+            desc:$(this).parents('tr').children('td:eq(2)').text(),
+            qty:$(this).parents('tr').children('td:eq(3)').text()
+          })
+        }
+
       }
 
     })
@@ -282,6 +285,9 @@ $('#CustomerId').trigger('change')
       console.log('pi exist');
       save_pl_line($('#Id').val()).done(function(o){
           $('#modalAddPlLine').modal('hide')
+          $('#ProformaInvoiceId').val('');
+          $('#ProformaInvoiceId').trigger('change');
+          $('#displayProformaInvoiceId').val('');
           $('#table_PackingListLine').DataTable().ajax.reload()
         })
     }else{
@@ -295,7 +301,6 @@ $('#CustomerId').trigger('change')
           var spl = save_pl_line(o.Id);
           console.log(spl);
           spl.done(function(){
-            console.log("HAHAHAHAHAHHAHAHAHAHHAHAHAHAHAHAHAHHAHA");
             window.location.replace('/index.php/manage_packinglists/detail/'+o.Id)
           });
         }

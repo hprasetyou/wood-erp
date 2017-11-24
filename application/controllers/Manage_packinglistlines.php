@@ -13,13 +13,12 @@ class Manage_packinglistlines extends MY_Controller{
 
   function get_json(){
     $this->custom_column = array(
-      'product_name'=>"{ProductCustomerName}",
-      'pi_name'=>"{ProformaInvoiceName}",
-      'cubic_dimension' => "{ProformaInvoiceLineCubicDimension}",
-      'total_cubic_dimension' => "{ProformaInvoiceLineTotalCubicDimension}",
-      'qty' => "{ProformaInvoiceLineQty}",
-      'pack' => "ceil({ProformaInvoiceLineQty}/{ProformaInvoiceLineQtyPerPack})",
-      'description' => "{ProformaInvoiceLineDescription}"
+      'product_name'=>"_{ProductCustomerName}_",
+      'pi_name'=>"_{ProformaInvoiceName}_",
+      'cubic_dimension' => "_{ProformaInvoiceLineCubicDimension}_",
+      'total_cubic_dimension' => "_{ProformaInvoiceLineTotalCubicDimension}_",
+      'pack' => "ceil(_{Qty}_/_{ProformaInvoiceLineQtyPerPack}_)",
+      'description' => "_{ProformaInvoiceLineDescription}_"
     );
     $this->objobj = PackingListLineQuery::create()
     ->join('ProformaInvoiceLine')
@@ -80,6 +79,15 @@ class Manage_packinglistlines extends MY_Controller{
          'value'=> $qty[$key]
        ),
       );
+      $plline = PackingListLineQuery::create()
+      ->filterByPackingListId($this->input->get('packing_list'))
+      ->filterByProformaInvoiceLineId($value)
+      ->findOne();
+      $id = null;
+      if($plline){
+        $this->form['Qty']['value'] = $qty[$key]+$plline->getQty();
+        $id = $plline->getId();
+      }
       parent::write($id);
     }
     echo json_encode(array('status'=>'ok'));
