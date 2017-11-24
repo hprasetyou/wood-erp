@@ -214,7 +214,8 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
 <script type="text/javascript">
   var line_url = "/index.php/manage_proformainvoicelines/get_json/?check_qty_for_pl=1&proforma_invoice="
   $('#table_PackingListLine').loadTableData({
-    search:false
+    search:false,
+    button:['edit','delete']
   })
   $(document).ready(function(){
 $('#CustomerId').trigger('change')

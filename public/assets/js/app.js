@@ -68,12 +68,19 @@ jQuery.fn.loadTableData = function(
 
      }
    })
-   var btns = "return "
+   var btns = ""
    for (var b in conf.button) {
      switch (conf.button[b]) {
        case 'show':
-          btns += "'<a data-id=\"'+data+'\" class=\"btn btn-sm btn-default pulloginl-right btn-select\" href=\""+base_url[0]+"index.php/"+c+"/detail/'+data+'\"><i class=\"fa fa-search\"></i> Detail</a>'"
+          btns += "<a data-id=\"'+data+'\" class=\"btn btn-sm btn-default pulloginl-right btn-select\" href=\""+base_url[0]+"index.php/"+c+"/detail/'+data+'\"><i class=\"fa fa-search\"></i> Detail</a>"
          break;
+       case 'edit':
+          btns += "<a data-id=\"'+data+'\" class=\"btn btn-sm btn-primary pulloginl-right btn-edit\" href=\"#\"><i class=\"fa fa-pencil\"></i> Edit</a>"
+         break;
+       case 'delete':
+          btns += "<a data-id=\"'+data+'\" class=\"btn btn-sm btn-danger pulloginl-right btn-delete\" href=\"#\"><i class=\"fa fa-trash\"></i> Delete</a>"
+         break;
+
        default:
 
      }
@@ -81,7 +88,7 @@ jQuery.fn.loadTableData = function(
    fl.push({
     "data":"id",
     "orderable": false,
-    "render":new Function("data", "type","row","meta", btns)
+    "render":new Function("data", "type","row","meta", "return  '"+btns+"'")
   })
   var params = '?fields='+JSON.stringify(fd)
   if(bdm){
