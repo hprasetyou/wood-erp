@@ -23,54 +23,43 @@
 				<div class="box-body">
 					<div class="col-sm-12">
 						<input type="hidden" name="CompanyId" value="{{res.query_params.company_id}}">
-            {% include 'common/_img_input.html' with { 'value':customers.Image,name:'Image' } %}
-
-						<div class="row">
-							<div class="col-sm-6">
-
-								<div class="form-group">
-									<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.name}}</label>
-									<div class="col-md-6 col-sm-6 col-xs-12">
-										<div {% if customers %}style="display:none" {% endif %} class="input-wrap">
-											<input type="text" id="Name" value="{{ customers.Name }}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
-										</div>
-										{% if customers %}
-										<p class="control-value">{{ customers.Name }}</p>
-										{% endif %}
-									</div>
-								</div>
-
-								<div class="form-group">
-									<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.address}}</label>
-									<div class="col-md-6 col-sm-6 col-xs-12">
-										<div {% if customers %}style="display:none" {% endif %} class="input-wrap">
-											<input type="text" id="Address" value="{{ customers.Address }}" name="Address" class="form-control  col-md-7 col-xs-12">
-										</div>
-										{% if customers %}
-										<p class="control-value">{{ customers.Address }}</p>
-										{% endif %}
-									</div>
-								</div>
-
-								<div class="form-group">
-									<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.phone}}</label>
-									<div class="col-md-6 col-sm-6 col-xs-12">
-										<div {% if customers %}style="display:none" {% endif %} class="input-wrap">
-											<input type="text" id="Phone" value="{{ customers.Phone }}" name="Phone" class="form-control  col-md-7 col-xs-12">
-										</div>
-										{% if customers %}
-										<p class="control-value">{{ customers.Phone }}</p>
-										{% endif %}
-									</div>
-								</div>
+            <div class="row">
+              {% include 'common/_img_input.html' with { 'value':customers.Image,name:'Image','withoutrow':true } %}
+              <div class="col-sm-10">
                 <div class="form-group">
-                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.website}}</label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
                     <div {% if customers %}style="display:none" {% endif %} class="input-wrap">
-                      <input type="text" id="Website" value="{{ customers.Website }}" name="Website" class="form-control  col-md-7 col-xs-12">
+                      <input type="text" id="Name" value="{{ customers.Name }}" placeholder="{{res.string.name}}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
                     </div>
                     {% if customers %}
-                    <p class="control-value">{{ customers.Website }}</p>
+                    <h3 class="control-value">{{ customers.Name }}</h3>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.phone}}</label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div {% if customers %}style="display:none" {% endif %} class="input-wrap">
+                      <input type="text" id="Phone" value="{{ customers.Phone }}" name="Phone" class="form-control  col-md-7 col-xs-12">
+                    </div>
+                    {% if customers %}
+                    <p class="control-value">{{ customers.Phone }}</p>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.fax}}</label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div {% if customers %}style="display:none" {% endif %} class="input-wrap">
+                      <input type="text" id="Fax" value="{{ customers.Fax }}" name="Fax" class="form-control  col-md-7 col-xs-12">
+                    </div>
+                    {% if customers %}
+                    <p class="control-value">{{ customers.Fax }}</p>
                     {% endif %}
                   </div>
                 </div>
@@ -85,47 +74,57 @@
                     {% endif %}
                   </div>
                 </div>
-							</div>
-							<div class="col-sm-6">
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.website}}</label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div {% if customers %}style="display:none" {% endif %} class="input-wrap">
+                      <input type="text" id="Website" name="Website"  value="{{ customers.Website }}"class="form-control  col-md-7 col-xs-12">
+                    </div>
+                    {% if customers %}
+                    <p class="control-value">{{ customers.Website }}</p>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
 
-								<div class="form-group">
-									<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.fax}}</label>
-									<div class="col-md-6 col-sm-6 col-xs-12">
-										<div {% if customers %}style="display:none" {% endif %} class="input-wrap">
-											<input type="text" id="Fax" value="{{ customers.Fax }}" name="Fax" class="form-control  col-md-7 col-xs-12">
-										</div>
-										{% if customers %}
-										<p class="control-value">{{ customers.Fax }}</p>
-										{% endif %}
-									</div>
-								</div>
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.address}}</label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div {% if customers %}style="display:none" {% endif %} class="input-wrap">
+                      <input type="text" id="Address" value="{{ customers.Address }}" name="Address" class="form-control  col-md-7 col-xs-12">
+                    </div>
+                    {% if customers %}
+                    <p class="control-value">{{ customers.Address }}</p>
+                    {% endif %}
+                  </div>
+                </div>
+
                 <div class="form-group">
                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.tax_number}}</label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
-                  <div {% if customers %}style="display:none"{% endif %} class="input-wrap">
-                    <input type="text" id="TaxNumber" value="{{ customers.TaxNumber }}"
-                    name="TaxNumber"  class="form-control  col-md-7 col-xs-12">
-                  </div>
-                      {% if customers %}
-                        <p class="control-value">{{ customers.TaxNumber  }}</p>
-                      {% endif %}
+                    <div {% if customers %}style="display:none" {% endif %} class="input-wrap">
+                      <input type="text" id="TaxNumber" value="{{ customers.TaxNumber }}" name="TaxNumber" class="form-control  col-md-7 col-xs-12">
                     </div>
+                    {% if customers %}
+                    <p class="control-value">{{ customers.TaxNumber }}</p>
+                    {% endif %}
                   </div>
+                </div>
 
                 <div class="form-group">
                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.bank_detail}}</label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
-                  <div {% if customers %}style="display:none"{% endif %} class="input-wrap">
-                    <input type="text" id="BankDetail" value="{{ customers.BankDetail }}"
-                    name="BankDetail"  class="form-control  col-md-7 col-xs-12">
-                  </div>
-                      {% if customers %}
-                        <p class="control-value">{{ customers.BankDetail  }}</p>
-                      {% endif %}
+                    <div {% if customers %}style="display:none" {% endif %} class="input-wrap">
+                      <input type="text" id="BankDetail" value="{{ customers.BankDetail }}" name="BankDetail" class="form-control  col-md-7 col-xs-12">
                     </div>
+                    {% if customers %}
+                    <p class="control-value">{{ customers.BankDetail }}</p>
+                    {% endif %}
                   </div>
-							</div>
-						</div>
+                </div>
+              </div>
+            </div>
 
 					</div>
 				</div>
@@ -150,9 +149,7 @@
 						<thead>
 							<tr>
 								<th data-fieldname="name">{{res.string.name}}</th>
-								<th data-fieldname="address">{{res.string.address}}</th>
 								<th data-fieldname="phone">{{res.string.phone}}</th>
-								<th data-fieldname="website">{{res.string.website}}</th>
 								<th data-fieldname="email">{{res.string.email}}</th>
 								<th></th>
 							</tr>
