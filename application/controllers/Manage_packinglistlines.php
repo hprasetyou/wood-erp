@@ -12,7 +12,26 @@ class Manage_packinglistlines extends MY_Controller{
   }
 
   function get_json(){
+    $this->custom_column = array(
+      'product_name'=>"{ProductCustomerName}",
+      'pi_name'=>"{ProformaInvoiceName}",
+      'cubic_dimension' => "{ProformaInvoiceLineCubicDimension}",
+      'total_cubic_dimension' => "{ProformaInvoiceLineTotalCubicDimension}",
+      'qty' => "{ProformaInvoiceLineQty}",
+      'pack' => "ceil({ProformaInvoiceLineQty}/{ProformaInvoiceLineQtyPerPack})",
+      'description' => "{ProformaInvoiceLineDescription}"
+    );
     $this->objobj = PackingListLineQuery::create()
+    ->join('ProformaInvoiceLine')
+    ->join('ProformaInvoiceLine.ProductCustomer')
+    ->join('ProformaInvoiceLine.ProformaInvoice')
+    ->withColumn('ProductCustomer.Name')
+    ->withColumn('ProformaInvoice.Name')
+    ->withColumn('ProformaInvoiceLine.CubicDimension')
+    ->withColumn('ProformaInvoiceLine.TotalCubicDimension')
+    ->withColumn('ProformaInvoiceLine.Qty')
+    ->withColumn('ProformaInvoiceLine.QtyPerPack')
+    ->withColumn('ProformaInvoiceLine.Description')
     ->filterByPackingListId($this->input->get('packing_list'));
     parent::get_json();
 

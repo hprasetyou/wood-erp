@@ -21,6 +21,9 @@ jQuery.fn.loadTableData = function(
     if(!conf.hasOwnProperty('backendfunc')){
       conf.backendfunc = 'get_json';
     }
+    if(!conf.hasOwnProperty('ordering')){
+      conf.ordering = true;
+    }
     var fs = conf.backendfunc
   var tt = $(this)
   var c = tt.data('controller')
@@ -34,19 +37,25 @@ jQuery.fn.loadTableData = function(
          var ft = $(this).data('fieldtype')
          switch (ft) {
            case 'image':
-             fl.push({
-              "data":$(this).data('fieldname'),
-              "orderable": false,
-              "render":new Function("data", "type","row","meta",
+             render_data = new Function("data", "type","row","meta",
               "return '<img src=\"'+data.replace('original','120x120')+'\" "+
               "class=\"img img-row\" />'")
-            })
+
              break;
+          case 'cbm':
+          render_data = new Function("data", "type","row","meta",
+           "return parseFloat(data/1000000).toFixed(3);")
+
+            break;
            default:
               break;
 
          }
-
+         fl.push({
+          "data":$(this).data('fieldname'),
+          "orderable": false,
+          "render":render_data
+        })
        }else{
          var fdt = {
            data:$(this).data('fieldname')
@@ -92,7 +101,7 @@ jQuery.fn.loadTableData = function(
     "searching": conf.search,
     "paging": conf.paging,
     "searchDelay": 1000,
-    "ordering": true,
+    "ordering": conf.ordering,
   }
   if(conf.order){
     dtconf.order = [[conf.order.col, conf.order.order]]

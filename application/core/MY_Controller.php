@@ -44,10 +44,12 @@ class MY_Controller extends CI_Controller{
      }
      $objs->where($cond,'or');
    }
+   try {
+     $orderbycol = "orderBy".$fields[$this->input->get('order[0][column]')];
+     $objs->$orderbycol($this->input->get('order[0][dir]'));
+   } catch (Exception $e) {
 
-   $orderbycol = "orderBy".$fields[$this->input->get('order[0][column]')];
-   $objs->$orderbycol($this->input->get('order[0][dir]'));
-
+   }
 
    $offset = ($this->input->get('start')?$this->input->get('start'):0);
    $objs = $objs->paginate(($offset/10)+1, $maxPerPage);
@@ -67,7 +69,7 @@ class MY_Controller extends CI_Controller{
              try {
                $o['data'][$i][$key] = $obj->$f()->getName();
              } catch (Exception $e) {
-               $o['data'][$i][$key] =  $obj->$f()->getDescription();
+               $o['data'][$i][$key] =  $obj->$f()->getId();
              }
            }else{
              $o['data'][$i][$key] = "";
