@@ -141,13 +141,13 @@
       <th >{{res.string.article_number}}</th>
       <th >{{res.string.description}}</th>
       <th >{{ res.string.finishing}}</th>
-      <th ></th>
       <th >{{res.string.qty}}</th>
-      <th >CTN</th>
-      <th >{{res.string.cubic_dimension}}</th>
-      <th >{{res.string.total_cubic_dimension}}</th>
+      <th >{{res.string.qty_per_pack}}</th>
+      <th >{{res.string.cubic}}</th>
+      <th >{{res.string.total_cubic}}</th>
       <th >{{res.string.price}}</th>
       <th >{{res.string.total_price}}</th>
+      <th ></th>
       <th></th>
     </tr>
   </thead>
@@ -157,18 +157,18 @@
         <td data-fieldname="name">{{line.ProductCustomer.Name}}</td>
         <td data-fieldname="name">{{line.Description}}</td>
         <td data-fieldname="name">{{line.ProductFinishing}}</td>
-        <td data-fieldname="total_price"><ul>
-          {% if line.IsSample %}<li>{{res.string.sample_product}}</li> {% endif %}
-          {% if line.IsNeedBox %} <li>{{res.string.with_box}}</li> {% endif %}
-        </ul>
-
-        </td>
         <td data-fieldname="qty">{{line.Qty}}</td>
         <td data-fieldname="qty_on_container">{{ (line.Qty/line.QtyPerPack) | round }}</td>
         <td data-fieldname="cubic_dimension">{{line.CubicDimension | cubic}}</td>
         <td data-fieldname="total_cubic_dimension">{{line.TotalCubicDimension | cubic}}</td>
         <td data-fieldname="price">{{line.Price}}</td>
         <td data-fieldname="total_price">{{ line.TotalPrice}}</td>
+        <td data-fieldname="total_price"><ul>
+          {% if line.IsSample %}<li>{{res.string.sample_product}}</li> {% endif %}
+          {% if line.IsNeedBox %} <li>{{res.string.with_box}}</li> {% endif %}
+        </ul>
+
+        </td>
         <td>
           <a style="display:none" href="#" data-id="{{line.Id}}" class="btn btn-default btn-edit-row"><i class="fa fa-pencil"></i></a>
           <a style="display:none" href="#" data-id="{{line.Id}}" class="btn btn-danger btn-delete-row"><i class="fa fa-trash"></i></a>
@@ -178,7 +178,7 @@
   </tbody>
   <tfoot>
     <tr>
-      <td colspan="7">Total</td>
+      <td colspan="6">Total</td>
       <td><span id="TotalCd"></span></td>
       <td></td>
       <td colspan="2"><span id="TotalCol"></span></td>

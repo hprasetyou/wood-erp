@@ -110,7 +110,7 @@
 'status' => 'Status',
 'supplier' => 'Supplier',
 'tax_number' => 'Tax Number',
-'total_cbm' => 'Total Cubic',
+'total_cubic' => 'Total Cubic',
 'total_cubic_dimension' => 'Total Cubic Dimension',
 'total_price' => 'Total Price',
 'upload' => 'Upload',
