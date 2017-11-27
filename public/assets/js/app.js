@@ -75,10 +75,10 @@ jQuery.fn.loadTableData = function(
           btns += "<a data-id=\"'+data+'\" class=\"btn btn-sm btn-default pulloginl-right btn-select\" href=\""+base_url[0]+"index.php/"+c+"/detail/'+data+'\"><i class=\"fa fa-search\"></i> Detail</a>"
          break;
        case 'edit':
-          btns += "<a data-id=\"'+data+'\" class=\"btn btn-sm btn-primary pulloginl-right btn-edit\" href=\"#\"><i class=\"fa fa-pencil\"></i> Edit</a>"
+          btns += "<a data-id=\"'+data+'\" class=\"btn btn-row-action btn-sm btn-primary pulloginl-right btn-edit\" href=\"#\"><i class=\"fa fa-pencil\"></i> Edit</a>"
          break;
        case 'delete':
-          btns += "<a data-id=\"'+data+'\" class=\"btn btn-sm btn-danger pulloginl-right btn-delete\" href=\"#\"><i class=\"fa fa-trash\"></i> Delete</a>"
+          btns += "<a data-id=\"'+data+'\" class=\"btn btn-sm btn-row-action btn-danger pulloginl-right btn-delete\" href=\"#\"><i class=\"fa fa-trash\"></i> Delete</a>"
          break;
 
        default:
@@ -244,7 +244,7 @@ $('.form-select').select2()
 $('#btn-edit').click(function(e){
   e.preventDefault();
   $('input:checkbox').removeAttr('disabled')
-$('.input-wrap, #btn-save, #btn-canceledit, .embed-form, .btn-delete-row , .btn-edit-row').show()
+$('.input-wrap, #btn-save, #btn-canceledit, .embed-form, .btn-delete-row , .btn-row-action, .btn-edit-row').show()
 $('.img-layer, .control-value').hide()
 $(this).hide()
 })
@@ -252,7 +252,7 @@ $('#btn-canceledit').click(function(e){
   e.preventDefault();
 $('input:checkbox').attr('disabled','disabled')
 $('#btn-edit, .img-layer, .control-value').show()
-$('#btn-save, .input-wrap, .embed-form, .btn-delete-row, .btn-edit-row').hide()
+$('#btn-save, .input-wrap, .embed-form, .btn-delete-row, .btn-row-action, .btn-edit-row').hide()
 $(this).hide()
 })
 $(function() {

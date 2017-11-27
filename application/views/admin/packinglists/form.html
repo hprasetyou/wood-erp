@@ -267,7 +267,10 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
       },
       {"data":"product_customer_id"},
       {"data":"description"},
-      {"data":"avail_qty"} ]
+      {"data":"avail_qty"} ],
+    "initComplete" : function(settings, json) {
+        $('#table_PILine').css('width','100%')
+      }
   })
   $('#btnAddPLLine').click(function(e){
     e.preventDefault()
