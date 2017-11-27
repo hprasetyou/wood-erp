@@ -214,15 +214,15 @@ $('#LineId').val("")
       var cd = parseFloat(data.CubicDimension/1000000).toFixed(3);
       var nr = [
         data.Name,
+        data.Description,
         data.Finishing,
-        special,
         data.Qty,
         Math.ceil(data.Qty/data.QtyPerPack),
         cd + ' m3',
         cd*data.Qty + ' m3',
         data.Price,
         data.Price*data.Qty,
-        data.Description,
+        special,
         '<a href="#" data-index="'+ idx+'" '+
         'class="btn btn-default btn-edit-row">'+
         '<i class="fa fa-pencil"></i></a>'+

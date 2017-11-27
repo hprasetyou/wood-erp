@@ -100,6 +100,7 @@
 'qty' => 'Qty',
 'qty_on_container' => 'Qty On Container',
 'qty_per_pack' => 'Qty Per Pack',
+'qty_of_pack' => 'Qty Of Pack',
 'ref_doc' => 'Ref Doc',
 'sample_product' => 'Sample Product',
 'save' => 'Save',
