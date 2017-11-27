@@ -51,7 +51,7 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
 							<div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="CustomerId">{{res.string.customer}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
-									<div {% if packinglists %}style="display:none" {% endif %} class="input-group input-wrap">
+									<div {% if packinglists %}style="display:none" {% else %} class="input-group input-wrap" {% endif %}>
 										<input type="hidden" type="text" id="CustomerId" value="{{ packinglists.CustomerId }}" name="CustomerId">
 										<input type="text" required="required" name="displayCustomerId" id="displayCustomerId" placeholder="{{ res.string.customer_id }}" value="{{ packinglists.Partner.Name }}" class="form-control" />
 										<span class="input-group-btn">
@@ -233,6 +233,9 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
     })
     $('#table_PackingListLine').on('click','.btn-edit',function(e){
       e.preventDefault()
+      var qtyprnt = $('#elineQty').parent()
+      qtyprnt.find('.help-block').text('')
+      qtyprnt.removeClass('has-error')
       $('#modalEditLineQty').modal('show')
       $('#artno').text($(this).parents('tr').children('td:eq(0)').text())
       $('#proddesc').text($(this).parents('tr').children('td:eq(2)').text())
@@ -312,7 +315,6 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
           $('#table_PackingListLine').DataTable().ajax.reload()
         })
     }else{
-      console.log('pi not exist');
       $.ajax({
         url:$('#form_PackingList').prop('action'),
         data:$('#form_PackingList').serialize(),
@@ -329,6 +331,26 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
     }
 
   })
+
+  $('#frmEditLineQty').submit(function(e){
+    e.preventDefault()
+    $.ajax({
+      url: $(this).prop('action')+$('#elineId').val(),
+      method: 'POST',
+      dataType: 'JSON',
+      data:'Qty='+ $('#elineQty').val()
+    }).done(function(o){
+        if(o.status == 'ok'){
+          $('#modalEditLineQty').modal('hide')
+          $('#table_PackingListLine').DataTable().ajax.reload()
+        }else if(o.status == 'error'){
+          var qtyprnt = $('#elineQty').parent()
+          qtyprnt.find('.help-block').text(o.message)
+          qtyprnt.addClass('has-error')
+        }
+    })
+  })
+
   function save_pl_line(pi){
     return $.ajax({
       url:$('#formAddPlLine').prop('action')+'?packing_list='+pi,

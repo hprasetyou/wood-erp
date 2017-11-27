@@ -63,31 +63,58 @@ class Manage_packinglistlines extends MY_Controller{
 
 	function write($id=null){
 
-		// $data = parent::write($id);
-    $qty = $this->input->post('PiLineQty') ;
-    foreach ($this->input->post('PiLineId') as $key => $value) {
-      # code...
-      $this->form = array(
-       'PackingListId' => array(
-         'value' =>  $this->input->get('packing_list')
-       ),
-       'ProformaInvoiceLineId' => array(
-         'value'=> $value
-       ),
-       'Qty' => array(
-         'value'=> $qty[$key]
-       ),
-      );
+		// edit individual
+    if($id){
       $plline = PackingListLineQuery::create()
-      ->filterByPackingListId($this->input->get('packing_list'))
-      ->filterByProformaInvoiceLineId($value)
-      ->findOne();
-      $id = null;
-      if($plline){
-        $this->form['Qty']['value'] = $qty[$key]+$plline->getQty();
-        $id = $plline->getId();
+      ->findPK($id);
+      $poline = $plline->getProformaInvoiceLine();
+      $av = $poline->getQty();
+      foreach ($poline->getPackingListLines() as $sibling) {
+        if($sibling->getId() != $id){
+          $av = $av - $sibling->getQty();
+        }
       }
+      write_log("============ Av =============");
+      write_log($av);
+      write_log("============ Input Qty =============");
+      write_log($this->input->post('Qty'));
+      if($this->input->post('Qty') > $av){
+        write_log("more than qty; $av");
+        die(json_encode(array('status'=>'error','message'=>string('pl_qty_error','activity_message'))));
+      }
+
+      $this->form = array(
+       'Qty' => 'Qty'
+      );
       parent::write($id);
+    }
+    else{
+      //bulk insert
+      $qty = $this->input->post('PiLineQty') ;
+      foreach ($this->input->post('PiLineId') as $key => $value) {
+        # code...
+        $this->form = array(
+         'PackingListId' => array(
+           'value' =>  $this->input->get('packing_list')
+         ),
+         'ProformaInvoiceLineId' => array(
+           'value'=> $value
+         ),
+         'Qty' => array(
+           'value'=> $qty[$key]
+         ),
+        );
+        $plline = PackingListLineQuery::create()
+        ->filterByPackingListId($this->input->get('packing_list'))
+        ->filterByProformaInvoiceLineId($value)
+        ->findOne();
+        $id = null;
+        if($plline){
+          $this->form['Qty']['value'] = $qty[$key]+$plline->getQty();
+          $id = $plline->getId();
+        }
+        parent::write($id);
+      }
     }
     echo json_encode(array('status'=>'ok'));
 		// redirect('manage_packinglistlines/detail/'.$data->getId());

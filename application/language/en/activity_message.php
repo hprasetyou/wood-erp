@@ -8,4 +8,5 @@ return array(
   'activity_create_alt'=>'Successfully create data',
   'activity_delete_alt'=>'Successfully delete data',
   'activity_delete_failed_alt'=>'Failed to delete data, data may used in other document',
+  'pl_qty_error' => 'The Quantity of Packing list should not be greater than reference quantity'
 );
