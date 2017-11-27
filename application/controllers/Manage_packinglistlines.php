@@ -16,7 +16,7 @@ class Manage_packinglistlines extends MY_Controller{
       'product_name'=>"_{ProductCustomerName}_",
       'pi_name'=>"_{ProformaInvoiceName}_",
       'cubic_dimension' => "_{ProformaInvoiceLineCubicDimension}_",
-      'total_cubic_dimension' => "_{ProformaInvoiceLineTotalCubicDimension}_",
+      'total_cubic_dimension' => "_{ProformaInvoiceLineCubicDimension}_ * _{Qty}_",
       'pack' => "ceil(_{Qty}_/_{ProformaInvoiceLineQtyPerPack}_)",
       'description' => "_{ProformaInvoiceLineDescription}_"
     );
@@ -74,10 +74,6 @@ class Manage_packinglistlines extends MY_Controller{
           $av = $av - $sibling->getQty();
         }
       }
-      write_log("============ Av =============");
-      write_log($av);
-      write_log("============ Input Qty =============");
-      write_log($this->input->post('Qty'));
       if($this->input->post('Qty') > $av){
         write_log("more than qty; $av");
         die(json_encode(array('status'=>'error','message'=>string('pl_qty_error','activity_message'))));

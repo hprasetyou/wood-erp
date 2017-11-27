@@ -36,8 +36,20 @@ class Manage_packinglists extends MY_Controller{
         array('format'=>'PL-i-y-m',
         'tb_name'=>'packing_list',
         'tb_field'=>'name'))
-
 			));
+  }
+
+  function get_json(){
+    $this->custom_column = array(
+      'total_cubic_dimension' =>"function() use(_{PackingListLines}_){
+        \$tot = 0;
+          foreach(_{PackingListLines}_ as \$line){
+            \$tot += \$line->getProformaInvoiceLine()->getCubicDimension()*\$line->getQty();
+          }
+          return \$tot;
+        }"
+    );
+    parent::get_json();
   }
 
   function detail($id){
