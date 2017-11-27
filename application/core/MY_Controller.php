@@ -38,9 +38,11 @@ class MY_Controller extends CI_Controller{
    if($this->input->get('search[value]')){
      foreach ($fields as $key => $value) {
        if(!in_array($value,$except)){
-         $cond[] = $value;
-         $obj = $this->objname;
-         $objs->condition($value ,"$obj.$value LIKE ?", "%".$this->input->get('search[value]')."%");
+         if(isset($colls[$value])){
+           $cond[] = $value;
+           $obj = $this->objname;
+           $objs->condition($value ,"$obj.$value LIKE ?", "%".$this->input->get('search[value]')."%");
+         }
        }
      }
      $objs->where($cond,'or');
