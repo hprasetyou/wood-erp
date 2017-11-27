@@ -49,17 +49,16 @@ class Manage_packinglistlines extends MY_Controller{
   }
 
   function detail($id){
-
-		$packing_lists = PackingListQuery::create()->find();
-
-		$proforma_invoice_lines = ProformaInvoiceLineQuery::create()->find();
-
 		$packinglistline = PackingListLineQuery::create()->findPK($id);
-		$this->template->render('admin/packinglistlines/form',array('packinglistlines'=>$packinglistline,
-		'packing_lists'=> $packing_lists,
+    $av = 0-($packinglistline->getQty());
+    foreach ($packinglistline->getProformaInvoiceLine()->getPackingListLines() as $key => $value) {
+      # code...
+      $av += $value->getQty();
+    }
+    $av = $packinglistline->getProformaInvoiceLine()->getQty() - $av;
+    $packinglistline->withColumn($av,'avail_qty');
+    echo $packinglistline->toJSON();
 
-		'proforma_invoice_lines'=> $proforma_invoice_lines,
-			));
   }
 
 	function write($id=null){
@@ -96,7 +95,7 @@ class Manage_packinglistlines extends MY_Controller{
 
   function delete($id){
 		$data = parent::delete($id);
-		redirect('manage_packinglistlines');
+		echo json_encode(array('status'=>'ok'));
   }
 
 }

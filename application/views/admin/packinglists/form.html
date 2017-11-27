@@ -210,7 +210,8 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
 	<!-- Modal -->
 	{% include "admin/customers/_modal.html" %}
 	{% include "admin/proformainvoices/_modal.html" %}
-	{% include "admin/packinglists/_modal_add_to_line.html" %} {% endblock %} {% block bottom%}
+	{% include "admin/packinglists/_modal_add_to_line.html" %}
+	{% include "admin/packinglists/_modal_edit_line_qty.html" %} {% endblock %} {% block bottom%}
 <script type="text/javascript">
   var line_url = "/index.php/manage_proformainvoicelines/get_json/?check_qty_for_pl=1&proforma_invoice="
   $('#table_PackingListLine').loadTableData({
@@ -218,7 +219,26 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
     button:['edit','delete']
   })
   $(document).ready(function(){
-$('#CustomerId').trigger('change')
+    $('#CustomerId').trigger('change')
+    $('#table_PackingListLine').on('click','.btn-delete',function(e){
+      e.preventDefault()
+      $.ajax({
+        url:"{{base_url}}index.php/manage_packinglistlines/delete/"+$(this).data('id'),
+        method:"POST",
+        data:"&confirm=1",
+        dataType:"JSON"
+      }).done(function(o){
+          $('#table_PackingListLine').DataTable().ajax.reload()
+      })
+    })
+    $('#table_PackingListLine').on('click','.btn-edit',function(e){
+      e.preventDefault()
+      $('#modalEditLineQty').modal('show')
+      $('#artno').text($(this).parents('tr').children('td:eq(0)').text())
+      $('#proddesc').text($(this).parents('tr').children('td:eq(2)').text())
+      $('#elineId').val($(this).parents('tr').children('td:eq(7)').find('a').data('id'))
+      $('#elineQty').val($(this).parents('tr').children('td:eq(3)').text())
+    })
   })
   $('.all_cb_pi').change(function(e){
     $('.cb_pi').prop('checked',$(this).prop('checked'))
