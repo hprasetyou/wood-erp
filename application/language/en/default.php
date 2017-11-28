@@ -69,6 +69,7 @@
 'login' => 'Login',
 'login_msg' => 'Please Login',
 'logout' => 'Log out',
+'max1mb' => 'Max filesize is 1mb',
 'material' => 'Material',
 'member' => 'Member',
 'menu' => 'Menu',

@@ -7,8 +7,11 @@
       </div>
       <div class="modal-body">
           <input type="hidden" name="image-data" id="image-data" value="">
-          <label for="input-avatar">*max size 1mb</label>
-          <input type="file" name="avatar" id="input-avatar" class="form-control">
+          <div class="form-group">
+            <label for="input-avatar">*max size 1mb</label>
+            <input type="file" name="avatar" id="input-avatar" class="form-control">
+            <span id="helpBlock" style="display:none" class="help-block">{{res.string.max1mb}}</span>
+          </div>
       </div>
 			<div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">{{res.string.ok}}</button>
@@ -35,11 +38,8 @@ $('#input-avatar').change(function(){
 		}
 	}else{
 		$(this).val(null)
-			$('.modal-close').show()
-			$('#myModalLabel').text('{{ res.string.error }}')
-			$('#modal-message').text('{{ res.string.img_upload_error_msg }}')
-			$('#btnOk').hide()
-			$('#myModal').modal('show')
+    $(this).parents('.form-group').addClass('has-error')
+		$(this).siblings('#helpBlock').show()
 		}
 })
 </script>
