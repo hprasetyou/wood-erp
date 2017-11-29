@@ -22,6 +22,8 @@ res.string.purchaseorder }, {'link':'#','text':bc_text }] %} {% block content %}
 								</div>
 							</div>
 
+              <input type="hidden" name="Id" id="Id" value="{{ purchaseorders.Id }}">
+
 							<div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProformaInvoiceId">{{res.string.proforma_invoice_id}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
@@ -173,34 +175,35 @@ res.string.purchaseorder }, {'link':'#','text':bc_text }] %} {% block content %}
 	 {% include "admin/suppliers/_modal.html" %} {% endblock %}
 	{% block bottom%}
 	<script type="text/javascript">
+  var table_ProformaInvoiceLine = $('#table_ProformaInvoiceLine').DataTable({
+    "processing": true,
+    "serverSide":true,
+    "searching": false,
+    "paging": false,
+    "ordering": false,
+    "ajax": "/index.php/manage_proformainvoicelines/get_pi_component/"+$('#ProformaInvoiceId').val(),
+    "columns":[
+      {"data":"id",
+        "render":function(data){
+          return "<input type=\"checkbox\" data-id=\""+data+"\" class=\"cb_pi\" ></input>"
+        }
+      },
+      {"data":"article_number"},
+      {"data":"description"},
+      {"data":"has_component"},
+      {"data":"total_qty"} ],
+    "initComplete" : function(settings, json) {
+        $('#table_ProformaInvoiceLine').css('width','100%')
+        $('#table_ProformaInvoiceLine_info').hide()
+      }
+  })
 		$('#ProformaInvoiceId').change(function(e){
+      table_ProformaInvoiceLine.ajax.url('/index.php/manage_proformainvoicelines/get_pi_component/'+$(this).val()).load()
 			$.ajax({
 				url:"/index.php/manage_purchaseorders/get_number/"+$(this).siblings().val()
 			}).done(function(o){
 				$('#Name').val(o);
 			})
-      $('#table_ProformaInvoiceLine').DataTable({
-        "processing": true,
-        "serverSide":true,
-        "searching": false,
-        "paging": false,
-        "ordering": false,
-        "ajax": "/index.php/manage_proformainvoicelines/get_pi_component/"+$(this).val(),
-        "columns":[
-          {"data":"id",
-            "render":function(data){
-              return "<input type=\"checkbox\" data-id=\""+data+"\" class=\"cb_pi\" ></input>"
-            }
-          },
-          {"data":"article_number"},
-          {"data":"description"},
-          {"data":"has_component"},
-          {"data":"total_qty"} ],
-        "initComplete" : function(settings, json) {
-            $('#table_ProformaInvoiceLine').css('width','100%')
-            $('#table_ProformaInvoiceLine_info').hide()
-          }
-      })
 		})
     $('#btnAddPO').click(function(e){
       e.preventDefault()
@@ -211,11 +214,16 @@ res.string.purchaseorder }, {'link':'#','text':bc_text }] %} {% block content %}
           $('#tbAddPO').find('tbody').append('<tr>'+
           '<td><input type="hidden" name="PILineId[]" value="'+
           $(this).data('id')+'">'+
-          $(this).parents('tr').children('td:eq(1)').text()+'</td>'+
+          $(this).parents('tr').children('td:eq(1)').text()+
+          '<input type="hidden" name="PILineName[]" value="'+
+          $(this).parents('tr').children('td:eq(1)').text()+'"></td>'+
           '<td>'+$(this).parents('tr').children('td:eq(2)').text()+'</td>'+
           '<td>'+$(this).parents('tr').children('td:eq(3)').text()+'</td>'+
           '<td><input type="number" name="PILineQty[]" required max="'+$(this).parents('tr').children('td:eq(4)').text()+
-          '" class="form-control PILineQty" value="'+$(this).parents('tr').children('td:eq(4)').text()+'">'+
+          '" class="form-control PILineQty" maxlength="4" size="4" value="'+$(this).parents('tr').children('td:eq(4)').text()+'">'+
+          '</td>'+
+          '<td><input type="number" name="PILinePrice[]" required '+
+          'class="form-control" value="0">'+
           '</td></tr>');
         }
       })
@@ -231,7 +239,41 @@ res.string.purchaseorder }, {'link':'#','text':bc_text }] %} {% block content %}
           $(this).val($(this).prop('max'))
         }
         })
+      $('#formAddPOLine').submit(function(e){
+        e.preventDefault()
+        if(!$('#Id').val()){
+          submitpo().done(function(o){
+            console.log('po created . . . . . ');
+            submitpoline(o.Id).done(function(o){
+              location.reload()
+            })
+          })
+
+        }else{
+          submitpoline($('#Id').val()).done(function(o){
+            $('#table_PurchaseOrderLine').DataTable().ajax.reload()
+          })
+        }
       })
+    })
+
+    function submitpoline(po_id){
+      return $.ajax({
+        url:$('#formAddPOLine').prop('action')+'?purchase_order='+po_id,
+        method:'POST',
+        data:$('#formAddPOLine').serialize(),
+        dataType:'JSON'
+      })
+    }
+
+    function submitpo(){
+      return $.ajax({
+        url:$('#form_PurchaseOrder').prop('action'),
+        method:'POST',
+        data:$('#form_PurchaseOrder').serialize(),
+        dataType:'JSON'
+      })
+    }
 		$('#table_PurchaseOrderLine').loadTableData()
 	</script>
 	{% endblock %}

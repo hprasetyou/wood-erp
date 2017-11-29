@@ -46,7 +46,41 @@ class Manage_purchaseorderlines extends MY_Controller{
   }
 
 	function write($id=null){
-		print_r($this->input->post('PILineId'));
+    $po_id = $this->input->get('purchase_order');
+		$qty = $this->input->post('PILineId');
+  	$name = $this->input->post('PILineName');
+  	$price = $this->input->post('PILinePrice');
+    foreach ($this->input->post('PILineId') as $key => $line) {
+      # code...
+      $ids = explode("-",$line);
+      $this->form = array(
+       'Name' => array(
+         'value'=>$name[$key]
+       ),
+       'PurchaseOrderId' =>  array(
+         'value'=> $po_id
+       ),
+       'ProformaInvoiceLineId'  =>  array(
+         'value'=> $ids[0]
+       ),
+       'ProductId' =>  array(
+         'value'=> $ids[1]
+       ),
+       'ComponentId'  =>  array(
+         'value'=> (isset($ids[2])?$ids[2]:null)
+       ),
+       'Note' => 'Note',
+       'Price' => array(
+         'value'=> $price[$key]
+       ),
+       'Qty' => array(
+         'value'=> $qty[$key]
+       ),
+      );
+      $data = parent::write();
+      write_log("pl line $data saved . . . . .");
+    }
+    echo json_encode(array('status'=>'ok'));
 	}
 
   function delete($id){

@@ -40,7 +40,7 @@ class Manage_proformainvoicelines extends MY_Controller{
 
   }
 
-  function get_pi_component($pi_id){
+  function get_pi_component($pi_id=null){
     $lines = ProformaInvoiceLineQuery::create()->findByProformaInvoiceId($pi_id);
     $o = [];
     $i = 0;
