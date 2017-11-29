@@ -238,13 +238,13 @@ class PartnerTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'PartnersRelatedById', false);
-        $this->addRelation('ProductCustomer', '\\ProductCustomer', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('ProductPartner', '\\ProductPartner', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':partner_id',
     1 => ':id',
   ),
-), null, null, 'ProductCustomers', false);
+), null, null, 'ProductPartners', false);
         $this->addRelation('User', '\\User', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (

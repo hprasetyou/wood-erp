@@ -23,7 +23,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProductCustomerId">{{res.string.product}}</label>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProductPartnerId">{{res.string.product}}</label>
             <div class="col-md-6 col-sm-6 col-xs-12">
               <div class="input-wrap input-group">
                 <input type="hidden" type="text" id="ProductId" name="ProductId"  >
@@ -154,7 +154,7 @@
   <tbody>
     {% for line in proformainvoices.ProformaInvoiceLines %}
       <tr>
-        <td data-fieldname="name">{{line.ProductCustomer.Name}}</td>
+        <td data-fieldname="name">{{line.ProductPartner.Name}}</td>
         <td data-fieldname="name">{{line.Description}}</td>
         <td data-fieldname="name">{{line.ProductFinishing}}</td>
         <td data-fieldname="qty">{{line.Qty}}</td>

@@ -102,7 +102,7 @@
   Product price here was to identify, wether this customer reorder this product
   again we can use "their special" price for them
  -->
-  <table name="product_customer" idMethod="native" phpName="ProductCustomer">
+  <table name="product_partner" idMethod="native" phpName="ProductPartner">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="name" phpName="Name" type="VARCHAR" size="255"/>
     <column name="partner_id" phpName="PartnerId" type="INTEGER" required="true"/>
@@ -251,7 +251,7 @@
   <table name="proforma_invoice_line" phpName="ProformaInvoiceLine">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="proforma_invoice_id" phpName="ProformaInvoiceId" type="INTEGER" required="true"/>
-    <column name="product_customer_id" phpName="ProductCustomerId" type="INTEGER" required="true"/>
+    <column name="product_partner_id" phpName="ProductPartnerId" type="INTEGER" required="true"/>
     <column name="product_finishing" phpName="ProductFinishing" size="255" type="VARCHAR"/>
     <column name="description" phpName="Description" size="255" type="VARCHAR"/>
     <column name="qty" phpName="Qty" type="INTEGER"/>
@@ -267,8 +267,8 @@
     <foreign-key foreignTable="proforma_invoice">
       <reference local="proforma_invoice_id" foreign="id"/>
     </foreign-key>
-    <foreign-key foreignTable="product_customer">
-      <reference local="product_customer_id" foreign="id"/>
+    <foreign-key foreignTable="product_partner">
+      <reference local="product_partner_id" foreign="id"/>
     </foreign-key>
   </table>
   <table name="packing_list" phpName="PackingList">

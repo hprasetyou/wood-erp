@@ -2,8 +2,8 @@
 
 namespace Map;
 
-use \ProductCustomer;
-use \ProductCustomerQuery;
+use \ProductPartner;
+use \ProductPartnerQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'product_customer' table.
+ * This class defines the structure of the 'product_partner' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class ProductCustomerTableMap extends TableMap
+class ProductPartnerTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class ProductCustomerTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.ProductCustomerTableMap';
+    const CLASS_NAME = '.Map.ProductPartnerTableMap';
 
     /**
      * The default database name for this class
@@ -44,17 +44,17 @@ class ProductCustomerTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'product_customer';
+    const TABLE_NAME = 'product_partner';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\ProductCustomer';
+    const OM_CLASS = '\\ProductPartner';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'ProductCustomer';
+    const CLASS_DEFAULT = 'ProductPartner';
 
     /**
      * The total number of columns
@@ -74,42 +74,42 @@ class ProductCustomerTableMap extends TableMap
     /**
      * the column name for the id field
      */
-    const COL_ID = 'product_customer.id';
+    const COL_ID = 'product_partner.id';
 
     /**
      * the column name for the name field
      */
-    const COL_NAME = 'product_customer.name';
+    const COL_NAME = 'product_partner.name';
 
     /**
      * the column name for the partner_id field
      */
-    const COL_PARTNER_ID = 'product_customer.partner_id';
+    const COL_PARTNER_ID = 'product_partner.partner_id';
 
     /**
      * the column name for the product_id field
      */
-    const COL_PRODUCT_ID = 'product_customer.product_id';
+    const COL_PRODUCT_ID = 'product_partner.product_id';
 
     /**
      * the column name for the product_price field
      */
-    const COL_PRODUCT_PRICE = 'product_customer.product_price';
+    const COL_PRODUCT_PRICE = 'product_partner.product_price';
 
     /**
      * the column name for the description field
      */
-    const COL_DESCRIPTION = 'product_customer.description';
+    const COL_DESCRIPTION = 'product_partner.description';
 
     /**
      * the column name for the created_at field
      */
-    const COL_CREATED_AT = 'product_customer.created_at';
+    const COL_CREATED_AT = 'product_partner.created_at';
 
     /**
      * the column name for the updated_at field
      */
-    const COL_UPDATED_AT = 'product_customer.updated_at';
+    const COL_UPDATED_AT = 'product_partner.updated_at';
 
     /**
      * The default string format for model objects of the related table
@@ -125,7 +125,7 @@ class ProductCustomerTableMap extends TableMap
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('Id', 'Name', 'PartnerId', 'ProductId', 'ProductPrice', 'Description', 'CreatedAt', 'UpdatedAt', ),
         self::TYPE_CAMELNAME     => array('id', 'name', 'partnerId', 'productId', 'productPrice', 'description', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ProductCustomerTableMap::COL_ID, ProductCustomerTableMap::COL_NAME, ProductCustomerTableMap::COL_PARTNER_ID, ProductCustomerTableMap::COL_PRODUCT_ID, ProductCustomerTableMap::COL_PRODUCT_PRICE, ProductCustomerTableMap::COL_DESCRIPTION, ProductCustomerTableMap::COL_CREATED_AT, ProductCustomerTableMap::COL_UPDATED_AT, ),
+        self::TYPE_COLNAME       => array(ProductPartnerTableMap::COL_ID, ProductPartnerTableMap::COL_NAME, ProductPartnerTableMap::COL_PARTNER_ID, ProductPartnerTableMap::COL_PRODUCT_ID, ProductPartnerTableMap::COL_PRODUCT_PRICE, ProductPartnerTableMap::COL_DESCRIPTION, ProductPartnerTableMap::COL_CREATED_AT, ProductPartnerTableMap::COL_UPDATED_AT, ),
         self::TYPE_FIELDNAME     => array('id', 'name', 'partner_id', 'product_id', 'product_price', 'description', 'created_at', 'updated_at', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
@@ -139,7 +139,7 @@ class ProductCustomerTableMap extends TableMap
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'PartnerId' => 2, 'ProductId' => 3, 'ProductPrice' => 4, 'Description' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
         self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'partnerId' => 2, 'productId' => 3, 'productPrice' => 4, 'description' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
-        self::TYPE_COLNAME       => array(ProductCustomerTableMap::COL_ID => 0, ProductCustomerTableMap::COL_NAME => 1, ProductCustomerTableMap::COL_PARTNER_ID => 2, ProductCustomerTableMap::COL_PRODUCT_ID => 3, ProductCustomerTableMap::COL_PRODUCT_PRICE => 4, ProductCustomerTableMap::COL_DESCRIPTION => 5, ProductCustomerTableMap::COL_CREATED_AT => 6, ProductCustomerTableMap::COL_UPDATED_AT => 7, ),
+        self::TYPE_COLNAME       => array(ProductPartnerTableMap::COL_ID => 0, ProductPartnerTableMap::COL_NAME => 1, ProductPartnerTableMap::COL_PARTNER_ID => 2, ProductPartnerTableMap::COL_PRODUCT_ID => 3, ProductPartnerTableMap::COL_PRODUCT_PRICE => 4, ProductPartnerTableMap::COL_DESCRIPTION => 5, ProductPartnerTableMap::COL_CREATED_AT => 6, ProductPartnerTableMap::COL_UPDATED_AT => 7, ),
         self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'partner_id' => 2, 'product_id' => 3, 'product_price' => 4, 'description' => 5, 'created_at' => 6, 'updated_at' => 7, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
@@ -154,10 +154,10 @@ class ProductCustomerTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('product_customer');
-        $this->setPhpName('ProductCustomer');
+        $this->setName('product_partner');
+        $this->setPhpName('ProductPartner');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\ProductCustomer');
+        $this->setClassName('\\ProductPartner');
         $this->setPackage('');
         $this->setUseIdGenerator(true);
         // columns
@@ -193,7 +193,7 @@ class ProductCustomerTableMap extends TableMap
         $this->addRelation('ProformaInvoiceLine', '\\ProformaInvoiceLine', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
-    0 => ':product_customer_id',
+    0 => ':product_partner_id',
     1 => ':id',
   ),
 ), null, null, 'ProformaInvoiceLines', false);
@@ -256,7 +256,7 @@ class ProductCustomerTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? ProductCustomerTableMap::CLASS_DEFAULT : ProductCustomerTableMap::OM_CLASS;
+        return $withPrefix ? ProductPartnerTableMap::CLASS_DEFAULT : ProductPartnerTableMap::OM_CLASS;
     }
 
     /**
@@ -270,22 +270,22 @@ class ProductCustomerTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (ProductCustomer object, last column rank)
+     * @return array           (ProductPartner object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = ProductCustomerTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = ProductCustomerTableMap::getInstanceFromPool($key))) {
+        $key = ProductPartnerTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = ProductPartnerTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + ProductCustomerTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + ProductPartnerTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = ProductCustomerTableMap::OM_CLASS;
-            /** @var ProductCustomer $obj */
+            $cls = ProductPartnerTableMap::OM_CLASS;
+            /** @var ProductPartner $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            ProductCustomerTableMap::addInstanceToPool($obj, $key);
+            ProductPartnerTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -308,18 +308,18 @@ class ProductCustomerTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = ProductCustomerTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = ProductCustomerTableMap::getInstanceFromPool($key))) {
+            $key = ProductPartnerTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = ProductPartnerTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var ProductCustomer $obj */
+                /** @var ProductPartner $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                ProductCustomerTableMap::addInstanceToPool($obj, $key);
+                ProductPartnerTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -340,14 +340,14 @@ class ProductCustomerTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(ProductCustomerTableMap::COL_ID);
-            $criteria->addSelectColumn(ProductCustomerTableMap::COL_NAME);
-            $criteria->addSelectColumn(ProductCustomerTableMap::COL_PARTNER_ID);
-            $criteria->addSelectColumn(ProductCustomerTableMap::COL_PRODUCT_ID);
-            $criteria->addSelectColumn(ProductCustomerTableMap::COL_PRODUCT_PRICE);
-            $criteria->addSelectColumn(ProductCustomerTableMap::COL_DESCRIPTION);
-            $criteria->addSelectColumn(ProductCustomerTableMap::COL_CREATED_AT);
-            $criteria->addSelectColumn(ProductCustomerTableMap::COL_UPDATED_AT);
+            $criteria->addSelectColumn(ProductPartnerTableMap::COL_ID);
+            $criteria->addSelectColumn(ProductPartnerTableMap::COL_NAME);
+            $criteria->addSelectColumn(ProductPartnerTableMap::COL_PARTNER_ID);
+            $criteria->addSelectColumn(ProductPartnerTableMap::COL_PRODUCT_ID);
+            $criteria->addSelectColumn(ProductPartnerTableMap::COL_PRODUCT_PRICE);
+            $criteria->addSelectColumn(ProductPartnerTableMap::COL_DESCRIPTION);
+            $criteria->addSelectColumn(ProductPartnerTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(ProductPartnerTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.name');
@@ -369,7 +369,7 @@ class ProductCustomerTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(ProductCustomerTableMap::DATABASE_NAME)->getTable(ProductCustomerTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(ProductPartnerTableMap::DATABASE_NAME)->getTable(ProductPartnerTableMap::TABLE_NAME);
     }
 
     /**
@@ -377,16 +377,16 @@ class ProductCustomerTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(ProductCustomerTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(ProductCustomerTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new ProductCustomerTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(ProductPartnerTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(ProductPartnerTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new ProductPartnerTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a ProductCustomer or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a ProductPartner or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or ProductCustomer object or primary key or array of primary keys
+     * @param mixed               $values Criteria or ProductPartner object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -397,27 +397,27 @@ class ProductCustomerTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductCustomerTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ProductPartnerTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \ProductCustomer) { // it's a model object
+        } elseif ($values instanceof \ProductPartner) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(ProductCustomerTableMap::DATABASE_NAME);
-            $criteria->add(ProductCustomerTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(ProductPartnerTableMap::DATABASE_NAME);
+            $criteria->add(ProductPartnerTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
-        $query = ProductCustomerQuery::create()->mergeWith($criteria);
+        $query = ProductPartnerQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            ProductCustomerTableMap::clearInstancePool();
+            ProductPartnerTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                ProductCustomerTableMap::removeInstanceFromPool($singleval);
+                ProductPartnerTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -425,20 +425,20 @@ class ProductCustomerTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the product_customer table.
+     * Deletes all rows from the product_partner table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return ProductCustomerQuery::create()->doDeleteAll($con);
+        return ProductPartnerQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a ProductCustomer or Criteria object.
+     * Performs an INSERT on the database, given a ProductPartner or Criteria object.
      *
-     * @param mixed               $criteria Criteria or ProductCustomer object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or ProductPartner object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -447,22 +447,22 @@ class ProductCustomerTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductCustomerTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ProductPartnerTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from ProductCustomer object
+            $criteria = $criteria->buildCriteria(); // build Criteria from ProductPartner object
         }
 
-        if ($criteria->containsKey(ProductCustomerTableMap::COL_ID) && $criteria->keyContainsValue(ProductCustomerTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.ProductCustomerTableMap::COL_ID.')');
+        if ($criteria->containsKey(ProductPartnerTableMap::COL_ID) && $criteria->keyContainsValue(ProductPartnerTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.ProductPartnerTableMap::COL_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = ProductCustomerQuery::create()->mergeWith($criteria);
+        $query = ProductPartnerQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -471,7 +471,7 @@ class ProductCustomerTableMap extends TableMap
         });
     }
 
-} // ProductCustomerTableMap
+} // ProductPartnerTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-ProductCustomerTableMap::buildTableMap();
+ProductPartnerTableMap::buildTableMap();

@@ -97,7 +97,7 @@
 'pod' => 'Pod',
 'price' => 'Price',
 'product' => 'Product',
-'product_customer_id' => 'Product Customer Id',
+'product_partner_id' => 'Product Customer Id',
 'product_finishing' => 'Product Finishing',
 'product_id' => 'Product Id',
 'proforma_invoice' => 'Proforma Invoice',

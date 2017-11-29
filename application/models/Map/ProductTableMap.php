@@ -267,13 +267,13 @@ class ProductTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'ProductComponents', false);
-        $this->addRelation('ProductCustomer', '\\ProductCustomer', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('ProductPartner', '\\ProductPartner', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':product_id',
     1 => ':id',
   ),
-), null, null, 'ProductCustomers', false);
+), null, null, 'ProductPartners', false);
         $this->addRelation('ProductFinishing', '\\ProductFinishing', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (

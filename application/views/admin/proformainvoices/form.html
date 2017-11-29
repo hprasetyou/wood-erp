@@ -147,10 +147,10 @@ $(document).ready(function(){
           }
           repopulate_select2('#Finishing',sdf)
 
-          if(o.ProductCustomers){
-            price = o.ProductCustomers[0].ProductPrice
-            art = o.ProductCustomers[0].Name
-            desc = o.ProductCustomers[0].Description
+          if(o.ProductPartners){
+            price = o.ProductPartners[0].ProductPrice
+            art = o.ProductPartners[0].Name
+            desc = o.ProductPartners[0].Description
           }
           for (var i in o) {
             if (o.hasOwnProperty(i)) {
@@ -291,7 +291,7 @@ $('#LineId').val("")
       console.log(d);
       populate_form_line({
         index:$(this).data('index'),
-        ProductCustomer:{
+        ProductPartner:{
           Name:d.Name,
           ProductId:d.ProductId,
           Product:{
@@ -314,13 +314,13 @@ $('#LineId').val("")
 
   function populate_form_line(data){
       $('#LineId').val(data.Id)
-      $('#LineName').val(data.ProductCustomer.Name)
-      $('#ProductId').val(data.ProductCustomer.ProductId)
-      $('#ListPrice').val(data.ProductCustomer.Product.ListPrice)
-      $('#displayProductId').val(data.ProductCustomer.Product.Name+' - '+data.ProductCustomer.Product.Description)
-      $('#Price').val(data.ProductCustomer.ProductPrice)
-      $('#CubicDimension').val(data.ProductCustomer.Product.NetCubic)
-      $('#Description').val(data.ProductCustomer.Description)
+      $('#LineName').val(data.ProductPartner.Name)
+      $('#ProductId').val(data.ProductPartner.ProductId)
+      $('#ListPrice').val(data.ProductPartner.Product.ListPrice)
+      $('#displayProductId').val(data.ProductPartner.Product.Name+' - '+data.ProductPartner.Product.Description)
+      $('#Price').val(data.ProductPartner.ProductPrice)
+      $('#CubicDimension').val(data.ProductPartner.Product.NetCubic)
+      $('#Description').val(data.ProductPartner.Description)
       $('#Qty').val(data.Qty)
       $('#QtyPerPack').val(data.QtyPerPack)
       $('#IsSample').prop('checked', data.IsSample);

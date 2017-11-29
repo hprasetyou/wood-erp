@@ -84,15 +84,15 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery rightJoinWithProductComponent() Adds a RIGHT JOIN clause and with to the query using the ProductComponent relation
  * @method     ChildProductQuery innerJoinWithProductComponent() Adds a INNER JOIN clause and with to the query using the ProductComponent relation
  *
- * @method     ChildProductQuery leftJoinProductCustomer($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProductCustomer relation
- * @method     ChildProductQuery rightJoinProductCustomer($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProductCustomer relation
- * @method     ChildProductQuery innerJoinProductCustomer($relationAlias = null) Adds a INNER JOIN clause to the query using the ProductCustomer relation
+ * @method     ChildProductQuery leftJoinProductPartner($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProductPartner relation
+ * @method     ChildProductQuery rightJoinProductPartner($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProductPartner relation
+ * @method     ChildProductQuery innerJoinProductPartner($relationAlias = null) Adds a INNER JOIN clause to the query using the ProductPartner relation
  *
- * @method     ChildProductQuery joinWithProductCustomer($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ProductCustomer relation
+ * @method     ChildProductQuery joinWithProductPartner($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ProductPartner relation
  *
- * @method     ChildProductQuery leftJoinWithProductCustomer() Adds a LEFT JOIN clause and with to the query using the ProductCustomer relation
- * @method     ChildProductQuery rightJoinWithProductCustomer() Adds a RIGHT JOIN clause and with to the query using the ProductCustomer relation
- * @method     ChildProductQuery innerJoinWithProductCustomer() Adds a INNER JOIN clause and with to the query using the ProductCustomer relation
+ * @method     ChildProductQuery leftJoinWithProductPartner() Adds a LEFT JOIN clause and with to the query using the ProductPartner relation
+ * @method     ChildProductQuery rightJoinWithProductPartner() Adds a RIGHT JOIN clause and with to the query using the ProductPartner relation
+ * @method     ChildProductQuery innerJoinWithProductPartner() Adds a INNER JOIN clause and with to the query using the ProductPartner relation
  *
  * @method     ChildProductQuery leftJoinProductFinishing($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProductFinishing relation
  * @method     ChildProductQuery rightJoinProductFinishing($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProductFinishing relation
@@ -124,7 +124,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery rightJoinWithPurchaseOrderLine() Adds a RIGHT JOIN clause and with to the query using the PurchaseOrderLine relation
  * @method     ChildProductQuery innerJoinWithPurchaseOrderLine() Adds a INNER JOIN clause and with to the query using the PurchaseOrderLine relation
  *
- * @method     \ProductComponentQuery|\ProductCustomerQuery|\ProductFinishingQuery|\ProductImageQuery|\PurchaseOrderLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \ProductComponentQuery|\ProductPartnerQuery|\ProductFinishingQuery|\ProductImageQuery|\PurchaseOrderLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildProduct findOne(ConnectionInterface $con = null) Return the first ChildProduct matching the query
  * @method     ChildProduct findOneOrCreate(ConnectionInterface $con = null) Return the first ChildProduct matching the query, or a new ChildProduct object populated from the query conditions when no match is found
@@ -1265,40 +1265,40 @@ abstract class ProductQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \ProductCustomer object
+     * Filter the query by a related \ProductPartner object
      *
-     * @param \ProductCustomer|ObjectCollection $productCustomer the related object to use as filter
+     * @param \ProductPartner|ObjectCollection $productPartner the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildProductQuery The current query, for fluid interface
      */
-    public function filterByProductCustomer($productCustomer, $comparison = null)
+    public function filterByProductPartner($productPartner, $comparison = null)
     {
-        if ($productCustomer instanceof \ProductCustomer) {
+        if ($productPartner instanceof \ProductPartner) {
             return $this
-                ->addUsingAlias(ProductTableMap::COL_ID, $productCustomer->getProductId(), $comparison);
-        } elseif ($productCustomer instanceof ObjectCollection) {
+                ->addUsingAlias(ProductTableMap::COL_ID, $productPartner->getProductId(), $comparison);
+        } elseif ($productPartner instanceof ObjectCollection) {
             return $this
-                ->useProductCustomerQuery()
-                ->filterByPrimaryKeys($productCustomer->getPrimaryKeys())
+                ->useProductPartnerQuery()
+                ->filterByPrimaryKeys($productPartner->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByProductCustomer() only accepts arguments of type \ProductCustomer or Collection');
+            throw new PropelException('filterByProductPartner() only accepts arguments of type \ProductPartner or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the ProductCustomer relation
+     * Adds a JOIN clause to the query using the ProductPartner relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildProductQuery The current query, for fluid interface
      */
-    public function joinProductCustomer($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinProductPartner($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('ProductCustomer');
+        $relationMap = $tableMap->getRelation('ProductPartner');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -1313,14 +1313,14 @@ abstract class ProductQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'ProductCustomer');
+            $this->addJoinObject($join, 'ProductPartner');
         }
 
         return $this;
     }
 
     /**
-     * Use the ProductCustomer relation ProductCustomer object
+     * Use the ProductPartner relation ProductPartner object
      *
      * @see useQuery()
      *
@@ -1328,13 +1328,13 @@ abstract class ProductQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \ProductCustomerQuery A secondary query class using the current class as primary query
+     * @return \ProductPartnerQuery A secondary query class using the current class as primary query
      */
-    public function useProductCustomerQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useProductPartnerQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinProductCustomer($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'ProductCustomer', '\ProductCustomerQuery');
+            ->joinProductPartner($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ProductPartner', '\ProductPartnerQuery');
     }
 
     /**

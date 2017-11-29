@@ -4,8 +4,8 @@ namespace Base;
 
 use \PackingListLine as ChildPackingListLine;
 use \PackingListLineQuery as ChildPackingListLineQuery;
-use \ProductCustomer as ChildProductCustomer;
-use \ProductCustomerQuery as ChildProductCustomerQuery;
+use \ProductPartner as ChildProductPartner;
+use \ProductPartnerQuery as ChildProductPartnerQuery;
 use \ProformaInvoice as ChildProformaInvoice;
 use \ProformaInvoiceLine as ChildProformaInvoiceLine;
 use \ProformaInvoiceLineQuery as ChildProformaInvoiceLineQuery;
@@ -88,11 +88,11 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
     protected $proforma_invoice_id;
 
     /**
-     * The value for the product_customer_id field.
+     * The value for the product_partner_id field.
      *
      * @var        int
      */
-    protected $product_customer_id;
+    protected $product_partner_id;
 
     /**
      * The value for the product_finishing field.
@@ -188,9 +188,9 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
     protected $aProformaInvoice;
 
     /**
-     * @var        ChildProductCustomer
+     * @var        ChildProductPartner
      */
-    protected $aProductCustomer;
+    protected $aProductPartner;
 
     /**
      * @var        ObjectCollection|ChildPackingListLine[] Collection to store aggregation of ChildPackingListLine objects.
@@ -484,13 +484,13 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
     }
 
     /**
-     * Get the [product_customer_id] column value.
+     * Get the [product_partner_id] column value.
      *
      * @return int
      */
-    public function getProductCustomerId()
+    public function getProductPartnerId()
     {
-        return $this->product_customer_id;
+        return $this->product_partner_id;
     }
 
     /**
@@ -698,28 +698,28 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
     } // setProformaInvoiceId()
 
     /**
-     * Set the value of [product_customer_id] column.
+     * Set the value of [product_partner_id] column.
      *
      * @param int $v new value
      * @return $this|\ProformaInvoiceLine The current object (for fluent API support)
      */
-    public function setProductCustomerId($v)
+    public function setProductPartnerId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->product_customer_id !== $v) {
-            $this->product_customer_id = $v;
-            $this->modifiedColumns[ProformaInvoiceLineTableMap::COL_PRODUCT_CUSTOMER_ID] = true;
+        if ($this->product_partner_id !== $v) {
+            $this->product_partner_id = $v;
+            $this->modifiedColumns[ProformaInvoiceLineTableMap::COL_PRODUCT_PARTNER_ID] = true;
         }
 
-        if ($this->aProductCustomer !== null && $this->aProductCustomer->getId() !== $v) {
-            $this->aProductCustomer = null;
+        if ($this->aProductPartner !== null && $this->aProductPartner->getId() !== $v) {
+            $this->aProductPartner = null;
         }
 
         return $this;
-    } // setProductCustomerId()
+    } // setProductPartnerId()
 
     /**
      * Set the value of [product_finishing] column.
@@ -1027,8 +1027,8 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProformaInvoiceLineTableMap::translateFieldName('ProformaInvoiceId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->proforma_invoice_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProformaInvoiceLineTableMap::translateFieldName('ProductCustomerId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->product_customer_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProformaInvoiceLineTableMap::translateFieldName('ProductPartnerId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->product_partner_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProformaInvoiceLineTableMap::translateFieldName('ProductFinishing', TableMap::TYPE_PHPNAME, $indexType)];
             $this->product_finishing = (null !== $col) ? (string) $col : null;
@@ -1104,8 +1104,8 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
         if ($this->aProformaInvoice !== null && $this->proforma_invoice_id !== $this->aProformaInvoice->getId()) {
             $this->aProformaInvoice = null;
         }
-        if ($this->aProductCustomer !== null && $this->product_customer_id !== $this->aProductCustomer->getId()) {
-            $this->aProductCustomer = null;
+        if ($this->aProductPartner !== null && $this->product_partner_id !== $this->aProductPartner->getId()) {
+            $this->aProductPartner = null;
         }
     } // ensureConsistency
 
@@ -1147,7 +1147,7 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aProformaInvoice = null;
-            $this->aProductCustomer = null;
+            $this->aProductPartner = null;
             $this->collPackingListLines = null;
 
             $this->collPurchaseOrderLines = null;
@@ -1267,11 +1267,11 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
                 $this->setProformaInvoice($this->aProformaInvoice);
             }
 
-            if ($this->aProductCustomer !== null) {
-                if ($this->aProductCustomer->isModified() || $this->aProductCustomer->isNew()) {
-                    $affectedRows += $this->aProductCustomer->save($con);
+            if ($this->aProductPartner !== null) {
+                if ($this->aProductPartner->isModified() || $this->aProductPartner->isNew()) {
+                    $affectedRows += $this->aProductPartner->save($con);
                 }
-                $this->setProductCustomer($this->aProductCustomer);
+                $this->setProductPartner($this->aProductPartner);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -1351,8 +1351,8 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
         if ($this->isColumnModified(ProformaInvoiceLineTableMap::COL_PROFORMA_INVOICE_ID)) {
             $modifiedColumns[':p' . $index++]  = 'proforma_invoice_id';
         }
-        if ($this->isColumnModified(ProformaInvoiceLineTableMap::COL_PRODUCT_CUSTOMER_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'product_customer_id';
+        if ($this->isColumnModified(ProformaInvoiceLineTableMap::COL_PRODUCT_PARTNER_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'product_partner_id';
         }
         if ($this->isColumnModified(ProformaInvoiceLineTableMap::COL_PRODUCT_FINISHING)) {
             $modifiedColumns[':p' . $index++]  = 'product_finishing';
@@ -1407,8 +1407,8 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
                     case 'proforma_invoice_id':
                         $stmt->bindValue($identifier, $this->proforma_invoice_id, PDO::PARAM_INT);
                         break;
-                    case 'product_customer_id':
-                        $stmt->bindValue($identifier, $this->product_customer_id, PDO::PARAM_INT);
+                    case 'product_partner_id':
+                        $stmt->bindValue($identifier, $this->product_partner_id, PDO::PARAM_INT);
                         break;
                     case 'product_finishing':
                         $stmt->bindValue($identifier, $this->product_finishing, PDO::PARAM_STR);
@@ -1515,7 +1515,7 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
                 return $this->getProformaInvoiceId();
                 break;
             case 2:
-                return $this->getProductCustomerId();
+                return $this->getProductPartnerId();
                 break;
             case 3:
                 return $this->getProductFinishing();
@@ -1585,7 +1585,7 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getProformaInvoiceId(),
-            $keys[2] => $this->getProductCustomerId(),
+            $keys[2] => $this->getProductPartnerId(),
             $keys[3] => $this->getProductFinishing(),
             $keys[4] => $this->getDescription(),
             $keys[5] => $this->getQty(),
@@ -1628,20 +1628,20 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
 
                 $result[$key] = $this->aProformaInvoice->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->aProductCustomer) {
+            if (null !== $this->aProductPartner) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'productCustomer';
+                        $key = 'productPartner';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'product_customer';
+                        $key = 'product_partner';
                         break;
                     default:
-                        $key = 'ProductCustomer';
+                        $key = 'ProductPartner';
                 }
 
-                $result[$key] = $this->aProductCustomer->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aProductPartner->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->collPackingListLines) {
 
@@ -1714,7 +1714,7 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
                 $this->setProformaInvoiceId($value);
                 break;
             case 2:
-                $this->setProductCustomerId($value);
+                $this->setProductPartnerId($value);
                 break;
             case 3:
                 $this->setProductFinishing($value);
@@ -1785,7 +1785,7 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
             $this->setProformaInvoiceId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setProductCustomerId($arr[$keys[2]]);
+            $this->setProductPartnerId($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
             $this->setProductFinishing($arr[$keys[3]]);
@@ -1870,8 +1870,8 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
         if ($this->isColumnModified(ProformaInvoiceLineTableMap::COL_PROFORMA_INVOICE_ID)) {
             $criteria->add(ProformaInvoiceLineTableMap::COL_PROFORMA_INVOICE_ID, $this->proforma_invoice_id);
         }
-        if ($this->isColumnModified(ProformaInvoiceLineTableMap::COL_PRODUCT_CUSTOMER_ID)) {
-            $criteria->add(ProformaInvoiceLineTableMap::COL_PRODUCT_CUSTOMER_ID, $this->product_customer_id);
+        if ($this->isColumnModified(ProformaInvoiceLineTableMap::COL_PRODUCT_PARTNER_ID)) {
+            $criteria->add(ProformaInvoiceLineTableMap::COL_PRODUCT_PARTNER_ID, $this->product_partner_id);
         }
         if ($this->isColumnModified(ProformaInvoiceLineTableMap::COL_PRODUCT_FINISHING)) {
             $criteria->add(ProformaInvoiceLineTableMap::COL_PRODUCT_FINISHING, $this->product_finishing);
@@ -1996,7 +1996,7 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setProformaInvoiceId($this->getProformaInvoiceId());
-        $copyObj->setProductCustomerId($this->getProductCustomerId());
+        $copyObj->setProductPartnerId($this->getProductPartnerId());
         $copyObj->setProductFinishing($this->getProductFinishing());
         $copyObj->setDescription($this->getDescription());
         $copyObj->setQty($this->getQty());
@@ -2109,24 +2109,24 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildProductCustomer object.
+     * Declares an association between this object and a ChildProductPartner object.
      *
-     * @param  ChildProductCustomer $v
+     * @param  ChildProductPartner $v
      * @return $this|\ProformaInvoiceLine The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setProductCustomer(ChildProductCustomer $v = null)
+    public function setProductPartner(ChildProductPartner $v = null)
     {
         if ($v === null) {
-            $this->setProductCustomerId(NULL);
+            $this->setProductPartnerId(NULL);
         } else {
-            $this->setProductCustomerId($v->getId());
+            $this->setProductPartnerId($v->getId());
         }
 
-        $this->aProductCustomer = $v;
+        $this->aProductPartner = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildProductCustomer object, it will not be re-added.
+        // If this object has already been added to the ChildProductPartner object, it will not be re-added.
         if ($v !== null) {
             $v->addProformaInvoiceLine($this);
         }
@@ -2137,26 +2137,26 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildProductCustomer object
+     * Get the associated ChildProductPartner object
      *
      * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildProductCustomer The associated ChildProductCustomer object.
+     * @return ChildProductPartner The associated ChildProductPartner object.
      * @throws PropelException
      */
-    public function getProductCustomer(ConnectionInterface $con = null)
+    public function getProductPartner(ConnectionInterface $con = null)
     {
-        if ($this->aProductCustomer === null && ($this->product_customer_id != 0)) {
-            $this->aProductCustomer = ChildProductCustomerQuery::create()->findPk($this->product_customer_id, $con);
+        if ($this->aProductPartner === null && ($this->product_partner_id != 0)) {
+            $this->aProductPartner = ChildProductPartnerQuery::create()->findPk($this->product_partner_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aProductCustomer->addProformaInvoiceLines($this);
+                $this->aProductPartner->addProformaInvoiceLines($this);
              */
         }
 
-        return $this->aProductCustomer;
+        return $this->aProductPartner;
     }
 
 
@@ -2740,12 +2740,12 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
         if (null !== $this->aProformaInvoice) {
             $this->aProformaInvoice->removeProformaInvoiceLine($this);
         }
-        if (null !== $this->aProductCustomer) {
-            $this->aProductCustomer->removeProformaInvoiceLine($this);
+        if (null !== $this->aProductPartner) {
+            $this->aProductPartner->removeProformaInvoiceLine($this);
         }
         $this->id = null;
         $this->proforma_invoice_id = null;
-        $this->product_customer_id = null;
+        $this->product_partner_id = null;
         $this->product_finishing = null;
         $this->description = null;
         $this->qty = null;
@@ -2792,7 +2792,7 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
         $this->collPackingListLines = null;
         $this->collPurchaseOrderLines = null;
         $this->aProformaInvoice = null;
-        $this->aProductCustomer = null;
+        $this->aProductPartner = null;
     }
 
     /**

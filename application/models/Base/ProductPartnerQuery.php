@@ -2,11 +2,11 @@
 
 namespace Base;
 
-use \ProductCustomer as ChildProductCustomer;
-use \ProductCustomerQuery as ChildProductCustomerQuery;
+use \ProductPartner as ChildProductPartner;
+use \ProductPartnerQuery as ChildProductPartnerQuery;
 use \Exception;
 use \PDO;
-use Map\ProductCustomerTableMap;
+use Map\ProductPartnerTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -16,134 +16,134 @@ use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
 
 /**
- * Base class that represents a query for the 'product_customer' table.
+ * Base class that represents a query for the 'product_partner' table.
  *
  *
  *
- * @method     ChildProductCustomerQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildProductCustomerQuery orderByName($order = Criteria::ASC) Order by the name column
- * @method     ChildProductCustomerQuery orderByPartnerId($order = Criteria::ASC) Order by the partner_id column
- * @method     ChildProductCustomerQuery orderByProductId($order = Criteria::ASC) Order by the product_id column
- * @method     ChildProductCustomerQuery orderByProductPrice($order = Criteria::ASC) Order by the product_price column
- * @method     ChildProductCustomerQuery orderByDescription($order = Criteria::ASC) Order by the description column
- * @method     ChildProductCustomerQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
- * @method     ChildProductCustomerQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
+ * @method     ChildProductPartnerQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     ChildProductPartnerQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method     ChildProductPartnerQuery orderByPartnerId($order = Criteria::ASC) Order by the partner_id column
+ * @method     ChildProductPartnerQuery orderByProductId($order = Criteria::ASC) Order by the product_id column
+ * @method     ChildProductPartnerQuery orderByProductPrice($order = Criteria::ASC) Order by the product_price column
+ * @method     ChildProductPartnerQuery orderByDescription($order = Criteria::ASC) Order by the description column
+ * @method     ChildProductPartnerQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildProductPartnerQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
- * @method     ChildProductCustomerQuery groupById() Group by the id column
- * @method     ChildProductCustomerQuery groupByName() Group by the name column
- * @method     ChildProductCustomerQuery groupByPartnerId() Group by the partner_id column
- * @method     ChildProductCustomerQuery groupByProductId() Group by the product_id column
- * @method     ChildProductCustomerQuery groupByProductPrice() Group by the product_price column
- * @method     ChildProductCustomerQuery groupByDescription() Group by the description column
- * @method     ChildProductCustomerQuery groupByCreatedAt() Group by the created_at column
- * @method     ChildProductCustomerQuery groupByUpdatedAt() Group by the updated_at column
+ * @method     ChildProductPartnerQuery groupById() Group by the id column
+ * @method     ChildProductPartnerQuery groupByName() Group by the name column
+ * @method     ChildProductPartnerQuery groupByPartnerId() Group by the partner_id column
+ * @method     ChildProductPartnerQuery groupByProductId() Group by the product_id column
+ * @method     ChildProductPartnerQuery groupByProductPrice() Group by the product_price column
+ * @method     ChildProductPartnerQuery groupByDescription() Group by the description column
+ * @method     ChildProductPartnerQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildProductPartnerQuery groupByUpdatedAt() Group by the updated_at column
  *
- * @method     ChildProductCustomerQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     ChildProductCustomerQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     ChildProductCustomerQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     ChildProductPartnerQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     ChildProductPartnerQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     ChildProductPartnerQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildProductCustomerQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildProductCustomerQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildProductCustomerQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ * @method     ChildProductPartnerQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildProductPartnerQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildProductPartnerQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildProductCustomerQuery leftJoinPartner($relationAlias = null) Adds a LEFT JOIN clause to the query using the Partner relation
- * @method     ChildProductCustomerQuery rightJoinPartner($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Partner relation
- * @method     ChildProductCustomerQuery innerJoinPartner($relationAlias = null) Adds a INNER JOIN clause to the query using the Partner relation
+ * @method     ChildProductPartnerQuery leftJoinPartner($relationAlias = null) Adds a LEFT JOIN clause to the query using the Partner relation
+ * @method     ChildProductPartnerQuery rightJoinPartner($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Partner relation
+ * @method     ChildProductPartnerQuery innerJoinPartner($relationAlias = null) Adds a INNER JOIN clause to the query using the Partner relation
  *
- * @method     ChildProductCustomerQuery joinWithPartner($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Partner relation
+ * @method     ChildProductPartnerQuery joinWithPartner($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Partner relation
  *
- * @method     ChildProductCustomerQuery leftJoinWithPartner() Adds a LEFT JOIN clause and with to the query using the Partner relation
- * @method     ChildProductCustomerQuery rightJoinWithPartner() Adds a RIGHT JOIN clause and with to the query using the Partner relation
- * @method     ChildProductCustomerQuery innerJoinWithPartner() Adds a INNER JOIN clause and with to the query using the Partner relation
+ * @method     ChildProductPartnerQuery leftJoinWithPartner() Adds a LEFT JOIN clause and with to the query using the Partner relation
+ * @method     ChildProductPartnerQuery rightJoinWithPartner() Adds a RIGHT JOIN clause and with to the query using the Partner relation
+ * @method     ChildProductPartnerQuery innerJoinWithPartner() Adds a INNER JOIN clause and with to the query using the Partner relation
  *
- * @method     ChildProductCustomerQuery leftJoinProduct($relationAlias = null) Adds a LEFT JOIN clause to the query using the Product relation
- * @method     ChildProductCustomerQuery rightJoinProduct($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Product relation
- * @method     ChildProductCustomerQuery innerJoinProduct($relationAlias = null) Adds a INNER JOIN clause to the query using the Product relation
+ * @method     ChildProductPartnerQuery leftJoinProduct($relationAlias = null) Adds a LEFT JOIN clause to the query using the Product relation
+ * @method     ChildProductPartnerQuery rightJoinProduct($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Product relation
+ * @method     ChildProductPartnerQuery innerJoinProduct($relationAlias = null) Adds a INNER JOIN clause to the query using the Product relation
  *
- * @method     ChildProductCustomerQuery joinWithProduct($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Product relation
+ * @method     ChildProductPartnerQuery joinWithProduct($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Product relation
  *
- * @method     ChildProductCustomerQuery leftJoinWithProduct() Adds a LEFT JOIN clause and with to the query using the Product relation
- * @method     ChildProductCustomerQuery rightJoinWithProduct() Adds a RIGHT JOIN clause and with to the query using the Product relation
- * @method     ChildProductCustomerQuery innerJoinWithProduct() Adds a INNER JOIN clause and with to the query using the Product relation
+ * @method     ChildProductPartnerQuery leftJoinWithProduct() Adds a LEFT JOIN clause and with to the query using the Product relation
+ * @method     ChildProductPartnerQuery rightJoinWithProduct() Adds a RIGHT JOIN clause and with to the query using the Product relation
+ * @method     ChildProductPartnerQuery innerJoinWithProduct() Adds a INNER JOIN clause and with to the query using the Product relation
  *
- * @method     ChildProductCustomerQuery leftJoinProformaInvoiceLine($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProformaInvoiceLine relation
- * @method     ChildProductCustomerQuery rightJoinProformaInvoiceLine($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProformaInvoiceLine relation
- * @method     ChildProductCustomerQuery innerJoinProformaInvoiceLine($relationAlias = null) Adds a INNER JOIN clause to the query using the ProformaInvoiceLine relation
+ * @method     ChildProductPartnerQuery leftJoinProformaInvoiceLine($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProformaInvoiceLine relation
+ * @method     ChildProductPartnerQuery rightJoinProformaInvoiceLine($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProformaInvoiceLine relation
+ * @method     ChildProductPartnerQuery innerJoinProformaInvoiceLine($relationAlias = null) Adds a INNER JOIN clause to the query using the ProformaInvoiceLine relation
  *
- * @method     ChildProductCustomerQuery joinWithProformaInvoiceLine($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ProformaInvoiceLine relation
+ * @method     ChildProductPartnerQuery joinWithProformaInvoiceLine($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ProformaInvoiceLine relation
  *
- * @method     ChildProductCustomerQuery leftJoinWithProformaInvoiceLine() Adds a LEFT JOIN clause and with to the query using the ProformaInvoiceLine relation
- * @method     ChildProductCustomerQuery rightJoinWithProformaInvoiceLine() Adds a RIGHT JOIN clause and with to the query using the ProformaInvoiceLine relation
- * @method     ChildProductCustomerQuery innerJoinWithProformaInvoiceLine() Adds a INNER JOIN clause and with to the query using the ProformaInvoiceLine relation
+ * @method     ChildProductPartnerQuery leftJoinWithProformaInvoiceLine() Adds a LEFT JOIN clause and with to the query using the ProformaInvoiceLine relation
+ * @method     ChildProductPartnerQuery rightJoinWithProformaInvoiceLine() Adds a RIGHT JOIN clause and with to the query using the ProformaInvoiceLine relation
+ * @method     ChildProductPartnerQuery innerJoinWithProformaInvoiceLine() Adds a INNER JOIN clause and with to the query using the ProformaInvoiceLine relation
  *
  * @method     \PartnerQuery|\ProductQuery|\ProformaInvoiceLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
- * @method     ChildProductCustomer findOne(ConnectionInterface $con = null) Return the first ChildProductCustomer matching the query
- * @method     ChildProductCustomer findOneOrCreate(ConnectionInterface $con = null) Return the first ChildProductCustomer matching the query, or a new ChildProductCustomer object populated from the query conditions when no match is found
+ * @method     ChildProductPartner findOne(ConnectionInterface $con = null) Return the first ChildProductPartner matching the query
+ * @method     ChildProductPartner findOneOrCreate(ConnectionInterface $con = null) Return the first ChildProductPartner matching the query, or a new ChildProductPartner object populated from the query conditions when no match is found
  *
- * @method     ChildProductCustomer findOneById(int $id) Return the first ChildProductCustomer filtered by the id column
- * @method     ChildProductCustomer findOneByName(string $name) Return the first ChildProductCustomer filtered by the name column
- * @method     ChildProductCustomer findOneByPartnerId(int $partner_id) Return the first ChildProductCustomer filtered by the partner_id column
- * @method     ChildProductCustomer findOneByProductId(int $product_id) Return the first ChildProductCustomer filtered by the product_id column
- * @method     ChildProductCustomer findOneByProductPrice(int $product_price) Return the first ChildProductCustomer filtered by the product_price column
- * @method     ChildProductCustomer findOneByDescription(string $description) Return the first ChildProductCustomer filtered by the description column
- * @method     ChildProductCustomer findOneByCreatedAt(string $created_at) Return the first ChildProductCustomer filtered by the created_at column
- * @method     ChildProductCustomer findOneByUpdatedAt(string $updated_at) Return the first ChildProductCustomer filtered by the updated_at column *
+ * @method     ChildProductPartner findOneById(int $id) Return the first ChildProductPartner filtered by the id column
+ * @method     ChildProductPartner findOneByName(string $name) Return the first ChildProductPartner filtered by the name column
+ * @method     ChildProductPartner findOneByPartnerId(int $partner_id) Return the first ChildProductPartner filtered by the partner_id column
+ * @method     ChildProductPartner findOneByProductId(int $product_id) Return the first ChildProductPartner filtered by the product_id column
+ * @method     ChildProductPartner findOneByProductPrice(int $product_price) Return the first ChildProductPartner filtered by the product_price column
+ * @method     ChildProductPartner findOneByDescription(string $description) Return the first ChildProductPartner filtered by the description column
+ * @method     ChildProductPartner findOneByCreatedAt(string $created_at) Return the first ChildProductPartner filtered by the created_at column
+ * @method     ChildProductPartner findOneByUpdatedAt(string $updated_at) Return the first ChildProductPartner filtered by the updated_at column *
 
- * @method     ChildProductCustomer requirePk($key, ConnectionInterface $con = null) Return the ChildProductCustomer by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildProductCustomer requireOne(ConnectionInterface $con = null) Return the first ChildProductCustomer matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProductPartner requirePk($key, ConnectionInterface $con = null) Return the ChildProductPartner by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProductPartner requireOne(ConnectionInterface $con = null) Return the first ChildProductPartner matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildProductCustomer requireOneById(int $id) Return the first ChildProductCustomer filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildProductCustomer requireOneByName(string $name) Return the first ChildProductCustomer filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildProductCustomer requireOneByPartnerId(int $partner_id) Return the first ChildProductCustomer filtered by the partner_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildProductCustomer requireOneByProductId(int $product_id) Return the first ChildProductCustomer filtered by the product_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildProductCustomer requireOneByProductPrice(int $product_price) Return the first ChildProductCustomer filtered by the product_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildProductCustomer requireOneByDescription(string $description) Return the first ChildProductCustomer filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildProductCustomer requireOneByCreatedAt(string $created_at) Return the first ChildProductCustomer filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildProductCustomer requireOneByUpdatedAt(string $updated_at) Return the first ChildProductCustomer filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProductPartner requireOneById(int $id) Return the first ChildProductPartner filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProductPartner requireOneByName(string $name) Return the first ChildProductPartner filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProductPartner requireOneByPartnerId(int $partner_id) Return the first ChildProductPartner filtered by the partner_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProductPartner requireOneByProductId(int $product_id) Return the first ChildProductPartner filtered by the product_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProductPartner requireOneByProductPrice(int $product_price) Return the first ChildProductPartner filtered by the product_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProductPartner requireOneByDescription(string $description) Return the first ChildProductPartner filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProductPartner requireOneByCreatedAt(string $created_at) Return the first ChildProductPartner filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProductPartner requireOneByUpdatedAt(string $updated_at) Return the first ChildProductPartner filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildProductCustomer[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildProductCustomer objects based on current ModelCriteria
- * @method     ChildProductCustomer[]|ObjectCollection findById(int $id) Return ChildProductCustomer objects filtered by the id column
- * @method     ChildProductCustomer[]|ObjectCollection findByName(string $name) Return ChildProductCustomer objects filtered by the name column
- * @method     ChildProductCustomer[]|ObjectCollection findByPartnerId(int $partner_id) Return ChildProductCustomer objects filtered by the partner_id column
- * @method     ChildProductCustomer[]|ObjectCollection findByProductId(int $product_id) Return ChildProductCustomer objects filtered by the product_id column
- * @method     ChildProductCustomer[]|ObjectCollection findByProductPrice(int $product_price) Return ChildProductCustomer objects filtered by the product_price column
- * @method     ChildProductCustomer[]|ObjectCollection findByDescription(string $description) Return ChildProductCustomer objects filtered by the description column
- * @method     ChildProductCustomer[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildProductCustomer objects filtered by the created_at column
- * @method     ChildProductCustomer[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildProductCustomer objects filtered by the updated_at column
- * @method     ChildProductCustomer[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
+ * @method     ChildProductPartner[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildProductPartner objects based on current ModelCriteria
+ * @method     ChildProductPartner[]|ObjectCollection findById(int $id) Return ChildProductPartner objects filtered by the id column
+ * @method     ChildProductPartner[]|ObjectCollection findByName(string $name) Return ChildProductPartner objects filtered by the name column
+ * @method     ChildProductPartner[]|ObjectCollection findByPartnerId(int $partner_id) Return ChildProductPartner objects filtered by the partner_id column
+ * @method     ChildProductPartner[]|ObjectCollection findByProductId(int $product_id) Return ChildProductPartner objects filtered by the product_id column
+ * @method     ChildProductPartner[]|ObjectCollection findByProductPrice(int $product_price) Return ChildProductPartner objects filtered by the product_price column
+ * @method     ChildProductPartner[]|ObjectCollection findByDescription(string $description) Return ChildProductPartner objects filtered by the description column
+ * @method     ChildProductPartner[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildProductPartner objects filtered by the created_at column
+ * @method     ChildProductPartner[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildProductPartner objects filtered by the updated_at column
+ * @method     ChildProductPartner[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
-abstract class ProductCustomerQuery extends ModelCriteria
+abstract class ProductPartnerQuery extends ModelCriteria
 {
     protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
-     * Initializes internal state of \Base\ProductCustomerQuery object.
+     * Initializes internal state of \Base\ProductPartnerQuery object.
      *
      * @param     string $dbName The database name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'default', $modelName = '\\ProductCustomer', $modelAlias = null)
+    public function __construct($dbName = 'default', $modelName = '\\ProductPartner', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
-     * Returns a new ChildProductCustomerQuery object.
+     * Returns a new ChildProductPartnerQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
      * @param     Criteria $criteria Optional Criteria to build the query from
      *
-     * @return ChildProductCustomerQuery
+     * @return ChildProductPartnerQuery
      */
     public static function create($modelAlias = null, Criteria $criteria = null)
     {
-        if ($criteria instanceof ChildProductCustomerQuery) {
+        if ($criteria instanceof ChildProductPartnerQuery) {
             return $criteria;
         }
-        $query = new ChildProductCustomerQuery();
+        $query = new ChildProductPartnerQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -166,7 +166,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
      * @param mixed $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
-     * @return ChildProductCustomer|array|mixed the result, formatted by the current formatter
+     * @return ChildProductPartner|array|mixed the result, formatted by the current formatter
      */
     public function findPk($key, ConnectionInterface $con = null)
     {
@@ -175,7 +175,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(ProductCustomerTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(ProductPartnerTableMap::DATABASE_NAME);
         }
 
         $this->basePreSelect($con);
@@ -188,7 +188,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
             return $this->findPkComplex($key, $con);
         }
 
-        if ((null !== ($obj = ProductCustomerTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+        if ((null !== ($obj = ProductPartnerTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -205,11 +205,11 @@ abstract class ProductCustomerQuery extends ModelCriteria
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildProductCustomer A model object, or null if the key is not found
+     * @return ChildProductPartner A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, partner_id, product_id, product_price, description, created_at, updated_at FROM product_customer WHERE id = :p0';
+        $sql = 'SELECT id, name, partner_id, product_id, product_price, description, created_at, updated_at FROM product_partner WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -220,10 +220,10 @@ abstract class ProductCustomerQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-            /** @var ChildProductCustomer $obj */
-            $obj = new ChildProductCustomer();
+            /** @var ChildProductPartner $obj */
+            $obj = new ChildProductPartner();
             $obj->hydrate($row);
-            ProductCustomerTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            ProductPartnerTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -236,7 +236,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return ChildProductCustomer|array|mixed the result, formatted by the current formatter
+     * @return ChildProductPartner|array|mixed the result, formatted by the current formatter
      */
     protected function findPkComplex($key, ConnectionInterface $con)
     {
@@ -278,12 +278,12 @@ abstract class ProductCustomerQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return $this|ChildProductCustomerQuery The current query, for fluid interface
+     * @return $this|ChildProductPartnerQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
 
-        return $this->addUsingAlias(ProductCustomerTableMap::COL_ID, $key, Criteria::EQUAL);
+        return $this->addUsingAlias(ProductPartnerTableMap::COL_ID, $key, Criteria::EQUAL);
     }
 
     /**
@@ -291,12 +291,12 @@ abstract class ProductCustomerQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return $this|ChildProductCustomerQuery The current query, for fluid interface
+     * @return $this|ChildProductPartnerQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
 
-        return $this->addUsingAlias(ProductCustomerTableMap::COL_ID, $keys, Criteria::IN);
+        return $this->addUsingAlias(ProductPartnerTableMap::COL_ID, $keys, Criteria::IN);
     }
 
     /**
@@ -315,18 +315,18 @@ abstract class ProductCustomerQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildProductCustomerQuery The current query, for fluid interface
+     * @return $this|ChildProductPartnerQuery The current query, for fluid interface
      */
     public function filterById($id = null, $comparison = null)
     {
         if (is_array($id)) {
             $useMinMax = false;
             if (isset($id['min'])) {
-                $this->addUsingAlias(ProductCustomerTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ProductPartnerTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($id['max'])) {
-                $this->addUsingAlias(ProductCustomerTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ProductPartnerTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -337,7 +337,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ProductCustomerTableMap::COL_ID, $id, $comparison);
+        return $this->addUsingAlias(ProductPartnerTableMap::COL_ID, $id, $comparison);
     }
 
     /**
@@ -352,7 +352,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
      * @param     string $name The value to use as filter.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildProductCustomerQuery The current query, for fluid interface
+     * @return $this|ChildProductPartnerQuery The current query, for fluid interface
      */
     public function filterByName($name = null, $comparison = null)
     {
@@ -362,7 +362,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ProductCustomerTableMap::COL_NAME, $name, $comparison);
+        return $this->addUsingAlias(ProductPartnerTableMap::COL_NAME, $name, $comparison);
     }
 
     /**
@@ -383,18 +383,18 @@ abstract class ProductCustomerQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildProductCustomerQuery The current query, for fluid interface
+     * @return $this|ChildProductPartnerQuery The current query, for fluid interface
      */
     public function filterByPartnerId($partnerId = null, $comparison = null)
     {
         if (is_array($partnerId)) {
             $useMinMax = false;
             if (isset($partnerId['min'])) {
-                $this->addUsingAlias(ProductCustomerTableMap::COL_PARTNER_ID, $partnerId['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ProductPartnerTableMap::COL_PARTNER_ID, $partnerId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($partnerId['max'])) {
-                $this->addUsingAlias(ProductCustomerTableMap::COL_PARTNER_ID, $partnerId['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ProductPartnerTableMap::COL_PARTNER_ID, $partnerId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -405,7 +405,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ProductCustomerTableMap::COL_PARTNER_ID, $partnerId, $comparison);
+        return $this->addUsingAlias(ProductPartnerTableMap::COL_PARTNER_ID, $partnerId, $comparison);
     }
 
     /**
@@ -426,18 +426,18 @@ abstract class ProductCustomerQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildProductCustomerQuery The current query, for fluid interface
+     * @return $this|ChildProductPartnerQuery The current query, for fluid interface
      */
     public function filterByProductId($productId = null, $comparison = null)
     {
         if (is_array($productId)) {
             $useMinMax = false;
             if (isset($productId['min'])) {
-                $this->addUsingAlias(ProductCustomerTableMap::COL_PRODUCT_ID, $productId['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ProductPartnerTableMap::COL_PRODUCT_ID, $productId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($productId['max'])) {
-                $this->addUsingAlias(ProductCustomerTableMap::COL_PRODUCT_ID, $productId['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ProductPartnerTableMap::COL_PRODUCT_ID, $productId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -448,7 +448,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ProductCustomerTableMap::COL_PRODUCT_ID, $productId, $comparison);
+        return $this->addUsingAlias(ProductPartnerTableMap::COL_PRODUCT_ID, $productId, $comparison);
     }
 
     /**
@@ -467,18 +467,18 @@ abstract class ProductCustomerQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildProductCustomerQuery The current query, for fluid interface
+     * @return $this|ChildProductPartnerQuery The current query, for fluid interface
      */
     public function filterByProductPrice($productPrice = null, $comparison = null)
     {
         if (is_array($productPrice)) {
             $useMinMax = false;
             if (isset($productPrice['min'])) {
-                $this->addUsingAlias(ProductCustomerTableMap::COL_PRODUCT_PRICE, $productPrice['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ProductPartnerTableMap::COL_PRODUCT_PRICE, $productPrice['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($productPrice['max'])) {
-                $this->addUsingAlias(ProductCustomerTableMap::COL_PRODUCT_PRICE, $productPrice['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ProductPartnerTableMap::COL_PRODUCT_PRICE, $productPrice['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -489,7 +489,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ProductCustomerTableMap::COL_PRODUCT_PRICE, $productPrice, $comparison);
+        return $this->addUsingAlias(ProductPartnerTableMap::COL_PRODUCT_PRICE, $productPrice, $comparison);
     }
 
     /**
@@ -504,7 +504,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
      * @param     string $description The value to use as filter.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildProductCustomerQuery The current query, for fluid interface
+     * @return $this|ChildProductPartnerQuery The current query, for fluid interface
      */
     public function filterByDescription($description = null, $comparison = null)
     {
@@ -514,7 +514,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ProductCustomerTableMap::COL_DESCRIPTION, $description, $comparison);
+        return $this->addUsingAlias(ProductPartnerTableMap::COL_DESCRIPTION, $description, $comparison);
     }
 
     /**
@@ -535,18 +535,18 @@ abstract class ProductCustomerQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildProductCustomerQuery The current query, for fluid interface
+     * @return $this|ChildProductPartnerQuery The current query, for fluid interface
      */
     public function filterByCreatedAt($createdAt = null, $comparison = null)
     {
         if (is_array($createdAt)) {
             $useMinMax = false;
             if (isset($createdAt['min'])) {
-                $this->addUsingAlias(ProductCustomerTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ProductPartnerTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($createdAt['max'])) {
-                $this->addUsingAlias(ProductCustomerTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ProductPartnerTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -557,7 +557,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ProductCustomerTableMap::COL_CREATED_AT, $createdAt, $comparison);
+        return $this->addUsingAlias(ProductPartnerTableMap::COL_CREATED_AT, $createdAt, $comparison);
     }
 
     /**
@@ -578,18 +578,18 @@ abstract class ProductCustomerQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildProductCustomerQuery The current query, for fluid interface
+     * @return $this|ChildProductPartnerQuery The current query, for fluid interface
      */
     public function filterByUpdatedAt($updatedAt = null, $comparison = null)
     {
         if (is_array($updatedAt)) {
             $useMinMax = false;
             if (isset($updatedAt['min'])) {
-                $this->addUsingAlias(ProductCustomerTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ProductPartnerTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($updatedAt['max'])) {
-                $this->addUsingAlias(ProductCustomerTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ProductPartnerTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -600,7 +600,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ProductCustomerTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
+        return $this->addUsingAlias(ProductPartnerTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
     }
 
     /**
@@ -611,20 +611,20 @@ abstract class ProductCustomerQuery extends ModelCriteria
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildProductCustomerQuery The current query, for fluid interface
+     * @return ChildProductPartnerQuery The current query, for fluid interface
      */
     public function filterByPartner($partner, $comparison = null)
     {
         if ($partner instanceof \Partner) {
             return $this
-                ->addUsingAlias(ProductCustomerTableMap::COL_PARTNER_ID, $partner->getId(), $comparison);
+                ->addUsingAlias(ProductPartnerTableMap::COL_PARTNER_ID, $partner->getId(), $comparison);
         } elseif ($partner instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(ProductCustomerTableMap::COL_PARTNER_ID, $partner->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->addUsingAlias(ProductPartnerTableMap::COL_PARTNER_ID, $partner->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
             throw new PropelException('filterByPartner() only accepts arguments of type \Partner or Collection');
         }
@@ -636,7 +636,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return $this|ChildProductCustomerQuery The current query, for fluid interface
+     * @return $this|ChildProductPartnerQuery The current query, for fluid interface
      */
     public function joinPartner($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
@@ -688,20 +688,20 @@ abstract class ProductCustomerQuery extends ModelCriteria
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildProductCustomerQuery The current query, for fluid interface
+     * @return ChildProductPartnerQuery The current query, for fluid interface
      */
     public function filterByProduct($product, $comparison = null)
     {
         if ($product instanceof \Product) {
             return $this
-                ->addUsingAlias(ProductCustomerTableMap::COL_PRODUCT_ID, $product->getId(), $comparison);
+                ->addUsingAlias(ProductPartnerTableMap::COL_PRODUCT_ID, $product->getId(), $comparison);
         } elseif ($product instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(ProductCustomerTableMap::COL_PRODUCT_ID, $product->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->addUsingAlias(ProductPartnerTableMap::COL_PRODUCT_ID, $product->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
             throw new PropelException('filterByProduct() only accepts arguments of type \Product or Collection');
         }
@@ -713,7 +713,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return $this|ChildProductCustomerQuery The current query, for fluid interface
+     * @return $this|ChildProductPartnerQuery The current query, for fluid interface
      */
     public function joinProduct($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
@@ -763,13 +763,13 @@ abstract class ProductCustomerQuery extends ModelCriteria
      * @param \ProformaInvoiceLine|ObjectCollection $proformaInvoiceLine the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildProductCustomerQuery The current query, for fluid interface
+     * @return ChildProductPartnerQuery The current query, for fluid interface
      */
     public function filterByProformaInvoiceLine($proformaInvoiceLine, $comparison = null)
     {
         if ($proformaInvoiceLine instanceof \ProformaInvoiceLine) {
             return $this
-                ->addUsingAlias(ProductCustomerTableMap::COL_ID, $proformaInvoiceLine->getProductCustomerId(), $comparison);
+                ->addUsingAlias(ProductPartnerTableMap::COL_ID, $proformaInvoiceLine->getProductPartnerId(), $comparison);
         } elseif ($proformaInvoiceLine instanceof ObjectCollection) {
             return $this
                 ->useProformaInvoiceLineQuery()
@@ -786,7 +786,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return $this|ChildProductCustomerQuery The current query, for fluid interface
+     * @return $this|ChildProductPartnerQuery The current query, for fluid interface
      */
     public function joinProformaInvoiceLine($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
@@ -833,21 +833,21 @@ abstract class ProductCustomerQuery extends ModelCriteria
     /**
      * Exclude object from result
      *
-     * @param   ChildProductCustomer $productCustomer Object to remove from the list of results
+     * @param   ChildProductPartner $productPartner Object to remove from the list of results
      *
-     * @return $this|ChildProductCustomerQuery The current query, for fluid interface
+     * @return $this|ChildProductPartnerQuery The current query, for fluid interface
      */
-    public function prune($productCustomer = null)
+    public function prune($productPartner = null)
     {
-        if ($productCustomer) {
-            $this->addUsingAlias(ProductCustomerTableMap::COL_ID, $productCustomer->getId(), Criteria::NOT_EQUAL);
+        if ($productPartner) {
+            $this->addUsingAlias(ProductPartnerTableMap::COL_ID, $productPartner->getId(), Criteria::NOT_EQUAL);
         }
 
         return $this;
     }
 
     /**
-     * Deletes all rows from the product_customer table.
+     * Deletes all rows from the product_partner table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
@@ -855,7 +855,7 @@ abstract class ProductCustomerQuery extends ModelCriteria
     public function doDeleteAll(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductCustomerTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ProductPartnerTableMap::DATABASE_NAME);
         }
 
         // use transaction because $criteria could contain info
@@ -866,8 +866,8 @@ abstract class ProductCustomerQuery extends ModelCriteria
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            ProductCustomerTableMap::clearInstancePool();
-            ProductCustomerTableMap::clearRelatedInstancePool();
+            ProductPartnerTableMap::clearInstancePool();
+            ProductPartnerTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
@@ -885,26 +885,26 @@ abstract class ProductCustomerQuery extends ModelCriteria
     public function delete(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductCustomerTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ProductPartnerTableMap::DATABASE_NAME);
         }
 
         $criteria = $this;
 
         // Set the correct dbName
-        $criteria->setDbName(ProductCustomerTableMap::DATABASE_NAME);
+        $criteria->setDbName(ProductPartnerTableMap::DATABASE_NAME);
 
         // use transaction because $criteria could contain info
         // for more than one table or we could emulating ON DELETE CASCADE, etc.
         return $con->transaction(function () use ($con, $criteria) {
             $affectedRows = 0; // initialize var to track total num of affected rows
 
-            ProductCustomerTableMap::removeInstanceFromPool($criteria);
+            ProductPartnerTableMap::removeInstanceFromPool($criteria);
 
             $affectedRows += ModelCriteria::delete($con);
-            ProductCustomerTableMap::clearRelatedInstancePool();
+            ProductPartnerTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
     }
 
-} // ProductCustomerQuery
+} // ProductPartnerQuery

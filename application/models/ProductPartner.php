@@ -1,9 +1,9 @@
 <?php
 
-use Base\ProductCustomer as BaseProductCustomer;
+use Base\ProductPartner as BaseProductPartner;
 
 /**
- * Skeleton subclass for representing a row from the 'product_customer' table.
+ * Skeleton subclass for representing a row from the 'product_partner' table.
  *
  *
  *
@@ -12,7 +12,7 @@ use Base\ProductCustomer as BaseProductCustomer;
  * long as it does not already exist in the output directory.
  *
  */
-class ProductCustomer extends BaseProductCustomer
+class ProductPartner extends BaseProductPartner
 {
 
 }

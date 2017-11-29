@@ -44,7 +44,7 @@ class Manage_proformainvoices extends MY_Controller{
   function get_line_json($id = null){
     if($id){
       $line = ProformaInvoiceLineQuery::create()
-      ->joinWith('ProductCustomer')
+      ->joinWith('ProductPartner')
       ->findByProformaInvoiceId($id);
       echo json_encode(array('data'=>json_decode($line->toJSON())->ProformaInvoiceLines));
 
@@ -57,8 +57,8 @@ class Manage_proformainvoices extends MY_Controller{
 
   function get_line_detail($id){
     $line = ProformaInvoiceLineQuery::create()
-    ->joinWith('ProductCustomer')
-    ->joinWith('ProductCustomer.Product')->findPk($id);
+    ->joinWith('ProductPartner')
+    ->joinWith('ProductPartner.Product')->findPk($id);
     echo $line->toJSON();
   }
 
@@ -98,12 +98,12 @@ class Manage_proformainvoices extends MY_Controller{
     foreach ($lines as $key => $line) {
       # code...is->
       if($line->Type == 'write'){
-      $productcust = ProductCustomerQuery::create()
+      $productcust = ProductPartnerQuery::create()
       ->filterByProductId($line->ProductId)
       ->filterByPartnerId($data->getCustomerId())
       ->findOne();
       if(!$productcust){
-        $productcust = new ProductCustomer();
+        $productcust = new ProductPartner();
         $productcust->setProductId($line->ProductId);
         $productcust->setPartnerId($data->getCustomerId());
       }
@@ -125,7 +125,7 @@ class Manage_proformainvoices extends MY_Controller{
         $proformainvoiceline = new ProformaInvoiceLine;
         $proformainvoiceline->setProformaInvoiceId($data->getId());
       }
-      $proformainvoiceline->setProductCustomerId($productcust->getId());
+      $proformainvoiceline->setProductPartnerId($productcust->getId());
       $proformainvoiceline->setQty($line->Qty);
       $proformainvoiceline->setDescription($line->Description);
       $proformainvoiceline->setQtyPerPack($line->QtyPerPack);

@@ -5,15 +5,15 @@ namespace Base;
 use \Partner as ChildPartner;
 use \PartnerQuery as ChildPartnerQuery;
 use \Product as ChildProduct;
-use \ProductCustomer as ChildProductCustomer;
-use \ProductCustomerQuery as ChildProductCustomerQuery;
+use \ProductPartner as ChildProductPartner;
+use \ProductPartnerQuery as ChildProductPartnerQuery;
 use \ProductQuery as ChildProductQuery;
 use \ProformaInvoiceLine as ChildProformaInvoiceLine;
 use \ProformaInvoiceLineQuery as ChildProformaInvoiceLineQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
-use Map\ProductCustomerTableMap;
+use Map\ProductPartnerTableMap;
 use Map\ProformaInvoiceLineTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -30,18 +30,18 @@ use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'product_customer' table.
+ * Base class that represents a row from the 'product_partner' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class ProductCustomer implements ActiveRecordInterface
+abstract class ProductPartner implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Map\\ProductCustomerTableMap';
+    const TABLE_MAP = '\\Map\\ProductPartnerTableMap';
 
 
     /**
@@ -169,7 +169,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
     }
 
     /**
-     * Initializes internal state of Base\ProductCustomer object.
+     * Initializes internal state of Base\ProductPartner object.
      * @see applyDefaults()
      */
     public function __construct()
@@ -266,9 +266,9 @@ abstract class ProductCustomer implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>ProductCustomer</code> instance.  If
-     * <code>obj</code> is an instance of <code>ProductCustomer</code>, delegates to
-     * <code>equals(ProductCustomer)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>ProductPartner</code> instance.  If
+     * <code>obj</code> is an instance of <code>ProductPartner</code>, delegates to
+     * <code>equals(ProductPartner)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -334,7 +334,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|ProductCustomer The current object, for fluid interface
+     * @return $this|ProductPartner The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -499,7 +499,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param int $v new value
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @return $this|\ProductPartner The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -509,7 +509,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[ProductCustomerTableMap::COL_ID] = true;
+            $this->modifiedColumns[ProductPartnerTableMap::COL_ID] = true;
         }
 
         return $this;
@@ -519,7 +519,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * Set the value of [name] column.
      *
      * @param string $v new value
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @return $this|\ProductPartner The current object (for fluent API support)
      */
     public function setName($v)
     {
@@ -529,7 +529,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
 
         if ($this->name !== $v) {
             $this->name = $v;
-            $this->modifiedColumns[ProductCustomerTableMap::COL_NAME] = true;
+            $this->modifiedColumns[ProductPartnerTableMap::COL_NAME] = true;
         }
 
         return $this;
@@ -539,7 +539,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * Set the value of [partner_id] column.
      *
      * @param int $v new value
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @return $this|\ProductPartner The current object (for fluent API support)
      */
     public function setPartnerId($v)
     {
@@ -549,7 +549,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
 
         if ($this->partner_id !== $v) {
             $this->partner_id = $v;
-            $this->modifiedColumns[ProductCustomerTableMap::COL_PARTNER_ID] = true;
+            $this->modifiedColumns[ProductPartnerTableMap::COL_PARTNER_ID] = true;
         }
 
         if ($this->aPartner !== null && $this->aPartner->getId() !== $v) {
@@ -563,7 +563,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * Set the value of [product_id] column.
      *
      * @param int $v new value
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @return $this|\ProductPartner The current object (for fluent API support)
      */
     public function setProductId($v)
     {
@@ -573,7 +573,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
 
         if ($this->product_id !== $v) {
             $this->product_id = $v;
-            $this->modifiedColumns[ProductCustomerTableMap::COL_PRODUCT_ID] = true;
+            $this->modifiedColumns[ProductPartnerTableMap::COL_PRODUCT_ID] = true;
         }
 
         if ($this->aProduct !== null && $this->aProduct->getId() !== $v) {
@@ -587,7 +587,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * Set the value of [product_price] column.
      *
      * @param int $v new value
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @return $this|\ProductPartner The current object (for fluent API support)
      */
     public function setProductPrice($v)
     {
@@ -597,7 +597,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
 
         if ($this->product_price !== $v) {
             $this->product_price = $v;
-            $this->modifiedColumns[ProductCustomerTableMap::COL_PRODUCT_PRICE] = true;
+            $this->modifiedColumns[ProductPartnerTableMap::COL_PRODUCT_PRICE] = true;
         }
 
         return $this;
@@ -607,7 +607,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * Set the value of [description] column.
      *
      * @param string $v new value
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @return $this|\ProductPartner The current object (for fluent API support)
      */
     public function setDescription($v)
     {
@@ -617,7 +617,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
 
         if ($this->description !== $v) {
             $this->description = $v;
-            $this->modifiedColumns[ProductCustomerTableMap::COL_DESCRIPTION] = true;
+            $this->modifiedColumns[ProductPartnerTableMap::COL_DESCRIPTION] = true;
         }
 
         return $this;
@@ -628,7 +628,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @return $this|\ProductPartner The current object (for fluent API support)
      */
     public function setCreatedAt($v)
     {
@@ -636,7 +636,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
         if ($this->created_at !== null || $dt !== null) {
             if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_at->format("Y-m-d H:i:s.u")) {
                 $this->created_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[ProductCustomerTableMap::COL_CREATED_AT] = true;
+                $this->modifiedColumns[ProductPartnerTableMap::COL_CREATED_AT] = true;
             }
         } // if either are not null
 
@@ -648,7 +648,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @return $this|\ProductPartner The current object (for fluent API support)
      */
     public function setUpdatedAt($v)
     {
@@ -656,7 +656,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
         if ($this->updated_at !== null || $dt !== null) {
             if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated_at->format("Y-m-d H:i:s.u")) {
                 $this->updated_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[ProductCustomerTableMap::COL_UPDATED_AT] = true;
+                $this->modifiedColumns[ProductPartnerTableMap::COL_UPDATED_AT] = true;
             }
         } // if either are not null
 
@@ -699,31 +699,31 @@ abstract class ProductCustomer implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProductCustomerTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProductPartnerTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProductCustomerTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProductPartnerTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProductCustomerTableMap::translateFieldName('PartnerId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProductPartnerTableMap::translateFieldName('PartnerId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->partner_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProductCustomerTableMap::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProductPartnerTableMap::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->product_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProductCustomerTableMap::translateFieldName('ProductPrice', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProductPartnerTableMap::translateFieldName('ProductPrice', TableMap::TYPE_PHPNAME, $indexType)];
             $this->product_price = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ProductCustomerTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ProductPartnerTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
             $this->description = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ProductCustomerTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ProductPartnerTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : ProductCustomerTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : ProductPartnerTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -736,10 +736,10 @@ abstract class ProductCustomer implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 8; // 8 = ProductCustomerTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = ProductPartnerTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\ProductCustomer'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\ProductPartner'), 0, $e);
         }
     }
 
@@ -787,13 +787,13 @@ abstract class ProductCustomer implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(ProductCustomerTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(ProductPartnerTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildProductCustomerQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildProductPartnerQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -816,8 +816,8 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see ProductCustomer::setDeleted()
-     * @see ProductCustomer::isDeleted()
+     * @see ProductPartner::setDeleted()
+     * @see ProductPartner::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -826,11 +826,11 @@ abstract class ProductCustomer implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductCustomerTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ProductPartnerTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildProductCustomerQuery::create()
+            $deleteQuery = ChildProductPartnerQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -865,7 +865,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductCustomerTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ProductPartnerTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -884,7 +884,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                ProductCustomerTableMap::addInstanceToPool($this);
+                ProductPartnerTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -977,39 +977,39 @@ abstract class ProductCustomer implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[ProductCustomerTableMap::COL_ID] = true;
+        $this->modifiedColumns[ProductPartnerTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ProductCustomerTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ProductPartnerTableMap::COL_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_ID)) {
+        if ($this->isColumnModified(ProductPartnerTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_NAME)) {
+        if ($this->isColumnModified(ProductPartnerTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'name';
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_PARTNER_ID)) {
+        if ($this->isColumnModified(ProductPartnerTableMap::COL_PARTNER_ID)) {
             $modifiedColumns[':p' . $index++]  = 'partner_id';
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_PRODUCT_ID)) {
+        if ($this->isColumnModified(ProductPartnerTableMap::COL_PRODUCT_ID)) {
             $modifiedColumns[':p' . $index++]  = 'product_id';
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_PRODUCT_PRICE)) {
+        if ($this->isColumnModified(ProductPartnerTableMap::COL_PRODUCT_PRICE)) {
             $modifiedColumns[':p' . $index++]  = 'product_price';
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_DESCRIPTION)) {
+        if ($this->isColumnModified(ProductPartnerTableMap::COL_DESCRIPTION)) {
             $modifiedColumns[':p' . $index++]  = 'description';
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_CREATED_AT)) {
+        if ($this->isColumnModified(ProductPartnerTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_UPDATED_AT)) {
+        if ($this->isColumnModified(ProductPartnerTableMap::COL_UPDATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'updated_at';
         }
 
         $sql = sprintf(
-            'INSERT INTO product_customer (%s) VALUES (%s)',
+            'INSERT INTO product_partner (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -1088,7 +1088,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = ProductCustomerTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = ProductPartnerTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -1152,11 +1152,11 @@ abstract class ProductCustomer implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['ProductCustomer'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['ProductPartner'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['ProductCustomer'][$this->hashCode()] = true;
-        $keys = ProductCustomerTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['ProductPartner'][$this->hashCode()] = true;
+        $keys = ProductPartnerTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
@@ -1240,11 +1240,11 @@ abstract class ProductCustomer implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\ProductCustomer
+     * @return $this|\ProductPartner
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = ProductCustomerTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = ProductPartnerTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1255,7 +1255,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\ProductCustomer
+     * @return $this|\ProductPartner
      */
     public function setByPosition($pos, $value)
     {
@@ -1308,7 +1308,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = ProductCustomerTableMap::getFieldNames($keyType);
+        $keys = ProductPartnerTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setId($arr[$keys[0]]);
@@ -1353,7 +1353,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\ProductCustomer The current object, for fluid interface
+     * @return $this|\ProductPartner The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1373,31 +1373,31 @@ abstract class ProductCustomer implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(ProductCustomerTableMap::DATABASE_NAME);
+        $criteria = new Criteria(ProductPartnerTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_ID)) {
-            $criteria->add(ProductCustomerTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(ProductPartnerTableMap::COL_ID)) {
+            $criteria->add(ProductPartnerTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_NAME)) {
-            $criteria->add(ProductCustomerTableMap::COL_NAME, $this->name);
+        if ($this->isColumnModified(ProductPartnerTableMap::COL_NAME)) {
+            $criteria->add(ProductPartnerTableMap::COL_NAME, $this->name);
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_PARTNER_ID)) {
-            $criteria->add(ProductCustomerTableMap::COL_PARTNER_ID, $this->partner_id);
+        if ($this->isColumnModified(ProductPartnerTableMap::COL_PARTNER_ID)) {
+            $criteria->add(ProductPartnerTableMap::COL_PARTNER_ID, $this->partner_id);
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_PRODUCT_ID)) {
-            $criteria->add(ProductCustomerTableMap::COL_PRODUCT_ID, $this->product_id);
+        if ($this->isColumnModified(ProductPartnerTableMap::COL_PRODUCT_ID)) {
+            $criteria->add(ProductPartnerTableMap::COL_PRODUCT_ID, $this->product_id);
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_PRODUCT_PRICE)) {
-            $criteria->add(ProductCustomerTableMap::COL_PRODUCT_PRICE, $this->product_price);
+        if ($this->isColumnModified(ProductPartnerTableMap::COL_PRODUCT_PRICE)) {
+            $criteria->add(ProductPartnerTableMap::COL_PRODUCT_PRICE, $this->product_price);
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_DESCRIPTION)) {
-            $criteria->add(ProductCustomerTableMap::COL_DESCRIPTION, $this->description);
+        if ($this->isColumnModified(ProductPartnerTableMap::COL_DESCRIPTION)) {
+            $criteria->add(ProductPartnerTableMap::COL_DESCRIPTION, $this->description);
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_CREATED_AT)) {
-            $criteria->add(ProductCustomerTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(ProductPartnerTableMap::COL_CREATED_AT)) {
+            $criteria->add(ProductPartnerTableMap::COL_CREATED_AT, $this->created_at);
         }
-        if ($this->isColumnModified(ProductCustomerTableMap::COL_UPDATED_AT)) {
-            $criteria->add(ProductCustomerTableMap::COL_UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(ProductPartnerTableMap::COL_UPDATED_AT)) {
+            $criteria->add(ProductPartnerTableMap::COL_UPDATED_AT, $this->updated_at);
         }
 
         return $criteria;
@@ -1415,8 +1415,8 @@ abstract class ProductCustomer implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildProductCustomerQuery::create();
-        $criteria->add(ProductCustomerTableMap::COL_ID, $this->id);
+        $criteria = ChildProductPartnerQuery::create();
+        $criteria->add(ProductPartnerTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1478,7 +1478,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \ProductCustomer (or compatible) type.
+     * @param      object $copyObj An object of \ProductPartner (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1521,7 +1521,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \ProductCustomer Clone of current object.
+     * @return \ProductPartner Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1538,7 +1538,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * Declares an association between this object and a ChildPartner object.
      *
      * @param  ChildPartner $v
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @return $this|\ProductPartner The current object (for fluent API support)
      * @throws PropelException
      */
     public function setPartner(ChildPartner $v = null)
@@ -1554,7 +1554,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildPartner object, it will not be re-added.
         if ($v !== null) {
-            $v->addProductCustomer($this);
+            $v->addProductPartner($this);
         }
 
 
@@ -1578,7 +1578,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aPartner->addProductCustomers($this);
+                $this->aPartner->addProductPartners($this);
              */
         }
 
@@ -1589,7 +1589,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * Declares an association between this object and a ChildProduct object.
      *
      * @param  ChildProduct $v
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @return $this|\ProductPartner The current object (for fluent API support)
      * @throws PropelException
      */
     public function setProduct(ChildProduct $v = null)
@@ -1605,7 +1605,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildProduct object, it will not be re-added.
         if ($v !== null) {
-            $v->addProductCustomer($this);
+            $v->addProductPartner($this);
         }
 
 
@@ -1629,7 +1629,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aProduct->addProductCustomers($this);
+                $this->aProduct->addProductPartners($this);
              */
         }
 
@@ -1705,7 +1705,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildProductCustomer is new, it will return
+     * If this ChildProductPartner is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
@@ -1722,7 +1722,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
                 $this->initProformaInvoiceLines();
             } else {
                 $collProformaInvoiceLines = ChildProformaInvoiceLineQuery::create(null, $criteria)
-                    ->filterByProductCustomer($this)
+                    ->filterByProductPartner($this)
                     ->find($con);
 
                 if (null !== $criteria) {
@@ -1765,7 +1765,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      *
      * @param      Collection $proformaInvoiceLines A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildProductCustomer The current object (for fluent API support)
+     * @return $this|ChildProductPartner The current object (for fluent API support)
      */
     public function setProformaInvoiceLines(Collection $proformaInvoiceLines, ConnectionInterface $con = null)
     {
@@ -1776,7 +1776,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
         $this->proformaInvoiceLinesScheduledForDeletion = $proformaInvoiceLinesToDelete;
 
         foreach ($proformaInvoiceLinesToDelete as $proformaInvoiceLineRemoved) {
-            $proformaInvoiceLineRemoved->setProductCustomer(null);
+            $proformaInvoiceLineRemoved->setProductPartner(null);
         }
 
         $this->collProformaInvoiceLines = null;
@@ -1817,7 +1817,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
             }
 
             return $query
-                ->filterByProductCustomer($this)
+                ->filterByProductPartner($this)
                 ->count($con);
         }
 
@@ -1829,7 +1829,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      * through the ChildProformaInvoiceLine foreign key attribute.
      *
      * @param  ChildProformaInvoiceLine $l ChildProformaInvoiceLine
-     * @return $this|\ProductCustomer The current object (for fluent API support)
+     * @return $this|\ProductPartner The current object (for fluent API support)
      */
     public function addProformaInvoiceLine(ChildProformaInvoiceLine $l)
     {
@@ -1855,12 +1855,12 @@ abstract class ProductCustomer implements ActiveRecordInterface
     protected function doAddProformaInvoiceLine(ChildProformaInvoiceLine $proformaInvoiceLine)
     {
         $this->collProformaInvoiceLines[]= $proformaInvoiceLine;
-        $proformaInvoiceLine->setProductCustomer($this);
+        $proformaInvoiceLine->setProductPartner($this);
     }
 
     /**
      * @param  ChildProformaInvoiceLine $proformaInvoiceLine The ChildProformaInvoiceLine object to remove.
-     * @return $this|ChildProductCustomer The current object (for fluent API support)
+     * @return $this|ChildProductPartner The current object (for fluent API support)
      */
     public function removeProformaInvoiceLine(ChildProformaInvoiceLine $proformaInvoiceLine)
     {
@@ -1872,7 +1872,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
                 $this->proformaInvoiceLinesScheduledForDeletion->clear();
             }
             $this->proformaInvoiceLinesScheduledForDeletion[]= clone $proformaInvoiceLine;
-            $proformaInvoiceLine->setProductCustomer(null);
+            $proformaInvoiceLine->setProductPartner(null);
         }
 
         return $this;
@@ -1882,13 +1882,13 @@ abstract class ProductCustomer implements ActiveRecordInterface
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this ProductCustomer is new, it will return
-     * an empty collection; or if this ProductCustomer has previously
+     * Otherwise if this ProductPartner is new, it will return
+     * an empty collection; or if this ProductPartner has previously
      * been saved, it will retrieve related ProformaInvoiceLines from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in ProductCustomer.
+     * actually need in ProductPartner.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
@@ -1911,10 +1911,10 @@ abstract class ProductCustomer implements ActiveRecordInterface
     public function clear()
     {
         if (null !== $this->aPartner) {
-            $this->aPartner->removeProductCustomer($this);
+            $this->aPartner->removeProductPartner($this);
         }
         if (null !== $this->aProduct) {
-            $this->aProduct->removeProductCustomer($this);
+            $this->aProduct->removeProductPartner($this);
         }
         $this->id = null;
         $this->name = null;
@@ -1962,7 +1962,7 @@ abstract class ProductCustomer implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(ProductCustomerTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(ProductPartnerTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

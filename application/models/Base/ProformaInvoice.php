@@ -1889,10 +1889,10 @@ abstract class ProformaInvoice implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildProformaInvoiceLine[] List of ChildProformaInvoiceLine objects
      */
-    public function getProformaInvoiceLinesJoinProductCustomer(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getProformaInvoiceLinesJoinProductPartner(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildProformaInvoiceLineQuery::create(null, $criteria);
-        $query->joinWith('ProductCustomer', $joinBehavior);
+        $query->joinWith('ProductPartner', $joinBehavior);
 
         return $this->getProformaInvoiceLines($query, $con);
     }

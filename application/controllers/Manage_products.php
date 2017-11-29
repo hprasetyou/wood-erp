@@ -34,13 +34,13 @@ class Manage_products extends MY_Controller{
     // ->joinWith('ProductFinishing.Finishing');
     $sproduct = $product->findPk($id);
     if($this->input->get('customer_id')){
-      $productcustomer = $product->useProductCustomerQuery()
+      $ProductPartner = $product->useProductPartnerQuery()
         ->filterByPartnerId($this->input->get('customer_id'))
       ->endUse()
-      ->leftJoinWith('Product.ProductCustomer');
+      ->leftJoinWith('Product.ProductPartner');
     }
-    $productcustomer = $productcustomer->findPk($id);
-    $o = $productcustomer? $productcustomer: $sproduct;
+    $ProductPartner = $ProductPartner->findPk($id);
+    $o = $ProductPartner? $ProductPartner: $sproduct;
     $p = json_decode($o->toJSON());
     $p->Finishings = json_decode($o->getFinishings()->toJSON())->Finishings;
     echo json_encode($p);
@@ -181,7 +181,7 @@ class Manage_products extends MY_Controller{
 		if($this->input->post('confirm')){
       try {
         $product = ProductQuery::create()->findPK($id);
-        $product->getProductCustomers()->delete();
+        $product->getProductPartners()->delete();
         $product->getProductFinishings()->delete();
         $product->getProductImages()->delete();
         $product->getProductComponents()->delete();

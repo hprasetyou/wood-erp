@@ -9,7 +9,7 @@ class Manage_proformainvoicelines extends MY_Controller{
 		$this->tpl = 'proformainvoicelines';
     $this->form = array(
      'ProformaInvoiceId' => 'ProformaInvoiceId',
-     'ProductCustomerId' => 'ProductCustomerId',
+     'ProductPartnerId' => 'ProductPartnerId',
      'ProductFinishing' => 'ProductFinishing',
      'Description' => 'Description',
      'Qty' => 'Qty',
@@ -25,7 +25,7 @@ class Manage_proformainvoicelines extends MY_Controller{
 
   function get_json(){
     $this->objobj = ProformaInvoiceLineQuery::create()
-    ->joinWith('ProductCustomer')
+    ->joinWith('ProductPartner')
     ->filterByProformaInvoiceId($this->input->get('proforma_invoice'));
     if($this->input->get('check_qty_for_pl')){
       $this->custom_column = array('avail_qty'=>" function() use(_{PackingListLines}_,_{Qty}_){
@@ -46,16 +46,16 @@ class Manage_proformainvoicelines extends MY_Controller{
     $i = 0;
     foreach ($lines as $line) {
       # code...
-      $prod = $line->getProductCustomer()->getProduct();
+      $prod = $line->getProductPartner()->getProduct();
       $o[$i]['id'] = $line->getId().'-'.$prod->getId();
-      $o[$i]['article_number'] = $line->getProductCustomer()->getName();
+      $o[$i]['article_number'] = $line->getProductPartner()->getName();
       $o[$i]['description'] = $line->getDescription();
       $o[$i]['has_component'] = $prod->getHasComponent();
       $o[$i]['total_qty'] = $line->getQty();
       if($prod->getHasComponent()){
         foreach ($prod->getProductComponents() as $prodcomponent) {
           $o[$i]['id'] = $line->getId().'-'.$prod->getId().'-'.$prodcomponent->getComponent()->getId();
-          $o[$i]['article_number'] = $line->getProductCustomer()->getName();
+          $o[$i]['article_number'] = $line->getProductPartner()->getName();
           $o[$i]['description'] = $line->getDescription();
           $o[$i]['has_component'] = $prodcomponent->getComponent()->getName();
           $o[$i]['total_qty'] = $line->getQty() * $prodcomponent->getQty();
@@ -74,11 +74,11 @@ class Manage_proformainvoicelines extends MY_Controller{
 
 		$proforma_invoices = ProformaInvoiceQuery::create()->find();
 
-		$product_customers = ProductCustomerQuery::create()->find();
+		$product_partners = ProductPartnerQuery::create()->find();
 
 		$this->template->render('admin/proformainvoicelines/form',array(
 		'proforma_invoices'=> $proforma_invoices,
-		'product_customers'=> $product_customers,
+		'product_partners'=> $product_partners,
 			));
   }
 
@@ -86,13 +86,13 @@ class Manage_proformainvoicelines extends MY_Controller{
 
 		$proforma_invoices = ProformaInvoiceQuery::create()->find();
 
-		$product_customers = ProductCustomerQuery::create()->find();
+		$product_partners = ProductPartnerQuery::create()->find();
 
 		$proformainvoiceline = ProformaInvoiceLineQuery::create()->findPK($id);
 		$this->template->render('admin/proformainvoicelines/form',array('proformainvoicelines'=>$proformainvoiceline,
 		'proforma_invoices'=> $proforma_invoices,
 
-		'product_customers'=> $product_customers,
+		'product_partners'=> $product_partners,
 			));
   }
 

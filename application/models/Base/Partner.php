@@ -6,8 +6,8 @@ use \PackingList as ChildPackingList;
 use \PackingListQuery as ChildPackingListQuery;
 use \Partner as ChildPartner;
 use \PartnerQuery as ChildPartnerQuery;
-use \ProductCustomer as ChildProductCustomer;
-use \ProductCustomerQuery as ChildProductCustomerQuery;
+use \ProductPartner as ChildProductPartner;
+use \ProductPartnerQuery as ChildProductPartnerQuery;
 use \ProformaInvoice as ChildProformaInvoice;
 use \ProformaInvoiceQuery as ChildProformaInvoiceQuery;
 use \PurchaseOrder as ChildPurchaseOrder;
@@ -19,7 +19,7 @@ use \Exception;
 use \PDO;
 use Map\PackingListTableMap;
 use Map\PartnerTableMap;
-use Map\ProductCustomerTableMap;
+use Map\ProductPartnerTableMap;
 use Map\ProformaInvoiceTableMap;
 use Map\PurchaseOrderTableMap;
 use Map\UserTableMap;
@@ -207,10 +207,10 @@ abstract class Partner implements ActiveRecordInterface
     protected $collPartnersRelatedByIdPartial;
 
     /**
-     * @var        ObjectCollection|ChildProductCustomer[] Collection to store aggregation of ChildProductCustomer objects.
+     * @var        ObjectCollection|ChildProductPartner[] Collection to store aggregation of ChildProductPartner objects.
      */
-    protected $collProductCustomers;
-    protected $collProductCustomersPartial;
+    protected $collProductPartners;
+    protected $collProductPartnersPartial;
 
     /**
      * @var        ObjectCollection|ChildUser[] Collection to store aggregation of ChildUser objects.
@@ -252,9 +252,9 @@ abstract class Partner implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildProductCustomer[]
+     * @var ObjectCollection|ChildProductPartner[]
      */
-    protected $productCustomersScheduledForDeletion = null;
+    protected $productPartnersScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -1254,7 +1254,7 @@ abstract class Partner implements ActiveRecordInterface
             $this->aCompany = null;
             $this->collPartnersRelatedById = null;
 
-            $this->collProductCustomers = null;
+            $this->collProductPartners = null;
 
             $this->collUsers = null;
 
@@ -1408,17 +1408,17 @@ abstract class Partner implements ActiveRecordInterface
                 }
             }
 
-            if ($this->productCustomersScheduledForDeletion !== null) {
-                if (!$this->productCustomersScheduledForDeletion->isEmpty()) {
-                    \ProductCustomerQuery::create()
-                        ->filterByPrimaryKeys($this->productCustomersScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->productPartnersScheduledForDeletion !== null) {
+                if (!$this->productPartnersScheduledForDeletion->isEmpty()) {
+                    \ProductPartnerQuery::create()
+                        ->filterByPrimaryKeys($this->productPartnersScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->productCustomersScheduledForDeletion = null;
+                    $this->productPartnersScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collProductCustomers !== null) {
-                foreach ($this->collProductCustomers as $referrerFK) {
+            if ($this->collProductPartners !== null) {
+                foreach ($this->collProductPartners as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1827,20 +1827,20 @@ abstract class Partner implements ActiveRecordInterface
 
                 $result[$key] = $this->collPartnersRelatedById->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
-            if (null !== $this->collProductCustomers) {
+            if (null !== $this->collProductPartners) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'productCustomers';
+                        $key = 'productPartners';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'product_customers';
+                        $key = 'product_partners';
                         break;
                     default:
-                        $key = 'ProductCustomers';
+                        $key = 'ProductPartners';
                 }
 
-                $result[$key] = $this->collProductCustomers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collProductPartners->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collUsers) {
 
@@ -2260,9 +2260,9 @@ abstract class Partner implements ActiveRecordInterface
                 }
             }
 
-            foreach ($this->getProductCustomers() as $relObj) {
+            foreach ($this->getProductPartners() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addProductCustomer($relObj->copy($deepCopy));
+                    $copyObj->addProductPartner($relObj->copy($deepCopy));
                 }
             }
 
@@ -2386,8 +2386,8 @@ abstract class Partner implements ActiveRecordInterface
             $this->initPartnersRelatedById();
             return;
         }
-        if ('ProductCustomer' == $relationName) {
-            $this->initProductCustomers();
+        if ('ProductPartner' == $relationName) {
+            $this->initProductPartners();
             return;
         }
         if ('User' == $relationName) {
@@ -2634,31 +2634,31 @@ abstract class Partner implements ActiveRecordInterface
     }
 
     /**
-     * Clears out the collProductCustomers collection
+     * Clears out the collProductPartners collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addProductCustomers()
+     * @see        addProductPartners()
      */
-    public function clearProductCustomers()
+    public function clearProductPartners()
     {
-        $this->collProductCustomers = null; // important to set this to NULL since that means it is uninitialized
+        $this->collProductPartners = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collProductCustomers collection loaded partially.
+     * Reset is the collProductPartners collection loaded partially.
      */
-    public function resetPartialProductCustomers($v = true)
+    public function resetPartialProductPartners($v = true)
     {
-        $this->collProductCustomersPartial = $v;
+        $this->collProductPartnersPartial = $v;
     }
 
     /**
-     * Initializes the collProductCustomers collection.
+     * Initializes the collProductPartners collection.
      *
-     * By default this just sets the collProductCustomers collection to an empty array (like clearcollProductCustomers());
+     * By default this just sets the collProductPartners collection to an empty array (like clearcollProductPartners());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -2667,20 +2667,20 @@ abstract class Partner implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initProductCustomers($overrideExisting = true)
+    public function initProductPartners($overrideExisting = true)
     {
-        if (null !== $this->collProductCustomers && !$overrideExisting) {
+        if (null !== $this->collProductPartners && !$overrideExisting) {
             return;
         }
 
-        $collectionClassName = ProductCustomerTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = ProductPartnerTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collProductCustomers = new $collectionClassName;
-        $this->collProductCustomers->setModel('\ProductCustomer');
+        $this->collProductPartners = new $collectionClassName;
+        $this->collProductPartners->setModel('\ProductPartner');
     }
 
     /**
-     * Gets an array of ChildProductCustomer objects which contain a foreign key that references this object.
+     * Gets an array of ChildProductPartner objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -2690,108 +2690,108 @@ abstract class Partner implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildProductCustomer[] List of ChildProductCustomer objects
+     * @return ObjectCollection|ChildProductPartner[] List of ChildProductPartner objects
      * @throws PropelException
      */
-    public function getProductCustomers(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getProductPartners(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collProductCustomersPartial && !$this->isNew();
-        if (null === $this->collProductCustomers || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collProductCustomers) {
+        $partial = $this->collProductPartnersPartial && !$this->isNew();
+        if (null === $this->collProductPartners || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collProductPartners) {
                 // return empty collection
-                $this->initProductCustomers();
+                $this->initProductPartners();
             } else {
-                $collProductCustomers = ChildProductCustomerQuery::create(null, $criteria)
+                $collProductPartners = ChildProductPartnerQuery::create(null, $criteria)
                     ->filterByPartner($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collProductCustomersPartial && count($collProductCustomers)) {
-                        $this->initProductCustomers(false);
+                    if (false !== $this->collProductPartnersPartial && count($collProductPartners)) {
+                        $this->initProductPartners(false);
 
-                        foreach ($collProductCustomers as $obj) {
-                            if (false == $this->collProductCustomers->contains($obj)) {
-                                $this->collProductCustomers->append($obj);
+                        foreach ($collProductPartners as $obj) {
+                            if (false == $this->collProductPartners->contains($obj)) {
+                                $this->collProductPartners->append($obj);
                             }
                         }
 
-                        $this->collProductCustomersPartial = true;
+                        $this->collProductPartnersPartial = true;
                     }
 
-                    return $collProductCustomers;
+                    return $collProductPartners;
                 }
 
-                if ($partial && $this->collProductCustomers) {
-                    foreach ($this->collProductCustomers as $obj) {
+                if ($partial && $this->collProductPartners) {
+                    foreach ($this->collProductPartners as $obj) {
                         if ($obj->isNew()) {
-                            $collProductCustomers[] = $obj;
+                            $collProductPartners[] = $obj;
                         }
                     }
                 }
 
-                $this->collProductCustomers = $collProductCustomers;
-                $this->collProductCustomersPartial = false;
+                $this->collProductPartners = $collProductPartners;
+                $this->collProductPartnersPartial = false;
             }
         }
 
-        return $this->collProductCustomers;
+        return $this->collProductPartners;
     }
 
     /**
-     * Sets a collection of ChildProductCustomer objects related by a one-to-many relationship
+     * Sets a collection of ChildProductPartner objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $productCustomers A Propel collection.
+     * @param      Collection $productPartners A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return $this|ChildPartner The current object (for fluent API support)
      */
-    public function setProductCustomers(Collection $productCustomers, ConnectionInterface $con = null)
+    public function setProductPartners(Collection $productPartners, ConnectionInterface $con = null)
     {
-        /** @var ChildProductCustomer[] $productCustomersToDelete */
-        $productCustomersToDelete = $this->getProductCustomers(new Criteria(), $con)->diff($productCustomers);
+        /** @var ChildProductPartner[] $productPartnersToDelete */
+        $productPartnersToDelete = $this->getProductPartners(new Criteria(), $con)->diff($productPartners);
 
 
-        $this->productCustomersScheduledForDeletion = $productCustomersToDelete;
+        $this->productPartnersScheduledForDeletion = $productPartnersToDelete;
 
-        foreach ($productCustomersToDelete as $productCustomerRemoved) {
-            $productCustomerRemoved->setPartner(null);
+        foreach ($productPartnersToDelete as $productPartnerRemoved) {
+            $productPartnerRemoved->setPartner(null);
         }
 
-        $this->collProductCustomers = null;
-        foreach ($productCustomers as $productCustomer) {
-            $this->addProductCustomer($productCustomer);
+        $this->collProductPartners = null;
+        foreach ($productPartners as $productPartner) {
+            $this->addProductPartner($productPartner);
         }
 
-        $this->collProductCustomers = $productCustomers;
-        $this->collProductCustomersPartial = false;
+        $this->collProductPartners = $productPartners;
+        $this->collProductPartnersPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related ProductCustomer objects.
+     * Returns the number of related ProductPartner objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related ProductCustomer objects.
+     * @return int             Count of related ProductPartner objects.
      * @throws PropelException
      */
-    public function countProductCustomers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countProductPartners(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collProductCustomersPartial && !$this->isNew();
-        if (null === $this->collProductCustomers || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collProductCustomers) {
+        $partial = $this->collProductPartnersPartial && !$this->isNew();
+        if (null === $this->collProductPartners || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collProductPartners) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getProductCustomers());
+                return count($this->getProductPartners());
             }
 
-            $query = ChildProductCustomerQuery::create(null, $criteria);
+            $query = ChildProductPartnerQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -2801,28 +2801,28 @@ abstract class Partner implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collProductCustomers);
+        return count($this->collProductPartners);
     }
 
     /**
-     * Method called to associate a ChildProductCustomer object to this object
-     * through the ChildProductCustomer foreign key attribute.
+     * Method called to associate a ChildProductPartner object to this object
+     * through the ChildProductPartner foreign key attribute.
      *
-     * @param  ChildProductCustomer $l ChildProductCustomer
+     * @param  ChildProductPartner $l ChildProductPartner
      * @return $this|\Partner The current object (for fluent API support)
      */
-    public function addProductCustomer(ChildProductCustomer $l)
+    public function addProductPartner(ChildProductPartner $l)
     {
-        if ($this->collProductCustomers === null) {
-            $this->initProductCustomers();
-            $this->collProductCustomersPartial = true;
+        if ($this->collProductPartners === null) {
+            $this->initProductPartners();
+            $this->collProductPartnersPartial = true;
         }
 
-        if (!$this->collProductCustomers->contains($l)) {
-            $this->doAddProductCustomer($l);
+        if (!$this->collProductPartners->contains($l)) {
+            $this->doAddProductPartner($l);
 
-            if ($this->productCustomersScheduledForDeletion and $this->productCustomersScheduledForDeletion->contains($l)) {
-                $this->productCustomersScheduledForDeletion->remove($this->productCustomersScheduledForDeletion->search($l));
+            if ($this->productPartnersScheduledForDeletion and $this->productPartnersScheduledForDeletion->contains($l)) {
+                $this->productPartnersScheduledForDeletion->remove($this->productPartnersScheduledForDeletion->search($l));
             }
         }
 
@@ -2830,29 +2830,29 @@ abstract class Partner implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildProductCustomer $productCustomer The ChildProductCustomer object to add.
+     * @param ChildProductPartner $productPartner The ChildProductPartner object to add.
      */
-    protected function doAddProductCustomer(ChildProductCustomer $productCustomer)
+    protected function doAddProductPartner(ChildProductPartner $productPartner)
     {
-        $this->collProductCustomers[]= $productCustomer;
-        $productCustomer->setPartner($this);
+        $this->collProductPartners[]= $productPartner;
+        $productPartner->setPartner($this);
     }
 
     /**
-     * @param  ChildProductCustomer $productCustomer The ChildProductCustomer object to remove.
+     * @param  ChildProductPartner $productPartner The ChildProductPartner object to remove.
      * @return $this|ChildPartner The current object (for fluent API support)
      */
-    public function removeProductCustomer(ChildProductCustomer $productCustomer)
+    public function removeProductPartner(ChildProductPartner $productPartner)
     {
-        if ($this->getProductCustomers()->contains($productCustomer)) {
-            $pos = $this->collProductCustomers->search($productCustomer);
-            $this->collProductCustomers->remove($pos);
-            if (null === $this->productCustomersScheduledForDeletion) {
-                $this->productCustomersScheduledForDeletion = clone $this->collProductCustomers;
-                $this->productCustomersScheduledForDeletion->clear();
+        if ($this->getProductPartners()->contains($productPartner)) {
+            $pos = $this->collProductPartners->search($productPartner);
+            $this->collProductPartners->remove($pos);
+            if (null === $this->productPartnersScheduledForDeletion) {
+                $this->productPartnersScheduledForDeletion = clone $this->collProductPartners;
+                $this->productPartnersScheduledForDeletion->clear();
             }
-            $this->productCustomersScheduledForDeletion[]= clone $productCustomer;
-            $productCustomer->setPartner(null);
+            $this->productPartnersScheduledForDeletion[]= clone $productPartner;
+            $productPartner->setPartner(null);
         }
 
         return $this;
@@ -2864,7 +2864,7 @@ abstract class Partner implements ActiveRecordInterface
      * an identical criteria, it returns the collection.
      * Otherwise if this Partner is new, it will return
      * an empty collection; or if this Partner has previously
-     * been saved, it will retrieve related ProductCustomers from storage.
+     * been saved, it will retrieve related ProductPartners from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
@@ -2873,14 +2873,14 @@ abstract class Partner implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildProductCustomer[] List of ChildProductCustomer objects
+     * @return ObjectCollection|ChildProductPartner[] List of ChildProductPartner objects
      */
-    public function getProductCustomersJoinProduct(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getProductPartnersJoinProduct(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildProductCustomerQuery::create(null, $criteria);
+        $query = ChildProductPartnerQuery::create(null, $criteria);
         $query->joinWith('Product', $joinBehavior);
 
-        return $this->getProductCustomers($query, $con);
+        return $this->getProductPartners($query, $con);
     }
 
     /**
@@ -3858,8 +3858,8 @@ abstract class Partner implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collProductCustomers) {
-                foreach ($this->collProductCustomers as $o) {
+            if ($this->collProductPartners) {
+                foreach ($this->collProductPartners as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
@@ -3886,7 +3886,7 @@ abstract class Partner implements ActiveRecordInterface
         } // if ($deep)
 
         $this->collPartnersRelatedById = null;
-        $this->collProductCustomers = null;
+        $this->collProductPartners = null;
         $this->collUsers = null;
         $this->collProformaInvoices = null;
         $this->collPackingLists = null;

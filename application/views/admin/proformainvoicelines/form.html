@@ -41,17 +41,17 @@
 						</div>
 
 					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProductCustomerId">{{res.string.product_customer_id}}</label>
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProductPartnerId">{{res.string.product_partner_id}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if proformainvoicelines %}style="display:none"{% endif %} class="input-wrap input-group">
-							<input type="hidden" type="text" id="ProductCustomerId" value="{{ proformainvoicelines.ProductCustomerId }}" name="ProductCustomerId"  >
-							<input type="text" required="required" name="displayProductCustomerId" id="displayProductCustomerId"  placeholder="{{ res.string.product_customer_id }}" value="{{ proformainvoicelines.ProductCustomer }}" class="form-control" />
+							<input type="hidden" type="text" id="ProductPartnerId" value="{{ proformainvoicelines.ProductPartnerId }}" name="ProductPartnerId"  >
+							<input type="text" required="required" name="displayProductPartnerId" id="displayProductPartnerId"  placeholder="{{ res.string.product_partner_id }}" value="{{ proformainvoicelines.ProductPartner }}" class="form-control" />
 							<span class="input-group-btn">
-								<button class="btn btnModal btn-default" id="btnProductCustomerId"  data-target="ModalProductCustomer" type="button">{{res.string.search}}</button>
+								<button class="btn btnModal btn-default" id="btnProductPartnerId"  data-target="ModalProductPartner" type="button">{{res.string.search}}</button>
 							</span>
 						</div>
 								{% if proformainvoicelines %}
-									<p class="control-value">{{ proformainvoicelines.ProductCustomer.Name  }}</p>
+									<p class="control-value">{{ proformainvoicelines.ProductPartner.Name  }}</p>
 								{% endif %}
 							</div>
 						</div>
@@ -192,7 +192,7 @@
 </div>
 <!-- Modal -->
 {% include "admin/proforma_invoices/_modal.html" %}
-{% include "admin/product_customers/_modal.html" %}
+{% include "admin/product_partners/_modal.html" %}
 
 {% endblock %}
 {% block bottom%}

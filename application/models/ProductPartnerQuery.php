@@ -1,9 +1,9 @@
 <?php
 
-use Base\ProductCustomerQuery as BaseProductCustomerQuery;
+use Base\ProductPartnerQuery as BaseProductPartnerQuery;
 
 /**
- * Skeleton subclass for performing query and update operations on the 'product_customer' table.
+ * Skeleton subclass for performing query and update operations on the 'product_partner' table.
  *
  *
  *
@@ -12,7 +12,7 @@ use Base\ProductCustomerQuery as BaseProductCustomerQuery;
  * long as it does not already exist in the output directory.
  *
  */
-class ProductCustomerQuery extends BaseProductCustomerQuery
+class ProductPartnerQuery extends BaseProductPartnerQuery
 {
 
 }
