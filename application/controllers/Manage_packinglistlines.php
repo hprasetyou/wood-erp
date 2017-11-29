@@ -37,15 +37,7 @@ class Manage_packinglistlines extends MY_Controller{
   }
   function create(){
 
-		$packing_lists = PackingListQuery::create()->find();
-
-		$proforma_invoice_lines = ProformaInvoiceLineQuery::create()->find();
-
-		$this->template->render('admin/packinglistlines/form',array(
-		'packing_lists'=> $packing_lists,
-
-		'proforma_invoice_lines'=> $proforma_invoice_lines,
-			));
+		$this->template->render('admin/packinglistlines/form');
   }
 
   function detail($id){

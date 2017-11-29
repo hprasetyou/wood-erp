@@ -1,4 +1,4 @@
-<?php
+<?php 
  return array(
 'access' => 'Access',
 'add' => 'Add',
@@ -97,13 +97,14 @@
 'pod' => 'Pod',
 'price' => 'Price',
 'product' => 'Product',
-'product_partner_id' => 'Product Customer Id',
 'product_finishing' => 'Product Finishing',
 'product_id' => 'Product Id',
+'product_partner_id' => 'Product Customer Id',
 'proforma_invoice' => 'Proforma Invoice',
 'proforma_invoice_id' => 'Proforma Invoice Id',
 'proforma_invoice_line' => 'Proforma Invoice Line',
 'proforma_invoice_line_id' => 'Proforma Invoice Line Id',
+'purchase_order_id' => 'Purchase Order Id',
 'purchase_order_line' => 'Purchase Order Line',
 'qty' => 'Qty',
 'qty_of_pack' => 'Qty Of Pack',
@@ -135,5 +136,5 @@
 'width_kdn' => 'Width Knockdown',
 'with_box' => 'With Carton Box',
 'yes' => 'Yes',
-'purchase_order_id' => 'Purchase Order Id'
+'product_price' => 'Product Price'
 );

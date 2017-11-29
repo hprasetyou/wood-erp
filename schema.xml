@@ -33,9 +33,12 @@
     <column name="tax_number" phpName="TaxNumber" type="VARCHAR" size="255"/>
     <column name="bank_detail" phpName="BankDetail" type="VARCHAR" size="255"/>
     <column name="company_id" phpName="CompanyId" type="INTEGER"/>
-    <column name="is_employee" phpName="IsEmployee" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
-    <column name="is_customer" phpName="IsCustomer" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
-    <column name="is_supplier" phpName="IsSupplier" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
+    <column name="class_key" type="INTEGER" inheritance="single">
+      <inheritance key="1" class="Partner"/>
+      <inheritance key="2" class="Employee" extends="Partner"/>
+      <inheritance key="3" class="Customer" extends="Partner"/>
+      <inheritance key="4" class="Supplier" extends="Partner"/>
+    </column>
     <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
     <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
     <index name="company_id">
@@ -109,6 +112,7 @@
     <column name="product_id" phpName="ProductId" type="INTEGER" required="true"/>
     <column name="product_price" phpName="ProductPrice" type="INTEGER" required="true"/>
     <column name="description" phpName="Description" type="LONGVARCHAR"/>
+    <column name="type" phpName="Type" type="CHAR" sqlType="ENUM('buy','sell')" defaultValue="sell" />
     <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
     <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
     <foreign-key foreignTable="partner" name="product_partner_ibfk_1">

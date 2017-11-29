@@ -5,10 +5,9 @@ class Manage_customers extends MY_Controller{
 
 
   function __construct(){
-    $this->objname = 'Partner';
+    $this->objname = 'Customer';
     $this->tpl = 'customers';
-    $this->objobj = PartnerQuery::create()
-    ->filterByIsCustomer(true)
+    $this->objobj = CustomerQuery::create()
     ->filterByCompanyId(0)
     ->_or()
     ->filterByCompanyId(null);
@@ -23,8 +22,7 @@ class Manage_customers extends MY_Controller{
       'Image'=>'Image',
       'Fax'=>'Fax',
       'TaxNumber'=>'TaxNumber',
-      'BankDetail'=>'BankDetail',
-      'IsCustomer'=>array('value'=>1)
+      'BankDetail'=>'BankDetail'
     );
     $this->authorization->check_authorization('manage_customers');
   }

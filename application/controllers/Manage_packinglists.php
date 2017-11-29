@@ -53,13 +53,8 @@ class Manage_packinglists extends MY_Controller{
   }
 
   function detail($id){
-
-		$partners = PartnerQuery::create()->find();
-
 		$packinglist = PackingListQuery::create()->findPK($id);
-		$this->template->render('admin/packinglists/form',array('packinglists'=>$packinglist,
-		'partners'=> $partners,
-			));
+		$this->template->render('admin/packinglists/form',array('packinglists'=>$packinglist	));
   }
 
 	function write($id=null){

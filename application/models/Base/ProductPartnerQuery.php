@@ -26,6 +26,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductPartnerQuery orderByProductId($order = Criteria::ASC) Order by the product_id column
  * @method     ChildProductPartnerQuery orderByProductPrice($order = Criteria::ASC) Order by the product_price column
  * @method     ChildProductPartnerQuery orderByDescription($order = Criteria::ASC) Order by the description column
+ * @method     ChildProductPartnerQuery orderByType($order = Criteria::ASC) Order by the type column
  * @method     ChildProductPartnerQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildProductPartnerQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -35,6 +36,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductPartnerQuery groupByProductId() Group by the product_id column
  * @method     ChildProductPartnerQuery groupByProductPrice() Group by the product_price column
  * @method     ChildProductPartnerQuery groupByDescription() Group by the description column
+ * @method     ChildProductPartnerQuery groupByType() Group by the type column
  * @method     ChildProductPartnerQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildProductPartnerQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -87,6 +89,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductPartner findOneByProductId(int $product_id) Return the first ChildProductPartner filtered by the product_id column
  * @method     ChildProductPartner findOneByProductPrice(int $product_price) Return the first ChildProductPartner filtered by the product_price column
  * @method     ChildProductPartner findOneByDescription(string $description) Return the first ChildProductPartner filtered by the description column
+ * @method     ChildProductPartner findOneByType(string $type) Return the first ChildProductPartner filtered by the type column
  * @method     ChildProductPartner findOneByCreatedAt(string $created_at) Return the first ChildProductPartner filtered by the created_at column
  * @method     ChildProductPartner findOneByUpdatedAt(string $updated_at) Return the first ChildProductPartner filtered by the updated_at column *
 
@@ -99,6 +102,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductPartner requireOneByProductId(int $product_id) Return the first ChildProductPartner filtered by the product_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductPartner requireOneByProductPrice(int $product_price) Return the first ChildProductPartner filtered by the product_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductPartner requireOneByDescription(string $description) Return the first ChildProductPartner filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProductPartner requireOneByType(string $type) Return the first ChildProductPartner filtered by the type column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductPartner requireOneByCreatedAt(string $created_at) Return the first ChildProductPartner filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductPartner requireOneByUpdatedAt(string $updated_at) Return the first ChildProductPartner filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -109,6 +113,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductPartner[]|ObjectCollection findByProductId(int $product_id) Return ChildProductPartner objects filtered by the product_id column
  * @method     ChildProductPartner[]|ObjectCollection findByProductPrice(int $product_price) Return ChildProductPartner objects filtered by the product_price column
  * @method     ChildProductPartner[]|ObjectCollection findByDescription(string $description) Return ChildProductPartner objects filtered by the description column
+ * @method     ChildProductPartner[]|ObjectCollection findByType(string $type) Return ChildProductPartner objects filtered by the type column
  * @method     ChildProductPartner[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildProductPartner objects filtered by the created_at column
  * @method     ChildProductPartner[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildProductPartner objects filtered by the updated_at column
  * @method     ChildProductPartner[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -209,7 +214,7 @@ abstract class ProductPartnerQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, partner_id, product_id, product_price, description, created_at, updated_at FROM product_partner WHERE id = :p0';
+        $sql = 'SELECT id, name, partner_id, product_id, product_price, description, type, created_at, updated_at FROM product_partner WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -515,6 +520,31 @@ abstract class ProductPartnerQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProductPartnerTableMap::COL_DESCRIPTION, $description, $comparison);
+    }
+
+    /**
+     * Filter the query on the type column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByType('fooValue');   // WHERE type = 'fooValue'
+     * $query->filterByType('%fooValue%', Criteria::LIKE); // WHERE type LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $type The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProductPartnerQuery The current query, for fluid interface
+     */
+    public function filterByType($type = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($type)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProductPartnerTableMap::COL_TYPE, $type, $comparison);
     }
 
     /**

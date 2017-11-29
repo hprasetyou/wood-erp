@@ -59,7 +59,7 @@ class PartnerTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 16;
+    const NUM_COLUMNS = 14;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class PartnerTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 16;
+    const NUM_HYDRATE_COLUMNS = 14;
 
     /**
      * the column name for the id field
@@ -127,19 +127,9 @@ class PartnerTableMap extends TableMap
     const COL_COMPANY_ID = 'partner.company_id';
 
     /**
-     * the column name for the is_employee field
+     * the column name for the class_key field
      */
-    const COL_IS_EMPLOYEE = 'partner.is_employee';
-
-    /**
-     * the column name for the is_customer field
-     */
-    const COL_IS_CUSTOMER = 'partner.is_customer';
-
-    /**
-     * the column name for the is_supplier field
-     */
-    const COL_IS_SUPPLIER = 'partner.is_supplier';
+    const COL_CLASS_KEY = 'partner.class_key';
 
     /**
      * the column name for the created_at field
@@ -156,6 +146,42 @@ class PartnerTableMap extends TableMap
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
 
+    /** A key representing a particular subclass */
+    const CLASSKEY_1 = '1';
+
+    /** A key representing a particular subclass */
+    const CLASSKEY_PARTNER = '\\Partner';
+
+    /** A class that can be returned by this tableMap. */
+    const CLASSNAME_1 = '\\Partner';
+
+    /** A key representing a particular subclass */
+    const CLASSKEY_2 = '2';
+
+    /** A key representing a particular subclass */
+    const CLASSKEY_EMPLOYEE = '\\Employee';
+
+    /** A class that can be returned by this tableMap. */
+    const CLASSNAME_2 = '\\Employee';
+
+    /** A key representing a particular subclass */
+    const CLASSKEY_3 = '3';
+
+    /** A key representing a particular subclass */
+    const CLASSKEY_CUSTOMER = '\\Customer';
+
+    /** A class that can be returned by this tableMap. */
+    const CLASSNAME_3 = '\\Customer';
+
+    /** A key representing a particular subclass */
+    const CLASSKEY_4 = '4';
+
+    /** A key representing a particular subclass */
+    const CLASSKEY_SUPPLIER = '\\Supplier';
+
+    /** A class that can be returned by this tableMap. */
+    const CLASSNAME_4 = '\\Supplier';
+
     /**
      * holds an array of fieldnames
      *
@@ -163,11 +189,11 @@ class PartnerTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Email', 'Address', 'Phone', 'Website', 'Fax', 'Image', 'TaxNumber', 'BankDetail', 'CompanyId', 'IsEmployee', 'IsCustomer', 'IsSupplier', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'email', 'address', 'phone', 'website', 'fax', 'image', 'taxNumber', 'bankDetail', 'companyId', 'isEmployee', 'isCustomer', 'isSupplier', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(PartnerTableMap::COL_ID, PartnerTableMap::COL_NAME, PartnerTableMap::COL_EMAIL, PartnerTableMap::COL_ADDRESS, PartnerTableMap::COL_PHONE, PartnerTableMap::COL_WEBSITE, PartnerTableMap::COL_FAX, PartnerTableMap::COL_IMAGE, PartnerTableMap::COL_TAX_NUMBER, PartnerTableMap::COL_BANK_DETAIL, PartnerTableMap::COL_COMPANY_ID, PartnerTableMap::COL_IS_EMPLOYEE, PartnerTableMap::COL_IS_CUSTOMER, PartnerTableMap::COL_IS_SUPPLIER, PartnerTableMap::COL_CREATED_AT, PartnerTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'email', 'address', 'phone', 'website', 'fax', 'image', 'tax_number', 'bank_detail', 'company_id', 'is_employee', 'is_customer', 'is_supplier', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Email', 'Address', 'Phone', 'Website', 'Fax', 'Image', 'TaxNumber', 'BankDetail', 'CompanyId', 'ClassKey', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'email', 'address', 'phone', 'website', 'fax', 'image', 'taxNumber', 'bankDetail', 'companyId', 'classKey', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(PartnerTableMap::COL_ID, PartnerTableMap::COL_NAME, PartnerTableMap::COL_EMAIL, PartnerTableMap::COL_ADDRESS, PartnerTableMap::COL_PHONE, PartnerTableMap::COL_WEBSITE, PartnerTableMap::COL_FAX, PartnerTableMap::COL_IMAGE, PartnerTableMap::COL_TAX_NUMBER, PartnerTableMap::COL_BANK_DETAIL, PartnerTableMap::COL_COMPANY_ID, PartnerTableMap::COL_CLASS_KEY, PartnerTableMap::COL_CREATED_AT, PartnerTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'email', 'address', 'phone', 'website', 'fax', 'image', 'tax_number', 'bank_detail', 'company_id', 'class_key', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
     );
 
     /**
@@ -177,11 +203,11 @@ class PartnerTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Email' => 2, 'Address' => 3, 'Phone' => 4, 'Website' => 5, 'Fax' => 6, 'Image' => 7, 'TaxNumber' => 8, 'BankDetail' => 9, 'CompanyId' => 10, 'IsEmployee' => 11, 'IsCustomer' => 12, 'IsSupplier' => 13, 'CreatedAt' => 14, 'UpdatedAt' => 15, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'email' => 2, 'address' => 3, 'phone' => 4, 'website' => 5, 'fax' => 6, 'image' => 7, 'taxNumber' => 8, 'bankDetail' => 9, 'companyId' => 10, 'isEmployee' => 11, 'isCustomer' => 12, 'isSupplier' => 13, 'createdAt' => 14, 'updatedAt' => 15, ),
-        self::TYPE_COLNAME       => array(PartnerTableMap::COL_ID => 0, PartnerTableMap::COL_NAME => 1, PartnerTableMap::COL_EMAIL => 2, PartnerTableMap::COL_ADDRESS => 3, PartnerTableMap::COL_PHONE => 4, PartnerTableMap::COL_WEBSITE => 5, PartnerTableMap::COL_FAX => 6, PartnerTableMap::COL_IMAGE => 7, PartnerTableMap::COL_TAX_NUMBER => 8, PartnerTableMap::COL_BANK_DETAIL => 9, PartnerTableMap::COL_COMPANY_ID => 10, PartnerTableMap::COL_IS_EMPLOYEE => 11, PartnerTableMap::COL_IS_CUSTOMER => 12, PartnerTableMap::COL_IS_SUPPLIER => 13, PartnerTableMap::COL_CREATED_AT => 14, PartnerTableMap::COL_UPDATED_AT => 15, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'email' => 2, 'address' => 3, 'phone' => 4, 'website' => 5, 'fax' => 6, 'image' => 7, 'tax_number' => 8, 'bank_detail' => 9, 'company_id' => 10, 'is_employee' => 11, 'is_customer' => 12, 'is_supplier' => 13, 'created_at' => 14, 'updated_at' => 15, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Email' => 2, 'Address' => 3, 'Phone' => 4, 'Website' => 5, 'Fax' => 6, 'Image' => 7, 'TaxNumber' => 8, 'BankDetail' => 9, 'CompanyId' => 10, 'ClassKey' => 11, 'CreatedAt' => 12, 'UpdatedAt' => 13, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'email' => 2, 'address' => 3, 'phone' => 4, 'website' => 5, 'fax' => 6, 'image' => 7, 'taxNumber' => 8, 'bankDetail' => 9, 'companyId' => 10, 'classKey' => 11, 'createdAt' => 12, 'updatedAt' => 13, ),
+        self::TYPE_COLNAME       => array(PartnerTableMap::COL_ID => 0, PartnerTableMap::COL_NAME => 1, PartnerTableMap::COL_EMAIL => 2, PartnerTableMap::COL_ADDRESS => 3, PartnerTableMap::COL_PHONE => 4, PartnerTableMap::COL_WEBSITE => 5, PartnerTableMap::COL_FAX => 6, PartnerTableMap::COL_IMAGE => 7, PartnerTableMap::COL_TAX_NUMBER => 8, PartnerTableMap::COL_BANK_DETAIL => 9, PartnerTableMap::COL_COMPANY_ID => 10, PartnerTableMap::COL_CLASS_KEY => 11, PartnerTableMap::COL_CREATED_AT => 12, PartnerTableMap::COL_UPDATED_AT => 13, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'email' => 2, 'address' => 3, 'phone' => 4, 'website' => 5, 'fax' => 6, 'image' => 7, 'tax_number' => 8, 'bank_detail' => 9, 'company_id' => 10, 'class_key' => 11, 'created_at' => 12, 'updated_at' => 13, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
     );
 
     /**
@@ -200,6 +226,7 @@ class PartnerTableMap extends TableMap
         $this->setClassName('\\Partner');
         $this->setPackage('');
         $this->setUseIdGenerator(true);
+        $this->setSingleTableInheritance(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', true, 255, null);
@@ -212,9 +239,7 @@ class PartnerTableMap extends TableMap
         $this->addColumn('tax_number', 'TaxNumber', 'VARCHAR', false, 255, null);
         $this->addColumn('bank_detail', 'BankDetail', 'VARCHAR', false, 255, null);
         $this->addForeignKey('company_id', 'CompanyId', 'INTEGER', 'partner', 'id', false, null, null);
-        $this->addColumn('is_employee', 'IsEmployee', 'BOOLEAN', true, 1, false);
-        $this->addColumn('is_customer', 'IsCustomer', 'BOOLEAN', true, 1, false);
-        $this->addColumn('is_supplier', 'IsSupplier', 'BOOLEAN', true, 1, false);
+        $this->addColumn('class_key', 'ClassKey', 'INTEGER', false, null, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -320,19 +345,55 @@ class PartnerTableMap extends TableMap
     }
 
     /**
-     * The class that the tableMap will make instances of.
+     * The returned Class will contain objects of the default type or
+     * objects that inherit from the default.
      *
-     * If $withPrefix is true, the returned path
-     * uses a dot-path notation which is translated into a path
-     * relative to a location on the PHP include_path.
-     * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
-     *
+     * @param array   $row ConnectionInterface result row.
+     * @param int     $colnum Column to examine for OM class information (first is 0).
      * @param boolean $withPrefix Whether or not to return the path with the class name
-     * @return string path.to.ClassName
+     * @throws PropelException Any exceptions caught during processing will be
+     *                         rethrown wrapped into a PropelException.
+     *
+     * @return string The OM class
      */
-    public static function getOMClass($withPrefix = true)
+    public static function getOMClass($row, $colnum, $withPrefix = true)
     {
-        return $withPrefix ? PartnerTableMap::CLASS_DEFAULT : PartnerTableMap::OM_CLASS;
+        try {
+
+            $omClass = null;
+            $classKey = $row[$colnum + 11];
+
+            switch ($classKey) {
+
+                case PartnerTableMap::CLASSKEY_1:
+                    $omClass = PartnerTableMap::CLASSNAME_1;
+                    break;
+
+                case PartnerTableMap::CLASSKEY_2:
+                    $omClass = PartnerTableMap::CLASSNAME_2;
+                    break;
+
+                case PartnerTableMap::CLASSKEY_3:
+                    $omClass = PartnerTableMap::CLASSNAME_3;
+                    break;
+
+                case PartnerTableMap::CLASSKEY_4:
+                    $omClass = PartnerTableMap::CLASSNAME_4;
+                    break;
+
+                default:
+                    $omClass = PartnerTableMap::CLASS_DEFAULT;
+
+            } // switch
+            if (!$withPrefix) {
+                $omClass = preg_replace('#\.#', '\\', $omClass);
+            }
+
+        } catch (\Exception $e) {
+            throw new PropelException('Unable to get OM class.', $e);
+        }
+
+        return $omClass;
     }
 
     /**
@@ -357,7 +418,7 @@ class PartnerTableMap extends TableMap
             // $obj->hydrate($row, $offset, true); // rehydrate
             $col = $offset + PartnerTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = PartnerTableMap::OM_CLASS;
+            $cls = static::getOMClass($row, $offset, false);
             /** @var Partner $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
@@ -380,8 +441,6 @@ class PartnerTableMap extends TableMap
     {
         $results = array();
 
-        // set the class once to avoid overhead in the loop
-        $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
             $key = PartnerTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
@@ -391,6 +450,9 @@ class PartnerTableMap extends TableMap
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
+                // class must be set each time from the record row
+                $cls = static::getOMClass($row, 0);
+                $cls = preg_replace('#\.#', '\\', $cls);
                 /** @var Partner $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
@@ -427,9 +489,7 @@ class PartnerTableMap extends TableMap
             $criteria->addSelectColumn(PartnerTableMap::COL_TAX_NUMBER);
             $criteria->addSelectColumn(PartnerTableMap::COL_BANK_DETAIL);
             $criteria->addSelectColumn(PartnerTableMap::COL_COMPANY_ID);
-            $criteria->addSelectColumn(PartnerTableMap::COL_IS_EMPLOYEE);
-            $criteria->addSelectColumn(PartnerTableMap::COL_IS_CUSTOMER);
-            $criteria->addSelectColumn(PartnerTableMap::COL_IS_SUPPLIER);
+            $criteria->addSelectColumn(PartnerTableMap::COL_CLASS_KEY);
             $criteria->addSelectColumn(PartnerTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(PartnerTableMap::COL_UPDATED_AT);
         } else {
@@ -444,9 +504,7 @@ class PartnerTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.tax_number');
             $criteria->addSelectColumn($alias . '.bank_detail');
             $criteria->addSelectColumn($alias . '.company_id');
-            $criteria->addSelectColumn($alias . '.is_employee');
-            $criteria->addSelectColumn($alias . '.is_customer');
-            $criteria->addSelectColumn($alias . '.is_supplier');
+            $criteria->addSelectColumn($alias . '.class_key');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }

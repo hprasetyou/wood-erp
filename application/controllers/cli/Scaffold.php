@@ -498,14 +498,12 @@ class Manage_$var extends MY_Controller{
 
 
   function create(){
-		$m2odef
-		\$this->template->render('admin/$var/form',array($m2opass));
+		\$this->template->render('admin/$var/form');
   }
 
   function detail(\$id){
-		$m2odef
 		\$$singular_var = $queryclass::create()->findPK(\$id);
-		\$this->template->render('admin/$var/form',array('$var'=>\$$singular_var,$m2opass));
+		\$this->template->render('admin/$var/form',array('$var'=>\$$singular_var));
   }
 
 	function write(\$id=null){

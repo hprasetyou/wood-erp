@@ -59,7 +59,7 @@ class ProductPartnerTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 8;
+    const NUM_COLUMNS = 9;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class ProductPartnerTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 8;
+    const NUM_HYDRATE_COLUMNS = 9;
 
     /**
      * the column name for the id field
@@ -102,6 +102,11 @@ class ProductPartnerTableMap extends TableMap
     const COL_DESCRIPTION = 'product_partner.description';
 
     /**
+     * the column name for the type field
+     */
+    const COL_TYPE = 'product_partner.type';
+
+    /**
      * the column name for the created_at field
      */
     const COL_CREATED_AT = 'product_partner.created_at';
@@ -123,11 +128,11 @@ class ProductPartnerTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'PartnerId', 'ProductId', 'ProductPrice', 'Description', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'partnerId', 'productId', 'productPrice', 'description', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ProductPartnerTableMap::COL_ID, ProductPartnerTableMap::COL_NAME, ProductPartnerTableMap::COL_PARTNER_ID, ProductPartnerTableMap::COL_PRODUCT_ID, ProductPartnerTableMap::COL_PRODUCT_PRICE, ProductPartnerTableMap::COL_DESCRIPTION, ProductPartnerTableMap::COL_CREATED_AT, ProductPartnerTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'partner_id', 'product_id', 'product_price', 'description', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'PartnerId', 'ProductId', 'ProductPrice', 'Description', 'Type', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'partnerId', 'productId', 'productPrice', 'description', 'type', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ProductPartnerTableMap::COL_ID, ProductPartnerTableMap::COL_NAME, ProductPartnerTableMap::COL_PARTNER_ID, ProductPartnerTableMap::COL_PRODUCT_ID, ProductPartnerTableMap::COL_PRODUCT_PRICE, ProductPartnerTableMap::COL_DESCRIPTION, ProductPartnerTableMap::COL_TYPE, ProductPartnerTableMap::COL_CREATED_AT, ProductPartnerTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'partner_id', 'product_id', 'product_price', 'description', 'type', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -137,11 +142,11 @@ class ProductPartnerTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'PartnerId' => 2, 'ProductId' => 3, 'ProductPrice' => 4, 'Description' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'partnerId' => 2, 'productId' => 3, 'productPrice' => 4, 'description' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
-        self::TYPE_COLNAME       => array(ProductPartnerTableMap::COL_ID => 0, ProductPartnerTableMap::COL_NAME => 1, ProductPartnerTableMap::COL_PARTNER_ID => 2, ProductPartnerTableMap::COL_PRODUCT_ID => 3, ProductPartnerTableMap::COL_PRODUCT_PRICE => 4, ProductPartnerTableMap::COL_DESCRIPTION => 5, ProductPartnerTableMap::COL_CREATED_AT => 6, ProductPartnerTableMap::COL_UPDATED_AT => 7, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'partner_id' => 2, 'product_id' => 3, 'product_price' => 4, 'description' => 5, 'created_at' => 6, 'updated_at' => 7, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'PartnerId' => 2, 'ProductId' => 3, 'ProductPrice' => 4, 'Description' => 5, 'Type' => 6, 'CreatedAt' => 7, 'UpdatedAt' => 8, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'partnerId' => 2, 'productId' => 3, 'productPrice' => 4, 'description' => 5, 'type' => 6, 'createdAt' => 7, 'updatedAt' => 8, ),
+        self::TYPE_COLNAME       => array(ProductPartnerTableMap::COL_ID => 0, ProductPartnerTableMap::COL_NAME => 1, ProductPartnerTableMap::COL_PARTNER_ID => 2, ProductPartnerTableMap::COL_PRODUCT_ID => 3, ProductPartnerTableMap::COL_PRODUCT_PRICE => 4, ProductPartnerTableMap::COL_DESCRIPTION => 5, ProductPartnerTableMap::COL_TYPE => 6, ProductPartnerTableMap::COL_CREATED_AT => 7, ProductPartnerTableMap::COL_UPDATED_AT => 8, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'partner_id' => 2, 'product_id' => 3, 'product_price' => 4, 'description' => 5, 'type' => 6, 'created_at' => 7, 'updated_at' => 8, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -167,6 +172,7 @@ class ProductPartnerTableMap extends TableMap
         $this->addForeignKey('product_id', 'ProductId', 'INTEGER', 'product', 'id', true, null, null);
         $this->addColumn('product_price', 'ProductPrice', 'INTEGER', true, null, null);
         $this->addColumn('description', 'Description', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('type', 'Type', 'CHAR', false, null, 'sell');
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -346,6 +352,7 @@ class ProductPartnerTableMap extends TableMap
             $criteria->addSelectColumn(ProductPartnerTableMap::COL_PRODUCT_ID);
             $criteria->addSelectColumn(ProductPartnerTableMap::COL_PRODUCT_PRICE);
             $criteria->addSelectColumn(ProductPartnerTableMap::COL_DESCRIPTION);
+            $criteria->addSelectColumn(ProductPartnerTableMap::COL_TYPE);
             $criteria->addSelectColumn(ProductPartnerTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(ProductPartnerTableMap::COL_UPDATED_AT);
         } else {
@@ -355,6 +362,7 @@ class ProductPartnerTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.product_id');
             $criteria->addSelectColumn($alias . '.product_price');
             $criteria->addSelectColumn($alias . '.description');
+            $criteria->addSelectColumn($alias . '.type');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }

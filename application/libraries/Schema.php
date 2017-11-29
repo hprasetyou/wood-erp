@@ -23,7 +23,17 @@ class Schema
 		foreach ($xml->table as $table) {
 			if($table->attributes()->$ref == $tb_name){
 				$o = $table;
-			}
+			}else{
+        foreach ($table->column as $col) {
+          # code...
+          foreach ($col->inheritance as $inheritance) {
+            # code...
+            if($inheritance->attributes()->class == $tb_name){
+              $o = $table;
+            }
+          }
+        }
+      }
 		}
 		return $o;
 	}
