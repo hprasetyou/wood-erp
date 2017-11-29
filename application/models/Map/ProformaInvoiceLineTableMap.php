@@ -239,6 +239,13 @@ class ProformaInvoiceLineTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'PackingListLines', false);
+        $this->addRelation('PurchaseOrderLine', '\\PurchaseOrderLine', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':proforma_invoice_line_id',
+    1 => ':id',
+  ),
+), null, null, 'PurchaseOrderLines', false);
     } // buildRelations()
 
     /**

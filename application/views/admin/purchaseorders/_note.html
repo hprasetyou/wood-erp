@@ -1,0 +1,17 @@
+<div class="">
+  <div class="box box-success">
+    <div class="box-header with-border">
+      <!-- /.box-tools -->
+      {{res.string.note}}
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+      <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+        <textarea name="Note" rows="4" class="form-control ">{{purchaseorders.Note}}</textarea>
+      </div>
+      {% if purchaseorders %}
+      <blockquote class="control-value">{{ purchaseorders.Note }}</blockquote>
+      {% endif %}
+    </div>
+  </div>
+</div>

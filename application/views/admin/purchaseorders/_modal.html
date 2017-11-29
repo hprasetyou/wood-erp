@@ -1,0 +1,33 @@
+
+	<div class="modal fade" id="ModalPurchaseOrder" data-init="0" data-controller="manage_purchaseorders" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">PurchaseOrder</h4>
+				</div>
+				<div class="modal-body">
+					<table data-display="2" data-controller="manage_purchaseorders" class="table table-striped " id="table_PurchaseOrder">
+		<thead>
+			<tr>
+				<th></th>
+				<th data-fieldname="name">{{res.string.name }}</th>
+				<th data-fieldname="proforma_invoice_id">{{res.string.proforma_invoice_id }}</th>
+				<th data-fieldname="supplier_id">{{res.string.supplier_id }}</th>
+				<th data-fieldname="note">{{res.string.note }}</th>
+				<th data-fieldname="date">{{res.string.date }}</th>
+				<th data-fieldname="payment_term">{{res.string.payment_term }}</th>
+				<th data-fieldname="shipment_term">{{res.string.shipment_term }}</th>
+				<th data-fieldname="packing_type">{{res.string.packing_type }}</th>
+				<th data-fieldname="down_payment">{{res.string.down_payment }}</th>
+				<th data-fieldname="down_payment_deadline">{{res.string.down_payment_deadline }}</th>
+				<th data-fieldname="total_price">{{res.string.total_price }}</th>
+			</tr>
+		</thead>
+	</table>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	

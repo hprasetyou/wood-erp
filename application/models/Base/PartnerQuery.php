@@ -122,7 +122,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery rightJoinWithPackingList() Adds a RIGHT JOIN clause and with to the query using the PackingList relation
  * @method     ChildPartnerQuery innerJoinWithPackingList() Adds a INNER JOIN clause and with to the query using the PackingList relation
  *
- * @method     \PartnerQuery|\ProductCustomerQuery|\UserQuery|\ProformaInvoiceQuery|\PackingListQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildPartnerQuery leftJoinPurchaseOrder($relationAlias = null) Adds a LEFT JOIN clause to the query using the PurchaseOrder relation
+ * @method     ChildPartnerQuery rightJoinPurchaseOrder($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PurchaseOrder relation
+ * @method     ChildPartnerQuery innerJoinPurchaseOrder($relationAlias = null) Adds a INNER JOIN clause to the query using the PurchaseOrder relation
+ *
+ * @method     ChildPartnerQuery joinWithPurchaseOrder($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the PurchaseOrder relation
+ *
+ * @method     ChildPartnerQuery leftJoinWithPurchaseOrder() Adds a LEFT JOIN clause and with to the query using the PurchaseOrder relation
+ * @method     ChildPartnerQuery rightJoinWithPurchaseOrder() Adds a RIGHT JOIN clause and with to the query using the PurchaseOrder relation
+ * @method     ChildPartnerQuery innerJoinWithPurchaseOrder() Adds a INNER JOIN clause and with to the query using the PurchaseOrder relation
+ *
+ * @method     \PartnerQuery|\ProductCustomerQuery|\UserQuery|\ProformaInvoiceQuery|\PackingListQuery|\PurchaseOrderQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildPartner findOne(ConnectionInterface $con = null) Return the first ChildPartner matching the query
  * @method     ChildPartner findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPartner matching the query, or a new ChildPartner object populated from the query conditions when no match is found
@@ -1285,6 +1295,79 @@ abstract class PartnerQuery extends ModelCriteria
         return $this
             ->joinPackingList($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'PackingList', '\PackingListQuery');
+    }
+
+    /**
+     * Filter the query by a related \PurchaseOrder object
+     *
+     * @param \PurchaseOrder|ObjectCollection $purchaseOrder the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildPartnerQuery The current query, for fluid interface
+     */
+    public function filterByPurchaseOrder($purchaseOrder, $comparison = null)
+    {
+        if ($purchaseOrder instanceof \PurchaseOrder) {
+            return $this
+                ->addUsingAlias(PartnerTableMap::COL_ID, $purchaseOrder->getSupplierId(), $comparison);
+        } elseif ($purchaseOrder instanceof ObjectCollection) {
+            return $this
+                ->usePurchaseOrderQuery()
+                ->filterByPrimaryKeys($purchaseOrder->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByPurchaseOrder() only accepts arguments of type \PurchaseOrder or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the PurchaseOrder relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildPartnerQuery The current query, for fluid interface
+     */
+    public function joinPurchaseOrder($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('PurchaseOrder');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'PurchaseOrder');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the PurchaseOrder relation PurchaseOrder object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \PurchaseOrderQuery A secondary query class using the current class as primary query
+     */
+    public function usePurchaseOrderQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinPurchaseOrder($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'PurchaseOrder', '\PurchaseOrderQuery');
     }
 
     /**

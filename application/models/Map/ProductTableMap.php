@@ -288,6 +288,13 @@ class ProductTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'ProductImages', false);
+        $this->addRelation('PurchaseOrderLine', '\\PurchaseOrderLine', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':product_id',
+    1 => ':id',
+  ),
+), null, null, 'PurchaseOrderLines', false);
         $this->addRelation('Finishing', '\\Finishing', RelationMap::MANY_TO_MANY, array(), null, null, 'Finishings');
     } // buildRelations()
 

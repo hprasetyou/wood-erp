@@ -190,6 +190,13 @@ class ProformaInvoiceTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'ProformaInvoiceLines', false);
+        $this->addRelation('PurchaseOrder', '\\PurchaseOrder', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':proforma_invoice_id',
+    1 => ':id',
+  ),
+), null, null, 'PurchaseOrders', false);
     } // buildRelations()
 
     /**

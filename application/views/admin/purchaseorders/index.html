@@ -1,0 +1,53 @@
+
+{% extends "dashboard.html" %}
+{% set title=" Purchase Order " %}
+
+{% set breadcrumbs = [
+	{'link':'#','text':res.string.purchaseorder  }]
+%}
+{% block content %}
+	<div class="">
+		<div class="clearfix"></div>
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="box">
+					<div class="box-header">
+						<h3 class="box-title">{{res.string.purchaseorders}}</h3>
+						<a href="{{base_url}}index.php/manage_purchaseorders/create" class="btn btn-primary pull-right">{{res.string.new_data}}</a>
+						<div class="clearfix"></div>
+					</div>
+					<div class="box-body">
+						<p class="text-muted font-13 m-b-30"></p>
+							<table data-controller="manage_purchaseorders" class="table table-striped " id="table_PurchaseOrder">
+		<thead>
+			<tr>
+				<th data-fieldname="name">{{res.string.name}}</th>
+				<th data-fieldname="proforma_invoice_id">{{res.string.proforma_invoice_id}}</th>
+				<th data-fieldname="supplier_id">{{res.string.supplier_id}}</th>
+				<th data-fieldname="note">{{res.string.note}}</th>
+				<th data-fieldname="date">{{res.string.date}}</th>
+				<th data-fieldname="payment_term">{{res.string.payment_term}}</th>
+				<th data-fieldname="shipment_term">{{res.string.shipment_term}}</th>
+				<th data-fieldname="packing_type">{{res.string.packing_type}}</th>
+				<th data-fieldname="down_payment">{{res.string.down_payment}}</th>
+				<th data-fieldname="down_payment_deadline">{{res.string.down_payment_deadline}}</th>
+				<th data-fieldname="total_price">{{res.string.total_price}}</th>
+				<th></th>
+			</tr>
+		</thead>
+</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+{% block bottom %}
+<script>
+
+$(document).ready(function(){
+    $('#table_PurchaseOrder').loadTableData()
+  })
+</script>
+{% endblock %}

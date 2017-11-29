@@ -1,0 +1,237 @@
+ {% extends "dashboard.html" %} {% set title=" Purchase Order " %} {% if purchaseorders %} {% set bc_text = purchaseorders.id %} {% else %} {% set bc_text = 'Baru' %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_purchaseorders','text':
+res.string.purchaseorder }, {'link':'#','text':bc_text }] %} {% block content %}
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<form id="form_PurchaseOrder" method="post" action="{{base_url}}index.php/manage_purchaseorders/write/{{ purchaseorders.id }}" data-parsley-validate class="form-horizontal form-label-left">
+			<div class="box box-info">
+				<div class="box-header with-border">
+					{% include 'common/_form_header.html' with {'back_url':'/index.php/manage_purchaseorders'~back_link, 'title': res.string.purchaseorder, 'delete_url':'/index.php/manage_purchaseorders/delete/' ~ purchaseorders.Id, 'object':purchaseorders} %}
+				</div>
+				<div class="box-body">
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.name}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.name }}" id="Name" value="{{ purchaseorders.Name }}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if purchaseorders %}
+									<p class="control-value">{{ purchaseorders.Name }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProformaInvoiceId">{{res.string.proforma_invoice_id}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap input-group">
+										<input type="hidden" type="text" id="ProformaInvoiceId" value="{{ purchaseorders.ProformaInvoiceId }}" name="ProformaInvoiceId">
+										<input type="text" required="required" name="displayProformaInvoiceId" id="displayProformaInvoiceId" placeholder="{{ res.string.proforma_invoice_id }}" value="{{ purchaseorders.ProformaInvoice }}" class="form-control" />
+										<span class="input-group-btn">
+								<button class="btn btnModal btn-default" id="btnProformaInvoiceId"  data-target="ModalProformaInvoice" type="button">{{res.string.search}}</button>
+							</span>
+									</div>
+									{% if purchaseorders %}
+									<p class="control-value">{{ purchaseorders.ProformaInvoice.Name }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="SupplierId">{{res.string.supplier_id}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap input-group">
+										<input type="hidden" type="text" id="SupplierId" value="{{ purchaseorders.SupplierId }}" name="SupplierId">
+										<input type="text" required="required" name="displaySupplierId" id="displaySupplierId" placeholder="{{ res.string.supplier_id }}" value="{{ purchaseorders.Partner }}" class="form-control" />
+										<span class="input-group-btn">
+								<button class="btn btnModal btn-default" id="btnSupplierId"  data-target="ModalSupplier" type="button">{{res.string.search}}</button>
+							</span>
+									</div>
+									{% if purchaseorders %}
+									<p class="control-value">{{ purchaseorders.Partner.Name }}</p>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Note">{{res.string.note}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.note }}" id="Note" value="{{ purchaseorders.Note }}" name="Note" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if purchaseorders %}
+									<p class="control-value">{{ purchaseorders.Note }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.date}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.date }}" id="Date" value="{{ purchaseorders.Date  | date('Y/m/d') }}" name="Date" class="form-control input-date col-md-7 col-xs-12">
+									</div>
+									{% if purchaseorders %}
+									<p class="control-value">{{ purchaseorders.Date | date('d M Y') }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="PaymentTerm">{{res.string.payment_term}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.payment_term }}" id="PaymentTerm" value="{{ purchaseorders.PaymentTerm }}" name="PaymentTerm" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if purchaseorders %}
+									<p class="control-value">{{ purchaseorders.PaymentTerm }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ShipmentTerm">{{res.string.shipment_term}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.shipment_term }}" id="ShipmentTerm" value="{{ purchaseorders.ShipmentTerm }}" name="ShipmentTerm" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if purchaseorders %}
+									<p class="control-value">{{ purchaseorders.ShipmentTerm }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="PackingType">{{res.string.packing_type}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.packing_type }}" id="PackingType" value="{{ purchaseorders.PackingType }}" name="PackingType" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if purchaseorders %}
+									<p class="control-value">{{ purchaseorders.PackingType }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="DownPayment">{{res.string.down_payment}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+										<input type="number" placeholder="{{ res.string.down_payment }}" id="DownPayment" value="{{ purchaseorders.DownPayment }}" name="DownPayment" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if purchaseorders %}
+									<p class="control-value">{{ purchaseorders.DownPayment }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="DownPaymentDeadline">{{res.string.down_payment_deadline}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.down_payment_deadline }}" id="DownPaymentDeadline" value="{{ purchaseorders.DownPaymentDeadline  | date('Y/m/d') }}" name="DownPaymentDeadline" class="form-control input-date col-md-7 col-xs-12">
+									</div>
+									{% if purchaseorders %}
+									<p class="control-value">{{ purchaseorders.DownPaymentDeadline | date('d M Y') }}</p>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+            <div class="col-sm-12">
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+									<li class="active">
+                    <a href="#tab_1" data-toggle="tab">{{res.string.purchase_order_line}}</a>
+                  </li>
+									<li class="">
+                    <a href="#tab_2" data-toggle="tab">{{res.string.note}}</a>
+                  </li>
+                </ul>
+                <div class="tab-content">
+                  <!-- /.tab-pane -->
+                  <div class="tab-pane clearfix active" id="tab_1">
+                    {% include "admin/purchaseorders/_purchase_order_line_tab.html"%}
+                  </div>
+                  <div class="tab-pane clearfix" id="tab_2">
+                    {% include "admin/purchaseorders/_note.html"%}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+				</div>
+		</form>
+		</div>
+	</div>
+	<!-- Modal -->
+	{% include "admin/proformainvoices/_modal.html" %}
+  {% include "admin/purchaseorders/_modal_add_to_po.html" %}
+	 {% include "admin/suppliers/_modal.html" %} {% endblock %}
+	{% block bottom%}
+	<script type="text/javascript">
+		$('#ProformaInvoiceId').change(function(e){
+			$.ajax({
+				url:"/index.php/manage_purchaseorders/get_number/"+$(this).siblings().val()
+			}).done(function(o){
+				$('#Name').val(o);
+			})
+      $('#table_ProformaInvoiceLine').DataTable({
+        "processing": true,
+        "serverSide":true,
+        "searching": false,
+        "paging": false,
+        "ordering": false,
+        "ajax": "/index.php/manage_proformainvoicelines/get_pi_component/"+$(this).val(),
+        "columns":[
+          {"data":"id",
+            "render":function(data){
+              return "<input type=\"checkbox\" data-id=\""+data+"\" class=\"cb_pi\" ></input>"
+            }
+          },
+          {"data":"article_number"},
+          {"data":"description"},
+          {"data":"has_component"},
+          {"data":"total_qty"} ],
+        "initComplete" : function(settings, json) {
+            $('#table_ProformaInvoiceLine').css('width','100%')
+            $('#table_ProformaInvoiceLine_info').hide()
+          }
+      })
+		})
+    $('#btnAddPO').click(function(e){
+      e.preventDefault()
+      console.log('hehehehe');
+      $('#tbAddPO').find('tbody').html('')
+      $('#table_ProformaInvoiceLine').find('.cb_pi').each(function(i){
+        if($(this).is(':checked')){
+          $('#tbAddPO').find('tbody').append('<tr>'+
+          '<td><input type="hidden" name="PILineId[]" value="'+
+          $(this).data('id')+'">'+
+          $(this).parents('tr').children('td:eq(1)').text()+'</td>'+
+          '<td>'+$(this).parents('tr').children('td:eq(2)').text()+'</td>'+
+          '<td>'+$(this).parents('tr').children('td:eq(3)').text()+'</td>'+
+          '<td><input type="number" name="PILineQty[]" required max="'+$(this).parents('tr').children('td:eq(4)').text()+
+          '" class="form-control PILineQty" value="'+$(this).parents('tr').children('td:eq(4)').text()+'">'+
+          '</td></tr>');
+        }
+      })
+      $('#modalAddPOLine').modal('show')
+    })
+
+    $('#PILineAll').change(function(e){
+      $('.cb_pi').prop('checked',$(this).prop('checked'))
+    })
+    $(document).ready(function(){
+      $('#tbAddPO').on('change keyup','.PILineQty',function(e){
+        if($(this).val() > $(this).prop('max')){
+          $(this).val($(this).prop('max'))
+        }
+        })
+      })
+		$('#table_PurchaseOrderLine').loadTableData()
+	</script>
+	{% endblock %}

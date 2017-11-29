@@ -5,7 +5,9 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
 		<form id="form_PackingList" method="post" action="{{base_url}}index.php/manage_packinglists/write/{{ packinglists.id }}" data-parsley-validate class="form-horizontal form-label-left">
 			<div class="box box-info">
 				<div class="box-header with-border">
-					{% include 'common/_form_header.html' with {'back_url':'/index.php/manage_packinglists'~back_link, 'title': res.string.packinglist, 'delete_url':'/index.php/manage_packinglists/delete/' ~ packinglists.Id, 'object':packinglists} %}
+					{% include 'common/_form_header.html' with {
+            'buttons':[{'text':'','url':'','type':''}],
+            'back_url':'/index.php/manage_packinglists'~back_link, 'title': res.string.packinglist, 'delete_url':'/index.php/manage_packinglists/delete/' ~ packinglists.Id, 'object':packinglists} %}
 				</div>
 				<div class="box-body">
 					<div class="row">

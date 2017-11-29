@@ -266,6 +266,13 @@ class PartnerTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'PackingLists', false);
+        $this->addRelation('PurchaseOrder', '\\PurchaseOrder', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':supplier_id',
+    1 => ':id',
+  ),
+), null, null, 'PurchaseOrders', false);
     } // buildRelations()
 
     /**

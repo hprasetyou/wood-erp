@@ -1,0 +1,34 @@
+<!-- Modal -->
+<div id="modalAddPOLine" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <form id="formAddPlLine" action="/index.php/manage_purchaseorderlines/write/">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">{{res.string.add_to_pl}}</h4>
+        </div>
+        <div class="modal-body">
+          <table id="tbAddPO" class="table">
+            <thead>
+              <tr>
+                <th>{{res.string.name}}</th>
+                <th>{{res.string.description}}</th>
+                <th>{{res.string.component}}</th>
+                <th>{{res.string.qty}}</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" >{{res.string.add}}</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">{{res.string.close}}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

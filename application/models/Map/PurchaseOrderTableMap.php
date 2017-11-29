@@ -2,8 +2,8 @@
 
 namespace Map;
 
-use \Component;
-use \ComponentQuery;
+use \PurchaseOrder;
+use \PurchaseOrderQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'component' table.
+ * This class defines the structure of the 'purchase_order' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class ComponentTableMap extends TableMap
+class PurchaseOrderTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class ComponentTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.ComponentTableMap';
+    const CLASS_NAME = '.Map.PurchaseOrderTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class ComponentTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'component';
+    const TABLE_NAME = 'purchase_order';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\Component';
+    const OM_CLASS = '\\PurchaseOrder';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Component';
+    const CLASS_DEFAULT = 'PurchaseOrder';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 6;
+    const NUM_COLUMNS = 14;
 
     /**
      * The number of lazy-loaded columns
@@ -69,37 +69,77 @@ class ComponentTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 6;
+    const NUM_HYDRATE_COLUMNS = 14;
 
     /**
      * the column name for the id field
      */
-    const COL_ID = 'component.id';
+    const COL_ID = 'purchase_order.id';
 
     /**
      * the column name for the name field
      */
-    const COL_NAME = 'component.name';
+    const COL_NAME = 'purchase_order.name';
 
     /**
-     * the column name for the description field
+     * the column name for the proforma_invoice_id field
      */
-    const COL_DESCRIPTION = 'component.description';
+    const COL_PROFORMA_INVOICE_ID = 'purchase_order.proforma_invoice_id';
 
     /**
-     * the column name for the material field
+     * the column name for the supplier_id field
      */
-    const COL_MATERIAL = 'component.material';
+    const COL_SUPPLIER_ID = 'purchase_order.supplier_id';
+
+    /**
+     * the column name for the note field
+     */
+    const COL_NOTE = 'purchase_order.note';
+
+    /**
+     * the column name for the date field
+     */
+    const COL_DATE = 'purchase_order.date';
+
+    /**
+     * the column name for the payment_term field
+     */
+    const COL_PAYMENT_TERM = 'purchase_order.payment_term';
+
+    /**
+     * the column name for the shipment_term field
+     */
+    const COL_SHIPMENT_TERM = 'purchase_order.shipment_term';
+
+    /**
+     * the column name for the packing_type field
+     */
+    const COL_PACKING_TYPE = 'purchase_order.packing_type';
+
+    /**
+     * the column name for the down_payment field
+     */
+    const COL_DOWN_PAYMENT = 'purchase_order.down_payment';
+
+    /**
+     * the column name for the down_payment_deadline field
+     */
+    const COL_DOWN_PAYMENT_DEADLINE = 'purchase_order.down_payment_deadline';
+
+    /**
+     * the column name for the total_price field
+     */
+    const COL_TOTAL_PRICE = 'purchase_order.total_price';
 
     /**
      * the column name for the created_at field
      */
-    const COL_CREATED_AT = 'component.created_at';
+    const COL_CREATED_AT = 'purchase_order.created_at';
 
     /**
      * the column name for the updated_at field
      */
-    const COL_UPDATED_AT = 'component.updated_at';
+    const COL_UPDATED_AT = 'purchase_order.updated_at';
 
     /**
      * The default string format for model objects of the related table
@@ -113,11 +153,11 @@ class ComponentTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Description', 'Material', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'description', 'material', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ComponentTableMap::COL_ID, ComponentTableMap::COL_NAME, ComponentTableMap::COL_DESCRIPTION, ComponentTableMap::COL_MATERIAL, ComponentTableMap::COL_CREATED_AT, ComponentTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'description', 'material', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'ProformaInvoiceId', 'SupplierId', 'Note', 'Date', 'PaymentTerm', 'ShipmentTerm', 'PackingType', 'DownPayment', 'DownPaymentDeadline', 'TotalPrice', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'proformaInvoiceId', 'supplierId', 'note', 'date', 'paymentTerm', 'shipmentTerm', 'packingType', 'downPayment', 'downPaymentDeadline', 'totalPrice', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(PurchaseOrderTableMap::COL_ID, PurchaseOrderTableMap::COL_NAME, PurchaseOrderTableMap::COL_PROFORMA_INVOICE_ID, PurchaseOrderTableMap::COL_SUPPLIER_ID, PurchaseOrderTableMap::COL_NOTE, PurchaseOrderTableMap::COL_DATE, PurchaseOrderTableMap::COL_PAYMENT_TERM, PurchaseOrderTableMap::COL_SHIPMENT_TERM, PurchaseOrderTableMap::COL_PACKING_TYPE, PurchaseOrderTableMap::COL_DOWN_PAYMENT, PurchaseOrderTableMap::COL_DOWN_PAYMENT_DEADLINE, PurchaseOrderTableMap::COL_TOTAL_PRICE, PurchaseOrderTableMap::COL_CREATED_AT, PurchaseOrderTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'proforma_invoice_id', 'supplier_id', 'note', 'date', 'payment_term', 'shipment_term', 'packing_type', 'down_payment', 'down_payment_deadline', 'total_price', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
     );
 
     /**
@@ -127,11 +167,11 @@ class ComponentTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Description' => 2, 'Material' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'material' => 3, 'createdAt' => 4, 'updatedAt' => 5, ),
-        self::TYPE_COLNAME       => array(ComponentTableMap::COL_ID => 0, ComponentTableMap::COL_NAME => 1, ComponentTableMap::COL_DESCRIPTION => 2, ComponentTableMap::COL_MATERIAL => 3, ComponentTableMap::COL_CREATED_AT => 4, ComponentTableMap::COL_UPDATED_AT => 5, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'material' => 3, 'created_at' => 4, 'updated_at' => 5, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'ProformaInvoiceId' => 2, 'SupplierId' => 3, 'Note' => 4, 'Date' => 5, 'PaymentTerm' => 6, 'ShipmentTerm' => 7, 'PackingType' => 8, 'DownPayment' => 9, 'DownPaymentDeadline' => 10, 'TotalPrice' => 11, 'CreatedAt' => 12, 'UpdatedAt' => 13, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'proformaInvoiceId' => 2, 'supplierId' => 3, 'note' => 4, 'date' => 5, 'paymentTerm' => 6, 'shipmentTerm' => 7, 'packingType' => 8, 'downPayment' => 9, 'downPaymentDeadline' => 10, 'totalPrice' => 11, 'createdAt' => 12, 'updatedAt' => 13, ),
+        self::TYPE_COLNAME       => array(PurchaseOrderTableMap::COL_ID => 0, PurchaseOrderTableMap::COL_NAME => 1, PurchaseOrderTableMap::COL_PROFORMA_INVOICE_ID => 2, PurchaseOrderTableMap::COL_SUPPLIER_ID => 3, PurchaseOrderTableMap::COL_NOTE => 4, PurchaseOrderTableMap::COL_DATE => 5, PurchaseOrderTableMap::COL_PAYMENT_TERM => 6, PurchaseOrderTableMap::COL_SHIPMENT_TERM => 7, PurchaseOrderTableMap::COL_PACKING_TYPE => 8, PurchaseOrderTableMap::COL_DOWN_PAYMENT => 9, PurchaseOrderTableMap::COL_DOWN_PAYMENT_DEADLINE => 10, PurchaseOrderTableMap::COL_TOTAL_PRICE => 11, PurchaseOrderTableMap::COL_CREATED_AT => 12, PurchaseOrderTableMap::COL_UPDATED_AT => 13, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'proforma_invoice_id' => 2, 'supplier_id' => 3, 'note' => 4, 'date' => 5, 'payment_term' => 6, 'shipment_term' => 7, 'packing_type' => 8, 'down_payment' => 9, 'down_payment_deadline' => 10, 'total_price' => 11, 'created_at' => 12, 'updated_at' => 13, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
     );
 
     /**
@@ -144,17 +184,25 @@ class ComponentTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('component');
-        $this->setPhpName('Component');
+        $this->setName('purchase_order');
+        $this->setPhpName('PurchaseOrder');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\Component');
+        $this->setClassName('\\PurchaseOrder');
         $this->setPackage('');
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', true, 255, null);
-        $this->addColumn('description', 'Description', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('material', 'Material', 'VARCHAR', false, 255, null);
+        $this->addForeignKey('proforma_invoice_id', 'ProformaInvoiceId', 'INTEGER', 'proforma_invoice', 'id', true, null, null);
+        $this->addForeignKey('supplier_id', 'SupplierId', 'INTEGER', 'partner', 'id', true, null, null);
+        $this->addColumn('note', 'Note', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('date', 'Date', 'DATE', false, null, null);
+        $this->addColumn('payment_term', 'PaymentTerm', 'VARCHAR', false, 255, null);
+        $this->addColumn('shipment_term', 'ShipmentTerm', 'VARCHAR', false, 255, null);
+        $this->addColumn('packing_type', 'PackingType', 'VARCHAR', false, 255, null);
+        $this->addColumn('down_payment', 'DownPayment', 'FLOAT', false, null, null);
+        $this->addColumn('down_payment_deadline', 'DownPaymentDeadline', 'DATE', false, null, null);
+        $this->addColumn('total_price', 'TotalPrice', 'FLOAT', false, null, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -164,17 +212,24 @@ class ComponentTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('ProductComponent', '\\ProductComponent', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('ProformaInvoice', '\\ProformaInvoice', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':component_id',
+    0 => ':proforma_invoice_id',
     1 => ':id',
   ),
-), null, null, 'ProductComponents', false);
+), null, null, null, false);
+        $this->addRelation('Supplier', '\\Partner', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':supplier_id',
+    1 => ':id',
+  ),
+), null, null, null, false);
         $this->addRelation('PurchaseOrderLine', '\\PurchaseOrderLine', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
-    0 => ':component_id',
+    0 => ':purchase_order_id',
     1 => ':id',
   ),
 ), null, null, 'PurchaseOrderLines', false);
@@ -237,7 +292,7 @@ class ComponentTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? ComponentTableMap::CLASS_DEFAULT : ComponentTableMap::OM_CLASS;
+        return $withPrefix ? PurchaseOrderTableMap::CLASS_DEFAULT : PurchaseOrderTableMap::OM_CLASS;
     }
 
     /**
@@ -251,22 +306,22 @@ class ComponentTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Component object, last column rank)
+     * @return array           (PurchaseOrder object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = ComponentTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = ComponentTableMap::getInstanceFromPool($key))) {
+        $key = PurchaseOrderTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = PurchaseOrderTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + ComponentTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + PurchaseOrderTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = ComponentTableMap::OM_CLASS;
-            /** @var Component $obj */
+            $cls = PurchaseOrderTableMap::OM_CLASS;
+            /** @var PurchaseOrder $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            ComponentTableMap::addInstanceToPool($obj, $key);
+            PurchaseOrderTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -289,18 +344,18 @@ class ComponentTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = ComponentTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = ComponentTableMap::getInstanceFromPool($key))) {
+            $key = PurchaseOrderTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = PurchaseOrderTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Component $obj */
+                /** @var PurchaseOrder $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                ComponentTableMap::addInstanceToPool($obj, $key);
+                PurchaseOrderTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -321,17 +376,33 @@ class ComponentTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(ComponentTableMap::COL_ID);
-            $criteria->addSelectColumn(ComponentTableMap::COL_NAME);
-            $criteria->addSelectColumn(ComponentTableMap::COL_DESCRIPTION);
-            $criteria->addSelectColumn(ComponentTableMap::COL_MATERIAL);
-            $criteria->addSelectColumn(ComponentTableMap::COL_CREATED_AT);
-            $criteria->addSelectColumn(ComponentTableMap::COL_UPDATED_AT);
+            $criteria->addSelectColumn(PurchaseOrderTableMap::COL_ID);
+            $criteria->addSelectColumn(PurchaseOrderTableMap::COL_NAME);
+            $criteria->addSelectColumn(PurchaseOrderTableMap::COL_PROFORMA_INVOICE_ID);
+            $criteria->addSelectColumn(PurchaseOrderTableMap::COL_SUPPLIER_ID);
+            $criteria->addSelectColumn(PurchaseOrderTableMap::COL_NOTE);
+            $criteria->addSelectColumn(PurchaseOrderTableMap::COL_DATE);
+            $criteria->addSelectColumn(PurchaseOrderTableMap::COL_PAYMENT_TERM);
+            $criteria->addSelectColumn(PurchaseOrderTableMap::COL_SHIPMENT_TERM);
+            $criteria->addSelectColumn(PurchaseOrderTableMap::COL_PACKING_TYPE);
+            $criteria->addSelectColumn(PurchaseOrderTableMap::COL_DOWN_PAYMENT);
+            $criteria->addSelectColumn(PurchaseOrderTableMap::COL_DOWN_PAYMENT_DEADLINE);
+            $criteria->addSelectColumn(PurchaseOrderTableMap::COL_TOTAL_PRICE);
+            $criteria->addSelectColumn(PurchaseOrderTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(PurchaseOrderTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.name');
-            $criteria->addSelectColumn($alias . '.description');
-            $criteria->addSelectColumn($alias . '.material');
+            $criteria->addSelectColumn($alias . '.proforma_invoice_id');
+            $criteria->addSelectColumn($alias . '.supplier_id');
+            $criteria->addSelectColumn($alias . '.note');
+            $criteria->addSelectColumn($alias . '.date');
+            $criteria->addSelectColumn($alias . '.payment_term');
+            $criteria->addSelectColumn($alias . '.shipment_term');
+            $criteria->addSelectColumn($alias . '.packing_type');
+            $criteria->addSelectColumn($alias . '.down_payment');
+            $criteria->addSelectColumn($alias . '.down_payment_deadline');
+            $criteria->addSelectColumn($alias . '.total_price');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }
@@ -346,7 +417,7 @@ class ComponentTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(ComponentTableMap::DATABASE_NAME)->getTable(ComponentTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(PurchaseOrderTableMap::DATABASE_NAME)->getTable(PurchaseOrderTableMap::TABLE_NAME);
     }
 
     /**
@@ -354,16 +425,16 @@ class ComponentTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(ComponentTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(ComponentTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new ComponentTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(PurchaseOrderTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(PurchaseOrderTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new PurchaseOrderTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Component or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a PurchaseOrder or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Component object or primary key or array of primary keys
+     * @param mixed               $values Criteria or PurchaseOrder object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -374,27 +445,27 @@ class ComponentTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(PurchaseOrderTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \Component) { // it's a model object
+        } elseif ($values instanceof \PurchaseOrder) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(ComponentTableMap::DATABASE_NAME);
-            $criteria->add(ComponentTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(PurchaseOrderTableMap::DATABASE_NAME);
+            $criteria->add(PurchaseOrderTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
-        $query = ComponentQuery::create()->mergeWith($criteria);
+        $query = PurchaseOrderQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            ComponentTableMap::clearInstancePool();
+            PurchaseOrderTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                ComponentTableMap::removeInstanceFromPool($singleval);
+                PurchaseOrderTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -402,20 +473,20 @@ class ComponentTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the component table.
+     * Deletes all rows from the purchase_order table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return ComponentQuery::create()->doDeleteAll($con);
+        return PurchaseOrderQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Component or Criteria object.
+     * Performs an INSERT on the database, given a PurchaseOrder or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Component object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or PurchaseOrder object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -424,22 +495,22 @@ class ComponentTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(PurchaseOrderTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Component object
+            $criteria = $criteria->buildCriteria(); // build Criteria from PurchaseOrder object
         }
 
-        if ($criteria->containsKey(ComponentTableMap::COL_ID) && $criteria->keyContainsValue(ComponentTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.ComponentTableMap::COL_ID.')');
+        if ($criteria->containsKey(PurchaseOrderTableMap::COL_ID) && $criteria->keyContainsValue(PurchaseOrderTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.PurchaseOrderTableMap::COL_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = ComponentQuery::create()->mergeWith($criteria);
+        $query = PurchaseOrderQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -448,7 +519,7 @@ class ComponentTableMap extends TableMap
         });
     }
 
-} // ComponentTableMap
+} // PurchaseOrderTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-ComponentTableMap::buildTableMap();
+PurchaseOrderTableMap::buildTableMap();

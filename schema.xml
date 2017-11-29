@@ -307,4 +307,51 @@
       <reference local="proforma_invoice_line_id" foreign="id"/>
     </foreign-key>
   </table>
+  <table name="purchase_order" phpName="PurchaseOrder">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="name" phpName="Name" required="true" type="VARCHAR" size="255"/>
+    <column name="proforma_invoice_id" phpName="ProformaInvoiceId" type="INTEGER" required="true"/>
+    <column name="supplier_id" phpName="SupplierId" type="INTEGER" required="true"/>
+    <column name="note" phpName="Note" type="LONGVARCHAR"/>
+    <column name="date" phpName="Date" type="DATE"/>
+    <column name="payment_term" phpName="PaymentTerm" type="VARCHAR" size="255"/>
+    <column name="shipment_term" phpName="ShipmentTerm" type="VARCHAR" size="255"/>
+    <column name="packing_type" phpName="PackingType" type="VARCHAR" size="255"/>
+    <column name="down_payment" phpName="DownPayment" type="FLOAT"/>
+    <column name="down_payment_deadline" phpName="DownPaymentDeadline" type="DATE"/>
+    <column name="total_price" phpName="TotalPrice" type="FLOAT"/>
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
+    <foreign-key foreignTable="proforma_invoice">
+      <reference local="proforma_invoice_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="partner" phpName="Supplier">
+      <reference local="supplier_id" foreign="id"/>
+    </foreign-key>
+  </table>
+  <table name="purchase_order_line" phpName="PurchaseOrderLine">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="name" phpName="Name" required="true" type="VARCHAR" size="255"/>
+    <column name="purchase_order_id" phpName="PurchaseOrderId" type="INTEGER" required="true"/>
+    <column name="proforma_invoice_line_id" phpName="ProformaInvoiceLineId" type="INTEGER" required="true"/>
+    <column name="product_id" phpName="ProductId" type="INTEGER" required="true"/>
+    <column name="component_id" phpName="ComponentId" type="INTEGER"/>
+    <column name="note" phpName="Note" type="LONGVARCHAR"/>
+    <column name="price" phpName="Price" type="FLOAT"/>
+    <column name="qty" phpName="Qty" type="FLOAT"/>
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
+    <foreign-key foreignTable="purchase_order">
+      <reference local="purchase_order_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="proforma_invoice_line">
+      <reference local="proforma_invoice_line_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="product">
+      <reference local="product_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="component">
+      <reference local="component_id" foreign="id"/>
+    </foreign-key>
+  </table>
 </database>

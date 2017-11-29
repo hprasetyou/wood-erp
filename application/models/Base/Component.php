@@ -6,11 +6,14 @@ use \Component as ChildComponent;
 use \ComponentQuery as ChildComponentQuery;
 use \ProductComponent as ChildProductComponent;
 use \ProductComponentQuery as ChildProductComponentQuery;
+use \PurchaseOrderLine as ChildPurchaseOrderLine;
+use \PurchaseOrderLineQuery as ChildPurchaseOrderLineQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
 use Map\ComponentTableMap;
 use Map\ProductComponentTableMap;
+use Map\PurchaseOrderLineTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -117,6 +120,12 @@ abstract class Component implements ActiveRecordInterface
     protected $collProductComponentsPartial;
 
     /**
+     * @var        ObjectCollection|ChildPurchaseOrderLine[] Collection to store aggregation of ChildPurchaseOrderLine objects.
+     */
+    protected $collPurchaseOrderLines;
+    protected $collPurchaseOrderLinesPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -129,6 +138,12 @@ abstract class Component implements ActiveRecordInterface
      * @var ObjectCollection|ChildProductComponent[]
      */
     protected $productComponentsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildPurchaseOrderLine[]
+     */
+    protected $purchaseOrderLinesScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -697,6 +712,8 @@ abstract class Component implements ActiveRecordInterface
 
             $this->collProductComponents = null;
 
+            $this->collPurchaseOrderLines = null;
+
         } // if (deep)
     }
 
@@ -822,6 +839,24 @@ abstract class Component implements ActiveRecordInterface
 
             if ($this->collProductComponents !== null) {
                 foreach ($this->collProductComponents as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->purchaseOrderLinesScheduledForDeletion !== null) {
+                if (!$this->purchaseOrderLinesScheduledForDeletion->isEmpty()) {
+                    foreach ($this->purchaseOrderLinesScheduledForDeletion as $purchaseOrderLine) {
+                        // need to save related object because we set the relation to null
+                        $purchaseOrderLine->save($con);
+                    }
+                    $this->purchaseOrderLinesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collPurchaseOrderLines !== null) {
+                foreach ($this->collPurchaseOrderLines as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1046,6 +1081,21 @@ abstract class Component implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->collProductComponents->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collPurchaseOrderLines) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'purchaseOrderLines';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'purchase_order_lines';
+                        break;
+                    default:
+                        $key = 'PurchaseOrderLines';
+                }
+
+                $result[$key] = $this->collPurchaseOrderLines->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1305,6 +1355,12 @@ abstract class Component implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getPurchaseOrderLines() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addPurchaseOrderLine($relObj->copy($deepCopy));
+                }
+            }
+
         } // if ($deepCopy)
 
         if ($makeNew) {
@@ -1348,6 +1404,10 @@ abstract class Component implements ActiveRecordInterface
     {
         if ('ProductComponent' == $relationName) {
             $this->initProductComponents();
+            return;
+        }
+        if ('PurchaseOrderLine' == $relationName) {
+            $this->initPurchaseOrderLines();
             return;
         }
     }
@@ -1603,6 +1663,306 @@ abstract class Component implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collPurchaseOrderLines collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addPurchaseOrderLines()
+     */
+    public function clearPurchaseOrderLines()
+    {
+        $this->collPurchaseOrderLines = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collPurchaseOrderLines collection loaded partially.
+     */
+    public function resetPartialPurchaseOrderLines($v = true)
+    {
+        $this->collPurchaseOrderLinesPartial = $v;
+    }
+
+    /**
+     * Initializes the collPurchaseOrderLines collection.
+     *
+     * By default this just sets the collPurchaseOrderLines collection to an empty array (like clearcollPurchaseOrderLines());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initPurchaseOrderLines($overrideExisting = true)
+    {
+        if (null !== $this->collPurchaseOrderLines && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = PurchaseOrderLineTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collPurchaseOrderLines = new $collectionClassName;
+        $this->collPurchaseOrderLines->setModel('\PurchaseOrderLine');
+    }
+
+    /**
+     * Gets an array of ChildPurchaseOrderLine objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildComponent is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildPurchaseOrderLine[] List of ChildPurchaseOrderLine objects
+     * @throws PropelException
+     */
+    public function getPurchaseOrderLines(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPurchaseOrderLinesPartial && !$this->isNew();
+        if (null === $this->collPurchaseOrderLines || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collPurchaseOrderLines) {
+                // return empty collection
+                $this->initPurchaseOrderLines();
+            } else {
+                $collPurchaseOrderLines = ChildPurchaseOrderLineQuery::create(null, $criteria)
+                    ->filterByComponent($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collPurchaseOrderLinesPartial && count($collPurchaseOrderLines)) {
+                        $this->initPurchaseOrderLines(false);
+
+                        foreach ($collPurchaseOrderLines as $obj) {
+                            if (false == $this->collPurchaseOrderLines->contains($obj)) {
+                                $this->collPurchaseOrderLines->append($obj);
+                            }
+                        }
+
+                        $this->collPurchaseOrderLinesPartial = true;
+                    }
+
+                    return $collPurchaseOrderLines;
+                }
+
+                if ($partial && $this->collPurchaseOrderLines) {
+                    foreach ($this->collPurchaseOrderLines as $obj) {
+                        if ($obj->isNew()) {
+                            $collPurchaseOrderLines[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collPurchaseOrderLines = $collPurchaseOrderLines;
+                $this->collPurchaseOrderLinesPartial = false;
+            }
+        }
+
+        return $this->collPurchaseOrderLines;
+    }
+
+    /**
+     * Sets a collection of ChildPurchaseOrderLine objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $purchaseOrderLines A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildComponent The current object (for fluent API support)
+     */
+    public function setPurchaseOrderLines(Collection $purchaseOrderLines, ConnectionInterface $con = null)
+    {
+        /** @var ChildPurchaseOrderLine[] $purchaseOrderLinesToDelete */
+        $purchaseOrderLinesToDelete = $this->getPurchaseOrderLines(new Criteria(), $con)->diff($purchaseOrderLines);
+
+
+        $this->purchaseOrderLinesScheduledForDeletion = $purchaseOrderLinesToDelete;
+
+        foreach ($purchaseOrderLinesToDelete as $purchaseOrderLineRemoved) {
+            $purchaseOrderLineRemoved->setComponent(null);
+        }
+
+        $this->collPurchaseOrderLines = null;
+        foreach ($purchaseOrderLines as $purchaseOrderLine) {
+            $this->addPurchaseOrderLine($purchaseOrderLine);
+        }
+
+        $this->collPurchaseOrderLines = $purchaseOrderLines;
+        $this->collPurchaseOrderLinesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related PurchaseOrderLine objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related PurchaseOrderLine objects.
+     * @throws PropelException
+     */
+    public function countPurchaseOrderLines(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPurchaseOrderLinesPartial && !$this->isNew();
+        if (null === $this->collPurchaseOrderLines || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collPurchaseOrderLines) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getPurchaseOrderLines());
+            }
+
+            $query = ChildPurchaseOrderLineQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByComponent($this)
+                ->count($con);
+        }
+
+        return count($this->collPurchaseOrderLines);
+    }
+
+    /**
+     * Method called to associate a ChildPurchaseOrderLine object to this object
+     * through the ChildPurchaseOrderLine foreign key attribute.
+     *
+     * @param  ChildPurchaseOrderLine $l ChildPurchaseOrderLine
+     * @return $this|\Component The current object (for fluent API support)
+     */
+    public function addPurchaseOrderLine(ChildPurchaseOrderLine $l)
+    {
+        if ($this->collPurchaseOrderLines === null) {
+            $this->initPurchaseOrderLines();
+            $this->collPurchaseOrderLinesPartial = true;
+        }
+
+        if (!$this->collPurchaseOrderLines->contains($l)) {
+            $this->doAddPurchaseOrderLine($l);
+
+            if ($this->purchaseOrderLinesScheduledForDeletion and $this->purchaseOrderLinesScheduledForDeletion->contains($l)) {
+                $this->purchaseOrderLinesScheduledForDeletion->remove($this->purchaseOrderLinesScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildPurchaseOrderLine $purchaseOrderLine The ChildPurchaseOrderLine object to add.
+     */
+    protected function doAddPurchaseOrderLine(ChildPurchaseOrderLine $purchaseOrderLine)
+    {
+        $this->collPurchaseOrderLines[]= $purchaseOrderLine;
+        $purchaseOrderLine->setComponent($this);
+    }
+
+    /**
+     * @param  ChildPurchaseOrderLine $purchaseOrderLine The ChildPurchaseOrderLine object to remove.
+     * @return $this|ChildComponent The current object (for fluent API support)
+     */
+    public function removePurchaseOrderLine(ChildPurchaseOrderLine $purchaseOrderLine)
+    {
+        if ($this->getPurchaseOrderLines()->contains($purchaseOrderLine)) {
+            $pos = $this->collPurchaseOrderLines->search($purchaseOrderLine);
+            $this->collPurchaseOrderLines->remove($pos);
+            if (null === $this->purchaseOrderLinesScheduledForDeletion) {
+                $this->purchaseOrderLinesScheduledForDeletion = clone $this->collPurchaseOrderLines;
+                $this->purchaseOrderLinesScheduledForDeletion->clear();
+            }
+            $this->purchaseOrderLinesScheduledForDeletion[]= $purchaseOrderLine;
+            $purchaseOrderLine->setComponent(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Component is new, it will return
+     * an empty collection; or if this Component has previously
+     * been saved, it will retrieve related PurchaseOrderLines from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Component.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildPurchaseOrderLine[] List of ChildPurchaseOrderLine objects
+     */
+    public function getPurchaseOrderLinesJoinPurchaseOrder(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildPurchaseOrderLineQuery::create(null, $criteria);
+        $query->joinWith('PurchaseOrder', $joinBehavior);
+
+        return $this->getPurchaseOrderLines($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Component is new, it will return
+     * an empty collection; or if this Component has previously
+     * been saved, it will retrieve related PurchaseOrderLines from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Component.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildPurchaseOrderLine[] List of ChildPurchaseOrderLine objects
+     */
+    public function getPurchaseOrderLinesJoinProformaInvoiceLine(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildPurchaseOrderLineQuery::create(null, $criteria);
+        $query->joinWith('ProformaInvoiceLine', $joinBehavior);
+
+        return $this->getPurchaseOrderLines($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Component is new, it will return
+     * an empty collection; or if this Component has previously
+     * been saved, it will retrieve related PurchaseOrderLines from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Component.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildPurchaseOrderLine[] List of ChildPurchaseOrderLine objects
+     */
+    public function getPurchaseOrderLinesJoinProduct(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildPurchaseOrderLineQuery::create(null, $criteria);
+        $query->joinWith('Product', $joinBehavior);
+
+        return $this->getPurchaseOrderLines($query, $con);
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -1639,9 +1999,15 @@ abstract class Component implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collPurchaseOrderLines) {
+                foreach ($this->collPurchaseOrderLines as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         $this->collProductComponents = null;
+        $this->collPurchaseOrderLines = null;
     }
 
     /**

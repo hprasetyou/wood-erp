@@ -1,0 +1,40 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="box-info embed-form">
+        <div class="box-header with-border">
+            {{res.string.add}}
+        </div>
+        <div class="box-body">
+          <a href="#" class="btn btn-primary" id="btnAddPO">{{res.string.add_to_po}}</a>
+          <table data-controller="manage_proformainvoiceslines" class="table table-striped " id="table_ProformaInvoiceLine">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="PILineAll"></th>
+                <th>{{ res.string.article_number }}</th>
+                <th>{{ res.string.description }}</th>
+                <th>{{ res.string.component }}</th>
+                <th>{{ res.string.qty }}</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+<div class="col-sm-12">
+  <table data-controller="manage_purchaseorderlines" class="table table-striped " id="table_PurchaseOrderLine">
+    <thead>
+      <tr>
+        <th data-fieldname="name">{{res.string.name}}</th>
+        <th data-fieldname="product_id">{{res.string.product_id}}</th>
+        <th data-fieldname="component_id">{{res.string.component_id}}</th>
+        <th data-fieldname="note">{{res.string.note}}</th>
+        <th data-fieldname="price">{{res.string.price}}</th>
+        <th data-fieldname="qty">{{res.string.qty}}</th>
+        <th></th>
+      </tr>
+    </thead>
+  </table>
+</div>
+</div>

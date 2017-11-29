@@ -44,7 +44,7 @@ jQuery.fn.loadTableData = function(
              break;
           case 'cbm':
           render_data = new Function("data", "type","row","meta",
-           "return parseFloat(data/1000000).toFixed(3) + ' cm3';")
+           "return parseFloat(data/1000000).toFixed(3) + ' m3';")
 
             break;
            default:
