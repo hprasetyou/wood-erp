@@ -40,6 +40,35 @@ class Manage_proformainvoicelines extends MY_Controller{
 
   }
 
+  function get_pi_component($pi_id){
+    $lines = ProformaInvoiceLineQuery::create()->findByProformaInvoiceId($pi_id);
+    $o = [];
+    $i = 0;
+    foreach ($lines as $line) {
+      # code...
+      $prod = $line->getProductCustomer()->getProduct();
+      $o[$i]['id'] = $line->getId().'-'.$prod->getId();
+      $o[$i]['article_number'] = $line->getProductCustomer()->getName();
+      $o[$i]['description'] = $line->getDescription();
+      $o[$i]['has_component'] = $prod->getHasComponent();
+      $o[$i]['total_qty'] = $line->getQty();
+      if($prod->getHasComponent()){
+        foreach ($prod->getProductComponents() as $prodcomponent) {
+          $o[$i]['id'] = $line->getId().'-'.$prod->getId().'-'.$prodcomponent->getComponent()->getId();
+          $o[$i]['article_number'] = $line->getProductCustomer()->getName();
+          $o[$i]['description'] = $line->getDescription();
+          $o[$i]['has_component'] = $prodcomponent->getComponent()->getName();
+          $o[$i]['total_qty'] = $line->getQty() * $prodcomponent->getQty();
+          $i++;
+        }
+      }else{
+        $i++;
+      }
+    }
+    echo json_encode(array('data'=>$o));
+
+  }
+
 
   function create(){
 
