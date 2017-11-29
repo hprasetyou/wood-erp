@@ -2,6 +2,8 @@
 
 namespace Base;
 
+use \ComponentPartner as ChildComponentPartner;
+use \ComponentPartnerQuery as ChildComponentPartnerQuery;
 use \PackingList as ChildPackingList;
 use \PackingListQuery as ChildPackingListQuery;
 use \Partner as ChildPartner;
@@ -17,6 +19,7 @@ use \UserQuery as ChildUserQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
+use Map\ComponentPartnerTableMap;
 use Map\PackingListTableMap;
 use Map\PartnerTableMap;
 use Map\ProductPartnerTableMap;
@@ -220,6 +223,12 @@ abstract class Partner implements ActiveRecordInterface
     protected $collPurchaseOrdersPartial;
 
     /**
+     * @var        ObjectCollection|ChildComponentPartner[] Collection to store aggregation of ChildComponentPartner objects.
+     */
+    protected $collComponentPartners;
+    protected $collComponentPartnersPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -262,6 +271,12 @@ abstract class Partner implements ActiveRecordInterface
      * @var ObjectCollection|ChildPurchaseOrder[]
      */
     protected $purchaseOrdersScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildComponentPartner[]
+     */
+    protected $componentPartnersScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -1112,6 +1127,8 @@ abstract class Partner implements ActiveRecordInterface
 
             $this->collPurchaseOrders = null;
 
+            $this->collComponentPartners = null;
+
         } // if (deep)
     }
 
@@ -1335,6 +1352,23 @@ abstract class Partner implements ActiveRecordInterface
 
             if ($this->collPurchaseOrders !== null) {
                 foreach ($this->collPurchaseOrders as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->componentPartnersScheduledForDeletion !== null) {
+                if (!$this->componentPartnersScheduledForDeletion->isEmpty()) {
+                    \ComponentPartnerQuery::create()
+                        ->filterByPrimaryKeys($this->componentPartnersScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->componentPartnersScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collComponentPartners !== null) {
+                foreach ($this->collComponentPartners as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1730,6 +1764,21 @@ abstract class Partner implements ActiveRecordInterface
 
                 $result[$key] = $this->collPurchaseOrders->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
+            if (null !== $this->collComponentPartners) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'componentPartners';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'component_partners';
+                        break;
+                    default:
+                        $key = 'ComponentPartners';
+                }
+
+                $result[$key] = $this->collComponentPartners->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
         }
 
         return $result;
@@ -2098,6 +2147,12 @@ abstract class Partner implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getComponentPartners() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addComponentPartner($relObj->copy($deepCopy));
+                }
+            }
+
         } // if ($deepCopy)
 
         if ($makeNew) {
@@ -2212,6 +2267,10 @@ abstract class Partner implements ActiveRecordInterface
         }
         if ('PurchaseOrder' == $relationName) {
             $this->initPurchaseOrders();
+            return;
+        }
+        if ('ComponentPartner' == $relationName) {
+            $this->initComponentPartners();
             return;
         }
     }
@@ -3617,6 +3676,256 @@ abstract class Partner implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collComponentPartners collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addComponentPartners()
+     */
+    public function clearComponentPartners()
+    {
+        $this->collComponentPartners = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collComponentPartners collection loaded partially.
+     */
+    public function resetPartialComponentPartners($v = true)
+    {
+        $this->collComponentPartnersPartial = $v;
+    }
+
+    /**
+     * Initializes the collComponentPartners collection.
+     *
+     * By default this just sets the collComponentPartners collection to an empty array (like clearcollComponentPartners());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initComponentPartners($overrideExisting = true)
+    {
+        if (null !== $this->collComponentPartners && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = ComponentPartnerTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collComponentPartners = new $collectionClassName;
+        $this->collComponentPartners->setModel('\ComponentPartner');
+    }
+
+    /**
+     * Gets an array of ChildComponentPartner objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPartner is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildComponentPartner[] List of ChildComponentPartner objects
+     * @throws PropelException
+     */
+    public function getComponentPartners(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collComponentPartnersPartial && !$this->isNew();
+        if (null === $this->collComponentPartners || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collComponentPartners) {
+                // return empty collection
+                $this->initComponentPartners();
+            } else {
+                $collComponentPartners = ChildComponentPartnerQuery::create(null, $criteria)
+                    ->filterByPartner($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collComponentPartnersPartial && count($collComponentPartners)) {
+                        $this->initComponentPartners(false);
+
+                        foreach ($collComponentPartners as $obj) {
+                            if (false == $this->collComponentPartners->contains($obj)) {
+                                $this->collComponentPartners->append($obj);
+                            }
+                        }
+
+                        $this->collComponentPartnersPartial = true;
+                    }
+
+                    return $collComponentPartners;
+                }
+
+                if ($partial && $this->collComponentPartners) {
+                    foreach ($this->collComponentPartners as $obj) {
+                        if ($obj->isNew()) {
+                            $collComponentPartners[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collComponentPartners = $collComponentPartners;
+                $this->collComponentPartnersPartial = false;
+            }
+        }
+
+        return $this->collComponentPartners;
+    }
+
+    /**
+     * Sets a collection of ChildComponentPartner objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $componentPartners A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildPartner The current object (for fluent API support)
+     */
+    public function setComponentPartners(Collection $componentPartners, ConnectionInterface $con = null)
+    {
+        /** @var ChildComponentPartner[] $componentPartnersToDelete */
+        $componentPartnersToDelete = $this->getComponentPartners(new Criteria(), $con)->diff($componentPartners);
+
+
+        $this->componentPartnersScheduledForDeletion = $componentPartnersToDelete;
+
+        foreach ($componentPartnersToDelete as $componentPartnerRemoved) {
+            $componentPartnerRemoved->setPartner(null);
+        }
+
+        $this->collComponentPartners = null;
+        foreach ($componentPartners as $componentPartner) {
+            $this->addComponentPartner($componentPartner);
+        }
+
+        $this->collComponentPartners = $componentPartners;
+        $this->collComponentPartnersPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related ComponentPartner objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related ComponentPartner objects.
+     * @throws PropelException
+     */
+    public function countComponentPartners(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collComponentPartnersPartial && !$this->isNew();
+        if (null === $this->collComponentPartners || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collComponentPartners) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getComponentPartners());
+            }
+
+            $query = ChildComponentPartnerQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByPartner($this)
+                ->count($con);
+        }
+
+        return count($this->collComponentPartners);
+    }
+
+    /**
+     * Method called to associate a ChildComponentPartner object to this object
+     * through the ChildComponentPartner foreign key attribute.
+     *
+     * @param  ChildComponentPartner $l ChildComponentPartner
+     * @return $this|\Partner The current object (for fluent API support)
+     */
+    public function addComponentPartner(ChildComponentPartner $l)
+    {
+        if ($this->collComponentPartners === null) {
+            $this->initComponentPartners();
+            $this->collComponentPartnersPartial = true;
+        }
+
+        if (!$this->collComponentPartners->contains($l)) {
+            $this->doAddComponentPartner($l);
+
+            if ($this->componentPartnersScheduledForDeletion and $this->componentPartnersScheduledForDeletion->contains($l)) {
+                $this->componentPartnersScheduledForDeletion->remove($this->componentPartnersScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildComponentPartner $componentPartner The ChildComponentPartner object to add.
+     */
+    protected function doAddComponentPartner(ChildComponentPartner $componentPartner)
+    {
+        $this->collComponentPartners[]= $componentPartner;
+        $componentPartner->setPartner($this);
+    }
+
+    /**
+     * @param  ChildComponentPartner $componentPartner The ChildComponentPartner object to remove.
+     * @return $this|ChildPartner The current object (for fluent API support)
+     */
+    public function removeComponentPartner(ChildComponentPartner $componentPartner)
+    {
+        if ($this->getComponentPartners()->contains($componentPartner)) {
+            $pos = $this->collComponentPartners->search($componentPartner);
+            $this->collComponentPartners->remove($pos);
+            if (null === $this->componentPartnersScheduledForDeletion) {
+                $this->componentPartnersScheduledForDeletion = clone $this->collComponentPartners;
+                $this->componentPartnersScheduledForDeletion->clear();
+            }
+            $this->componentPartnersScheduledForDeletion[]= clone $componentPartner;
+            $componentPartner->setPartner(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Partner is new, it will return
+     * an empty collection; or if this Partner has previously
+     * been saved, it will retrieve related ComponentPartners from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Partner.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildComponentPartner[] List of ChildComponentPartner objects
+     */
+    public function getComponentPartnersJoinComponent(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildComponentPartnerQuery::create(null, $criteria);
+        $query->joinWith('Component', $joinBehavior);
+
+        return $this->getComponentPartners($query, $con);
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -3689,6 +3998,11 @@ abstract class Partner implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collComponentPartners) {
+                foreach ($this->collComponentPartners as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         $this->collPartnersRelatedById = null;
@@ -3697,6 +4011,7 @@ abstract class Partner implements ActiveRecordInterface
         $this->collProformaInvoices = null;
         $this->collPackingLists = null;
         $this->collPurchaseOrders = null;
+        $this->collComponentPartners = null;
         $this->aCompany = null;
     }
 

@@ -298,6 +298,13 @@ class PartnerTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'PurchaseOrders', false);
+        $this->addRelation('ComponentPartner', '\\ComponentPartner', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':partner_id',
+    1 => ':id',
+  ),
+), null, null, 'ComponentPartners', false);
     } // buildRelations()
 
     /**

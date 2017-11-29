@@ -2,8 +2,8 @@
 
 namespace Map;
 
-use \Component;
-use \ComponentQuery;
+use \ComponentPartner;
+use \ComponentPartnerQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'component' table.
+ * This class defines the structure of the 'component_partner' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class ComponentTableMap extends TableMap
+class ComponentPartnerTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class ComponentTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.ComponentTableMap';
+    const CLASS_NAME = '.Map.ComponentPartnerTableMap';
 
     /**
      * The default database name for this class
@@ -44,17 +44,17 @@ class ComponentTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'component';
+    const TABLE_NAME = 'component_partner';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\Component';
+    const OM_CLASS = '\\ComponentPartner';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Component';
+    const CLASS_DEFAULT = 'ComponentPartner';
 
     /**
      * The total number of columns
@@ -74,32 +74,32 @@ class ComponentTableMap extends TableMap
     /**
      * the column name for the id field
      */
-    const COL_ID = 'component.id';
+    const COL_ID = 'component_partner.id';
 
     /**
-     * the column name for the name field
+     * the column name for the partner_id field
      */
-    const COL_NAME = 'component.name';
+    const COL_PARTNER_ID = 'component_partner.partner_id';
 
     /**
-     * the column name for the description field
+     * the column name for the component_id field
      */
-    const COL_DESCRIPTION = 'component.description';
+    const COL_COMPONENT_ID = 'component_partner.component_id';
 
     /**
-     * the column name for the material field
+     * the column name for the price field
      */
-    const COL_MATERIAL = 'component.material';
+    const COL_PRICE = 'component_partner.price';
 
     /**
      * the column name for the created_at field
      */
-    const COL_CREATED_AT = 'component.created_at';
+    const COL_CREATED_AT = 'component_partner.created_at';
 
     /**
      * the column name for the updated_at field
      */
-    const COL_UPDATED_AT = 'component.updated_at';
+    const COL_UPDATED_AT = 'component_partner.updated_at';
 
     /**
      * The default string format for model objects of the related table
@@ -113,10 +113,10 @@ class ComponentTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Description', 'Material', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'description', 'material', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ComponentTableMap::COL_ID, ComponentTableMap::COL_NAME, ComponentTableMap::COL_DESCRIPTION, ComponentTableMap::COL_MATERIAL, ComponentTableMap::COL_CREATED_AT, ComponentTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'description', 'material', 'created_at', 'updated_at', ),
+        self::TYPE_PHPNAME       => array('Id', 'PartnerId', 'ComponentId', 'Price', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'partnerId', 'componentId', 'price', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ComponentPartnerTableMap::COL_ID, ComponentPartnerTableMap::COL_PARTNER_ID, ComponentPartnerTableMap::COL_COMPONENT_ID, ComponentPartnerTableMap::COL_PRICE, ComponentPartnerTableMap::COL_CREATED_AT, ComponentPartnerTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'partner_id', 'component_id', 'price', 'created_at', 'updated_at', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
@@ -127,10 +127,10 @@ class ComponentTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Description' => 2, 'Material' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'material' => 3, 'createdAt' => 4, 'updatedAt' => 5, ),
-        self::TYPE_COLNAME       => array(ComponentTableMap::COL_ID => 0, ComponentTableMap::COL_NAME => 1, ComponentTableMap::COL_DESCRIPTION => 2, ComponentTableMap::COL_MATERIAL => 3, ComponentTableMap::COL_CREATED_AT => 4, ComponentTableMap::COL_UPDATED_AT => 5, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'material' => 3, 'created_at' => 4, 'updated_at' => 5, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'PartnerId' => 1, 'ComponentId' => 2, 'Price' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'partnerId' => 1, 'componentId' => 2, 'price' => 3, 'createdAt' => 4, 'updatedAt' => 5, ),
+        self::TYPE_COLNAME       => array(ComponentPartnerTableMap::COL_ID => 0, ComponentPartnerTableMap::COL_PARTNER_ID => 1, ComponentPartnerTableMap::COL_COMPONENT_ID => 2, ComponentPartnerTableMap::COL_PRICE => 3, ComponentPartnerTableMap::COL_CREATED_AT => 4, ComponentPartnerTableMap::COL_UPDATED_AT => 5, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'partner_id' => 1, 'component_id' => 2, 'price' => 3, 'created_at' => 4, 'updated_at' => 5, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
@@ -144,17 +144,17 @@ class ComponentTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('component');
-        $this->setPhpName('Component');
+        $this->setName('component_partner');
+        $this->setPhpName('ComponentPartner');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\Component');
+        $this->setClassName('\\ComponentPartner');
         $this->setPackage('');
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('name', 'Name', 'VARCHAR', true, 255, null);
-        $this->addColumn('description', 'Description', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('material', 'Material', 'VARCHAR', false, 255, null);
+        $this->addForeignKey('partner_id', 'PartnerId', 'INTEGER', 'partner', 'id', true, null, null);
+        $this->addForeignKey('component_id', 'ComponentId', 'INTEGER', 'component', 'id', true, null, null);
+        $this->addColumn('price', 'Price', 'FLOAT', false, null, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -164,27 +164,20 @@ class ComponentTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('ProductComponent', '\\ProductComponent', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('Component', '\\Component', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':component_id',
     1 => ':id',
   ),
-), null, null, 'ProductComponents', false);
-        $this->addRelation('PurchaseOrderLine', '\\PurchaseOrderLine', RelationMap::ONE_TO_MANY, array (
+), null, null, null, false);
+        $this->addRelation('Partner', '\\Partner', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':component_id',
+    0 => ':partner_id',
     1 => ':id',
   ),
-), null, null, 'PurchaseOrderLines', false);
-        $this->addRelation('ComponentPartner', '\\ComponentPartner', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':component_id',
-    1 => ':id',
-  ),
-), null, null, 'ComponentPartners', false);
+), null, null, null, false);
     } // buildRelations()
 
     /**
@@ -244,7 +237,7 @@ class ComponentTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? ComponentTableMap::CLASS_DEFAULT : ComponentTableMap::OM_CLASS;
+        return $withPrefix ? ComponentPartnerTableMap::CLASS_DEFAULT : ComponentPartnerTableMap::OM_CLASS;
     }
 
     /**
@@ -258,22 +251,22 @@ class ComponentTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Component object, last column rank)
+     * @return array           (ComponentPartner object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = ComponentTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = ComponentTableMap::getInstanceFromPool($key))) {
+        $key = ComponentPartnerTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = ComponentPartnerTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + ComponentTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + ComponentPartnerTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = ComponentTableMap::OM_CLASS;
-            /** @var Component $obj */
+            $cls = ComponentPartnerTableMap::OM_CLASS;
+            /** @var ComponentPartner $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            ComponentTableMap::addInstanceToPool($obj, $key);
+            ComponentPartnerTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -296,18 +289,18 @@ class ComponentTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = ComponentTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = ComponentTableMap::getInstanceFromPool($key))) {
+            $key = ComponentPartnerTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = ComponentPartnerTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Component $obj */
+                /** @var ComponentPartner $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                ComponentTableMap::addInstanceToPool($obj, $key);
+                ComponentPartnerTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -328,17 +321,17 @@ class ComponentTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(ComponentTableMap::COL_ID);
-            $criteria->addSelectColumn(ComponentTableMap::COL_NAME);
-            $criteria->addSelectColumn(ComponentTableMap::COL_DESCRIPTION);
-            $criteria->addSelectColumn(ComponentTableMap::COL_MATERIAL);
-            $criteria->addSelectColumn(ComponentTableMap::COL_CREATED_AT);
-            $criteria->addSelectColumn(ComponentTableMap::COL_UPDATED_AT);
+            $criteria->addSelectColumn(ComponentPartnerTableMap::COL_ID);
+            $criteria->addSelectColumn(ComponentPartnerTableMap::COL_PARTNER_ID);
+            $criteria->addSelectColumn(ComponentPartnerTableMap::COL_COMPONENT_ID);
+            $criteria->addSelectColumn(ComponentPartnerTableMap::COL_PRICE);
+            $criteria->addSelectColumn(ComponentPartnerTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(ComponentPartnerTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.name');
-            $criteria->addSelectColumn($alias . '.description');
-            $criteria->addSelectColumn($alias . '.material');
+            $criteria->addSelectColumn($alias . '.partner_id');
+            $criteria->addSelectColumn($alias . '.component_id');
+            $criteria->addSelectColumn($alias . '.price');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }
@@ -353,7 +346,7 @@ class ComponentTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(ComponentTableMap::DATABASE_NAME)->getTable(ComponentTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(ComponentPartnerTableMap::DATABASE_NAME)->getTable(ComponentPartnerTableMap::TABLE_NAME);
     }
 
     /**
@@ -361,16 +354,16 @@ class ComponentTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(ComponentTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(ComponentTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new ComponentTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(ComponentPartnerTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(ComponentPartnerTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new ComponentPartnerTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Component or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a ComponentPartner or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Component object or primary key or array of primary keys
+     * @param mixed               $values Criteria or ComponentPartner object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -381,27 +374,27 @@ class ComponentTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ComponentPartnerTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \Component) { // it's a model object
+        } elseif ($values instanceof \ComponentPartner) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(ComponentTableMap::DATABASE_NAME);
-            $criteria->add(ComponentTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(ComponentPartnerTableMap::DATABASE_NAME);
+            $criteria->add(ComponentPartnerTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
-        $query = ComponentQuery::create()->mergeWith($criteria);
+        $query = ComponentPartnerQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            ComponentTableMap::clearInstancePool();
+            ComponentPartnerTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                ComponentTableMap::removeInstanceFromPool($singleval);
+                ComponentPartnerTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -409,20 +402,20 @@ class ComponentTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the component table.
+     * Deletes all rows from the component_partner table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return ComponentQuery::create()->doDeleteAll($con);
+        return ComponentPartnerQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Component or Criteria object.
+     * Performs an INSERT on the database, given a ComponentPartner or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Component object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or ComponentPartner object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -431,22 +424,22 @@ class ComponentTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ComponentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ComponentPartnerTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Component object
+            $criteria = $criteria->buildCriteria(); // build Criteria from ComponentPartner object
         }
 
-        if ($criteria->containsKey(ComponentTableMap::COL_ID) && $criteria->keyContainsValue(ComponentTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.ComponentTableMap::COL_ID.')');
+        if ($criteria->containsKey(ComponentPartnerTableMap::COL_ID) && $criteria->keyContainsValue(ComponentPartnerTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.ComponentPartnerTableMap::COL_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = ComponentQuery::create()->mergeWith($criteria);
+        $query = ComponentPartnerQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -455,7 +448,7 @@ class ComponentTableMap extends TableMap
         });
     }
 
-} // ComponentTableMap
+} // ComponentPartnerTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-ComponentTableMap::buildTableMap();
+ComponentPartnerTableMap::buildTableMap();

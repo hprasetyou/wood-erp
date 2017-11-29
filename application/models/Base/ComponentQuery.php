@@ -62,7 +62,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildComponentQuery rightJoinWithPurchaseOrderLine() Adds a RIGHT JOIN clause and with to the query using the PurchaseOrderLine relation
  * @method     ChildComponentQuery innerJoinWithPurchaseOrderLine() Adds a INNER JOIN clause and with to the query using the PurchaseOrderLine relation
  *
- * @method     \ProductComponentQuery|\PurchaseOrderLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildComponentQuery leftJoinComponentPartner($relationAlias = null) Adds a LEFT JOIN clause to the query using the ComponentPartner relation
+ * @method     ChildComponentQuery rightJoinComponentPartner($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ComponentPartner relation
+ * @method     ChildComponentQuery innerJoinComponentPartner($relationAlias = null) Adds a INNER JOIN clause to the query using the ComponentPartner relation
+ *
+ * @method     ChildComponentQuery joinWithComponentPartner($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ComponentPartner relation
+ *
+ * @method     ChildComponentQuery leftJoinWithComponentPartner() Adds a LEFT JOIN clause and with to the query using the ComponentPartner relation
+ * @method     ChildComponentQuery rightJoinWithComponentPartner() Adds a RIGHT JOIN clause and with to the query using the ComponentPartner relation
+ * @method     ChildComponentQuery innerJoinWithComponentPartner() Adds a INNER JOIN clause and with to the query using the ComponentPartner relation
+ *
+ * @method     \ProductComponentQuery|\PurchaseOrderLineQuery|\ComponentPartnerQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildComponent findOne(ConnectionInterface $con = null) Return the first ChildComponent matching the query
  * @method     ChildComponent findOneOrCreate(ConnectionInterface $con = null) Return the first ChildComponent matching the query, or a new ChildComponent object populated from the query conditions when no match is found
@@ -625,6 +635,79 @@ abstract class ComponentQuery extends ModelCriteria
         return $this
             ->joinPurchaseOrderLine($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'PurchaseOrderLine', '\PurchaseOrderLineQuery');
+    }
+
+    /**
+     * Filter the query by a related \ComponentPartner object
+     *
+     * @param \ComponentPartner|ObjectCollection $componentPartner the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildComponentQuery The current query, for fluid interface
+     */
+    public function filterByComponentPartner($componentPartner, $comparison = null)
+    {
+        if ($componentPartner instanceof \ComponentPartner) {
+            return $this
+                ->addUsingAlias(ComponentTableMap::COL_ID, $componentPartner->getComponentId(), $comparison);
+        } elseif ($componentPartner instanceof ObjectCollection) {
+            return $this
+                ->useComponentPartnerQuery()
+                ->filterByPrimaryKeys($componentPartner->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByComponentPartner() only accepts arguments of type \ComponentPartner or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ComponentPartner relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildComponentQuery The current query, for fluid interface
+     */
+    public function joinComponentPartner($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ComponentPartner');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ComponentPartner');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ComponentPartner relation ComponentPartner object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \ComponentPartnerQuery A secondary query class using the current class as primary query
+     */
+    public function useComponentPartnerQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinComponentPartner($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ComponentPartner', '\ComponentPartnerQuery');
     }
 
     /**
