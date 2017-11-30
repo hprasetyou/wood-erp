@@ -25,7 +25,6 @@
 'confirm' => 'Confirm',
 'confirmation' => 'Confirmation',
 'contact_person' => 'Contact Person',
-'cost_price' => 'Cost Price',
 'cubic' => 'Cubic',
 'cubic_asb' => 'Cubic Assembled',
 'cubic_dimension' => 'Cubic Dimension',

@@ -28,7 +28,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery orderByIsFlegt($order = Criteria::ASC) Order by the is_flegt column
  * @method     ChildProductQuery orderByHasComponent($order = Criteria::ASC) Order by the has_component column
  * @method     ChildProductQuery orderByQtyPerPack($order = Criteria::ASC) Order by the qty_per_pack column
- * @method     ChildProductQuery orderByCostPrice($order = Criteria::ASC) Order by the cost_price column
  * @method     ChildProductQuery orderByListPrice($order = Criteria::ASC) Order by the list_price column
  * @method     ChildProductQuery orderByNote($order = Criteria::ASC) Order by the note column
  * @method     ChildProductQuery orderByCubicAsb($order = Criteria::ASC) Order by the cubic_asb column
@@ -51,7 +50,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery groupByIsFlegt() Group by the is_flegt column
  * @method     ChildProductQuery groupByHasComponent() Group by the has_component column
  * @method     ChildProductQuery groupByQtyPerPack() Group by the qty_per_pack column
- * @method     ChildProductQuery groupByCostPrice() Group by the cost_price column
  * @method     ChildProductQuery groupByListPrice() Group by the list_price column
  * @method     ChildProductQuery groupByNote() Group by the note column
  * @method     ChildProductQuery groupByCubicAsb() Group by the cubic_asb column
@@ -137,7 +135,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct findOneByIsFlegt(boolean $is_flegt) Return the first ChildProduct filtered by the is_flegt column
  * @method     ChildProduct findOneByHasComponent(boolean $has_component) Return the first ChildProduct filtered by the has_component column
  * @method     ChildProduct findOneByQtyPerPack(int $qty_per_pack) Return the first ChildProduct filtered by the qty_per_pack column
- * @method     ChildProduct findOneByCostPrice(double $cost_price) Return the first ChildProduct filtered by the cost_price column
  * @method     ChildProduct findOneByListPrice(double $list_price) Return the first ChildProduct filtered by the list_price column
  * @method     ChildProduct findOneByNote(string $note) Return the first ChildProduct filtered by the note column
  * @method     ChildProduct findOneByCubicAsb(double $cubic_asb) Return the first ChildProduct filtered by the cubic_asb column
@@ -163,7 +160,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct requireOneByIsFlegt(boolean $is_flegt) Return the first ChildProduct filtered by the is_flegt column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByHasComponent(boolean $has_component) Return the first ChildProduct filtered by the has_component column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByQtyPerPack(int $qty_per_pack) Return the first ChildProduct filtered by the qty_per_pack column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildProduct requireOneByCostPrice(double $cost_price) Return the first ChildProduct filtered by the cost_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByListPrice(double $list_price) Return the first ChildProduct filtered by the list_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByNote(string $note) Return the first ChildProduct filtered by the note column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByCubicAsb(double $cubic_asb) Return the first ChildProduct filtered by the cubic_asb column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -187,7 +183,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct[]|ObjectCollection findByIsFlegt(boolean $is_flegt) Return ChildProduct objects filtered by the is_flegt column
  * @method     ChildProduct[]|ObjectCollection findByHasComponent(boolean $has_component) Return ChildProduct objects filtered by the has_component column
  * @method     ChildProduct[]|ObjectCollection findByQtyPerPack(int $qty_per_pack) Return ChildProduct objects filtered by the qty_per_pack column
- * @method     ChildProduct[]|ObjectCollection findByCostPrice(double $cost_price) Return ChildProduct objects filtered by the cost_price column
  * @method     ChildProduct[]|ObjectCollection findByListPrice(double $list_price) Return ChildProduct objects filtered by the list_price column
  * @method     ChildProduct[]|ObjectCollection findByNote(string $note) Return ChildProduct objects filtered by the note column
  * @method     ChildProduct[]|ObjectCollection findByCubicAsb(double $cubic_asb) Return ChildProduct objects filtered by the cubic_asb column
@@ -299,7 +294,7 @@ abstract class ProductQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, description, is_round, is_kdn, is_flegt, has_component, qty_per_pack, cost_price, list_price, note, cubic_asb, cubic_kdn, width_asb, height_asb, depth_asb, width_kdn, height_kdn, depth_kdn, net_cubic, created_at, updated_at FROM product WHERE id = :p0';
+        $sql = 'SELECT id, name, description, is_round, is_kdn, is_flegt, has_component, qty_per_pack, list_price, note, cubic_asb, cubic_kdn, width_asb, height_asb, depth_asb, width_kdn, height_kdn, depth_kdn, net_cubic, created_at, updated_at FROM product WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -627,47 +622,6 @@ abstract class ProductQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProductTableMap::COL_QTY_PER_PACK, $qtyPerPack, $comparison);
-    }
-
-    /**
-     * Filter the query on the cost_price column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByCostPrice(1234); // WHERE cost_price = 1234
-     * $query->filterByCostPrice(array(12, 34)); // WHERE cost_price IN (12, 34)
-     * $query->filterByCostPrice(array('min' => 12)); // WHERE cost_price > 12
-     * </code>
-     *
-     * @param     mixed $costPrice The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildProductQuery The current query, for fluid interface
-     */
-    public function filterByCostPrice($costPrice = null, $comparison = null)
-    {
-        if (is_array($costPrice)) {
-            $useMinMax = false;
-            if (isset($costPrice['min'])) {
-                $this->addUsingAlias(ProductTableMap::COL_COST_PRICE, $costPrice['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($costPrice['max'])) {
-                $this->addUsingAlias(ProductTableMap::COL_COST_PRICE, $costPrice['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(ProductTableMap::COL_COST_PRICE, $costPrice, $comparison);
     }
 
     /**

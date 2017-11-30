@@ -60,7 +60,6 @@
     <column name="is_flegt" phpName="IsFlegt" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
     <column name="has_component" phpName="HasComponent" type="BOOLEAN" size="1" defaultValue="false"/>
     <column name="qty_per_pack" phpName="QtyPerPack" type="INTEGER" required="true" defaultValue="1"/>
-    <column name="cost_price" phpName="CostPrice" type="FLOAT" required="true"/>
     <column name="list_price" phpName="ListPrice" type="FLOAT" required="true"/>
     <column name="note" phpName="Note" type="LONGVARCHAR"/>
     <column name="cubic_asb" phpName="CubicAsb" type="FLOAT" required="true"/>

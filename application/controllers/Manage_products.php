@@ -89,7 +89,6 @@ class Manage_products extends MY_Controller{
       'HasComponent'=>'HasComponent',
       'IsRound'=>'IsRound',
       'NetCubic'=>'NetCubic',
-      'CostPrice'=>'CostPrice',
       'QtyPerPack'=>'QtyPerPack',
       'ListPrice'=>'ListPrice',
       'CubicAsb'=>'CubicAsb',
