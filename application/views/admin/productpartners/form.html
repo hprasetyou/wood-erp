@@ -10,10 +10,13 @@
 	{'link': base_url~'index.php/manage_productpartners','text': res.string.productpartner },
 	{'link':'#','text':bc_text  }]
 %}
+{% if productpartners %}
+	{% set product = productpartners.product %}
+{%endif%}
 {% block content %}
 <div class="row">
 	<div class="col-md-12 col-sm-12 col-xs-12">
-		<form id="form_ProductPartner" method="post" action="{{base_url}}index.php/manage_productpartners/write/{{ productpartners.id }}" data-parsley-validate class="form-horizontal form-label-left">
+		<form id="form_ProductPartner" method="post" action="{{base_url}}index.php/manage_productpartners/write" data-parsley-validate class="form-horizontal form-label-left">
 			<div class="box box-info">
 				<div class="box-header with-border">
 				{% include 'common/_form_header.html'
@@ -23,87 +26,123 @@
 				'object':productpartners} %}
 				</div>
 				<div class="box-body">
-					
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.name}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if productpartners %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" placeholder="{{ res.string.name }}" id="Name" value="{{ productpartners.Name }}"
-							name="Name"  class="form-control  col-md-7 col-xs-12">
-						</div>
-								{% if productpartners %}
-									<p class="control-value">{{ productpartners.Name  }}</p>
-								{% endif %}
-							</div>
-						</div>
+					<div class="row">
+						<div class="col-sm-12">
 
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="PartnerId">{{res.string.partner_id}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if productpartners %}style="display:none"{% endif %} class="input-wrap input-group">
-							<input type="hidden" type="text" id="PartnerId" value="{{ productpartners.PartnerId }}" name="PartnerId"  >
-							<input type="text" required="required" name="displayPartnerId" id="displayPartnerId"  placeholder="{{ res.string.partner_id }}" value="{{ productpartners.Partner }}" class="form-control" />
-							<span class="input-group-btn">
-								<button class="btn btnModal btn-default" id="btnPartnerId"  data-target="ModalPartner" type="button">{{res.string.search}}</button>
-							</span>
-						</div>
-								{% if productpartners %}
-									<p class="control-value">{{ productpartners.Partner.Name  }}</p>
-								{% endif %}
-							</div>
-						</div>
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="PartnerId">{{res.string.partner_id}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+								<div {% if productpartners %}style="display:none"{%else%}class="input-wrap input-group"{% endif %} >
+									<input class="srcEl" type="hidden" type="text" id="PartnerId" value="{{ productpartners.PartnerId }}" name="PartnerId"  >
+									<input type="text" required="required" name="displayPartnerId" id="displayPartnerId"  placeholder="{{ res.string.partner_id }}" value="{{ productpartners.Partner }}" class="form-control" />
+									<span class="input-group-btn">
+										<button class="btn btnModal btn-default" id="btnPartnerId"  data-target="ModalSupplier" type="button">{{res.string.search}}</button>
+									</span>
+								</div>
+										{% if productpartners %}
+											<p class="value">{{ productpartners.Partner.Name  }}</p>
+										{% endif %}
+									</div>
+								</div>
 
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProductId">{{res.string.product_id}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if productpartners %}style="display:none"{% endif %} class="input-wrap input-group">
-							<input type="hidden" type="text" id="ProductId" value="{{ productpartners.ProductId }}" name="ProductId"  >
-							<input type="text" required="required" name="displayProductId" id="displayProductId"  placeholder="{{ res.string.product_id }}" value="{{ productpartners.Product }}" class="form-control" />
-							<span class="input-group-btn">
-								<button class="btn btnModal btn-default" id="btnProductId"  data-target="ModalProduct" type="button">{{res.string.search}}</button>
-							</span>
-						</div>
-								{% if productpartners %}
-									<p class="control-value">{{ productpartners.Product.Name  }}</p>
-								{% endif %}
-							</div>
-						</div>
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProductId">{{res.string.product_id}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+								<div {% if productpartners %}style="display:none"{% endif %} class="input-wrap input-group">
+									<input class="srcEl" type="hidden" type="text" id="ProductId"  value="{{ product.Id }}" name="ProductId"  >
+								</div>
 
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProductPrice">{{res.string.product_price}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if productpartners %}style="display:none"{% endif %} class="input-wrap">
-							<input type="number" placeholder="{{ res.string.product_price }}" id="ProductPrice" value="{{ productpartners.ProductPrice }}"
-							name="ProductPrice" required="required" class="form-control  col-md-7 col-xs-12">
-						</div>
-								{% if productpartners %}
-									<p class="control-value">{{ productpartners.ProductPrice  }}</p>
-								{% endif %}
-							</div>
-						</div>
+								<p class="value">[{{ product.Name  }}] {{product.Description}}</p>
+									</div>
+								</div>
 
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Description">{{res.string.description}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if productpartners %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" placeholder="{{ res.string.description }}" id="Description" value="{{ productpartners.Description }}"
-							name="Description"  class="form-control  col-md-7 col-xs-12">
+							<div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProductPrice">{{res.string.product_price}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+								<div class="input-wrap">
+									<input type="number" placeholder="{{ res.string.product_price }}" id="ProductPrice" value="{{ productpartners.ProductPrice }}"
+									name="ProductPrice" required="required" class="form-control  col-md-7 col-xs-12">
+								</div>
+									</div>
+								</div>
 						</div>
-								{% if productpartners %}
-									<p class="control-value">{{ productpartners.Description  }}</p>
-								{% endif %}
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="nav-tabs-custom">
+								<ul class="nav nav-tabs">
+									<li class="active"><a href="#tab_1" data-toggle="tab">{{res.string.price_changes_update}}</a></li>
+								</ul>
+								<div class="tab-content">
+									<div id="price_history_chart" style="height: 250px;"></div>
+									<!-- /.tab-pane -->
+								</div>
 							</div>
 						</div>
+					</div>
 
 				</div>
 		</form>
 	</div>
 </div>
 <!-- Modal -->
-{% include "admin/partners/_modal.html" %}
+{% include "admin/suppliers/_modal.html" %}
 {% include "admin/products/_modal.html" %}
 
 {% endblock %}
 {% block bottom%}
-
+<script type="text/javascript">
+$('.btn-back').click(function(e){
+	e.preventDefault()
+	window.location.replace('/index.php/manage_products/detail/{{ product.Id }}')
+})
+$(document).ready(function() {
+	$('#btn-edit').trigger('click')
+	$('#btn-canceledit').remove()
+	$('#btn-delete').remove()
+	$('#ProductId').trigger('change')
+})
+function get_price_history(cmp, spl) {
+	return $.ajax({
+		url: '/index.php/manage_productpartners/get_price_history',
+		data: 'product_id=' + cmp + '&supplier_id=' + spl,
+		dataType: 'JSON',
+		method: 'GET'
+	})
+}
+var price_history_chart = new Morris.Line({
+	// ID of the element in which to draw the chart.
+	element: 'price_history_chart',
+	// Chart data records -- each entry in this array corresponds to a point on
+	// the chart.
+	data: [],
+	// The name of the data record attribute that contains x-values.
+	xkey: 'CreatedAt',
+	// A list of names of data record attributes that contain y-values.
+	ykeys: ['ProductPrice'],
+	dateFormat: function (x) { return moment(x).format("MMM Do YYYY HH:mm"); },
+	xLabels:"day",
+	// Labels for the ykeys -- will be displayed when you hover over the
+	// chart.
+	labels: ['Price']
+});
+$('.srcEl').on('change', function(e) {
+	var isfill = true
+	$('.srcEl').each(function(i) {
+		if (!$(this).val()) {
+			isfill = false
+		}
+	})
+	if (isfill) {
+		console.log("FILLL!!!!");
+		get_price_history(
+			$('#ProductId').val(),
+			$('#PartnerId').val()
+		).done(function(o){
+			console.log(o);
+			price_history_chart.setData(o.ProductPartners)
+		})
+	}
+})
+</script>
 {% endblock %}

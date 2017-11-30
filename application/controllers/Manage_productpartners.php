@@ -14,11 +14,53 @@ class Manage_productpartners extends MY_Controller{
      'ProductPrice' => 'ProductPrice',
      'Description' => 'Description',
     );
-    $this->authorization->check_authorization('manage_productpartners');
+    $this->authorization->check_authorization('manage_products');
+  }
+
+  function get_json(){
+    if($this->input->get('type')=='buy' ){
+      $latest_price_ids = ProductPartnerQuery::create()
+      ->select(array('PartnerId'))
+      ->withColumn('MAX(id)','Id')
+      ->groupBy(array('partner_id'))
+      ->filterByProductId($this->input->get('product_id'))
+      ->filterByType('buy')
+      ->find();
+      $price_ids = [];
+      foreach ($latest_price_ids as $price_id) {
+        # code...
+        $price_ids[] = $price_id['Id'];
+      }
+      $this->objobj = ProductPartnerQuery::create()
+      ->filterById($price_ids)
+      ->join('Product')
+      ->join('Partner')
+      ->withColumn('Product.Description','object')
+      ->withColumn('Partner.Name','partner_name');
+      $this->custom_column = array(
+        'partner_name'=>'_{partner_name}_',
+        'object'=>'_{object}_',
+        'price'=>'_{ProductPrice}_'
+      );
+    }
+    parent::get_json();
   }
 
   function create(){
-		$this->template->render('admin/productpartners/form');
+		$this->template->render('admin/productpartners/form',array(
+      'product'=> ProductQuery::create()
+      ->findPk($this->input->get('products'))
+    ));
+  }
+
+  function get_price_history(){
+    $component_id = $this->input->get('product_id');
+    $supplier_id = $this->input->get('supplier_id');
+    echo ProductPartnerQuery::create()
+    ->filterByProductId($component_id)
+    ->filterByPartnerId($supplier_id)
+    ->filterByType('buy')
+    ->find()->toJSON();
   }
 
   function detail($id){
@@ -28,6 +70,7 @@ class Manage_productpartners extends MY_Controller{
   }
 
 	function write($id=null){
+    $this->form['type'] = array('value'=>'buy');
 		$data = parent::write($id);
 		redirect('manage_productpartners/detail/'.$data->getId());
 	}

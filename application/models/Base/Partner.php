@@ -1275,9 +1275,10 @@ abstract class Partner implements ActiveRecordInterface
 
             if ($this->productPartnersScheduledForDeletion !== null) {
                 if (!$this->productPartnersScheduledForDeletion->isEmpty()) {
-                    \ProductPartnerQuery::create()
-                        ->filterByPrimaryKeys($this->productPartnersScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
+                    foreach ($this->productPartnersScheduledForDeletion as $productPartner) {
+                        // need to save related object because we set the relation to null
+                        $productPartner->save($con);
+                    }
                     $this->productPartnersScheduledForDeletion = null;
                 }
             }
@@ -2718,7 +2719,7 @@ abstract class Partner implements ActiveRecordInterface
                 $this->productPartnersScheduledForDeletion = clone $this->collProductPartners;
                 $this->productPartnersScheduledForDeletion->clear();
             }
-            $this->productPartnersScheduledForDeletion[]= clone $productPartner;
+            $this->productPartnersScheduledForDeletion[]= $productPartner;
             $productPartner->setPartner(null);
         }
 

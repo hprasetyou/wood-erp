@@ -1295,7 +1295,7 @@ abstract class ProductQuery extends ModelCriteria
      *
      * @return $this|ChildProductQuery The current query, for fluid interface
      */
-    public function joinProductPartner($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinProductPartner($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('ProductPartner');
@@ -1330,7 +1330,7 @@ abstract class ProductQuery extends ModelCriteria
      *
      * @return \ProductPartnerQuery A secondary query class using the current class as primary query
      */
-    public function useProductPartnerQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useProductPartnerQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
             ->joinProductPartner($relationAlias, $joinType)

@@ -101,11 +101,14 @@ class Manage_proformainvoices extends MY_Controller{
       $productcust = ProductPartnerQuery::create()
       ->filterByProductId($line->ProductId)
       ->filterByPartnerId($data->getCustomerId())
+      ->filterByType('sell')
+      ->orderByCreatedAt('desc')
       ->findOne();
       if(!$productcust){
         $productcust = new ProductPartner();
         $productcust->setProductId($line->ProductId);
         $productcust->setPartnerId($data->getCustomerId());
+        $productcust->setType('sell');
       }
         $productcust->setName($line->Name);
         $productcust->setDescription($line->Description);

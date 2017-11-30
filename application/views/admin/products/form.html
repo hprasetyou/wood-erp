@@ -210,7 +210,12 @@
 		$('#IsRound').change(function (e) {
       $('.WCol').toggle(!$(this).prop('checked'))
 		})
-    $('#BuyPriceList').loadTableData()
+    $('#BuyPriceList').loadTableData({
+      order:{
+        col:2,
+        order:"asc"
+      }
+    })
 
 
 		$('.form-dimension-input').on('change keyup paste', function () {

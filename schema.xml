@@ -106,15 +106,15 @@
   again we can use "their special" price for them
  -->
   <table name="product_partner" idMethod="native" phpName="ProductPartner">
-    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" />
     <column name="name" phpName="Name" type="VARCHAR" size="255"/>
-    <column name="partner_id" phpName="PartnerId" type="INTEGER" required="true"/>
-    <column name="product_id" phpName="ProductId" type="INTEGER" required="true"/>
-    <column name="product_price" phpName="ProductPrice" type="INTEGER" required="true"/>
+    <column name="partner_id" phpName="PartnerId" type="INTEGER" />
+    <column name="product_id" phpName="ProductId" type="INTEGER" />
+    <column name="product_price" phpName="ProductPrice" type="INTEGER" />
     <column name="description" phpName="Description" type="LONGVARCHAR"/>
     <column name="type" phpName="Type" type="CHAR" sqlType="ENUM('buy','sell')" defaultValue="sell" />
     <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
-    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" />
     <foreign-key foreignTable="partner" name="product_partner_ibfk_1">
       <reference local="partner_id" foreign="id"/>
     </foreign-key>
