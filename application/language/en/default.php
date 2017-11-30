@@ -5,6 +5,7 @@
 'add_image' => 'Add Image',
 'add_to_pl' => 'Add to Packing List',
 'add_to_po' => 'Add to Purchase Order',
+'add_pi_to_po' => 'Add Proforma Invoice Data to Purchase Order',
 'address' => 'Address',
 'article_number' => 'Article Number',
 'assembled' => 'Assembled',

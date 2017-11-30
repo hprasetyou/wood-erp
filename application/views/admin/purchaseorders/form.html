@@ -205,6 +205,15 @@ res.string.purchaseorder }, {'link':'#','text':bc_text }] %} {% block content %}
 				$('#Name').val(o);
 			})
 		})
+    $('#table_ProformaInvoiceLine').on('change','.cb_pi',function(e){
+      var is_empty = true;
+      $('#table_ProformaInvoiceLine').find('.cb_pi').each(function(i){
+        if($(this).is(':checked')){
+          is_empty = false
+        }
+      })
+      $('#btnAddPO').toggle(!is_empty)
+    })
     $('#btnAddPO').click(function(e){
       e.preventDefault()
       console.log('hehehehe');
@@ -222,8 +231,6 @@ res.string.purchaseorder }, {'link':'#','text':bc_text }] %} {% block content %}
           '<td><input type="number" name="PILineQty[]" required max="'+$(this).parents('tr').children('td:eq(4)').text()+
           '" class="form-control PILineQty" maxlength="4" size="4" value="'+$(this).parents('tr').children('td:eq(4)').text()+'">'+
           '</td>'+
-          '<td><input type="number" name="PILinePrice[]" required '+
-          'class="form-control" value="0">'+
           '</td></tr>');
         }
       })
