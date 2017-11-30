@@ -42,13 +42,10 @@ class Manage_componentpartners extends MY_Controller{
   function get_price_history(){
     $component_id = $this->input->get('component_id');
     $supplier_id = $this->input->get('supplier_id');
-    ProductComponentQuery::create()
+    echo ComponentPartnerQuery::create()
     ->filterByComponentId($component_id)
     ->filterByPartnerId($supplier_id)
-    ->find();
-    foreach ($variable as $key => $value) {
-      # code...
-    }
+    ->find()->toJSON();
   }
 
   private function get_avail_cmp($product_id){

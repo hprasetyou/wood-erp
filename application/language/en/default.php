@@ -1,4 +1,4 @@
-<?php 
+<?php
  return array(
 'access' => 'Access',
 'add' => 'Add',
@@ -13,6 +13,7 @@
 'back' => 'Back',
 'bank' => 'Bank',
 'bank_detail' => 'Bank Detail',
+'buy_price'=>'Buy/Cost Price',
 'bl_no' => 'Bl No',
 'calculated_discount' => 'Calculated Discount',
 'cancel' => 'Cancel',
@@ -96,6 +97,7 @@
 'phone' => 'Phone',
 'pod' => 'Pod',
 'price' => 'Price',
+'price_changes_update'=>'Price Changes Update',
 'product' => 'Product',
 'product_finishing' => 'Product Finishing',
 'product_id' => 'Product Id',

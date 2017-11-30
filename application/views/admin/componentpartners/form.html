@@ -1,89 +1,134 @@
-
-{% extends "dashboard.html" %}
-{% set title=" Component Partner " %}
-{% if componentpartners %}
-	 {% set bc_text = componentpartners.id  %}
-{% else %}
-	 {% set bc_text = 'Baru' %}
-{% endif %}
-{% set breadcrumbs = [
-	{'link': base_url~'index.php/manage_componentpartners','text': res.string.componentpartner },
-	{'link':'#','text':bc_text  }]
-%}
-{% block content %}
+ {% extends "dashboard.html" %} {% set title=" Component Partner " %} {% if componentpartners %} {% set bc_text = componentpartners.id %} {% else %} {% set bc_text = 'Baru' %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_componentpartners','text':
+res.string.componentpartner }, {'link':'#','text':bc_text }] %} {% block content %}
 <div class="row">
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<form id="form_ComponentPartner" method="post" action="{{base_url}}index.php/manage_componentpartners/write" data-parsley-validate class="form-horizontal form-label-left">
 			<div class="box box-info">
 				<div class="box-header with-border">
-				{% include 'common/_form_header.html'
-				with {'back_url':'/index.php/manage_componentpartners'~back_link,
-				'title': res.string.componentpartner,
-				'delete_url':'/index.php/manage_componentpartners/delete/' ~ componentpartners.Id,
-				'object':componentpartners} %}
+					{% include 'common/_form_header.html' with {'back_url':'/index.php/manage_componentpartners'~back_link, 'title': res.string.componentpartner, 'delete_url':'/index.php/manage_componentpartners/delete/' ~ componentpartners.Id, 'object':componentpartners}
+					%}
 				</div>
 				<div class="box-body">
-
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="PartnerId">{{res.string.supplier}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if componentpartners %}style="display:none"{%else%} class="input-wrap input-group"{% endif %}>
-							<input type="hidden" type="text" id="PartnerId" value="{{ componentpartners.PartnerId }}" name="PartnerId"  >
-							<input type="text" required="required" name="displayPartnerId" id="displayPartnerId"  placeholder="{{ res.string.partner_id }}" value="{{ componentpartners.Partner }}" class="form-control" />
-							<span class="input-group-btn">
-								<button class="btn btnModal btn-default" id="btnPartnerId"  data-target="ModalSupplier" type="button">{{res.string.search}}</button>
-							</span>
-						</div>
+					<div class="col-sm-12">
+						<div class="form-group">
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="PartnerId">{{res.string.supplier}}</label>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+								<div {% if componentpartners %}style="display:none" {%else%} class="input-wrap input-group" {% endif %}>
+									<input type="hidden" class="srcEl" type="text" id="PartnerId" value="{{ componentpartners.PartnerId }}" name="PartnerId">
+									<input type="text" required="required" name="displayPartnerId" id="displayPartnerId" placeholder="{{ res.string.partner_id }}" value="{{ componentpartners.Partner }}" class="form-control" />
+									<span class="input-group-btn">
+										<button class="btn btnModal btn-default" id="btnPartnerId"  data-target="ModalSupplier" type="button">{{res.string.search}}</button>
+									</span>
+								</div>
 								{% if componentpartners %}
-									<p class=" {% if not componentpartners %}control-{%endif%}value">{{ componentpartners.Partner.Name  }}</p>
+								<p class=" {% if not componentpartners %}control-{%endif%}value">{{ componentpartners.Partner.Name }}</p>
 								{% endif %}
 							</div>
 						</div>
 
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ComponentId">{{res.string.component_id}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if componentpartners %}style="display:none" {%else%} class="input-wrap input-group"{% endif %}>
-							<input type="hidden" type="text" id="ComponentId" value="{{ componentpartners.ComponentId }}" name="ComponentId"  >
-							<input type="text" required="required" name="displayComponentId" id="displayComponentId"  placeholder="{{ res.string.component_id }}" value="{{ componentpartners.Component }}" class="form-control" />
-							<span class="input-group-btn">
-								<button class="btn btnModal btn-default" id="btnComponentId" data-domain='{"avail_component":{{availcmp}}}' data-target="ModalComponent" type="button">{{res.string.search}}</button>
-							</span>
-						</div>
+						<div class="form-group">
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ComponentId">{{res.string.component_id}}</label>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+								<div {% if componentpartners %}style="display:none" {%else%} class="input-wrap input-group" {% endif %}>
+									<input type="hidden" type="text" class="srcEl" id="ComponentId" value="{{ componentpartners.ComponentId }}" name="ComponentId">
+									<input type="text" required="required" name="displayComponentId" id="displayComponentId" placeholder="{{ res.string.component_id }}" value="{{ componentpartners.Component }}" class="form-control" />
+									<span class="input-group-btn">
+										<button class="btn btnModal btn-default" id="btnComponentId" data-domain='{"avail_component":{{availcmp}}}' data-target="ModalComponent" type="button">{{res.string.search}}</button>
+									</span>
+								</div>
 								{% if componentpartners %}
-									<p class=" {% if not componentpartners %}control-{%endif%}value">{{ componentpartners.Component.Name  }}</p>
+								<p class=" {% if not componentpartners %}control-{%endif%}value">{{ componentpartners.Component.Name }}</p>
 								{% endif %}
 							</div>
 						</div>
 
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Price">{{res.string.price}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if componentpartners %}style="display:none"{% endif %} class="input-wrap">
-							<input type="number" placeholder="{{ res.string.price }}" id="Price" value="{{ componentpartners.Price }}"
-							name="Price"  class="form-control  col-md-7 col-xs-12">
-						</div>
+						<div class="form-group">
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Price">{{res.string.price}}</label>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+								<div {% if componentpartners %}style="display:none" {% endif %} class="input-wrap">
+									<input type="number" placeholder="{{ res.string.price }}" id="Price" value="{{ componentpartners.Price }}" name="Price" class="form-control  col-md-7 col-xs-12">
+								</div>
 								{% if componentpartners %}
-									<p class="control-value">{{ componentpartners.Price  }}</p>
+								<p class="control-value">{{ componentpartners.Price }}</p>
 								{% endif %}
 							</div>
 						</div>
+					</div>
+
+<div class="row">
+	<div class="col-sm-12">
+		<div class="nav-tabs-custom">
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#tab_1" data-toggle="tab">{{res.string.price_changes_update}}</a></li>
+			</ul>
+			<div class="tab-content">
+				<div id="price_history_chart" style="height: 250px;"></div>
+				<!-- /.tab-pane -->
+			</div>
+		</div>
+	</div>
+</div>
+
+
 
 				</div>
 		</form>
+		</div>
 	</div>
-</div>
-<!-- Modal -->
+	<!-- Modal -->
 
-{% endblock %}
-{% block bottom%}
-{% include "admin/suppliers/_modal.html" %}
-{% include "admin/components/_modal.html" with {nocreate:1} %}
-<script type="text/javascript">
-	$(document).ready(function(){
-		$('#btn-edit').trigger('click')
-		$('#btn-canceledit').remove()
-		$('#btn-delete').remove()
-	})
-</script>
-{% endblock %}
+	{% endblock %} {% block bottom%} {% include "admin/suppliers/_modal.html" %} {% include "admin/components/_modal.html" with {nocreate:1} %}
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#btn-edit').trigger('click')
+			$('#btn-canceledit').remove()
+			$('#btn-delete').remove()
+			$('#ComponentId').trigger('change')
+		})
+
+		function get_price_history(cmp, spl) {
+			return $.ajax({
+				url: '/index.php/manage_componentpartners/get_price_history',
+				data: 'component_id=' + cmp + '&supplier_id=' + spl,
+				dataType: 'JSON',
+				method: 'GET'
+			})
+		}
+
+		var price_history_chart = new Morris.Line({
+			// ID of the element in which to draw the chart.
+			element: 'price_history_chart',
+			// Chart data records -- each entry in this array corresponds to a point on
+			// the chart.
+			data: [],
+			// The name of the data record attribute that contains x-values.
+			xkey: 'CreatedAt',
+			// A list of names of data record attributes that contain y-values.
+			ykeys: ['Price'],
+			dateFormat: function (x) { return moment(x).format("MMM Do YYYY"); },
+			xLabels:"day",
+			// Labels for the ykeys -- will be displayed when you hover over the
+			// chart.
+			labels: ['Price']
+		});
+
+		$('.srcEl').on('change', function(e) {
+			var isfill = true
+			$('.srcEl').each(function(i) {
+				if (!$(this).val()) {
+					isfill = false
+				}
+			})
+			if (isfill) {
+				console.log("FILLL!!!!");
+				get_price_history(
+					$('#ComponentId').val(),
+					$('#PartnerId').val()
+				).done(function(o){
+					console.log(o);
+					price_history_chart.setData(o.ComponentPartners)
+				})
+			}
+		})
+	</script>
+	{% endblock %}
