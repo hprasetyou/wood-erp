@@ -15,6 +15,13 @@ class Manage_components extends MY_Controller{
     $this->authorization->check_authorization('manage_components');
   }
 
+  function get_json(){
+    if($this->input->get('avail_component')){
+      $avcmp = explode(",",$this->input->get('avail_component'));
+      $this->objobj = ComponentQuery::create()->filterById($avcmp);
+    }
+    parent::get_json();
+  }
 
   function create(){
 

@@ -1,8 +1,25 @@
 <div class="">
   <div class="box box-success">
     <!-- /.box-header -->
+    <div class="box-header with-border">
+      <!-- /.box-tools -->
+      <a href="/index.php/manage_{{products.hasComponent?'component':'product'}}partners/create?products={{products.Id}}"
+      class="btn btn-default pull-right">{{res.string.add}}</a>
+    </div>
     <div class="box-body">
-      <table data-controller></table>
+      <table id="BuyPriceList"
+      class="table table-striped "
+      data-domain='{"product_id":{{ products.Id }}}'
+      data-controller="manage_{{products.hasComponent?'component':'product'}}partners">
+        <thead>
+          <tr>
+            <th data-fieldname="partner_name">{{res.string.supplier}}</th>
+            <th data-fieldname="object">{{attribute(res.string,products.hasComponent?'component':'product')}}</th>
+            <th data-fieldname="price">{{res.string.price}}</th>
+            <th></th>
+          </tr>
+        </thead>
+      </table>
     </div>
   </div>
 </div>

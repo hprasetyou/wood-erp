@@ -35,7 +35,7 @@ class Scaffold extends CI_Controller {
 				$menu->setParentId(3);
 				$menu->save();
 			}
-		$table = $this->find_table($tb_name);
+		$table = $this->schema->find_table($tb_name);
 		if($table){
 			$fklist = [];
 			if($fk){

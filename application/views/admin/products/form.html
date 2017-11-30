@@ -151,6 +151,9 @@
 									<li>
 										<a href="#tab_5" data-toggle="tab">{{ res.string.note }}</a>
 									</li>
+									<li>
+										<a href="#tab_6" data-toggle="tab">{{ res.string.note }}</a>
+									</li>
 								</ul>
 								<div class="tab-content">
                   <!-- /.tab-pane -->
@@ -172,6 +175,10 @@
 									<!-- /.tab-pane -->
 									<div class="tab-pane" id="tab_5">
                     {% include "admin/products/_note_tab.html"%}
+                  </div>
+									<!-- /.tab-pane -->
+									<div class="tab-pane" id="tab_6">
+                    {% include "admin/products/_buying_price_tab.html"%}
                   </div>
 								</div>
 							</div>
@@ -203,6 +210,7 @@
 		$('#IsRound').change(function (e) {
       $('.WCol').toggle(!$(this).prop('checked'))
 		})
+    $('#BuyPriceList').loadTableData()
 
 
 		$('.form-dimension-input').on('change keyup paste', function () {

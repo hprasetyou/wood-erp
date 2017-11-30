@@ -15,7 +15,7 @@ class Schema
 
   }
 
-  private function find_table($tb_name,$ref='phpName'){
+  function find_table($tb_name,$ref='phpName'){
 		$f = fopen($this->file_path, "r");
 		$contents = fread($f, filesize($this->file_path));
 		$xml= new \SimpleXMLElement($contents);
