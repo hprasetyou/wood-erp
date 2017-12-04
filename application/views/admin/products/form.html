@@ -140,9 +140,11 @@
 									<li>
 										<a href="#tab_5" data-toggle="tab">{{ res.string.note }}</a>
 									</li>
+                  {% if products %}
 									<li>
 										<a href="#tab_6" data-toggle="tab">{{ res.string.buy_price }}</a>
 									</li>
+                  {% endif %}
 								</ul>
 								<div class="tab-content">
                   <!-- /.tab-pane -->
@@ -166,9 +168,11 @@
                     {% include "admin/products/_note_tab.html"%}
                   </div>
 									<!-- /.tab-pane -->
+                  {% if products %}
 									<div class="tab-pane" id="tab_6">
                     {% include "admin/products/_buying_price_tab.html"%}
                   </div>
+                  {% endif %}
 								</div>
 							</div>
 						</div>
