@@ -46,22 +46,46 @@ class Manage_proformainvoicelines extends MY_Controller{
     $i = 0;
     foreach ($lines as $line) {
       # code...
+
       $prod = $line->getProductPartner()->getProduct();
       $o[$i]['id'] = $line->getId().'-'.$prod->getId();
       $o[$i]['article_number'] = $line->getProductPartner()->getName();
       $o[$i]['description'] = $line->getDescription();
       $o[$i]['has_component'] = $prod->getHasComponent();
-      $o[$i]['total_qty'] = $line->getQty();
+
       if($prod->getHasComponent()){
         foreach ($prod->getProductComponents() as $prodcomponent) {
           $o[$i]['id'] = $line->getId().'-'.$prod->getId().'-'.$prodcomponent->getComponent()->getId();
           $o[$i]['article_number'] = $line->getProductPartner()->getName();
           $o[$i]['description'] = $line->getDescription();
           $o[$i]['has_component'] = $prodcomponent->getComponent()->getName();
-          $o[$i]['total_qty'] = $line->getQty() * $prodcomponent->getQty();
+          $polines = PurchaseOrderLineQuery::create()
+          ->filterByProformaInvoiceLineId($line->getId())
+          ->filterByProductId($prod->getId())
+          ->filterByComponentId($prodcomponent->getComponent()->getId())
+          ->find();
+          $done = 0;
+          foreach ($polines as $poline) {
+            # code...
+            write_log($poline);
+            $done += $poline->getQty();
+          }
+          $o[$i]['total_qty'] = ($line->getQty() * $prodcomponent->getQty())-$done;
+
           $i++;
         }
       }else{
+        $polines = PurchaseOrderLineQuery::create()
+        ->filterByProformaInvoiceLineId($line->getId())
+        ->filterByProductId($prod->getId())
+        ->find();
+        $done = 0;
+        foreach ($polines as $poline) {
+          # code...
+          $done += $poline->getQty();
+        }
+        $o[$i]['total_qty'] = $line->getQty() - $done;
+
         $i++;
       }
     }
