@@ -276,17 +276,18 @@ $('.img-list').append('<div data-index="'+idx+'" class="image col-sm-2 col-xs-6"
 //TODO:Problem with index, fix later
     $('#btnSaveComponent').click(function(e){
       e.preventDefault()
-
+      var cp = $('#displayComponentId').val().split('-')
       var nc = {
         index:idx,
         component_id:$('#ComponentId').val(),
-        component_name:$('#displayComponentId').val(),
+        component_name: cp[0],
+        material: cp[1],
         qty:$('#Qty').val(),
         state:'new'
       };
       compProd.push(nc)
       idx = idx+1;
-      prod_comp.row.add([nc.component_name,nc.qty,'<a href="#" data-idx="'+idx+'" class="btn btn-danger btn-delete-row"><i class="fa fa-trash"></i></a>']).draw()
+      prod_comp.row.add([nc.component_name,nc.material,nc.qty,'<a href="#" data-idx="'+idx+'" class="btn btn-danger btn-delete-row"><i class="fa fa-trash"></i></a>']).draw()
       $('#productComponents').val(JSON.stringify(compProd))
     })
     $('#table_ProductComponent').on( 'click','.btn-delete-row',function(e){
