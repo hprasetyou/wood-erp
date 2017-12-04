@@ -44,7 +44,10 @@
     "font-awesome": "^4.7.0",
     "jquery-ui": "1.11.4",
     "datatables.net-rowgroup": "^1.0.2",
-    "morris.js": "morrisjs/morris.js#^0.5.1"
+    "morris.js": "morrisjs/morris.js#^0.5.1",
+    "lightgallery": "^1.6.5",
+    "lg-thumbnail": "^1.1.0",
+    "lg-fullscreen": "^1.0.1"
   },
   "resolutions": {
     "jquery": "^2.2.3",
