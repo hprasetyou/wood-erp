@@ -47,7 +47,7 @@ class Manage_purchaseorderlines extends MY_Controller{
 
 	function write($id=null){
     $po_id = $this->input->get('purchase_order');
-		$qty = $this->input->post('PILineId');
+		$qty = $this->input->post('PILineQty');
   	$name = $this->input->post('PILineName');
   	$price = $this->input->post('PILinePrice');
     foreach ($this->input->post('PILineId') as $key => $line) {

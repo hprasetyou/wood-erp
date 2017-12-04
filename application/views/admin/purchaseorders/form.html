@@ -1,23 +1,24 @@
  {% extends "dashboard.html" %} {% set title=" Purchase Order " %} {% if purchaseorders %} {% set bc_text = purchaseorders.id %} {% else %} {% set bc_text = 'Baru' %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_purchaseorders','text':
-res.string.purchaseorder }, {'link':'#','text':bc_text }] %} {% block content %}
+res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %}
 <div class="row">
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<form id="form_PurchaseOrder" method="post" action="{{base_url}}index.php/manage_purchaseorders/write/{{ purchaseorders.id }}" data-parsley-validate class="form-horizontal form-label-left">
 			<div class="box box-info">
 				<div class="box-header with-border">
-					{% include 'common/_form_header.html' with {'back_url':'/index.php/manage_purchaseorders'~back_link, 'title': res.string.purchaseorder, 'delete_url':'/index.php/manage_purchaseorders/delete/' ~ purchaseorders.Id, 'object':purchaseorders} %}
+					{% include 'common/_form_header.html' with {'back_url':'/index.php/manage_purchaseorders'~back_link, 'title': res.string.purchase_order, 'delete_url':'/index.php/manage_purchaseorders/delete/' ~ purchaseorders.Id, 'object':purchaseorders} %}
 				</div>
 				<div class="box-body">
 					<div class="row">
 						<div class="col-sm-6">
-							<div class="form-group">
+
+							<div {% if purchaseorders %}style="display:none"{% endif %} class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.name}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
 									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
 										<input type="text" placeholder="{{ res.string.name }}" id="Name" value="{{ purchaseorders.Name }}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
 									</div>
 									{% if purchaseorders %}
-									<p class="control-value">{{ purchaseorders.Name }}</p>
+									<p class="value">{{ purchaseorders.Name }}</p>
 									{% endif %}
 								</div>
 							</div>
@@ -27,7 +28,7 @@ res.string.purchaseorder }, {'link':'#','text':bc_text }] %} {% block content %}
 							<div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProformaInvoiceId">{{res.string.proforma_invoice_id}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
-									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap input-group">
+                  <div {% if purchaseorders %}style="display:none"{% else %} class="input-wrap input-group" {% endif %}>
 										<input type="hidden" type="text" id="ProformaInvoiceId" value="{{ purchaseorders.ProformaInvoiceId }}" name="ProformaInvoiceId">
 										<input type="text" required="required" name="displayProformaInvoiceId" id="displayProformaInvoiceId" placeholder="{{ res.string.proforma_invoice_id }}" value="{{ purchaseorders.ProformaInvoice }}" class="form-control" />
 										<span class="input-group-btn">
@@ -35,23 +36,23 @@ res.string.purchaseorder }, {'link':'#','text':bc_text }] %} {% block content %}
 							</span>
 									</div>
 									{% if purchaseorders %}
-									<p class="control-value">{{ purchaseorders.ProformaInvoice.Name }}</p>
+									<p class="value">{{ purchaseorders.ProformaInvoice.Name }}</p>
 									{% endif %}
 								</div>
 							</div>
 
 							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="SupplierId">{{res.string.supplier_id}}</label>
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="SupplierId">{{res.string.supplier}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
-									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap input-group">
+									<div {% if purchaseorders %}style="display:none"{% else %} class="input-wrap input-group" {% endif %}>
 										<input type="hidden" type="text" id="SupplierId" value="{{ purchaseorders.SupplierId }}" name="SupplierId">
-										<input type="text" required="required" name="displaySupplierId" id="displaySupplierId" placeholder="{{ res.string.supplier_id }}" value="{{ purchaseorders.Partner }}" class="form-control" />
+										<input type="text" required="required" name="displaySupplierId" id="displaySupplierId" placeholder="{{ res.string.supplier_id }}" value="{{ purchaseorders.Supplier.Name }}" class="form-control" />
 										<span class="input-group-btn">
 								<button class="btn btnModal btn-default" id="btnSupplierId"  data-target="ModalSupplier" type="button">{{res.string.search}}</button>
 							</span>
 									</div>
 									{% if purchaseorders %}
-									<p class="control-value">{{ purchaseorders.Partner.Name }}</p>
+									<p class="value">{{ purchaseorders.Supplier.Name }}</p>
 									{% endif %}
 								</div>
 							</div>
@@ -258,7 +259,10 @@ res.string.purchaseorder }, {'link':'#','text':bc_text }] %} {% block content %}
 
         }else{
           submitpoline($('#Id').val()).done(function(o){
+
+            $('#table_ProformaInvoiceLine').DataTable().ajax.reload()
             $('#table_PurchaseOrderLine').DataTable().ajax.reload()
+            $('#modalAddPOLine').modal('hide')
           })
         }
       })

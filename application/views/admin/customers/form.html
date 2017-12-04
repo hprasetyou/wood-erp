@@ -132,7 +132,7 @@
 		</form>
 	</div>
 </div>
-{% if customers and customers.CompanyId is null %}
+{% if customers and (customers.CompanyId is null or customers.CompanyId == 0)  %}
 <div class="">
 	<div class="clearfix"></div>
 	<div class="row">

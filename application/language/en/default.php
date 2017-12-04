@@ -107,6 +107,7 @@
 'proforma_invoice_line' => 'Proforma Invoice Line',
 'proforma_invoice_line_id' => 'Proforma Invoice Line Id',
 'purchase_order_id' => 'Purchase Order Id',
+'purchase_order' => 'Purchase Order',
 'purchase_order_line' => 'Purchase Order Line',
 'qty' => 'Qty',
 'qty_of_pack' => 'Qty Of Pack',
