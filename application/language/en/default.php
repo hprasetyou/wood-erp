@@ -132,6 +132,7 @@
 'total_cubic_dimension' => 'Total Cubic Dimension',
 'total_price' => 'Total Price',
 'upload' => 'Upload',
+'update_time'=>'Update Time',
 'url' => 'Url',
 'user' => 'User',
 'username' => 'Username',

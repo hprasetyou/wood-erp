@@ -35,6 +35,7 @@ jQuery.fn.loadTableData = function(
        fd.push($(this).data('fieldname'))
        if($(this).data('fieldtype')){
          var ft = $(this).data('fieldtype')
+         var ordr = false;
          switch (ft) {
            case 'image':
              render_data = new Function("data", "type","row","meta",
@@ -47,13 +48,24 @@ jQuery.fn.loadTableData = function(
            "return parseFloat(data/1000000).toFixed(3) + ' m3';")
 
             break;
+         case 'datetime':
+         render_data = new Function("data", "type","row","meta",
+          "return moment(data.date).format('DD MMM YYYY HH:mm:ss');")
+          ordr = true;
+           break;
+        case 'datetime-human':
+        ordr = true;
+        render_data = new Function("data", "type","row","meta",
+         "return moment(data.date).fromNow();")
+
+          break;
            default:
               break;
 
          }
          fl.push({
           "data":$(this).data('fieldname'),
-          "orderable": false,
+          "orderable": ordr,
           "render":render_data
         })
        }else{
