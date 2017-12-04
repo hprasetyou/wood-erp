@@ -24,6 +24,19 @@ class MY_Controller extends CI_Controller{
      $this->template->render("admin/$vars/index");
  }
 
+ protected function set_objname($objname){
+   $this->objname = $objname;
+   $colls = $this->schema->extract_fields($this->objname);
+   $except = array('Id','CreatedAt','UpdatedAt');
+   foreach ($colls as $coll) {
+     # code...
+    if(!is_object($coll['Name']) and (!in_array($coll['Name'],$except))){
+       $this->form[$coll['Name']] = $coll['Name'];
+    }else{
+    }
+   }
+ }
+
  function get_json(){
    $qobj = $this->objname."Query";
    $objs = $qobj::create();
@@ -159,6 +172,7 @@ class MY_Controller extends CI_Controller{
        }
      }
      $func = "set$key";
+     write_log($func);
      if($value=="Image"){
          if(file_exists('.'.$obj->getImage())){
            write_log('Delete file');
@@ -180,7 +194,7 @@ class MY_Controller extends CI_Controller{
      }
 
    }
-
+   write_log($obj);
    $obj->save();
    write_log("Writing data. . . . . . . ");
    $this->loging->add_entry($this->tpl,$obj->getId(),($id?'activity_modify':'activity_create'));

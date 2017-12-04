@@ -29,6 +29,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery orderByHasComponent($order = Criteria::ASC) Order by the has_component column
  * @method     ChildProductQuery orderByQtyPerPack($order = Criteria::ASC) Order by the qty_per_pack column
  * @method     ChildProductQuery orderByListPrice($order = Criteria::ASC) Order by the list_price column
+ * @method     ChildProductQuery orderByComponentId($order = Criteria::ASC) Order by the material_id column
  * @method     ChildProductQuery orderByNote($order = Criteria::ASC) Order by the note column
  * @method     ChildProductQuery orderByCubicAsb($order = Criteria::ASC) Order by the cubic_asb column
  * @method     ChildProductQuery orderByCubicKdn($order = Criteria::ASC) Order by the cubic_kdn column
@@ -39,6 +40,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery orderByHeightKdn($order = Criteria::ASC) Order by the height_kdn column
  * @method     ChildProductQuery orderByDepthKdn($order = Criteria::ASC) Order by the depth_kdn column
  * @method     ChildProductQuery orderByNetCubic($order = Criteria::ASC) Order by the net_cubic column
+ * @method     ChildProductQuery orderByNetWeight($order = Criteria::ASC) Order by the net_weight column
+ * @method     ChildProductQuery orderByGrossWeight($order = Criteria::ASC) Order by the gross_weight column
  * @method     ChildProductQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildProductQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -51,6 +54,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery groupByHasComponent() Group by the has_component column
  * @method     ChildProductQuery groupByQtyPerPack() Group by the qty_per_pack column
  * @method     ChildProductQuery groupByListPrice() Group by the list_price column
+ * @method     ChildProductQuery groupByComponentId() Group by the material_id column
  * @method     ChildProductQuery groupByNote() Group by the note column
  * @method     ChildProductQuery groupByCubicAsb() Group by the cubic_asb column
  * @method     ChildProductQuery groupByCubicKdn() Group by the cubic_kdn column
@@ -61,6 +65,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery groupByHeightKdn() Group by the height_kdn column
  * @method     ChildProductQuery groupByDepthKdn() Group by the depth_kdn column
  * @method     ChildProductQuery groupByNetCubic() Group by the net_cubic column
+ * @method     ChildProductQuery groupByNetWeight() Group by the net_weight column
+ * @method     ChildProductQuery groupByGrossWeight() Group by the gross_weight column
  * @method     ChildProductQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildProductQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -71,6 +77,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
  * @method     ChildProductQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildProductQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
+ * @method     ChildProductQuery leftJoinMaterial($relationAlias = null) Adds a LEFT JOIN clause to the query using the Material relation
+ * @method     ChildProductQuery rightJoinMaterial($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Material relation
+ * @method     ChildProductQuery innerJoinMaterial($relationAlias = null) Adds a INNER JOIN clause to the query using the Material relation
+ *
+ * @method     ChildProductQuery joinWithMaterial($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Material relation
+ *
+ * @method     ChildProductQuery leftJoinWithMaterial() Adds a LEFT JOIN clause and with to the query using the Material relation
+ * @method     ChildProductQuery rightJoinWithMaterial() Adds a RIGHT JOIN clause and with to the query using the Material relation
+ * @method     ChildProductQuery innerJoinWithMaterial() Adds a INNER JOIN clause and with to the query using the Material relation
  *
  * @method     ChildProductQuery leftJoinProductComponent($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProductComponent relation
  * @method     ChildProductQuery rightJoinProductComponent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProductComponent relation
@@ -122,7 +138,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery rightJoinWithPurchaseOrderLine() Adds a RIGHT JOIN clause and with to the query using the PurchaseOrderLine relation
  * @method     ChildProductQuery innerJoinWithPurchaseOrderLine() Adds a INNER JOIN clause and with to the query using the PurchaseOrderLine relation
  *
- * @method     \ProductComponentQuery|\ProductPartnerQuery|\ProductFinishingQuery|\ProductImageQuery|\PurchaseOrderLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \MaterialQuery|\ProductComponentQuery|\ProductPartnerQuery|\ProductFinishingQuery|\ProductImageQuery|\PurchaseOrderLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildProduct findOne(ConnectionInterface $con = null) Return the first ChildProduct matching the query
  * @method     ChildProduct findOneOrCreate(ConnectionInterface $con = null) Return the first ChildProduct matching the query, or a new ChildProduct object populated from the query conditions when no match is found
@@ -136,6 +152,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct findOneByHasComponent(boolean $has_component) Return the first ChildProduct filtered by the has_component column
  * @method     ChildProduct findOneByQtyPerPack(int $qty_per_pack) Return the first ChildProduct filtered by the qty_per_pack column
  * @method     ChildProduct findOneByListPrice(double $list_price) Return the first ChildProduct filtered by the list_price column
+ * @method     ChildProduct findOneByComponentId(int $material_id) Return the first ChildProduct filtered by the material_id column
  * @method     ChildProduct findOneByNote(string $note) Return the first ChildProduct filtered by the note column
  * @method     ChildProduct findOneByCubicAsb(double $cubic_asb) Return the first ChildProduct filtered by the cubic_asb column
  * @method     ChildProduct findOneByCubicKdn(double $cubic_kdn) Return the first ChildProduct filtered by the cubic_kdn column
@@ -146,6 +163,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct findOneByHeightKdn(double $height_kdn) Return the first ChildProduct filtered by the height_kdn column
  * @method     ChildProduct findOneByDepthKdn(double $depth_kdn) Return the first ChildProduct filtered by the depth_kdn column
  * @method     ChildProduct findOneByNetCubic(double $net_cubic) Return the first ChildProduct filtered by the net_cubic column
+ * @method     ChildProduct findOneByNetWeight(double $net_weight) Return the first ChildProduct filtered by the net_weight column
+ * @method     ChildProduct findOneByGrossWeight(double $gross_weight) Return the first ChildProduct filtered by the gross_weight column
  * @method     ChildProduct findOneByCreatedAt(string $created_at) Return the first ChildProduct filtered by the created_at column
  * @method     ChildProduct findOneByUpdatedAt(string $updated_at) Return the first ChildProduct filtered by the updated_at column *
 
@@ -161,6 +180,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct requireOneByHasComponent(boolean $has_component) Return the first ChildProduct filtered by the has_component column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByQtyPerPack(int $qty_per_pack) Return the first ChildProduct filtered by the qty_per_pack column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByListPrice(double $list_price) Return the first ChildProduct filtered by the list_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProduct requireOneByComponentId(int $material_id) Return the first ChildProduct filtered by the material_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByNote(string $note) Return the first ChildProduct filtered by the note column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByCubicAsb(double $cubic_asb) Return the first ChildProduct filtered by the cubic_asb column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByCubicKdn(double $cubic_kdn) Return the first ChildProduct filtered by the cubic_kdn column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -171,6 +191,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct requireOneByHeightKdn(double $height_kdn) Return the first ChildProduct filtered by the height_kdn column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByDepthKdn(double $depth_kdn) Return the first ChildProduct filtered by the depth_kdn column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByNetCubic(double $net_cubic) Return the first ChildProduct filtered by the net_cubic column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProduct requireOneByNetWeight(double $net_weight) Return the first ChildProduct filtered by the net_weight column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProduct requireOneByGrossWeight(double $gross_weight) Return the first ChildProduct filtered by the gross_weight column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByCreatedAt(string $created_at) Return the first ChildProduct filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByUpdatedAt(string $updated_at) Return the first ChildProduct filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -184,6 +206,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct[]|ObjectCollection findByHasComponent(boolean $has_component) Return ChildProduct objects filtered by the has_component column
  * @method     ChildProduct[]|ObjectCollection findByQtyPerPack(int $qty_per_pack) Return ChildProduct objects filtered by the qty_per_pack column
  * @method     ChildProduct[]|ObjectCollection findByListPrice(double $list_price) Return ChildProduct objects filtered by the list_price column
+ * @method     ChildProduct[]|ObjectCollection findByComponentId(int $material_id) Return ChildProduct objects filtered by the material_id column
  * @method     ChildProduct[]|ObjectCollection findByNote(string $note) Return ChildProduct objects filtered by the note column
  * @method     ChildProduct[]|ObjectCollection findByCubicAsb(double $cubic_asb) Return ChildProduct objects filtered by the cubic_asb column
  * @method     ChildProduct[]|ObjectCollection findByCubicKdn(double $cubic_kdn) Return ChildProduct objects filtered by the cubic_kdn column
@@ -194,6 +217,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct[]|ObjectCollection findByHeightKdn(double $height_kdn) Return ChildProduct objects filtered by the height_kdn column
  * @method     ChildProduct[]|ObjectCollection findByDepthKdn(double $depth_kdn) Return ChildProduct objects filtered by the depth_kdn column
  * @method     ChildProduct[]|ObjectCollection findByNetCubic(double $net_cubic) Return ChildProduct objects filtered by the net_cubic column
+ * @method     ChildProduct[]|ObjectCollection findByNetWeight(double $net_weight) Return ChildProduct objects filtered by the net_weight column
+ * @method     ChildProduct[]|ObjectCollection findByGrossWeight(double $gross_weight) Return ChildProduct objects filtered by the gross_weight column
  * @method     ChildProduct[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildProduct objects filtered by the created_at column
  * @method     ChildProduct[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildProduct objects filtered by the updated_at column
  * @method     ChildProduct[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -294,7 +319,7 @@ abstract class ProductQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, description, is_round, is_kdn, is_flegt, has_component, qty_per_pack, list_price, note, cubic_asb, cubic_kdn, width_asb, height_asb, depth_asb, width_kdn, height_kdn, depth_kdn, net_cubic, created_at, updated_at FROM product WHERE id = :p0';
+        $sql = 'SELECT id, name, description, is_round, is_kdn, is_flegt, has_component, qty_per_pack, list_price, material_id, note, cubic_asb, cubic_kdn, width_asb, height_asb, depth_asb, width_kdn, height_kdn, depth_kdn, net_cubic, net_weight, gross_weight, created_at, updated_at FROM product WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -663,6 +688,49 @@ abstract class ProductQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProductTableMap::COL_LIST_PRICE, $listPrice, $comparison);
+    }
+
+    /**
+     * Filter the query on the material_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByComponentId(1234); // WHERE material_id = 1234
+     * $query->filterByComponentId(array(12, 34)); // WHERE material_id IN (12, 34)
+     * $query->filterByComponentId(array('min' => 12)); // WHERE material_id > 12
+     * </code>
+     *
+     * @see       filterByMaterial()
+     *
+     * @param     mixed $componentId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProductQuery The current query, for fluid interface
+     */
+    public function filterByComponentId($componentId = null, $comparison = null)
+    {
+        if (is_array($componentId)) {
+            $useMinMax = false;
+            if (isset($componentId['min'])) {
+                $this->addUsingAlias(ProductTableMap::COL_MATERIAL_ID, $componentId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($componentId['max'])) {
+                $this->addUsingAlias(ProductTableMap::COL_MATERIAL_ID, $componentId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProductTableMap::COL_MATERIAL_ID, $componentId, $comparison);
     }
 
     /**
@@ -1060,6 +1128,88 @@ abstract class ProductQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the net_weight column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByNetWeight(1234); // WHERE net_weight = 1234
+     * $query->filterByNetWeight(array(12, 34)); // WHERE net_weight IN (12, 34)
+     * $query->filterByNetWeight(array('min' => 12)); // WHERE net_weight > 12
+     * </code>
+     *
+     * @param     mixed $netWeight The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProductQuery The current query, for fluid interface
+     */
+    public function filterByNetWeight($netWeight = null, $comparison = null)
+    {
+        if (is_array($netWeight)) {
+            $useMinMax = false;
+            if (isset($netWeight['min'])) {
+                $this->addUsingAlias(ProductTableMap::COL_NET_WEIGHT, $netWeight['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($netWeight['max'])) {
+                $this->addUsingAlias(ProductTableMap::COL_NET_WEIGHT, $netWeight['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProductTableMap::COL_NET_WEIGHT, $netWeight, $comparison);
+    }
+
+    /**
+     * Filter the query on the gross_weight column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByGrossWeight(1234); // WHERE gross_weight = 1234
+     * $query->filterByGrossWeight(array(12, 34)); // WHERE gross_weight IN (12, 34)
+     * $query->filterByGrossWeight(array('min' => 12)); // WHERE gross_weight > 12
+     * </code>
+     *
+     * @param     mixed $grossWeight The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProductQuery The current query, for fluid interface
+     */
+    public function filterByGrossWeight($grossWeight = null, $comparison = null)
+    {
+        if (is_array($grossWeight)) {
+            $useMinMax = false;
+            if (isset($grossWeight['min'])) {
+                $this->addUsingAlias(ProductTableMap::COL_GROSS_WEIGHT, $grossWeight['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($grossWeight['max'])) {
+                $this->addUsingAlias(ProductTableMap::COL_GROSS_WEIGHT, $grossWeight['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProductTableMap::COL_GROSS_WEIGHT, $grossWeight, $comparison);
+    }
+
+    /**
      * Filter the query on the created_at column
      *
      * Example usage:
@@ -1143,6 +1293,83 @@ abstract class ProductQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProductTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \Material object
+     *
+     * @param \Material|ObjectCollection $material The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildProductQuery The current query, for fluid interface
+     */
+    public function filterByMaterial($material, $comparison = null)
+    {
+        if ($material instanceof \Material) {
+            return $this
+                ->addUsingAlias(ProductTableMap::COL_MATERIAL_ID, $material->getId(), $comparison);
+        } elseif ($material instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(ProductTableMap::COL_MATERIAL_ID, $material->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByMaterial() only accepts arguments of type \Material or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Material relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildProductQuery The current query, for fluid interface
+     */
+    public function joinMaterial($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Material');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Material');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Material relation Material object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \MaterialQuery A secondary query class using the current class as primary query
+     */
+    public function useMaterialQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinMaterial($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Material', '\MaterialQuery');
     }
 
     /**

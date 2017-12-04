@@ -105,6 +105,28 @@
 									{% endif %}
 								</div>
 							</div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.net_weight}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if products %}style="display:none" {% endif %} class="input-wrap">
+                    <input type="number" id="NetWeight" value="{{ products.NetWeight }}" name="NetWeight" required="required" class="form-control col-md-7 col-xs-12">
+                  </div>
+                  {% if products %}
+                  <p class="control-value">{{ products.NetWeight }}</p>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.gross_weight}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if products %}style="display:none" {% endif %} class="input-wrap">
+                    <input type="number" id="GrossWeight" value="{{ products.GrossWeight }}" name="GrossWeight" required="required" class="form-control col-md-7 col-xs-12">
+                  </div>
+                  {% if products %}
+                  <p class="control-value">{{ products.GrossWeight }}</p>
+                  {% endif %}
+                </div>
+              </div>
 
 							<div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.list_price}}</label>

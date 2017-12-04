@@ -5,10 +5,11 @@ class Manage_products extends MY_Controller{
 
 
   function __construct(){
-    $this->objname = 'Product';
+    // $this->objname = 'Product';
     $this->tpl = 'products';
 
     parent::__construct();
+    parent::set_objname('Product');
     $this->authorization->check_authorization('manage_products');
   }
   function get_json(){
@@ -81,26 +82,7 @@ class Manage_products extends MY_Controller{
   }
 
   function write($id=null){
-    $this->form = array(
-      'Name'=>'Name',
-      'Description'=>'Description',
-      'IsKdn'=>'IsKdn',
-      'IsFlegt'=>'IsFlegt',
-      'HasComponent'=>'HasComponent',
-      'IsRound'=>'IsRound',
-      'NetCubic'=>'NetCubic',
-      'QtyPerPack'=>'QtyPerPack',
-      'ListPrice'=>'ListPrice',
-      'CubicAsb'=>'CubicAsb',
-      'CubicKdn'=>'CubicKdn',
-      'WidthAsb'=>'WidthAsb',
-      'HeightAsb'=>'HeightAsb',
-      'DepthAsb'=>'DepthAsb',
-      'WidthKdn'=>'WidthKdn',
-      'HeightKdn'=>'HeightKdn',
-      'DepthKdn'=>'DepthKdn',
-      'Note'=>'Note'
-    );
+
     $data = parent::write($id);
 		$this->load->helper('base64toimage');
 		$prod_img = json_decode($this->input->post('imgProduct'));
