@@ -59,7 +59,8 @@ class MY_Controller extends CI_Controller{
        if(!in_array($value,$except)){
          if(isset($colls[$value])){
            $cond[] = $value;
-           $obj = $this->objname;
+           $obj = $this->schema->find_table($this->objname);
+           $obj = $obj->attributes()->phpName;
            $objs->condition($value ,"$obj.$value LIKE ?", "%".$this->input->get('search[value]')."%");
          }
        }

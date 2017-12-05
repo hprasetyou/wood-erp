@@ -1,0 +1,28 @@
+<div class="">
+	<div class="clearfix"></div>
+	<div class="row">
+		<div class="col-md-12 col-sm-12 col-xs-12">
+			<div class="box">
+				<div class="box-header">
+					<h3 class="box-title"> {{res.string.contact_person}} </h3>
+					<a href="{{base_url}}index.php/manage_customers/create?company_id={{customers.Id}}" class="btn btn-primary pull-right">{{res.string.new_data}}</a>
+					<div class="clearfix"></div>
+				</div>
+				<div class="box-body">
+					<p class="text-muted font-13 m-b-30"></p>
+					<table data-controller="manage_customers" data-domain='{"company_id":{{customers.Id}}}' class="table table-striped " id="table_Partner">
+						<thead>
+							<tr>
+								<th data-fieldname="name">{{res.string.name}}</th>
+								<th data-fieldname="phone">{{res.string.phone}}</th>
+								<th data-fieldname="email">{{res.string.email}}</th>
+								<th data-fieldname="role">{{res.string.remark}}</th>
+								<th></th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
