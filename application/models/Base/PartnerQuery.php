@@ -29,6 +29,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery orderByFax($order = Criteria::ASC) Order by the fax column
  * @method     ChildPartnerQuery orderByImage($order = Criteria::ASC) Order by the image column
  * @method     ChildPartnerQuery orderByTaxNumber($order = Criteria::ASC) Order by the tax_number column
+ * @method     ChildPartnerQuery orderByRole($order = Criteria::ASC) Order by the role column
  * @method     ChildPartnerQuery orderByCompanyId($order = Criteria::ASC) Order by the company_id column
  * @method     ChildPartnerQuery orderBySupplierTypeId($order = Criteria::ASC) Order by the supplier_type_id column
  * @method     ChildPartnerQuery orderByClassKey($order = Criteria::ASC) Order by the class_key column
@@ -44,6 +45,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery groupByFax() Group by the fax column
  * @method     ChildPartnerQuery groupByImage() Group by the image column
  * @method     ChildPartnerQuery groupByTaxNumber() Group by the tax_number column
+ * @method     ChildPartnerQuery groupByRole() Group by the role column
  * @method     ChildPartnerQuery groupByCompanyId() Group by the company_id column
  * @method     ChildPartnerQuery groupBySupplierTypeId() Group by the supplier_type_id column
  * @method     ChildPartnerQuery groupByClassKey() Group by the class_key column
@@ -172,6 +174,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner findOneByFax(string $fax) Return the first ChildPartner filtered by the fax column
  * @method     ChildPartner findOneByImage(string $image) Return the first ChildPartner filtered by the image column
  * @method     ChildPartner findOneByTaxNumber(string $tax_number) Return the first ChildPartner filtered by the tax_number column
+ * @method     ChildPartner findOneByRole(string $role) Return the first ChildPartner filtered by the role column
  * @method     ChildPartner findOneByCompanyId(int $company_id) Return the first ChildPartner filtered by the company_id column
  * @method     ChildPartner findOneBySupplierTypeId(int $supplier_type_id) Return the first ChildPartner filtered by the supplier_type_id column
  * @method     ChildPartner findOneByClassKey(int $class_key) Return the first ChildPartner filtered by the class_key column
@@ -190,6 +193,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner requireOneByFax(string $fax) Return the first ChildPartner filtered by the fax column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByImage(string $image) Return the first ChildPartner filtered by the image column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByTaxNumber(string $tax_number) Return the first ChildPartner filtered by the tax_number column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPartner requireOneByRole(string $role) Return the first ChildPartner filtered by the role column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByCompanyId(int $company_id) Return the first ChildPartner filtered by the company_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneBySupplierTypeId(int $supplier_type_id) Return the first ChildPartner filtered by the supplier_type_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByClassKey(int $class_key) Return the first ChildPartner filtered by the class_key column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -206,6 +210,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner[]|ObjectCollection findByFax(string $fax) Return ChildPartner objects filtered by the fax column
  * @method     ChildPartner[]|ObjectCollection findByImage(string $image) Return ChildPartner objects filtered by the image column
  * @method     ChildPartner[]|ObjectCollection findByTaxNumber(string $tax_number) Return ChildPartner objects filtered by the tax_number column
+ * @method     ChildPartner[]|ObjectCollection findByRole(string $role) Return ChildPartner objects filtered by the role column
  * @method     ChildPartner[]|ObjectCollection findByCompanyId(int $company_id) Return ChildPartner objects filtered by the company_id column
  * @method     ChildPartner[]|ObjectCollection findBySupplierTypeId(int $supplier_type_id) Return ChildPartner objects filtered by the supplier_type_id column
  * @method     ChildPartner[]|ObjectCollection findByClassKey(int $class_key) Return ChildPartner objects filtered by the class_key column
@@ -309,7 +314,7 @@ abstract class PartnerQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, email, address, phone, website, fax, image, tax_number, company_id, supplier_type_id, class_key, created_at, updated_at FROM partner WHERE id = :p0';
+        $sql = 'SELECT id, name, email, address, phone, website, fax, image, tax_number, role, company_id, supplier_type_id, class_key, created_at, updated_at FROM partner WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -639,6 +644,31 @@ abstract class PartnerQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PartnerTableMap::COL_TAX_NUMBER, $taxNumber, $comparison);
+    }
+
+    /**
+     * Filter the query on the role column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByRole('fooValue');   // WHERE role = 'fooValue'
+     * $query->filterByRole('%fooValue%', Criteria::LIKE); // WHERE role LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $role The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPartnerQuery The current query, for fluid interface
+     */
+    public function filterByRole($role = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($role)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PartnerTableMap::COL_ROLE, $role, $comparison);
     }
 
     /**

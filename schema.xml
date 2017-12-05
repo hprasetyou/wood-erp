@@ -38,6 +38,7 @@
     <column name="fax" phpName="Fax" type="VARCHAR" size="255"/>
     <column name="image" phpName="Image" type="LONGVARCHAR"/>
     <column name="tax_number" phpName="TaxNumber" type="VARCHAR" size="255"/>
+    <column name="role" phpName="Role" type="VARCHAR" size="255"/>
     <column name="company_id" phpName="CompanyId" type="INTEGER"/>
     <column name="supplier_type_id" phpName="SupplierTypeId" type="INTEGER"/>
     <column name="class_key" type="INTEGER" inheritance="single">

@@ -150,6 +150,13 @@ abstract class Partner implements ActiveRecordInterface
     protected $tax_number;
 
     /**
+     * The value for the role field.
+     *
+     * @var        string
+     */
+    protected $role;
+
+    /**
      * The value for the company_id field.
      *
      * @var        int
@@ -628,6 +635,16 @@ abstract class Partner implements ActiveRecordInterface
     }
 
     /**
+     * Get the [role] column value.
+     *
+     * @return string
+     */
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    /**
      * Get the [company_id] column value.
      *
      * @return int
@@ -878,6 +895,26 @@ abstract class Partner implements ActiveRecordInterface
     } // setTaxNumber()
 
     /**
+     * Set the value of [role] column.
+     *
+     * @param string $v new value
+     * @return $this|\Partner The current object (for fluent API support)
+     */
+    public function setRole($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->role !== $v) {
+            $this->role = $v;
+            $this->modifiedColumns[PartnerTableMap::COL_ROLE] = true;
+        }
+
+        return $this;
+    } // setRole()
+
+    /**
      * Set the value of [company_id] column.
      *
      * @param int $v new value
@@ -1048,22 +1085,25 @@ abstract class Partner implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PartnerTableMap::translateFieldName('TaxNumber', TableMap::TYPE_PHPNAME, $indexType)];
             $this->tax_number = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PartnerTableMap::translateFieldName('CompanyId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PartnerTableMap::translateFieldName('Role', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->role = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PartnerTableMap::translateFieldName('CompanyId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->company_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PartnerTableMap::translateFieldName('SupplierTypeId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : PartnerTableMap::translateFieldName('SupplierTypeId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->supplier_type_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : PartnerTableMap::translateFieldName('ClassKey', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : PartnerTableMap::translateFieldName('ClassKey', TableMap::TYPE_PHPNAME, $indexType)];
             $this->class_key = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : PartnerTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : PartnerTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : PartnerTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : PartnerTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -1076,7 +1116,7 @@ abstract class Partner implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 14; // 14 = PartnerTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 15; // 15 = PartnerTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Partner'), 0, $e);
@@ -1485,6 +1525,9 @@ abstract class Partner implements ActiveRecordInterface
         if ($this->isColumnModified(PartnerTableMap::COL_TAX_NUMBER)) {
             $modifiedColumns[':p' . $index++]  = 'tax_number';
         }
+        if ($this->isColumnModified(PartnerTableMap::COL_ROLE)) {
+            $modifiedColumns[':p' . $index++]  = 'role';
+        }
         if ($this->isColumnModified(PartnerTableMap::COL_COMPANY_ID)) {
             $modifiedColumns[':p' . $index++]  = 'company_id';
         }
@@ -1537,6 +1580,9 @@ abstract class Partner implements ActiveRecordInterface
                         break;
                     case 'tax_number':
                         $stmt->bindValue($identifier, $this->tax_number, PDO::PARAM_STR);
+                        break;
+                    case 'role':
+                        $stmt->bindValue($identifier, $this->role, PDO::PARAM_STR);
                         break;
                     case 'company_id':
                         $stmt->bindValue($identifier, $this->company_id, PDO::PARAM_INT);
@@ -1643,18 +1689,21 @@ abstract class Partner implements ActiveRecordInterface
                 return $this->getTaxNumber();
                 break;
             case 9:
-                return $this->getCompanyId();
+                return $this->getRole();
                 break;
             case 10:
-                return $this->getSupplierTypeId();
+                return $this->getCompanyId();
                 break;
             case 11:
-                return $this->getClassKey();
+                return $this->getSupplierTypeId();
                 break;
             case 12:
-                return $this->getCreatedAt();
+                return $this->getClassKey();
                 break;
             case 13:
+                return $this->getCreatedAt();
+                break;
+            case 14:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1696,18 +1745,19 @@ abstract class Partner implements ActiveRecordInterface
             $keys[6] => $this->getFax(),
             $keys[7] => $this->getImage(),
             $keys[8] => $this->getTaxNumber(),
-            $keys[9] => $this->getCompanyId(),
-            $keys[10] => $this->getSupplierTypeId(),
-            $keys[11] => $this->getClassKey(),
-            $keys[12] => $this->getCreatedAt(),
-            $keys[13] => $this->getUpdatedAt(),
+            $keys[9] => $this->getRole(),
+            $keys[10] => $this->getCompanyId(),
+            $keys[11] => $this->getSupplierTypeId(),
+            $keys[12] => $this->getClassKey(),
+            $keys[13] => $this->getCreatedAt(),
+            $keys[14] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[12]] instanceof \DateTimeInterface) {
-            $result[$keys[12]] = $result[$keys[12]]->format('c');
-        }
-
         if ($result[$keys[13]] instanceof \DateTimeInterface) {
             $result[$keys[13]] = $result[$keys[13]]->format('c');
+        }
+
+        if ($result[$keys[14]] instanceof \DateTimeInterface) {
+            $result[$keys[14]] = $result[$keys[14]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1928,18 +1978,21 @@ abstract class Partner implements ActiveRecordInterface
                 $this->setTaxNumber($value);
                 break;
             case 9:
-                $this->setCompanyId($value);
+                $this->setRole($value);
                 break;
             case 10:
-                $this->setSupplierTypeId($value);
+                $this->setCompanyId($value);
                 break;
             case 11:
-                $this->setClassKey($value);
+                $this->setSupplierTypeId($value);
                 break;
             case 12:
-                $this->setCreatedAt($value);
+                $this->setClassKey($value);
                 break;
             case 13:
+                $this->setCreatedAt($value);
+                break;
+            case 14:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1996,19 +2049,22 @@ abstract class Partner implements ActiveRecordInterface
             $this->setTaxNumber($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setCompanyId($arr[$keys[9]]);
+            $this->setRole($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setSupplierTypeId($arr[$keys[10]]);
+            $this->setCompanyId($arr[$keys[10]]);
         }
         if (array_key_exists($keys[11], $arr)) {
-            $this->setClassKey($arr[$keys[11]]);
+            $this->setSupplierTypeId($arr[$keys[11]]);
         }
         if (array_key_exists($keys[12], $arr)) {
-            $this->setCreatedAt($arr[$keys[12]]);
+            $this->setClassKey($arr[$keys[12]]);
         }
         if (array_key_exists($keys[13], $arr)) {
-            $this->setUpdatedAt($arr[$keys[13]]);
+            $this->setCreatedAt($arr[$keys[13]]);
+        }
+        if (array_key_exists($keys[14], $arr)) {
+            $this->setUpdatedAt($arr[$keys[14]]);
         }
     }
 
@@ -2077,6 +2133,9 @@ abstract class Partner implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PartnerTableMap::COL_TAX_NUMBER)) {
             $criteria->add(PartnerTableMap::COL_TAX_NUMBER, $this->tax_number);
+        }
+        if ($this->isColumnModified(PartnerTableMap::COL_ROLE)) {
+            $criteria->add(PartnerTableMap::COL_ROLE, $this->role);
         }
         if ($this->isColumnModified(PartnerTableMap::COL_COMPANY_ID)) {
             $criteria->add(PartnerTableMap::COL_COMPANY_ID, $this->company_id);
@@ -2187,6 +2246,7 @@ abstract class Partner implements ActiveRecordInterface
         $copyObj->setFax($this->getFax());
         $copyObj->setImage($this->getImage());
         $copyObj->setTaxNumber($this->getTaxNumber());
+        $copyObj->setRole($this->getRole());
         $copyObj->setCompanyId($this->getCompanyId());
         $copyObj->setSupplierTypeId($this->getSupplierTypeId());
         $copyObj->setClassKey($this->getClassKey());
@@ -4370,6 +4430,7 @@ abstract class Partner implements ActiveRecordInterface
         $this->fax = null;
         $this->image = null;
         $this->tax_number = null;
+        $this->role = null;
         $this->company_id = null;
         $this->supplier_type_id = null;
         $this->class_key = null;
