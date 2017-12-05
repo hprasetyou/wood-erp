@@ -34,7 +34,7 @@
                   <div class="col-md-6 col-sm-6 col-xs-12">
                     <div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
                       <div class="phone-list">
-                        {% set phones = suppliers.Phone | split(',') %}
+                        {% set phones = suppliers.Phone | split(', ') %}
                         {% for phone in phones %}
                         <input type="text" value="{{ phone }}" name="Phone[]" class="form-control autoremove col-md-7 col-xs-12">
                         {% endfor %}
@@ -63,7 +63,7 @@
                   <div class="col-md-6 col-sm-6 col-xs-12">
                     <div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
                       <div class="email-list">
-                        {% set emails = suppliers.Email | split(',') %}
+                        {% set emails = suppliers.Email | split(', ') %}
                         {% for email in emails %}
                         <input type="text" value="{{ email }}" name="Email[]" class="form-control autoremove col-md-7 col-xs-12">
                         {% endfor %}
@@ -90,13 +90,13 @@
               <div class="col-sm-6">
 
                 <div class="form-group">
-                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.address}}</label>
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.product_type}}</label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
                     <div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
-                      <input type="text" id="Address" value="{{ suppliers.Address }}" name="Address" class="form-control  col-md-7 col-xs-12">
+                      {{selection_m2o('SupplierTypeId','SupplierType',null,suppliers.SupplierTypeId) | raw}}
                     </div>
                     {% if suppliers %}
-                    <p class="control-value">{{ suppliers.Address }}</p>
+                    <p class="control-value">{{ suppliers.SupplierType.Name }}</p>
                     {% endif %}
                   </div>
                 </div>

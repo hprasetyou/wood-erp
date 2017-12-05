@@ -15,6 +15,7 @@ class Template {
       'cache' => false,// '/application/cache'
       ));
       $this->apply_filter();
+      $this->apply_func();
   }
 
   function apply_filter(){
@@ -24,6 +25,26 @@ class Template {
     });
     $this->twig->addFilter($filter_cubic);
 
+  }
+
+  function apply_func(){
+    $function = new Twig_Function('selection_m2o', function ($name,$model,$domain=null,$val) {
+      $objs = "{$model}Query";
+      $data = $objs::create()->find();
+      $o = "<select name=\"$name\" id=\"$name\" class=\"form-control form-select\">";
+      foreach ($data as $key => $value) {
+        $id = $value->getId();
+        $name = $value->getName();
+        $selected = "";
+        if($val == $id){
+          $selected = "selected=\"selected\"";
+        }
+        $o .="<option $selected value=\"$id\">$name</option>";
+      }
+      $o .= "</select>";
+      return $o;
+    });
+    $this->twig->addFunction($function);
   }
 
   private $twig;

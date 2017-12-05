@@ -252,7 +252,6 @@ $(document).ready(function(){
     $(this).parents('.input-group').find('button').trigger('click')
   })
 })
-$('.form-select').select2()
 $('#btn-edit').click(function(e){
   e.preventDefault();
   $('input:checkbox').removeAttr('disabled')

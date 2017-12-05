@@ -16,6 +16,8 @@ use \ProformaInvoice as ChildProformaInvoice;
 use \ProformaInvoiceQuery as ChildProformaInvoiceQuery;
 use \PurchaseOrder as ChildPurchaseOrder;
 use \PurchaseOrderQuery as ChildPurchaseOrderQuery;
+use \SupplierType as ChildSupplierType;
+use \SupplierTypeQuery as ChildSupplierTypeQuery;
 use \User as ChildUser;
 use \UserQuery as ChildUserQuery;
 use \DateTime;
@@ -155,6 +157,13 @@ abstract class Partner implements ActiveRecordInterface
     protected $company_id;
 
     /**
+     * The value for the supplier_type_id field.
+     *
+     * @var        int
+     */
+    protected $supplier_type_id;
+
+    /**
      * The value for the class_key field.
      *
      * @var        int
@@ -181,6 +190,11 @@ abstract class Partner implements ActiveRecordInterface
      * @var        ChildPartner
      */
     protected $aCompany;
+
+    /**
+     * @var        ChildSupplierType
+     */
+    protected $aSupplierType;
 
     /**
      * @var        ObjectCollection|ChildPartner[] Collection to store aggregation of ChildPartner objects.
@@ -624,6 +638,16 @@ abstract class Partner implements ActiveRecordInterface
     }
 
     /**
+     * Get the [supplier_type_id] column value.
+     *
+     * @return int
+     */
+    public function getSupplierTypeId()
+    {
+        return $this->supplier_type_id;
+    }
+
+    /**
      * Get the [class_key] column value.
      *
      * @return int
@@ -878,6 +902,30 @@ abstract class Partner implements ActiveRecordInterface
     } // setCompanyId()
 
     /**
+     * Set the value of [supplier_type_id] column.
+     *
+     * @param int $v new value
+     * @return $this|\Partner The current object (for fluent API support)
+     */
+    public function setSupplierTypeId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->supplier_type_id !== $v) {
+            $this->supplier_type_id = $v;
+            $this->modifiedColumns[PartnerTableMap::COL_SUPPLIER_TYPE_ID] = true;
+        }
+
+        if ($this->aSupplierType !== null && $this->aSupplierType->getId() !== $v) {
+            $this->aSupplierType = null;
+        }
+
+        return $this;
+    } // setSupplierTypeId()
+
+    /**
      * Set the value of [class_key] column.
      *
      * @param int $v new value
@@ -1003,16 +1051,19 @@ abstract class Partner implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PartnerTableMap::translateFieldName('CompanyId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->company_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PartnerTableMap::translateFieldName('ClassKey', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PartnerTableMap::translateFieldName('SupplierTypeId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->supplier_type_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : PartnerTableMap::translateFieldName('ClassKey', TableMap::TYPE_PHPNAME, $indexType)];
             $this->class_key = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : PartnerTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : PartnerTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : PartnerTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : PartnerTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -1025,7 +1076,7 @@ abstract class Partner implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 13; // 13 = PartnerTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 14; // 14 = PartnerTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Partner'), 0, $e);
@@ -1049,6 +1100,9 @@ abstract class Partner implements ActiveRecordInterface
     {
         if ($this->aCompany !== null && $this->company_id !== $this->aCompany->getId()) {
             $this->aCompany = null;
+        }
+        if ($this->aSupplierType !== null && $this->supplier_type_id !== $this->aSupplierType->getId()) {
+            $this->aSupplierType = null;
         }
     } // ensureConsistency
 
@@ -1090,6 +1144,7 @@ abstract class Partner implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aCompany = null;
+            $this->aSupplierType = null;
             $this->collPartnersRelatedById = null;
 
             $this->collProductPartners = null;
@@ -1219,6 +1274,13 @@ abstract class Partner implements ActiveRecordInterface
                     $affectedRows += $this->aCompany->save($con);
                 }
                 $this->setCompany($this->aCompany);
+            }
+
+            if ($this->aSupplierType !== null) {
+                if ($this->aSupplierType->isModified() || $this->aSupplierType->isNew()) {
+                    $affectedRows += $this->aSupplierType->save($con);
+                }
+                $this->setSupplierType($this->aSupplierType);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -1426,6 +1488,9 @@ abstract class Partner implements ActiveRecordInterface
         if ($this->isColumnModified(PartnerTableMap::COL_COMPANY_ID)) {
             $modifiedColumns[':p' . $index++]  = 'company_id';
         }
+        if ($this->isColumnModified(PartnerTableMap::COL_SUPPLIER_TYPE_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'supplier_type_id';
+        }
         if ($this->isColumnModified(PartnerTableMap::COL_CLASS_KEY)) {
             $modifiedColumns[':p' . $index++]  = 'class_key';
         }
@@ -1475,6 +1540,9 @@ abstract class Partner implements ActiveRecordInterface
                         break;
                     case 'company_id':
                         $stmt->bindValue($identifier, $this->company_id, PDO::PARAM_INT);
+                        break;
+                    case 'supplier_type_id':
+                        $stmt->bindValue($identifier, $this->supplier_type_id, PDO::PARAM_INT);
                         break;
                     case 'class_key':
                         $stmt->bindValue($identifier, $this->class_key, PDO::PARAM_INT);
@@ -1578,12 +1646,15 @@ abstract class Partner implements ActiveRecordInterface
                 return $this->getCompanyId();
                 break;
             case 10:
-                return $this->getClassKey();
+                return $this->getSupplierTypeId();
                 break;
             case 11:
-                return $this->getCreatedAt();
+                return $this->getClassKey();
                 break;
             case 12:
+                return $this->getCreatedAt();
+                break;
+            case 13:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1626,16 +1697,17 @@ abstract class Partner implements ActiveRecordInterface
             $keys[7] => $this->getImage(),
             $keys[8] => $this->getTaxNumber(),
             $keys[9] => $this->getCompanyId(),
-            $keys[10] => $this->getClassKey(),
-            $keys[11] => $this->getCreatedAt(),
-            $keys[12] => $this->getUpdatedAt(),
+            $keys[10] => $this->getSupplierTypeId(),
+            $keys[11] => $this->getClassKey(),
+            $keys[12] => $this->getCreatedAt(),
+            $keys[13] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[11]] instanceof \DateTimeInterface) {
-            $result[$keys[11]] = $result[$keys[11]]->format('c');
-        }
-
         if ($result[$keys[12]] instanceof \DateTimeInterface) {
             $result[$keys[12]] = $result[$keys[12]]->format('c');
+        }
+
+        if ($result[$keys[13]] instanceof \DateTimeInterface) {
+            $result[$keys[13]] = $result[$keys[13]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1658,6 +1730,21 @@ abstract class Partner implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aCompany->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aSupplierType) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'supplierType';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'supplier_type';
+                        break;
+                    default:
+                        $key = 'SupplierType';
+                }
+
+                $result[$key] = $this->aSupplierType->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->collPartnersRelatedById) {
 
@@ -1844,12 +1931,15 @@ abstract class Partner implements ActiveRecordInterface
                 $this->setCompanyId($value);
                 break;
             case 10:
-                $this->setClassKey($value);
+                $this->setSupplierTypeId($value);
                 break;
             case 11:
-                $this->setCreatedAt($value);
+                $this->setClassKey($value);
                 break;
             case 12:
+                $this->setCreatedAt($value);
+                break;
+            case 13:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1909,13 +1999,16 @@ abstract class Partner implements ActiveRecordInterface
             $this->setCompanyId($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setClassKey($arr[$keys[10]]);
+            $this->setSupplierTypeId($arr[$keys[10]]);
         }
         if (array_key_exists($keys[11], $arr)) {
-            $this->setCreatedAt($arr[$keys[11]]);
+            $this->setClassKey($arr[$keys[11]]);
         }
         if (array_key_exists($keys[12], $arr)) {
-            $this->setUpdatedAt($arr[$keys[12]]);
+            $this->setCreatedAt($arr[$keys[12]]);
+        }
+        if (array_key_exists($keys[13], $arr)) {
+            $this->setUpdatedAt($arr[$keys[13]]);
         }
     }
 
@@ -1987,6 +2080,9 @@ abstract class Partner implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PartnerTableMap::COL_COMPANY_ID)) {
             $criteria->add(PartnerTableMap::COL_COMPANY_ID, $this->company_id);
+        }
+        if ($this->isColumnModified(PartnerTableMap::COL_SUPPLIER_TYPE_ID)) {
+            $criteria->add(PartnerTableMap::COL_SUPPLIER_TYPE_ID, $this->supplier_type_id);
         }
         if ($this->isColumnModified(PartnerTableMap::COL_CLASS_KEY)) {
             $criteria->add(PartnerTableMap::COL_CLASS_KEY, $this->class_key);
@@ -2092,6 +2188,7 @@ abstract class Partner implements ActiveRecordInterface
         $copyObj->setImage($this->getImage());
         $copyObj->setTaxNumber($this->getTaxNumber());
         $copyObj->setCompanyId($this->getCompanyId());
+        $copyObj->setSupplierTypeId($this->getSupplierTypeId());
         $copyObj->setClassKey($this->getClassKey());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
@@ -2228,6 +2325,57 @@ abstract class Partner implements ActiveRecordInterface
         }
 
         return $this->aCompany;
+    }
+
+    /**
+     * Declares an association between this object and a ChildSupplierType object.
+     *
+     * @param  ChildSupplierType $v
+     * @return $this|\Partner The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setSupplierType(ChildSupplierType $v = null)
+    {
+        if ($v === null) {
+            $this->setSupplierTypeId(NULL);
+        } else {
+            $this->setSupplierTypeId($v->getId());
+        }
+
+        $this->aSupplierType = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildSupplierType object, it will not be re-added.
+        if ($v !== null) {
+            $v->addPartner($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildSupplierType object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildSupplierType The associated ChildSupplierType object.
+     * @throws PropelException
+     */
+    public function getSupplierType(ConnectionInterface $con = null)
+    {
+        if ($this->aSupplierType === null && ($this->supplier_type_id != 0)) {
+            $this->aSupplierType = ChildSupplierTypeQuery::create()->findPk($this->supplier_type_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aSupplierType->addPartners($this);
+             */
+        }
+
+        return $this->aSupplierType;
     }
 
 
@@ -2498,6 +2646,31 @@ abstract class Partner implements ActiveRecordInterface
         }
 
         return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Partner is new, it will return
+     * an empty collection; or if this Partner has previously
+     * been saved, it will retrieve related PartnersRelatedById from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Partner.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildPartner[] List of ChildPartner objects
+     */
+    public function getPartnersRelatedByIdJoinSupplierType(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildPartnerQuery::create(null, $criteria);
+        $query->joinWith('SupplierType', $joinBehavior);
+
+        return $this->getPartnersRelatedById($query, $con);
     }
 
     /**
@@ -4185,6 +4358,9 @@ abstract class Partner implements ActiveRecordInterface
         if (null !== $this->aCompany) {
             $this->aCompany->removePartnerRelatedById($this);
         }
+        if (null !== $this->aSupplierType) {
+            $this->aSupplierType->removePartner($this);
+        }
         $this->id = null;
         $this->name = null;
         $this->email = null;
@@ -4195,6 +4371,7 @@ abstract class Partner implements ActiveRecordInterface
         $this->image = null;
         $this->tax_number = null;
         $this->company_id = null;
+        $this->supplier_type_id = null;
         $this->class_key = null;
         $this->created_at = null;
         $this->updated_at = null;
@@ -4268,6 +4445,7 @@ abstract class Partner implements ActiveRecordInterface
         $this->collComponentPartners = null;
         $this->collPartnerBanks = null;
         $this->aCompany = null;
+        $this->aSupplierType = null;
     }
 
     /**

@@ -30,6 +30,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery orderByImage($order = Criteria::ASC) Order by the image column
  * @method     ChildPartnerQuery orderByTaxNumber($order = Criteria::ASC) Order by the tax_number column
  * @method     ChildPartnerQuery orderByCompanyId($order = Criteria::ASC) Order by the company_id column
+ * @method     ChildPartnerQuery orderBySupplierTypeId($order = Criteria::ASC) Order by the supplier_type_id column
  * @method     ChildPartnerQuery orderByClassKey($order = Criteria::ASC) Order by the class_key column
  * @method     ChildPartnerQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildPartnerQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
@@ -44,6 +45,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery groupByImage() Group by the image column
  * @method     ChildPartnerQuery groupByTaxNumber() Group by the tax_number column
  * @method     ChildPartnerQuery groupByCompanyId() Group by the company_id column
+ * @method     ChildPartnerQuery groupBySupplierTypeId() Group by the supplier_type_id column
  * @method     ChildPartnerQuery groupByClassKey() Group by the class_key column
  * @method     ChildPartnerQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildPartnerQuery groupByUpdatedAt() Group by the updated_at column
@@ -65,6 +67,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery leftJoinWithCompany() Adds a LEFT JOIN clause and with to the query using the Company relation
  * @method     ChildPartnerQuery rightJoinWithCompany() Adds a RIGHT JOIN clause and with to the query using the Company relation
  * @method     ChildPartnerQuery innerJoinWithCompany() Adds a INNER JOIN clause and with to the query using the Company relation
+ *
+ * @method     ChildPartnerQuery leftJoinSupplierType($relationAlias = null) Adds a LEFT JOIN clause to the query using the SupplierType relation
+ * @method     ChildPartnerQuery rightJoinSupplierType($relationAlias = null) Adds a RIGHT JOIN clause to the query using the SupplierType relation
+ * @method     ChildPartnerQuery innerJoinSupplierType($relationAlias = null) Adds a INNER JOIN clause to the query using the SupplierType relation
+ *
+ * @method     ChildPartnerQuery joinWithSupplierType($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the SupplierType relation
+ *
+ * @method     ChildPartnerQuery leftJoinWithSupplierType() Adds a LEFT JOIN clause and with to the query using the SupplierType relation
+ * @method     ChildPartnerQuery rightJoinWithSupplierType() Adds a RIGHT JOIN clause and with to the query using the SupplierType relation
+ * @method     ChildPartnerQuery innerJoinWithSupplierType() Adds a INNER JOIN clause and with to the query using the SupplierType relation
  *
  * @method     ChildPartnerQuery leftJoinPartnerRelatedById($relationAlias = null) Adds a LEFT JOIN clause to the query using the PartnerRelatedById relation
  * @method     ChildPartnerQuery rightJoinPartnerRelatedById($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PartnerRelatedById relation
@@ -146,7 +158,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery rightJoinWithPartnerBank() Adds a RIGHT JOIN clause and with to the query using the PartnerBank relation
  * @method     ChildPartnerQuery innerJoinWithPartnerBank() Adds a INNER JOIN clause and with to the query using the PartnerBank relation
  *
- * @method     \PartnerQuery|\ProductPartnerQuery|\UserQuery|\ProformaInvoiceQuery|\PackingListQuery|\PurchaseOrderQuery|\ComponentPartnerQuery|\PartnerBankQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \PartnerQuery|\SupplierTypeQuery|\ProductPartnerQuery|\UserQuery|\ProformaInvoiceQuery|\PackingListQuery|\PurchaseOrderQuery|\ComponentPartnerQuery|\PartnerBankQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildPartner findOne(ConnectionInterface $con = null) Return the first ChildPartner matching the query
  * @method     ChildPartner findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPartner matching the query, or a new ChildPartner object populated from the query conditions when no match is found
@@ -161,6 +173,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner findOneByImage(string $image) Return the first ChildPartner filtered by the image column
  * @method     ChildPartner findOneByTaxNumber(string $tax_number) Return the first ChildPartner filtered by the tax_number column
  * @method     ChildPartner findOneByCompanyId(int $company_id) Return the first ChildPartner filtered by the company_id column
+ * @method     ChildPartner findOneBySupplierTypeId(int $supplier_type_id) Return the first ChildPartner filtered by the supplier_type_id column
  * @method     ChildPartner findOneByClassKey(int $class_key) Return the first ChildPartner filtered by the class_key column
  * @method     ChildPartner findOneByCreatedAt(string $created_at) Return the first ChildPartner filtered by the created_at column
  * @method     ChildPartner findOneByUpdatedAt(string $updated_at) Return the first ChildPartner filtered by the updated_at column *
@@ -178,6 +191,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner requireOneByImage(string $image) Return the first ChildPartner filtered by the image column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByTaxNumber(string $tax_number) Return the first ChildPartner filtered by the tax_number column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByCompanyId(int $company_id) Return the first ChildPartner filtered by the company_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPartner requireOneBySupplierTypeId(int $supplier_type_id) Return the first ChildPartner filtered by the supplier_type_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByClassKey(int $class_key) Return the first ChildPartner filtered by the class_key column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByCreatedAt(string $created_at) Return the first ChildPartner filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByUpdatedAt(string $updated_at) Return the first ChildPartner filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -193,6 +207,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner[]|ObjectCollection findByImage(string $image) Return ChildPartner objects filtered by the image column
  * @method     ChildPartner[]|ObjectCollection findByTaxNumber(string $tax_number) Return ChildPartner objects filtered by the tax_number column
  * @method     ChildPartner[]|ObjectCollection findByCompanyId(int $company_id) Return ChildPartner objects filtered by the company_id column
+ * @method     ChildPartner[]|ObjectCollection findBySupplierTypeId(int $supplier_type_id) Return ChildPartner objects filtered by the supplier_type_id column
  * @method     ChildPartner[]|ObjectCollection findByClassKey(int $class_key) Return ChildPartner objects filtered by the class_key column
  * @method     ChildPartner[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildPartner objects filtered by the created_at column
  * @method     ChildPartner[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildPartner objects filtered by the updated_at column
@@ -294,7 +309,7 @@ abstract class PartnerQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, email, address, phone, website, fax, image, tax_number, company_id, class_key, created_at, updated_at FROM partner WHERE id = :p0';
+        $sql = 'SELECT id, name, email, address, phone, website, fax, image, tax_number, company_id, supplier_type_id, class_key, created_at, updated_at FROM partner WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -670,6 +685,49 @@ abstract class PartnerQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the supplier_type_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterBySupplierTypeId(1234); // WHERE supplier_type_id = 1234
+     * $query->filterBySupplierTypeId(array(12, 34)); // WHERE supplier_type_id IN (12, 34)
+     * $query->filterBySupplierTypeId(array('min' => 12)); // WHERE supplier_type_id > 12
+     * </code>
+     *
+     * @see       filterBySupplierType()
+     *
+     * @param     mixed $supplierTypeId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPartnerQuery The current query, for fluid interface
+     */
+    public function filterBySupplierTypeId($supplierTypeId = null, $comparison = null)
+    {
+        if (is_array($supplierTypeId)) {
+            $useMinMax = false;
+            if (isset($supplierTypeId['min'])) {
+                $this->addUsingAlias(PartnerTableMap::COL_SUPPLIER_TYPE_ID, $supplierTypeId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($supplierTypeId['max'])) {
+                $this->addUsingAlias(PartnerTableMap::COL_SUPPLIER_TYPE_ID, $supplierTypeId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PartnerTableMap::COL_SUPPLIER_TYPE_ID, $supplierTypeId, $comparison);
+    }
+
+    /**
      * Filter the query on the class_key column
      *
      * Example usage:
@@ -871,6 +929,83 @@ abstract class PartnerQuery extends ModelCriteria
         return $this
             ->joinCompany($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Company', '\PartnerQuery');
+    }
+
+    /**
+     * Filter the query by a related \SupplierType object
+     *
+     * @param \SupplierType|ObjectCollection $supplierType The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildPartnerQuery The current query, for fluid interface
+     */
+    public function filterBySupplierType($supplierType, $comparison = null)
+    {
+        if ($supplierType instanceof \SupplierType) {
+            return $this
+                ->addUsingAlias(PartnerTableMap::COL_SUPPLIER_TYPE_ID, $supplierType->getId(), $comparison);
+        } elseif ($supplierType instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(PartnerTableMap::COL_SUPPLIER_TYPE_ID, $supplierType->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterBySupplierType() only accepts arguments of type \SupplierType or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the SupplierType relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildPartnerQuery The current query, for fluid interface
+     */
+    public function joinSupplierType($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('SupplierType');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'SupplierType');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the SupplierType relation SupplierType object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \SupplierTypeQuery A secondary query class using the current class as primary query
+     */
+    public function useSupplierTypeQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinSupplierType($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'SupplierType', '\SupplierTypeQuery');
     }
 
     /**

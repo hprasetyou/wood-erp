@@ -29,6 +29,7 @@ class Manage_suppliers extends MY_Controller{
     }
     $this->form['Phone'] = array('value'=>implode($this->input->post('Phone'),', '));
     $this->form['Email'] = array('value'=>implode($this->input->post('Email'),', '));
+    $this->form['SupplierTypeId'] = 'SupplierTypeId';
     $data = parent::write($id);
     redirect('manage_suppliers/detail/'.$data->getId());
   }

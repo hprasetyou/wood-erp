@@ -21,6 +21,13 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
+  <table name="supplier_type" phpName="SupplierType">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="name" phpName="Name" required="true" type="VARCHAR" size="255"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
   <table name="partner" idMethod="native" phpName="Partner">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
@@ -32,6 +39,7 @@
     <column name="image" phpName="Image" type="LONGVARCHAR"/>
     <column name="tax_number" phpName="TaxNumber" type="VARCHAR" size="255"/>
     <column name="company_id" phpName="CompanyId" type="INTEGER"/>
+    <column name="supplier_type_id" phpName="SupplierTypeId" type="INTEGER"/>
     <column name="class_key" type="INTEGER" inheritance="single">
       <inheritance key="1" class="Partner"/>
       <inheritance key="2" class="Employee" extends="Partner"/>
@@ -43,8 +51,14 @@
     <index name="company_id">
       <index-column name="company_id"/>
     </index>
+    <index name="supplier_type_id">
+      <index-column name="supplier_type_id"/>
+    </index>
     <foreign-key foreignTable="partner" phpName="Company" phpRefName="CompanyMember" skipSql="true" name="product_company_ibfk_2">
       <reference local="company_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="supplier_type" skipSql="true" name="product_supplier_ibfk_3">
+      <reference local="supplier_type_id" foreign="id"/>
     </foreign-key>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
