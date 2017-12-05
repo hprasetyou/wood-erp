@@ -16,7 +16,6 @@ class Manage_suppliers extends MY_Controller{
     $this->form = array(
       'Name'=>'Name',
       'Address'=>'Address',
-      'Phone'=>'Phone',
       'Website'=>'Website',
       'Email'=>'Email',
       'Image'=>'Image',
@@ -38,6 +37,15 @@ class Manage_suppliers extends MY_Controller{
     if(!$id){
       $this->form['CompanyId']='CompanyId';
     }
+    $phones = "";
+    foreach ($this->input->post('Phone') as $key => $value) {
+      # code...
+      if($key>0){
+        $phones .= ",";
+      }
+      $phones .= $value;
+    }
+    $this->form['Phone'] = array('value'=>$phones);
     $data = parent::write($id);
     redirect('manage_suppliers/detail/'.$data->getId());
   }

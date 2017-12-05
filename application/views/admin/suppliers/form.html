@@ -37,8 +37,15 @@
                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.phone}}</label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
                     <div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
-                      <input type="text" id="Phone" value="{{ suppliers.Phone }}" name="Phone" class="form-control  col-md-7 col-xs-12">
+                      <div class="phone-list">
+                        {% set phones = suppliers.Phone | split(',') %}
+                        {% for phone in phones %}
+                        <input type="text" value="{{ phone }}" name="Phone[]" class="form-control  col-md-7 col-xs-12">
+                        {% endfor %}
+                      </div>
+                      <a href="#" id="addPhone">Add more phone</a>
                     </div>
+
                     {% if suppliers %}
                     <p class="control-value">{{ suppliers.Phone }}</p>
                     {% endif %}
@@ -154,4 +161,10 @@
 </div>
 {% endif %}
 <!-- Modal -->
-{% endblock %} {% block bottom%} {% include 'common/_img_upload_modal.html'%} {% endblock %}
+{% endblock %} {% block bottom%} {% include 'common/_img_upload_modal.html'%}
+<script type="text/javascript">
+  $('#addPhone').click(function(e){
+    $('.phone-list').append('<input type="text" name="Phone[]" class="form-control col-md-7 col-xs-12">')
+  })
+</script>
+{% endblock %}
