@@ -425,4 +425,23 @@
       <reference local="bank_id" foreign="id"/>
     </foreign-key>
   </table>
+  <table name="country" phpName="Country">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="code" phpName="Code" required="true" type="VARCHAR" size="2"/>
+    <column name="name" phpName="Name" required="true" type="VARCHAR" size="255"/>
+  </table>
+  <table name="partner_location" phpName="PartnerLocation">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="name" phpName="Name" required="true" type="VARCHAR" size="255"/>
+    <column name="partner_id" phpName="PartnerId" type="INTEGER" required="true"/>
+    <column name="country_id" phpName="CountryId" type="INTEGER" required="true"/>
+    <column name="city" phpName="City" type="VARCHAR" size="255"/>
+    <column name="address" phpName="Adress" required="true" type="LONGVARCHAR" />
+    <foreign-key foreignTable="country" name="partner_location_ibfk_2">
+      <reference local="country_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="partner" name="partner_location_ibfk_1">
+      <reference local="partner_id" foreign="id"/>
+    </foreign-key>
+  </table>
 </database>

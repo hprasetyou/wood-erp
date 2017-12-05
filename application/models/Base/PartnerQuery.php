@@ -160,7 +160,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery rightJoinWithPartnerBank() Adds a RIGHT JOIN clause and with to the query using the PartnerBank relation
  * @method     ChildPartnerQuery innerJoinWithPartnerBank() Adds a INNER JOIN clause and with to the query using the PartnerBank relation
  *
- * @method     \PartnerQuery|\SupplierTypeQuery|\ProductPartnerQuery|\UserQuery|\ProformaInvoiceQuery|\PackingListQuery|\PurchaseOrderQuery|\ComponentPartnerQuery|\PartnerBankQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildPartnerQuery leftJoinPartnerLocation($relationAlias = null) Adds a LEFT JOIN clause to the query using the PartnerLocation relation
+ * @method     ChildPartnerQuery rightJoinPartnerLocation($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PartnerLocation relation
+ * @method     ChildPartnerQuery innerJoinPartnerLocation($relationAlias = null) Adds a INNER JOIN clause to the query using the PartnerLocation relation
+ *
+ * @method     ChildPartnerQuery joinWithPartnerLocation($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the PartnerLocation relation
+ *
+ * @method     ChildPartnerQuery leftJoinWithPartnerLocation() Adds a LEFT JOIN clause and with to the query using the PartnerLocation relation
+ * @method     ChildPartnerQuery rightJoinWithPartnerLocation() Adds a RIGHT JOIN clause and with to the query using the PartnerLocation relation
+ * @method     ChildPartnerQuery innerJoinWithPartnerLocation() Adds a INNER JOIN clause and with to the query using the PartnerLocation relation
+ *
+ * @method     \PartnerQuery|\SupplierTypeQuery|\ProductPartnerQuery|\UserQuery|\ProformaInvoiceQuery|\PackingListQuery|\PurchaseOrderQuery|\ComponentPartnerQuery|\PartnerBankQuery|\PartnerLocationQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildPartner findOne(ConnectionInterface $con = null) Return the first ChildPartner matching the query
  * @method     ChildPartner findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPartner matching the query, or a new ChildPartner object populated from the query conditions when no match is found
@@ -1620,6 +1630,79 @@ abstract class PartnerQuery extends ModelCriteria
         return $this
             ->joinPartnerBank($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'PartnerBank', '\PartnerBankQuery');
+    }
+
+    /**
+     * Filter the query by a related \PartnerLocation object
+     *
+     * @param \PartnerLocation|ObjectCollection $partnerLocation the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildPartnerQuery The current query, for fluid interface
+     */
+    public function filterByPartnerLocation($partnerLocation, $comparison = null)
+    {
+        if ($partnerLocation instanceof \PartnerLocation) {
+            return $this
+                ->addUsingAlias(PartnerTableMap::COL_ID, $partnerLocation->getPartnerId(), $comparison);
+        } elseif ($partnerLocation instanceof ObjectCollection) {
+            return $this
+                ->usePartnerLocationQuery()
+                ->filterByPrimaryKeys($partnerLocation->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByPartnerLocation() only accepts arguments of type \PartnerLocation or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the PartnerLocation relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildPartnerQuery The current query, for fluid interface
+     */
+    public function joinPartnerLocation($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('PartnerLocation');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'PartnerLocation');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the PartnerLocation relation PartnerLocation object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \PartnerLocationQuery A secondary query class using the current class as primary query
+     */
+    public function usePartnerLocationQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinPartnerLocation($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'PartnerLocation', '\PartnerLocationQuery');
     }
 
     /**

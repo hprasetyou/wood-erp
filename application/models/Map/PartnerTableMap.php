@@ -325,6 +325,13 @@ class PartnerTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'PartnerBanks', false);
+        $this->addRelation('PartnerLocation', '\\PartnerLocation', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':partner_id',
+    1 => ':id',
+  ),
+), null, null, 'PartnerLocations', false);
     } // buildRelations()
 
     /**

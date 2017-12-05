@@ -9,6 +9,8 @@ use \PackingListQuery as ChildPackingListQuery;
 use \Partner as ChildPartner;
 use \PartnerBank as ChildPartnerBank;
 use \PartnerBankQuery as ChildPartnerBankQuery;
+use \PartnerLocation as ChildPartnerLocation;
+use \PartnerLocationQuery as ChildPartnerLocationQuery;
 use \PartnerQuery as ChildPartnerQuery;
 use \ProductPartner as ChildProductPartner;
 use \ProductPartnerQuery as ChildProductPartnerQuery;
@@ -26,6 +28,7 @@ use \PDO;
 use Map\ComponentPartnerTableMap;
 use Map\PackingListTableMap;
 use Map\PartnerBankTableMap;
+use Map\PartnerLocationTableMap;
 use Map\PartnerTableMap;
 use Map\ProductPartnerTableMap;
 use Map\ProformaInvoiceTableMap;
@@ -252,6 +255,12 @@ abstract class Partner implements ActiveRecordInterface
     protected $collPartnerBanksPartial;
 
     /**
+     * @var        ObjectCollection|ChildPartnerLocation[] Collection to store aggregation of ChildPartnerLocation objects.
+     */
+    protected $collPartnerLocations;
+    protected $collPartnerLocationsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -306,6 +315,12 @@ abstract class Partner implements ActiveRecordInterface
      * @var ObjectCollection|ChildPartnerBank[]
      */
     protected $partnerBanksScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildPartnerLocation[]
+     */
+    protected $partnerLocationsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -1201,6 +1216,8 @@ abstract class Partner implements ActiveRecordInterface
 
             $this->collPartnerBanks = null;
 
+            $this->collPartnerLocations = null;
+
         } // if (deep)
     }
 
@@ -1466,6 +1483,23 @@ abstract class Partner implements ActiveRecordInterface
 
             if ($this->collPartnerBanks !== null) {
                 foreach ($this->collPartnerBanks as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->partnerLocationsScheduledForDeletion !== null) {
+                if (!$this->partnerLocationsScheduledForDeletion->isEmpty()) {
+                    \PartnerLocationQuery::create()
+                        ->filterByPrimaryKeys($this->partnerLocationsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->partnerLocationsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collPartnerLocations !== null) {
+                foreach ($this->collPartnerLocations as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1916,6 +1950,21 @@ abstract class Partner implements ActiveRecordInterface
 
                 $result[$key] = $this->collPartnerBanks->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
+            if (null !== $this->collPartnerLocations) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'partnerLocations';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'partner_locations';
+                        break;
+                    default:
+                        $key = 'PartnerLocations';
+                }
+
+                $result[$key] = $this->collPartnerLocations->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
         }
 
         return $result;
@@ -2306,6 +2355,12 @@ abstract class Partner implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getPartnerLocations() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addPartnerLocation($relObj->copy($deepCopy));
+                }
+            }
+
         } // if ($deepCopy)
 
         if ($makeNew) {
@@ -2479,6 +2534,10 @@ abstract class Partner implements ActiveRecordInterface
         }
         if ('PartnerBank' == $relationName) {
             $this->initPartnerBanks();
+            return;
+        }
+        if ('PartnerLocation' == $relationName) {
+            $this->initPartnerLocations();
             return;
         }
     }
@@ -4409,6 +4468,256 @@ abstract class Partner implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collPartnerLocations collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addPartnerLocations()
+     */
+    public function clearPartnerLocations()
+    {
+        $this->collPartnerLocations = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collPartnerLocations collection loaded partially.
+     */
+    public function resetPartialPartnerLocations($v = true)
+    {
+        $this->collPartnerLocationsPartial = $v;
+    }
+
+    /**
+     * Initializes the collPartnerLocations collection.
+     *
+     * By default this just sets the collPartnerLocations collection to an empty array (like clearcollPartnerLocations());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initPartnerLocations($overrideExisting = true)
+    {
+        if (null !== $this->collPartnerLocations && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = PartnerLocationTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collPartnerLocations = new $collectionClassName;
+        $this->collPartnerLocations->setModel('\PartnerLocation');
+    }
+
+    /**
+     * Gets an array of ChildPartnerLocation objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPartner is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildPartnerLocation[] List of ChildPartnerLocation objects
+     * @throws PropelException
+     */
+    public function getPartnerLocations(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPartnerLocationsPartial && !$this->isNew();
+        if (null === $this->collPartnerLocations || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collPartnerLocations) {
+                // return empty collection
+                $this->initPartnerLocations();
+            } else {
+                $collPartnerLocations = ChildPartnerLocationQuery::create(null, $criteria)
+                    ->filterByPartner($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collPartnerLocationsPartial && count($collPartnerLocations)) {
+                        $this->initPartnerLocations(false);
+
+                        foreach ($collPartnerLocations as $obj) {
+                            if (false == $this->collPartnerLocations->contains($obj)) {
+                                $this->collPartnerLocations->append($obj);
+                            }
+                        }
+
+                        $this->collPartnerLocationsPartial = true;
+                    }
+
+                    return $collPartnerLocations;
+                }
+
+                if ($partial && $this->collPartnerLocations) {
+                    foreach ($this->collPartnerLocations as $obj) {
+                        if ($obj->isNew()) {
+                            $collPartnerLocations[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collPartnerLocations = $collPartnerLocations;
+                $this->collPartnerLocationsPartial = false;
+            }
+        }
+
+        return $this->collPartnerLocations;
+    }
+
+    /**
+     * Sets a collection of ChildPartnerLocation objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $partnerLocations A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildPartner The current object (for fluent API support)
+     */
+    public function setPartnerLocations(Collection $partnerLocations, ConnectionInterface $con = null)
+    {
+        /** @var ChildPartnerLocation[] $partnerLocationsToDelete */
+        $partnerLocationsToDelete = $this->getPartnerLocations(new Criteria(), $con)->diff($partnerLocations);
+
+
+        $this->partnerLocationsScheduledForDeletion = $partnerLocationsToDelete;
+
+        foreach ($partnerLocationsToDelete as $partnerLocationRemoved) {
+            $partnerLocationRemoved->setPartner(null);
+        }
+
+        $this->collPartnerLocations = null;
+        foreach ($partnerLocations as $partnerLocation) {
+            $this->addPartnerLocation($partnerLocation);
+        }
+
+        $this->collPartnerLocations = $partnerLocations;
+        $this->collPartnerLocationsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related PartnerLocation objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related PartnerLocation objects.
+     * @throws PropelException
+     */
+    public function countPartnerLocations(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPartnerLocationsPartial && !$this->isNew();
+        if (null === $this->collPartnerLocations || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collPartnerLocations) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getPartnerLocations());
+            }
+
+            $query = ChildPartnerLocationQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByPartner($this)
+                ->count($con);
+        }
+
+        return count($this->collPartnerLocations);
+    }
+
+    /**
+     * Method called to associate a ChildPartnerLocation object to this object
+     * through the ChildPartnerLocation foreign key attribute.
+     *
+     * @param  ChildPartnerLocation $l ChildPartnerLocation
+     * @return $this|\Partner The current object (for fluent API support)
+     */
+    public function addPartnerLocation(ChildPartnerLocation $l)
+    {
+        if ($this->collPartnerLocations === null) {
+            $this->initPartnerLocations();
+            $this->collPartnerLocationsPartial = true;
+        }
+
+        if (!$this->collPartnerLocations->contains($l)) {
+            $this->doAddPartnerLocation($l);
+
+            if ($this->partnerLocationsScheduledForDeletion and $this->partnerLocationsScheduledForDeletion->contains($l)) {
+                $this->partnerLocationsScheduledForDeletion->remove($this->partnerLocationsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildPartnerLocation $partnerLocation The ChildPartnerLocation object to add.
+     */
+    protected function doAddPartnerLocation(ChildPartnerLocation $partnerLocation)
+    {
+        $this->collPartnerLocations[]= $partnerLocation;
+        $partnerLocation->setPartner($this);
+    }
+
+    /**
+     * @param  ChildPartnerLocation $partnerLocation The ChildPartnerLocation object to remove.
+     * @return $this|ChildPartner The current object (for fluent API support)
+     */
+    public function removePartnerLocation(ChildPartnerLocation $partnerLocation)
+    {
+        if ($this->getPartnerLocations()->contains($partnerLocation)) {
+            $pos = $this->collPartnerLocations->search($partnerLocation);
+            $this->collPartnerLocations->remove($pos);
+            if (null === $this->partnerLocationsScheduledForDeletion) {
+                $this->partnerLocationsScheduledForDeletion = clone $this->collPartnerLocations;
+                $this->partnerLocationsScheduledForDeletion->clear();
+            }
+            $this->partnerLocationsScheduledForDeletion[]= clone $partnerLocation;
+            $partnerLocation->setPartner(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Partner is new, it will return
+     * an empty collection; or if this Partner has previously
+     * been saved, it will retrieve related PartnerLocations from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Partner.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildPartnerLocation[] List of ChildPartnerLocation objects
+     */
+    public function getPartnerLocationsJoinCountry(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildPartnerLocationQuery::create(null, $criteria);
+        $query->joinWith('Country', $joinBehavior);
+
+        return $this->getPartnerLocations($query, $con);
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -4495,6 +4804,11 @@ abstract class Partner implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collPartnerLocations) {
+                foreach ($this->collPartnerLocations as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         $this->collPartnersRelatedById = null;
@@ -4505,6 +4819,7 @@ abstract class Partner implements ActiveRecordInterface
         $this->collPurchaseOrders = null;
         $this->collComponentPartners = null;
         $this->collPartnerBanks = null;
+        $this->collPartnerLocations = null;
         $this->aCompany = null;
         $this->aSupplierType = null;
     }
