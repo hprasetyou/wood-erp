@@ -36,10 +36,10 @@
                       <div class="phone-list">
                         {% set phones = suppliers.Phone | split(',') %}
                         {% for phone in phones %}
-                        <input type="text" value="{{ phone }}" name="Phone[]" class="form-control  col-md-7 col-xs-12">
+                        <input type="text" value="{{ phone }}" name="Phone[]" class="form-control autoremove col-md-7 col-xs-12">
                         {% endfor %}
                       </div>
-                      <a href="#" id="addPhone">Add more phone</a>
+                      <a href="#" id="addPhone"> + {{res.string.add_more}}</a>
                     </div>
 
                     {% if suppliers %}
@@ -65,10 +65,10 @@
                       <div class="email-list">
                         {% set emails = suppliers.Email | split(',') %}
                         {% for email in emails %}
-                        <input type="text" value="{{ email }}" name="Email[]" class="form-control  col-md-7 col-xs-12">
+                        <input type="text" value="{{ email }}" name="Email[]" class="form-control autoremove col-md-7 col-xs-12">
                         {% endfor %}
                       </div>
-                      <a href="#" id="addEmail"> + Add more email</a>
+                      <a href="#" id="addEmail"> + {{res.string.add_more}}</a>
                     </div>
                     {% if suppliers %}
                     <p class="control-value">{{ suppliers.Email }}</p>
@@ -164,11 +164,18 @@
 <script type="text/javascript">
   $('#addPhone').click(function(e){
     e.preventDefault()
-    $('.phone-list').append('<input type="text" name="Phone[]" class="form-control col-md-7 col-xs-12">')
+    var inp = '<input type="text" name="Phone[]" autofocus class="form-control autoremove col-md-7 col-xs-12">'
+    $('.phone-list').append(inp)
   })
     $('#addEmail').click(function(e){
       e.preventDefault()
-      $('.email-list').append('<input type="text" name="Email[]" class="form-control col-md-7 col-xs-12">')
+      var inp = '<input type="text" name="Email[]" autofocus class="form-control autoremove col-md-7 col-xs-12">'
+      $('.email-list').append(inp)
+    })
+    $('.form-group').on('change keyup blur','.autoremove',function(e){
+      if($(this).val()==''){
+        $(this).remove()
+      }
     })
   $(document).ready(function(){
       $('#table_PartnerBank').loadTableData()

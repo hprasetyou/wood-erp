@@ -5,7 +5,6 @@ class Manage_suppliers extends MY_Controller{
 
 
   function __construct(){
-    $this->objname = 'Supplier';
     $this->tpl = 'suppliers';
     $this->objobj = SupplierQuery::create()
     ->filterByCompanyId(0)
@@ -13,15 +12,7 @@ class Manage_suppliers extends MY_Controller{
     ->filterByCompanyId(null);
 
     parent::__construct();
-    $this->form = array(
-      'Name'=>'Name',
-      'Address'=>'Address',
-      'Website'=>'Website',
-      'Email'=>'Email',
-      'Image'=>'Image',
-      'Fax'=>'Fax',
-      'TaxNumber'=>'TaxNumber',
-    );
+    $this->set_objname('Supplier');
     $this->authorization->check_authorization('manage_suppliers');
   }
 
@@ -36,8 +27,8 @@ class Manage_suppliers extends MY_Controller{
     if(!$id){
       $this->form['CompanyId']='CompanyId';
     }
-    $this->form['Phone'] = array('value'=>implode($this->input->post('Phone'),','));
-    $this->form['Email'] = array('value'=>implode($this->input->post('Email'),','));
+    $this->form['Phone'] = array('value'=>implode($this->input->post('Phone'),', '));
+    $this->form['Email'] = array('value'=>implode($this->input->post('Email'),', '));
     $data = parent::write($id);
     redirect('manage_suppliers/detail/'.$data->getId());
   }

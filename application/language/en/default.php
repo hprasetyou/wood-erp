@@ -1,9 +1,10 @@
-<?php 
+<?php
  return array(
 'access' => 'Access',
 'acount_no' => 'Acount No',
 'add' => 'Add',
 'add_image' => 'Add Image',
+'add_more' => 'Add More',
 'add_pi_to_po' => 'Add Proforma Invoice Data to Purchase Order',
 'add_to_pl' => 'Add to Packing List',
 'add_to_po' => 'Add to Purchase Order',
