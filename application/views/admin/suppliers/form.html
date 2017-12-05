@@ -62,7 +62,13 @@
                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.email}}</label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
                     <div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
-                      <input type="text" id="Email" value="{{ suppliers.Email }}" name="Email" class="form-control  col-md-7 col-xs-12">
+                      <div class="email-list">
+                        {% set emails = suppliers.Email | split(',') %}
+                        {% for email in emails %}
+                        <input type="text" value="{{ email }}" name="Email[]" class="form-control  col-md-7 col-xs-12">
+                        {% endfor %}
+                      </div>
+                      <a href="#" id="addEmail"> + Add more email</a>
                     </div>
                     {% if suppliers %}
                     <p class="control-value">{{ suppliers.Email }}</p>
@@ -107,17 +113,6 @@
                   </div>
                 </div>
 
-                <div class="form-group">
-                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.bank_detail}}</label>
-                  <div class="col-md-6 col-sm-6 col-xs-12">
-                    <div {% if suppliers %}style="display:none" {% endif %} class="input-wrap">
-                      <input type="text" id="BankDetail" value="{{ suppliers.BankDetail }}" name="BankDetail" class="form-control  col-md-7 col-xs-12">
-                    </div>
-                    {% if suppliers %}
-                    <p class="control-value">{{ suppliers.BankDetail }}</p>
-                    {% endif %}
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -168,8 +163,13 @@
 {% endblock %} {% block bottom%} {% include 'common/_img_upload_modal.html'%}
 <script type="text/javascript">
   $('#addPhone').click(function(e){
+    e.preventDefault()
     $('.phone-list').append('<input type="text" name="Phone[]" class="form-control col-md-7 col-xs-12">')
   })
+    $('#addEmail').click(function(e){
+      e.preventDefault()
+      $('.email-list').append('<input type="text" name="Email[]" class="form-control col-md-7 col-xs-12">')
+    })
   $(document).ready(function(){
       $('#table_PartnerBank').loadTableData()
     })

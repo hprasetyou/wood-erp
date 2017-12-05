@@ -21,7 +21,6 @@ class Manage_suppliers extends MY_Controller{
       'Image'=>'Image',
       'Fax'=>'Fax',
       'TaxNumber'=>'TaxNumber',
-      'BankDetail'=>'BankDetail',
     );
     $this->authorization->check_authorization('manage_suppliers');
   }
@@ -37,15 +36,8 @@ class Manage_suppliers extends MY_Controller{
     if(!$id){
       $this->form['CompanyId']='CompanyId';
     }
-    $phones = "";
-    foreach ($this->input->post('Phone') as $key => $value) {
-      # code...
-      if($key>0){
-        $phones .= ",";
-      }
-      $phones .= $value;
-    }
-    $this->form['Phone'] = array('value'=>$phones);
+    $this->form['Phone'] = array('value'=>implode($this->input->post('Phone'),','));
+    $this->form['Email'] = array('value'=>implode($this->input->post('Email'),','));
     $data = parent::write($id);
     redirect('manage_suppliers/detail/'.$data->getId());
   }
