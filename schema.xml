@@ -444,4 +444,17 @@
       <reference local="partner_id" foreign="id"/>
     </foreign-key>
   </table>
+  <table name="sys_task" phpName="SysTask">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="name" phpName="Name" required="true" type="VARCHAR" size="2"/>
+    <column name="priority" phpName="Priority" required="true" type="INTEGER" defaultValue="0"/>
+    <column name="content" phpName="Content" type="LONGVARCHAR"/>
+    <column name="description" phpName="Description" type="LONGVARCHAR"/>
+    <column name="type" phpName="Type" type="VARCHAR" size="255" />
+    <column name="time_execution" phpName="TimeExecution" type="TIME" />
+    <column name="scheduled_execution" phpName="ScheduledExecution" type="TIMESTAMP" />
+    <column name="day_repeat" phpName="DayRepeat" type="VARCHAR" size="255" />
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true" />
+  </table>
 </database>
