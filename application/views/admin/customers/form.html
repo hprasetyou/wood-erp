@@ -45,7 +45,13 @@
                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.phone}}</label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
                     <div {% if customers %}style="display:none" {% endif %} class="input-wrap">
-                      <input type="text" id="Phone" value="{{ customers.Phone }}" name="Phone" class="form-control  col-md-7 col-xs-12">
+                      <div class="phone-list">
+                        {% set phones = customers.Phone | split(', ') %}
+                        {% for phone in phones %}
+                        <input type="text" value="{{ phone }}" name="Phone[]" class="form-control autoremove col-md-7 col-xs-12">
+                        {% endfor %}
+                      </div>
+                      <a href="#" id="addPhone"> + {{res.string.add_more}}</a>
                     </div>
                     {% if customers %}
                     <p class="control-value">{{ customers.Phone }}</p>
@@ -67,14 +73,20 @@
                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.email}}</label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
                     <div {% if customers %}style="display:none" {% endif %} class="input-wrap">
-                      <input type="text" id="Email" value="{{ customers.Email }}" name="Email" class="form-control  col-md-7 col-xs-12">
+                      <div class="email-list">
+                        {% set emails = customers.Email | split(', ') %}
+                        {% for email in emails %}
+                        <input type="text" value="{{ email }}" name="Email[]" class="form-control autoremove col-md-7 col-xs-12">
+                        {% endfor %}
+                      </div>
+                      <a href="#" id="addEmail"> + {{res.string.add_more}}</a>
                     </div>
                     {% if customers %}
                     <p class="control-value">{{ customers.Email }}</p>
                     {% endif %}
                   </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group" {% if customers.CompanyId > 0 or res.query_params.company_id %}style="display:none"{%endif%}>
                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.website}}</label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
                     <div {% if customers %}style="display:none" {% endif %} class="input-wrap">
@@ -87,18 +99,19 @@
                 </div>
               </div>
               <div class="col-sm-6">
-
+                {% if customers.CompanyId > 0 or res.query_params.company_id %}
                 <div class="form-group">
-                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.address}}</label>
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.remark}}</label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
                     <div {% if customers %}style="display:none" {% endif %} class="input-wrap">
-                      <input type="text" id="Address" value="{{ customers.Address }}" name="Address" class="form-control  col-md-7 col-xs-12">
+                      <input type="text" id="Role" value="{{ customers.Role }}" name="Role" class="form-control  col-md-7 col-xs-12">
                     </div>
                     {% if customers %}
-                    <p class="control-value">{{ customers.Address }}</p>
+                    <p class="control-value">{{ customers.Role }}</p>
                     {% endif %}
                   </div>
                 </div>
+                {% endif %}
               </div>
             </div>
 
@@ -127,6 +140,7 @@
 								<th data-fieldname="name">{{res.string.name}}</th>
 								<th data-fieldname="phone">{{res.string.phone}}</th>
 								<th data-fieldname="email">{{res.string.email}}</th>
+								<th data-fieldname="role">{{res.string.remark}}</th>
 								<th></th>
 							</tr>
 						</thead>
@@ -138,4 +152,30 @@
 </div>
 {% endif %}
 <!-- Modal -->
-{% endblock %} {% block bottom%} {% include 'common/_img_upload_modal.html'%} {% endblock %}
+{% endblock %} {% block bottom%} {% include 'common/_img_upload_modal.html'%}
+<script type="text/javascript">
+  $('.btn-back').click(function(e){
+    window.location.href = '/index.php/manage_customers/detail/{{customers.CompanyId?customers.CompanyId:res.query_params.company_id}}'
+  })
+  $('#addPhone').click(function(e){
+    e.preventDefault()
+    var inp = '<input type="text" name="Phone[]" autofocus class="form-control autoremove col-md-7 col-xs-12">'
+    $('.phone-list').append(inp)
+  })
+    $('#addEmail').click(function(e){
+      e.preventDefault()
+      var inp = '<input type="text" name="Email[]" autofocus class="form-control autoremove col-md-7 col-xs-12">'
+      $('.email-list').append(inp)
+    })
+    $('.form-group').on('change keyup blur','.autoremove',function(e){
+      if($(this).val()==''){
+        if($(this).siblings().length>0){
+          $(this).remove()
+        }
+      }
+    })
+  $(document).ready(function(){
+      $('#table_PartnerBank').loadTableData()
+    })
+</script>
+{% endblock %}

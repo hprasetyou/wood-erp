@@ -130,6 +130,7 @@
 'src_loc' => 'Src Loc',
 'state' => 'State',
 'status' => 'Status',
+'remark' => 'Remark',
 'supplier' => 'Supplier',
 'supplier_id' => 'Supplier Id',
 'tax_number' => 'Tax Number',

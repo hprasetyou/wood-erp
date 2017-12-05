@@ -174,7 +174,9 @@
     })
     $('.form-group').on('change keyup blur','.autoremove',function(e){
       if($(this).val()==''){
-        $(this).remove()
+        if($(this).siblings().length>0){
+          $(this).remove()
+        }
       }
     })
   $(document).ready(function(){

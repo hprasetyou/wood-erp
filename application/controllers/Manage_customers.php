@@ -5,7 +5,6 @@ class Manage_customers extends MY_Controller{
 
 
   function __construct(){
-    $this->objname = 'Customer';
     $this->tpl = 'customers';
     $this->objobj = CustomerQuery::create()
     ->filterByCompanyId(0)
@@ -13,17 +12,8 @@ class Manage_customers extends MY_Controller{
     ->filterByCompanyId(null);
 
     parent::__construct();
-    $this->form = array(
-      'Name'=>'Name',
-      'Address'=>'Address',
-      'Phone'=>'Phone',
-      'Website'=>'Website',
-      'Email'=>'Email',
-      'Image'=>'Image',
-      'Fax'=>'Fax',
-      'TaxNumber'=>'TaxNumber',
-      'BankDetail'=>'BankDetail'
-    );
+    $this->set_objname('Customer');
+
     $this->authorization->check_authorization('manage_customers');
   }
 
@@ -38,6 +28,8 @@ class Manage_customers extends MY_Controller{
     if(!$id){
       $this->form['CompanyId']='CompanyId';
     }
+    $this->form['Phone'] = array('value'=>implode($this->input->post('Phone'),', '));
+    $this->form['Email'] = array('value'=>implode($this->input->post('Email'),', '));
     $data = parent::write($id);
     redirect('manage_customers/detail/'.$data->getId());
   }
