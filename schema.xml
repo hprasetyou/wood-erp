@@ -31,7 +31,6 @@
     <column name="fax" phpName="Fax" type="VARCHAR" size="255"/>
     <column name="image" phpName="Image" type="LONGVARCHAR"/>
     <column name="tax_number" phpName="TaxNumber" type="VARCHAR" size="255"/>
-    <column name="bank_detail" phpName="BankDetail" type="VARCHAR" size="255"/>
     <column name="company_id" phpName="CompanyId" type="INTEGER"/>
     <column name="class_key" type="INTEGER" inheritance="single">
       <inheritance key="1" class="Partner"/>
@@ -388,5 +387,27 @@
     <index name="component_id">
       <index-column name="component_id"/>
     </index>
+  </table>
+  <table name="bank" phpName="Bank">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="name" phpName="Name" required="true" type="VARCHAR" size="255"/>
+    <column name="ref_code" phpName="CodeName" required="true" type="VARCHAR"/>
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
+  </table>
+  <table name="partner_bank" phpName="PartnerBank">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="name" phpName="Name" required="true" type="VARCHAR" size="255"/>
+    <column name="acount_no" phpName="AccountNo" required="true" type="VARCHAR"/>
+    <column name="partner_id" phpName="PartnerId" type="INTEGER" required="true"/>
+    <column name="bank_id" phpName="BankId" type="INTEGER" required="true"/>
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
+    <foreign-key foreignTable="partner" name="bank_partner_ibfk_1">
+      <reference local="partner_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="bank" name="bank_partner_ibfk_2">
+      <reference local="bank_id" foreign="id"/>
+    </foreign-key>
   </table>
 </database>

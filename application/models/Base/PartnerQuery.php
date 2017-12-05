@@ -29,7 +29,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery orderByFax($order = Criteria::ASC) Order by the fax column
  * @method     ChildPartnerQuery orderByImage($order = Criteria::ASC) Order by the image column
  * @method     ChildPartnerQuery orderByTaxNumber($order = Criteria::ASC) Order by the tax_number column
- * @method     ChildPartnerQuery orderByBankDetail($order = Criteria::ASC) Order by the bank_detail column
  * @method     ChildPartnerQuery orderByCompanyId($order = Criteria::ASC) Order by the company_id column
  * @method     ChildPartnerQuery orderByClassKey($order = Criteria::ASC) Order by the class_key column
  * @method     ChildPartnerQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
@@ -44,7 +43,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery groupByFax() Group by the fax column
  * @method     ChildPartnerQuery groupByImage() Group by the image column
  * @method     ChildPartnerQuery groupByTaxNumber() Group by the tax_number column
- * @method     ChildPartnerQuery groupByBankDetail() Group by the bank_detail column
  * @method     ChildPartnerQuery groupByCompanyId() Group by the company_id column
  * @method     ChildPartnerQuery groupByClassKey() Group by the class_key column
  * @method     ChildPartnerQuery groupByCreatedAt() Group by the created_at column
@@ -138,7 +136,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery rightJoinWithComponentPartner() Adds a RIGHT JOIN clause and with to the query using the ComponentPartner relation
  * @method     ChildPartnerQuery innerJoinWithComponentPartner() Adds a INNER JOIN clause and with to the query using the ComponentPartner relation
  *
- * @method     \PartnerQuery|\ProductPartnerQuery|\UserQuery|\ProformaInvoiceQuery|\PackingListQuery|\PurchaseOrderQuery|\ComponentPartnerQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildPartnerQuery leftJoinPartnerBank($relationAlias = null) Adds a LEFT JOIN clause to the query using the PartnerBank relation
+ * @method     ChildPartnerQuery rightJoinPartnerBank($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PartnerBank relation
+ * @method     ChildPartnerQuery innerJoinPartnerBank($relationAlias = null) Adds a INNER JOIN clause to the query using the PartnerBank relation
+ *
+ * @method     ChildPartnerQuery joinWithPartnerBank($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the PartnerBank relation
+ *
+ * @method     ChildPartnerQuery leftJoinWithPartnerBank() Adds a LEFT JOIN clause and with to the query using the PartnerBank relation
+ * @method     ChildPartnerQuery rightJoinWithPartnerBank() Adds a RIGHT JOIN clause and with to the query using the PartnerBank relation
+ * @method     ChildPartnerQuery innerJoinWithPartnerBank() Adds a INNER JOIN clause and with to the query using the PartnerBank relation
+ *
+ * @method     \PartnerQuery|\ProductPartnerQuery|\UserQuery|\ProformaInvoiceQuery|\PackingListQuery|\PurchaseOrderQuery|\ComponentPartnerQuery|\PartnerBankQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildPartner findOne(ConnectionInterface $con = null) Return the first ChildPartner matching the query
  * @method     ChildPartner findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPartner matching the query, or a new ChildPartner object populated from the query conditions when no match is found
@@ -152,7 +160,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner findOneByFax(string $fax) Return the first ChildPartner filtered by the fax column
  * @method     ChildPartner findOneByImage(string $image) Return the first ChildPartner filtered by the image column
  * @method     ChildPartner findOneByTaxNumber(string $tax_number) Return the first ChildPartner filtered by the tax_number column
- * @method     ChildPartner findOneByBankDetail(string $bank_detail) Return the first ChildPartner filtered by the bank_detail column
  * @method     ChildPartner findOneByCompanyId(int $company_id) Return the first ChildPartner filtered by the company_id column
  * @method     ChildPartner findOneByClassKey(int $class_key) Return the first ChildPartner filtered by the class_key column
  * @method     ChildPartner findOneByCreatedAt(string $created_at) Return the first ChildPartner filtered by the created_at column
@@ -170,7 +177,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner requireOneByFax(string $fax) Return the first ChildPartner filtered by the fax column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByImage(string $image) Return the first ChildPartner filtered by the image column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByTaxNumber(string $tax_number) Return the first ChildPartner filtered by the tax_number column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPartner requireOneByBankDetail(string $bank_detail) Return the first ChildPartner filtered by the bank_detail column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByCompanyId(int $company_id) Return the first ChildPartner filtered by the company_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByClassKey(int $class_key) Return the first ChildPartner filtered by the class_key column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByCreatedAt(string $created_at) Return the first ChildPartner filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -186,7 +192,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner[]|ObjectCollection findByFax(string $fax) Return ChildPartner objects filtered by the fax column
  * @method     ChildPartner[]|ObjectCollection findByImage(string $image) Return ChildPartner objects filtered by the image column
  * @method     ChildPartner[]|ObjectCollection findByTaxNumber(string $tax_number) Return ChildPartner objects filtered by the tax_number column
- * @method     ChildPartner[]|ObjectCollection findByBankDetail(string $bank_detail) Return ChildPartner objects filtered by the bank_detail column
  * @method     ChildPartner[]|ObjectCollection findByCompanyId(int $company_id) Return ChildPartner objects filtered by the company_id column
  * @method     ChildPartner[]|ObjectCollection findByClassKey(int $class_key) Return ChildPartner objects filtered by the class_key column
  * @method     ChildPartner[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildPartner objects filtered by the created_at column
@@ -289,7 +294,7 @@ abstract class PartnerQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, email, address, phone, website, fax, image, tax_number, bank_detail, company_id, class_key, created_at, updated_at FROM partner WHERE id = :p0';
+        $sql = 'SELECT id, name, email, address, phone, website, fax, image, tax_number, company_id, class_key, created_at, updated_at FROM partner WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -619,31 +624,6 @@ abstract class PartnerQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PartnerTableMap::COL_TAX_NUMBER, $taxNumber, $comparison);
-    }
-
-    /**
-     * Filter the query on the bank_detail column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByBankDetail('fooValue');   // WHERE bank_detail = 'fooValue'
-     * $query->filterByBankDetail('%fooValue%', Criteria::LIKE); // WHERE bank_detail LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $bankDetail The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildPartnerQuery The current query, for fluid interface
-     */
-    public function filterByBankDetail($bankDetail = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($bankDetail)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(PartnerTableMap::COL_BANK_DETAIL, $bankDetail, $comparison);
     }
 
     /**
@@ -1402,6 +1382,79 @@ abstract class PartnerQuery extends ModelCriteria
         return $this
             ->joinComponentPartner($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'ComponentPartner', '\ComponentPartnerQuery');
+    }
+
+    /**
+     * Filter the query by a related \PartnerBank object
+     *
+     * @param \PartnerBank|ObjectCollection $partnerBank the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildPartnerQuery The current query, for fluid interface
+     */
+    public function filterByPartnerBank($partnerBank, $comparison = null)
+    {
+        if ($partnerBank instanceof \PartnerBank) {
+            return $this
+                ->addUsingAlias(PartnerTableMap::COL_ID, $partnerBank->getPartnerId(), $comparison);
+        } elseif ($partnerBank instanceof ObjectCollection) {
+            return $this
+                ->usePartnerBankQuery()
+                ->filterByPrimaryKeys($partnerBank->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByPartnerBank() only accepts arguments of type \PartnerBank or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the PartnerBank relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildPartnerQuery The current query, for fluid interface
+     */
+    public function joinPartnerBank($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('PartnerBank');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'PartnerBank');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the PartnerBank relation PartnerBank object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \PartnerBankQuery A secondary query class using the current class as primary query
+     */
+    public function usePartnerBankQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinPartnerBank($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'PartnerBank', '\PartnerBankQuery');
     }
 
     /**

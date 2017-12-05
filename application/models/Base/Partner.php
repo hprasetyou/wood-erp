@@ -7,6 +7,8 @@ use \ComponentPartnerQuery as ChildComponentPartnerQuery;
 use \PackingList as ChildPackingList;
 use \PackingListQuery as ChildPackingListQuery;
 use \Partner as ChildPartner;
+use \PartnerBank as ChildPartnerBank;
+use \PartnerBankQuery as ChildPartnerBankQuery;
 use \PartnerQuery as ChildPartnerQuery;
 use \ProductPartner as ChildProductPartner;
 use \ProductPartnerQuery as ChildProductPartnerQuery;
@@ -21,6 +23,7 @@ use \Exception;
 use \PDO;
 use Map\ComponentPartnerTableMap;
 use Map\PackingListTableMap;
+use Map\PartnerBankTableMap;
 use Map\PartnerTableMap;
 use Map\ProductPartnerTableMap;
 use Map\ProformaInvoiceTableMap;
@@ -145,13 +148,6 @@ abstract class Partner implements ActiveRecordInterface
     protected $tax_number;
 
     /**
-     * The value for the bank_detail field.
-     *
-     * @var        string
-     */
-    protected $bank_detail;
-
-    /**
      * The value for the company_id field.
      *
      * @var        int
@@ -229,6 +225,12 @@ abstract class Partner implements ActiveRecordInterface
     protected $collComponentPartnersPartial;
 
     /**
+     * @var        ObjectCollection|ChildPartnerBank[] Collection to store aggregation of ChildPartnerBank objects.
+     */
+    protected $collPartnerBanks;
+    protected $collPartnerBanksPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -277,6 +279,12 @@ abstract class Partner implements ActiveRecordInterface
      * @var ObjectCollection|ChildComponentPartner[]
      */
     protected $componentPartnersScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildPartnerBank[]
+     */
+    protected $partnerBanksScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -606,16 +614,6 @@ abstract class Partner implements ActiveRecordInterface
     }
 
     /**
-     * Get the [bank_detail] column value.
-     *
-     * @return string
-     */
-    public function getBankDetail()
-    {
-        return $this->bank_detail;
-    }
-
-    /**
      * Get the [company_id] column value.
      *
      * @return int
@@ -856,26 +854,6 @@ abstract class Partner implements ActiveRecordInterface
     } // setTaxNumber()
 
     /**
-     * Set the value of [bank_detail] column.
-     *
-     * @param string $v new value
-     * @return $this|\Partner The current object (for fluent API support)
-     */
-    public function setBankDetail($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->bank_detail !== $v) {
-            $this->bank_detail = $v;
-            $this->modifiedColumns[PartnerTableMap::COL_BANK_DETAIL] = true;
-        }
-
-        return $this;
-    } // setBankDetail()
-
-    /**
      * Set the value of [company_id] column.
      *
      * @param int $v new value
@@ -1022,22 +1000,19 @@ abstract class Partner implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PartnerTableMap::translateFieldName('TaxNumber', TableMap::TYPE_PHPNAME, $indexType)];
             $this->tax_number = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PartnerTableMap::translateFieldName('BankDetail', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->bank_detail = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PartnerTableMap::translateFieldName('CompanyId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PartnerTableMap::translateFieldName('CompanyId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->company_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : PartnerTableMap::translateFieldName('ClassKey', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PartnerTableMap::translateFieldName('ClassKey', TableMap::TYPE_PHPNAME, $indexType)];
             $this->class_key = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : PartnerTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : PartnerTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : PartnerTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : PartnerTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -1050,7 +1025,7 @@ abstract class Partner implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 14; // 14 = PartnerTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 13; // 13 = PartnerTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Partner'), 0, $e);
@@ -1128,6 +1103,8 @@ abstract class Partner implements ActiveRecordInterface
             $this->collPurchaseOrders = null;
 
             $this->collComponentPartners = null;
+
+            $this->collPartnerBanks = null;
 
         } // if (deep)
     }
@@ -1376,6 +1353,23 @@ abstract class Partner implements ActiveRecordInterface
                 }
             }
 
+            if ($this->partnerBanksScheduledForDeletion !== null) {
+                if (!$this->partnerBanksScheduledForDeletion->isEmpty()) {
+                    \PartnerBankQuery::create()
+                        ->filterByPrimaryKeys($this->partnerBanksScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->partnerBanksScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collPartnerBanks !== null) {
+                foreach ($this->collPartnerBanks as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -1429,9 +1423,6 @@ abstract class Partner implements ActiveRecordInterface
         if ($this->isColumnModified(PartnerTableMap::COL_TAX_NUMBER)) {
             $modifiedColumns[':p' . $index++]  = 'tax_number';
         }
-        if ($this->isColumnModified(PartnerTableMap::COL_BANK_DETAIL)) {
-            $modifiedColumns[':p' . $index++]  = 'bank_detail';
-        }
         if ($this->isColumnModified(PartnerTableMap::COL_COMPANY_ID)) {
             $modifiedColumns[':p' . $index++]  = 'company_id';
         }
@@ -1481,9 +1472,6 @@ abstract class Partner implements ActiveRecordInterface
                         break;
                     case 'tax_number':
                         $stmt->bindValue($identifier, $this->tax_number, PDO::PARAM_STR);
-                        break;
-                    case 'bank_detail':
-                        $stmt->bindValue($identifier, $this->bank_detail, PDO::PARAM_STR);
                         break;
                     case 'company_id':
                         $stmt->bindValue($identifier, $this->company_id, PDO::PARAM_INT);
@@ -1587,18 +1575,15 @@ abstract class Partner implements ActiveRecordInterface
                 return $this->getTaxNumber();
                 break;
             case 9:
-                return $this->getBankDetail();
-                break;
-            case 10:
                 return $this->getCompanyId();
                 break;
-            case 11:
+            case 10:
                 return $this->getClassKey();
                 break;
-            case 12:
+            case 11:
                 return $this->getCreatedAt();
                 break;
-            case 13:
+            case 12:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1640,18 +1625,17 @@ abstract class Partner implements ActiveRecordInterface
             $keys[6] => $this->getFax(),
             $keys[7] => $this->getImage(),
             $keys[8] => $this->getTaxNumber(),
-            $keys[9] => $this->getBankDetail(),
-            $keys[10] => $this->getCompanyId(),
-            $keys[11] => $this->getClassKey(),
-            $keys[12] => $this->getCreatedAt(),
-            $keys[13] => $this->getUpdatedAt(),
+            $keys[9] => $this->getCompanyId(),
+            $keys[10] => $this->getClassKey(),
+            $keys[11] => $this->getCreatedAt(),
+            $keys[12] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[12]] instanceof \DateTimeInterface) {
-            $result[$keys[12]] = $result[$keys[12]]->format('c');
+        if ($result[$keys[11]] instanceof \DateTimeInterface) {
+            $result[$keys[11]] = $result[$keys[11]]->format('c');
         }
 
-        if ($result[$keys[13]] instanceof \DateTimeInterface) {
-            $result[$keys[13]] = $result[$keys[13]]->format('c');
+        if ($result[$keys[12]] instanceof \DateTimeInterface) {
+            $result[$keys[12]] = $result[$keys[12]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1780,6 +1764,21 @@ abstract class Partner implements ActiveRecordInterface
 
                 $result[$key] = $this->collComponentPartners->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
+            if (null !== $this->collPartnerBanks) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'partnerBanks';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'partner_banks';
+                        break;
+                    default:
+                        $key = 'PartnerBanks';
+                }
+
+                $result[$key] = $this->collPartnerBanks->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
         }
 
         return $result;
@@ -1842,18 +1841,15 @@ abstract class Partner implements ActiveRecordInterface
                 $this->setTaxNumber($value);
                 break;
             case 9:
-                $this->setBankDetail($value);
-                break;
-            case 10:
                 $this->setCompanyId($value);
                 break;
-            case 11:
+            case 10:
                 $this->setClassKey($value);
                 break;
-            case 12:
+            case 11:
                 $this->setCreatedAt($value);
                 break;
-            case 13:
+            case 12:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1910,19 +1906,16 @@ abstract class Partner implements ActiveRecordInterface
             $this->setTaxNumber($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setBankDetail($arr[$keys[9]]);
+            $this->setCompanyId($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setCompanyId($arr[$keys[10]]);
+            $this->setClassKey($arr[$keys[10]]);
         }
         if (array_key_exists($keys[11], $arr)) {
-            $this->setClassKey($arr[$keys[11]]);
+            $this->setCreatedAt($arr[$keys[11]]);
         }
         if (array_key_exists($keys[12], $arr)) {
-            $this->setCreatedAt($arr[$keys[12]]);
-        }
-        if (array_key_exists($keys[13], $arr)) {
-            $this->setUpdatedAt($arr[$keys[13]]);
+            $this->setUpdatedAt($arr[$keys[12]]);
         }
     }
 
@@ -1991,9 +1984,6 @@ abstract class Partner implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PartnerTableMap::COL_TAX_NUMBER)) {
             $criteria->add(PartnerTableMap::COL_TAX_NUMBER, $this->tax_number);
-        }
-        if ($this->isColumnModified(PartnerTableMap::COL_BANK_DETAIL)) {
-            $criteria->add(PartnerTableMap::COL_BANK_DETAIL, $this->bank_detail);
         }
         if ($this->isColumnModified(PartnerTableMap::COL_COMPANY_ID)) {
             $criteria->add(PartnerTableMap::COL_COMPANY_ID, $this->company_id);
@@ -2101,7 +2091,6 @@ abstract class Partner implements ActiveRecordInterface
         $copyObj->setFax($this->getFax());
         $copyObj->setImage($this->getImage());
         $copyObj->setTaxNumber($this->getTaxNumber());
-        $copyObj->setBankDetail($this->getBankDetail());
         $copyObj->setCompanyId($this->getCompanyId());
         $copyObj->setClassKey($this->getClassKey());
         $copyObj->setCreatedAt($this->getCreatedAt());
@@ -2151,6 +2140,12 @@ abstract class Partner implements ActiveRecordInterface
             foreach ($this->getComponentPartners() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addComponentPartner($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getPartnerBanks() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addPartnerBank($relObj->copy($deepCopy));
                 }
             }
 
@@ -2272,6 +2267,10 @@ abstract class Partner implements ActiveRecordInterface
         }
         if ('ComponentPartner' == $relationName) {
             $this->initComponentPartners();
+            return;
+        }
+        if ('PartnerBank' == $relationName) {
+            $this->initPartnerBanks();
             return;
         }
     }
@@ -3927,6 +3926,256 @@ abstract class Partner implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collPartnerBanks collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addPartnerBanks()
+     */
+    public function clearPartnerBanks()
+    {
+        $this->collPartnerBanks = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collPartnerBanks collection loaded partially.
+     */
+    public function resetPartialPartnerBanks($v = true)
+    {
+        $this->collPartnerBanksPartial = $v;
+    }
+
+    /**
+     * Initializes the collPartnerBanks collection.
+     *
+     * By default this just sets the collPartnerBanks collection to an empty array (like clearcollPartnerBanks());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initPartnerBanks($overrideExisting = true)
+    {
+        if (null !== $this->collPartnerBanks && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = PartnerBankTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collPartnerBanks = new $collectionClassName;
+        $this->collPartnerBanks->setModel('\PartnerBank');
+    }
+
+    /**
+     * Gets an array of ChildPartnerBank objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPartner is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildPartnerBank[] List of ChildPartnerBank objects
+     * @throws PropelException
+     */
+    public function getPartnerBanks(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPartnerBanksPartial && !$this->isNew();
+        if (null === $this->collPartnerBanks || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collPartnerBanks) {
+                // return empty collection
+                $this->initPartnerBanks();
+            } else {
+                $collPartnerBanks = ChildPartnerBankQuery::create(null, $criteria)
+                    ->filterByPartner($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collPartnerBanksPartial && count($collPartnerBanks)) {
+                        $this->initPartnerBanks(false);
+
+                        foreach ($collPartnerBanks as $obj) {
+                            if (false == $this->collPartnerBanks->contains($obj)) {
+                                $this->collPartnerBanks->append($obj);
+                            }
+                        }
+
+                        $this->collPartnerBanksPartial = true;
+                    }
+
+                    return $collPartnerBanks;
+                }
+
+                if ($partial && $this->collPartnerBanks) {
+                    foreach ($this->collPartnerBanks as $obj) {
+                        if ($obj->isNew()) {
+                            $collPartnerBanks[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collPartnerBanks = $collPartnerBanks;
+                $this->collPartnerBanksPartial = false;
+            }
+        }
+
+        return $this->collPartnerBanks;
+    }
+
+    /**
+     * Sets a collection of ChildPartnerBank objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $partnerBanks A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildPartner The current object (for fluent API support)
+     */
+    public function setPartnerBanks(Collection $partnerBanks, ConnectionInterface $con = null)
+    {
+        /** @var ChildPartnerBank[] $partnerBanksToDelete */
+        $partnerBanksToDelete = $this->getPartnerBanks(new Criteria(), $con)->diff($partnerBanks);
+
+
+        $this->partnerBanksScheduledForDeletion = $partnerBanksToDelete;
+
+        foreach ($partnerBanksToDelete as $partnerBankRemoved) {
+            $partnerBankRemoved->setPartner(null);
+        }
+
+        $this->collPartnerBanks = null;
+        foreach ($partnerBanks as $partnerBank) {
+            $this->addPartnerBank($partnerBank);
+        }
+
+        $this->collPartnerBanks = $partnerBanks;
+        $this->collPartnerBanksPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related PartnerBank objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related PartnerBank objects.
+     * @throws PropelException
+     */
+    public function countPartnerBanks(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPartnerBanksPartial && !$this->isNew();
+        if (null === $this->collPartnerBanks || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collPartnerBanks) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getPartnerBanks());
+            }
+
+            $query = ChildPartnerBankQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByPartner($this)
+                ->count($con);
+        }
+
+        return count($this->collPartnerBanks);
+    }
+
+    /**
+     * Method called to associate a ChildPartnerBank object to this object
+     * through the ChildPartnerBank foreign key attribute.
+     *
+     * @param  ChildPartnerBank $l ChildPartnerBank
+     * @return $this|\Partner The current object (for fluent API support)
+     */
+    public function addPartnerBank(ChildPartnerBank $l)
+    {
+        if ($this->collPartnerBanks === null) {
+            $this->initPartnerBanks();
+            $this->collPartnerBanksPartial = true;
+        }
+
+        if (!$this->collPartnerBanks->contains($l)) {
+            $this->doAddPartnerBank($l);
+
+            if ($this->partnerBanksScheduledForDeletion and $this->partnerBanksScheduledForDeletion->contains($l)) {
+                $this->partnerBanksScheduledForDeletion->remove($this->partnerBanksScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildPartnerBank $partnerBank The ChildPartnerBank object to add.
+     */
+    protected function doAddPartnerBank(ChildPartnerBank $partnerBank)
+    {
+        $this->collPartnerBanks[]= $partnerBank;
+        $partnerBank->setPartner($this);
+    }
+
+    /**
+     * @param  ChildPartnerBank $partnerBank The ChildPartnerBank object to remove.
+     * @return $this|ChildPartner The current object (for fluent API support)
+     */
+    public function removePartnerBank(ChildPartnerBank $partnerBank)
+    {
+        if ($this->getPartnerBanks()->contains($partnerBank)) {
+            $pos = $this->collPartnerBanks->search($partnerBank);
+            $this->collPartnerBanks->remove($pos);
+            if (null === $this->partnerBanksScheduledForDeletion) {
+                $this->partnerBanksScheduledForDeletion = clone $this->collPartnerBanks;
+                $this->partnerBanksScheduledForDeletion->clear();
+            }
+            $this->partnerBanksScheduledForDeletion[]= clone $partnerBank;
+            $partnerBank->setPartner(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Partner is new, it will return
+     * an empty collection; or if this Partner has previously
+     * been saved, it will retrieve related PartnerBanks from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Partner.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildPartnerBank[] List of ChildPartnerBank objects
+     */
+    public function getPartnerBanksJoinBank(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildPartnerBankQuery::create(null, $criteria);
+        $query->joinWith('Bank', $joinBehavior);
+
+        return $this->getPartnerBanks($query, $con);
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -3945,7 +4194,6 @@ abstract class Partner implements ActiveRecordInterface
         $this->fax = null;
         $this->image = null;
         $this->tax_number = null;
-        $this->bank_detail = null;
         $this->company_id = null;
         $this->class_key = null;
         $this->created_at = null;
@@ -4004,6 +4252,11 @@ abstract class Partner implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collPartnerBanks) {
+                foreach ($this->collPartnerBanks as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         $this->collPartnersRelatedById = null;
@@ -4013,6 +4266,7 @@ abstract class Partner implements ActiveRecordInterface
         $this->collPackingLists = null;
         $this->collPurchaseOrders = null;
         $this->collComponentPartners = null;
+        $this->collPartnerBanks = null;
         $this->aCompany = null;
     }
 
