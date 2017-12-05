@@ -30,11 +30,17 @@ class MY_Controller extends CI_Controller{
    $except = array('Id','CreatedAt','UpdatedAt');
    foreach ($colls as $coll) {
      # code...
-    if(!is_object($coll['Name']) and (!in_array($coll['Name'],$except))){
-       $this->form[$coll['Name']] = $coll['Name'];
-    }else{
-    }
+     if(!in_array($coll['Name'],$except)){
+       if(!is_object($coll['Name'])){
+          $this->form[$coll['Name']] = $coll['Name'];
+       }else{
+        //  $this->form[$coll['LocalName']] = $coll['LocalName'];
+       }
+     }
+
    }
+   write_log(json_encode($this->form));
+
  }
 
  function get_json(){

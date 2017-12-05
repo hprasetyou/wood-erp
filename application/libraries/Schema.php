@@ -63,7 +63,8 @@ class Schema
       // echo $relmodel;
       $o[$value->reference[0]->attributes()->local.""] = array(
         'type'=>'rel',
-        'Name'=> $relname
+        'Name'=> $relname,
+        'LocalName'=>$value->attributes()->phpName
       );
     }
     return $o;

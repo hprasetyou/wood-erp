@@ -509,7 +509,11 @@ class Manage_$var extends MY_Controller{
 	function write(\$id=null){
 		\$this->form = $fls;
 		\$data = parent::write(\$id);
-		redirect('manage_$var/detail/'.\$data->getId());
+    if(\$this->input->is_ajax_request()){
+			echo \$data->toJSON();
+		}else{
+			redirect('manage_$var/detail/'.\$data->getId());
+		}
 	}
 
   function delete(\$id){

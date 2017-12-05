@@ -1,0 +1,80 @@
+
+{% extends "dashboard.html" %}
+{% set title=" Partner Bank " %}
+{% if partnerbanks %}
+	 {% set bc_text = partnerbanks.id  %}
+{% else %}
+	 {% set bc_text = 'Baru' %}
+{% endif %}
+{% set breadcrumbs = [
+	{'link': base_url~'index.php/manage_partnerbanks','text': res.string.partnerbank },
+	{'link':'#','text':bc_text  }]
+%}
+{% block content %}
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<form id="form_PartnerBank" method="post" action="{{base_url}}index.php/manage_partnerbanks/write/{{ partnerbanks.id }}" data-parsley-validate class="form-horizontal form-label-left">
+			<div class="box box-info">
+				<div class="box-header with-border">
+				{% include 'common/_form_header.html'
+				with {'back_url':'/index.php/manage_partnerbanks'~back_link,
+				'title': res.string.partnerbank,
+				'delete_url':'/index.php/manage_partnerbanks/delete/' ~ partnerbanks.Id,
+				'object':partnerbanks} %}
+				</div>
+				<div class="box-body">
+					<input type="hidden" name="PartnerId" value="{{res.query_params.partner_id}}">
+					<input type="hidden" name="Src" value="{{res.query_params.src}}">
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.name}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if partnerbanks %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" placeholder="{{ res.string.name }}" id="Name" value="{{ partnerbanks.Name }}"
+							name="Name" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if partnerbanks %}
+									<p class="control-value">{{ partnerbanks.Name  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="AccountNo">{{res.string.acount_no}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if partnerbanks %}style="display:none"{% endif %} class="input-wrap">
+							<input type="text" placeholder="{{ res.string.acount_no }}" id="AccountNo" value="{{ partnerbanks.AccountNo }}"
+							name="AccountNo" required="required" class="form-control  col-md-7 col-xs-12">
+						</div>
+								{% if partnerbanks %}
+									<p class="control-value">{{ partnerbanks.AccountNo  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="BankId">{{res.string.bank_id}}</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+						<div {% if partnerbanks %}style="display:none"{% endif %} class="input-wrap input-group">
+							<input type="hidden" type="text" id="BankId" value="{{ partnerbanks.BankId }}" name="BankId"  >
+							<input type="text" required="required" name="displayBankId" id="displayBankId"  placeholder="{{ res.string.bank_id }}" value="{{ partnerbanks.Bank }}" class="form-control" />
+							<span class="input-group-btn">
+								<button class="btn btnModal btn-default" id="btnBankId"  data-target="ModalBank" type="button">{{res.string.search}}</button>
+							</span>
+						</div>
+								{% if partnerbanks %}
+									<p class="control-value">{{ partnerbanks.Bank.Name  }}</p>
+								{% endif %}
+							</div>
+						</div>
+
+				</div>
+		</form>
+	</div>
+</div>
+<!-- Modal -->
+{% include "admin/banks/_modal.html" %}
+
+{% endblock %}
+{% block bottom%}
+
+{% endblock %}

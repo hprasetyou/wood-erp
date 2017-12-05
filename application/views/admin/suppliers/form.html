@@ -29,10 +29,6 @@
             </div>
             <div class="row">
               <div class="col-sm-6">
-
-
-
-
                 <div class="form-group">
                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.phone}}</label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
@@ -126,45 +122,56 @@
             </div>
 
           </div>
+          {% if suppliers and not suppliers.CompanyId > 0 %}
+          <div class="row">
+						<div class="col-sm-12">
+
+							<div class="nav-tabs-custom">
+								<ul class="nav nav-tabs">
+									<li class="active">
+										<a href="#tab_1" data-toggle="tab">{{res.string.contact_person}}</a>
+									</li>
+									<li>
+										<a href="#tab_2" data-toggle="tab">{{ res.string.bank }}</a>
+									</li>
+									<li id="component_tab">
+										<a href="#tab_3" data-toggle="tab">{{ res.string.address }}</a>
+									</li>
+
+								</ul>
+								<div class="tab-content">
+                  <!-- /.tab-pane -->
+									<div class="tab-pane clearfix active" id="tab_1">
+                    {% include "admin/suppliers/_contact_detail_tab.html"%}
+									</div>
+									<!-- /.tab-pane -->
+									<div class="tab-pane" id="tab_2">
+                    {% include "admin/suppliers/_bank_detail_tab.html"%}
+                  </div>
+									<!-- /.tab-pane -->
+									<div class="tab-pane" id="tab_3">
+                    {% include "admin/suppliers/_address_tab.html"%}
+                  </div>
+								</div>
+							</div>
+						</div>
+					</div>
+          {% endif %}
         </div>
+
       </div>
     </form>
   </div>
 </div>
-{% if suppliers and suppliers.CompanyId is null %}
-<div class="">
-  <div class="clearfix"></div>
-  <div class="row">
-    <div class="col-md-12 col-sm-12 col-xs-12">
-      <div class="box">
-        <div class="box-header">
-          <h3 class="box-title"> {{res.string.contact_person}} </h3>
-          <a href="{{base_url}}index.php/manage_suppliers/create?company_id={{suppliers.Id}}" class="btn btn-primary pull-right">{{res.string.new_data}}</a>
-          <div class="clearfix"></div>
-        </div>
-        <div class="box-body">
-          <p class="text-muted font-13 m-b-30"></p>
-          <table data-controller="manage_suppliers" data-domain='{"company_id":{{suppliers.Id}}}' class="table table-striped " id="table_Partner">
-            <thead>
-              <tr>
-                <th data-fieldname="name">{{res.string.name}}</th>
-                <th data-fieldname="phone">{{res.string.phone}}</th>
-                <th data-fieldname="email">{{res.string.email}}</th>
-                <th></th>
-              </tr>
-            </thead>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-{% endif %}
+
 <!-- Modal -->
 {% endblock %} {% block bottom%} {% include 'common/_img_upload_modal.html'%}
 <script type="text/javascript">
   $('#addPhone').click(function(e){
     $('.phone-list').append('<input type="text" name="Phone[]" class="form-control col-md-7 col-xs-12">')
   })
+  $(document).ready(function(){
+      $('#table_PartnerBank').loadTableData()
+    })
 </script>
 {% endblock %}

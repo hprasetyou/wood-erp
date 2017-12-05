@@ -1,0 +1,23 @@
+
+	<div class="modal fade" id="ModalBank" data-init="0" data-controller="manage_banks" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">Bank</h4>
+				</div>
+				<div class="modal-body">
+					<table data-display="1" data-controller="manage_banks" class="table table-striped " id="table_Bank">
+		<thead>
+			<tr>
+				<th></th>
+				<th data-fieldname="name">{{res.string.name }}</th>
+				<th data-fieldname="ref_code">{{res.string.ref_code }}</th>
+			</tr>
+		</thead>
+	</table>
+
+				</div>
+			</div>
+		</div>
+	</div>

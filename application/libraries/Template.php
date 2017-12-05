@@ -59,8 +59,8 @@ class Template {
             'base_url'=>base_url(),
             'res'=>array(
                 'string'=>include('application/language/en/default.php'),
-		'uri'=>uri_string(),
-		'query_params'=>$this->CI->input->get(),
+            		'uri'=>uri_string(),
+            		'query_params'=>$this->CI->input->get(),
                 'session' => $session,
                 'info' => $this->CI->session->flashdata('info')
             )
