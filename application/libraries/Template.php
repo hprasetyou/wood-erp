@@ -14,19 +14,20 @@ class Template {
       $this->twig = new Twig_Environment($loader, array(
       'cache' => false,// '/application/cache'
       ));
+      $this->CI =& get_instance();
       $this->apply_filter();
       $this->apply_func();
   }
 
   function apply_filter(){
+    $this->CI->load->helper('monetary');
+
     // an anonymous function
     $filter_cubic = new Twig_Filter('cubic', function ($string) {
         return number_format(($string/1000000), 3, '.', '').' m3';
     });
     $currency = new Twig_Filter('monetary', function ($val,$cur_code = 'USD'){
-      $curr = CurrencyQuery::create()->findOneByCode($cur_code);
-      $val = number_format($val, 2, ',', '.');
-      return $curr->getPlacement()=='before'?$curr->getSymbol()." ".$val:$val." ".$curr->getSymbol();
+      return format_currency($val,$cur_code);
     });
     $this->twig->addFilter($currency);
     $this->twig->addFilter($filter_cubic);
@@ -56,7 +57,6 @@ class Template {
   private $twig;
   function render($tpl,$data=array(),$ext="html"){
 
-		$this->CI =& get_instance();
         $this->CI->load->helper('url');
         $session = [];
         if($this->CI->session->userdata('logged_in')){
