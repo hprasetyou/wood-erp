@@ -38,6 +38,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildMaterialQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildMaterialQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
+ * @method     ChildMaterialQuery leftJoinComponent($relationAlias = null) Adds a LEFT JOIN clause to the query using the Component relation
+ * @method     ChildMaterialQuery rightJoinComponent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Component relation
+ * @method     ChildMaterialQuery innerJoinComponent($relationAlias = null) Adds a INNER JOIN clause to the query using the Component relation
+ *
+ * @method     ChildMaterialQuery joinWithComponent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Component relation
+ *
+ * @method     ChildMaterialQuery leftJoinWithComponent() Adds a LEFT JOIN clause and with to the query using the Component relation
+ * @method     ChildMaterialQuery rightJoinWithComponent() Adds a RIGHT JOIN clause and with to the query using the Component relation
+ * @method     ChildMaterialQuery innerJoinWithComponent() Adds a INNER JOIN clause and with to the query using the Component relation
+ *
  * @method     ChildMaterialQuery leftJoinProduct($relationAlias = null) Adds a LEFT JOIN clause to the query using the Product relation
  * @method     ChildMaterialQuery rightJoinProduct($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Product relation
  * @method     ChildMaterialQuery innerJoinProduct($relationAlias = null) Adds a INNER JOIN clause to the query using the Product relation
@@ -48,7 +58,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildMaterialQuery rightJoinWithProduct() Adds a RIGHT JOIN clause and with to the query using the Product relation
  * @method     ChildMaterialQuery innerJoinWithProduct() Adds a INNER JOIN clause and with to the query using the Product relation
  *
- * @method     \ProductQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \ComponentQuery|\ProductQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildMaterial findOne(ConnectionInterface $con = null) Return the first ChildMaterial matching the query
  * @method     ChildMaterial findOneOrCreate(ConnectionInterface $con = null) Return the first ChildMaterial matching the query, or a new ChildMaterial object populated from the query conditions when no match is found
@@ -412,6 +422,79 @@ abstract class MaterialQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \Component object
+     *
+     * @param \Component|ObjectCollection $component the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildMaterialQuery The current query, for fluid interface
+     */
+    public function filterByComponent($component, $comparison = null)
+    {
+        if ($component instanceof \Component) {
+            return $this
+                ->addUsingAlias(MaterialTableMap::COL_ID, $component->getMaterialId(), $comparison);
+        } elseif ($component instanceof ObjectCollection) {
+            return $this
+                ->useComponentQuery()
+                ->filterByPrimaryKeys($component->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByComponent() only accepts arguments of type \Component or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Component relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildMaterialQuery The current query, for fluid interface
+     */
+    public function joinComponent($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Component');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Component');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Component relation Component object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \ComponentQuery A secondary query class using the current class as primary query
+     */
+    public function useComponentQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinComponent($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Component', '\ComponentQuery');
+    }
+
+    /**
      * Filter the query by a related \Product object
      *
      * @param \Product|ObjectCollection $product the related object to use as filter
@@ -423,7 +506,7 @@ abstract class MaterialQuery extends ModelCriteria
     {
         if ($product instanceof \Product) {
             return $this
-                ->addUsingAlias(MaterialTableMap::COL_ID, $product->getComponentId(), $comparison);
+                ->addUsingAlias(MaterialTableMap::COL_ID, $product->getMaterialId(), $comparison);
         } elseif ($product instanceof ObjectCollection) {
             return $this
                 ->useProductQuery()

@@ -32,7 +32,7 @@
 										<input type="text" id="Description" value="{{ products.Description }}" name="Description" required="required" class="form-control  col-md-7 col-xs-12">
 									</div>
 									{% if products %}
-									<p class="control-value">{{ products.Description }}</p>
+									<p class="control-value">{{ products.Description }}{{products.IsRound?' (Rounded) ':''}}</p>
 									{% endif %}
 								</div>
 							</div>
@@ -94,6 +94,7 @@
                   {% endif %}
                 </div>
               </div>
+
               <div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.net_cubic}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
@@ -139,6 +140,20 @@
 									{% endif %}
 								</div>
 							</div>
+
+              <div id="FrmMaterial" class="form-group" {% if products.HasComponent %}style="display:none"{%endif%}>
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.material}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if products %}style="display:none" {% endif %} class="input-wrap">
+                    {{selection_m2o('ProdMaterial','Material',null,products.MaterialId) | raw }}
+                  </div>
+                  {% if products %}
+                  <p class="control-value">{{ products.Material.Name }}</p>
+                  {% endif %}
+                </div>
+              </div>
+
+
 						</div>
 
 					</div>
@@ -215,12 +230,29 @@
   })
 		$(document).ready(function () {
 			$('input:checkbox').trigger('change')
+      $('#MaterialId').on("select2:opening", function() {
+        setTimeout(function(){
+          if($('.select2-dropdown').find('.select2-add').length < 1){
+            $('.select2-dropdown').append('<span class="select2-add"><a onclick="create_new_material()" class="btn btn-select2-new" style="width:100%" href="#">Add new</a></span>')
+          }
+        }, 500);
+      });
+
 		})
+
+    function create_new_material(){
+      $('#MaterialId').select2('close');
+      $('#MaterialId').parents('.input-wrap').hide()
+      $('#Material').show()
+      $('#Material').find('input').focus()
+    }
+
 		$('#IsKdn').change(function (e) {
       $('.form-knockdown').toggle($(this).prop('checked'))
 		})
 		$('#HasComponent').change(function (e) {
       $('#component_tab').toggle($(this).prop('checked'))
+      $('#FrmMaterial').toggle(!$(this).prop('checked'))
 		})
 		$('#IsRound').change(function (e) {
       $('.WCol').toggle(!$(this).prop('checked'))
@@ -240,11 +272,7 @@
       var w = b.find('.inp-w').val()
       var h = b.find('.inp-h').val()
       var d = b.find('.inp-d').val()
-      if(!$('#IsRound').prop('checked')){
-        r = vol_balok(w,h,d)
-      }else{
-        r = vol_tabung(h,d)
-      }
+      r = vol_balok(w,h,d)
 			b.find('.form-dimension-result').val(r)
 		})
 

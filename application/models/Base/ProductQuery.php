@@ -29,7 +29,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery orderByHasComponent($order = Criteria::ASC) Order by the has_component column
  * @method     ChildProductQuery orderByQtyPerPack($order = Criteria::ASC) Order by the qty_per_pack column
  * @method     ChildProductQuery orderByListPrice($order = Criteria::ASC) Order by the list_price column
- * @method     ChildProductQuery orderByComponentId($order = Criteria::ASC) Order by the material_id column
+ * @method     ChildProductQuery orderByMaterialId($order = Criteria::ASC) Order by the material_id column
  * @method     ChildProductQuery orderByNote($order = Criteria::ASC) Order by the note column
  * @method     ChildProductQuery orderByCubicAsb($order = Criteria::ASC) Order by the cubic_asb column
  * @method     ChildProductQuery orderByCubicKdn($order = Criteria::ASC) Order by the cubic_kdn column
@@ -54,7 +54,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery groupByHasComponent() Group by the has_component column
  * @method     ChildProductQuery groupByQtyPerPack() Group by the qty_per_pack column
  * @method     ChildProductQuery groupByListPrice() Group by the list_price column
- * @method     ChildProductQuery groupByComponentId() Group by the material_id column
+ * @method     ChildProductQuery groupByMaterialId() Group by the material_id column
  * @method     ChildProductQuery groupByNote() Group by the note column
  * @method     ChildProductQuery groupByCubicAsb() Group by the cubic_asb column
  * @method     ChildProductQuery groupByCubicKdn() Group by the cubic_kdn column
@@ -152,7 +152,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct findOneByHasComponent(boolean $has_component) Return the first ChildProduct filtered by the has_component column
  * @method     ChildProduct findOneByQtyPerPack(int $qty_per_pack) Return the first ChildProduct filtered by the qty_per_pack column
  * @method     ChildProduct findOneByListPrice(double $list_price) Return the first ChildProduct filtered by the list_price column
- * @method     ChildProduct findOneByComponentId(int $material_id) Return the first ChildProduct filtered by the material_id column
+ * @method     ChildProduct findOneByMaterialId(int $material_id) Return the first ChildProduct filtered by the material_id column
  * @method     ChildProduct findOneByNote(string $note) Return the first ChildProduct filtered by the note column
  * @method     ChildProduct findOneByCubicAsb(double $cubic_asb) Return the first ChildProduct filtered by the cubic_asb column
  * @method     ChildProduct findOneByCubicKdn(double $cubic_kdn) Return the first ChildProduct filtered by the cubic_kdn column
@@ -180,7 +180,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct requireOneByHasComponent(boolean $has_component) Return the first ChildProduct filtered by the has_component column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByQtyPerPack(int $qty_per_pack) Return the first ChildProduct filtered by the qty_per_pack column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByListPrice(double $list_price) Return the first ChildProduct filtered by the list_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildProduct requireOneByComponentId(int $material_id) Return the first ChildProduct filtered by the material_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProduct requireOneByMaterialId(int $material_id) Return the first ChildProduct filtered by the material_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByNote(string $note) Return the first ChildProduct filtered by the note column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByCubicAsb(double $cubic_asb) Return the first ChildProduct filtered by the cubic_asb column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByCubicKdn(double $cubic_kdn) Return the first ChildProduct filtered by the cubic_kdn column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -206,7 +206,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct[]|ObjectCollection findByHasComponent(boolean $has_component) Return ChildProduct objects filtered by the has_component column
  * @method     ChildProduct[]|ObjectCollection findByQtyPerPack(int $qty_per_pack) Return ChildProduct objects filtered by the qty_per_pack column
  * @method     ChildProduct[]|ObjectCollection findByListPrice(double $list_price) Return ChildProduct objects filtered by the list_price column
- * @method     ChildProduct[]|ObjectCollection findByComponentId(int $material_id) Return ChildProduct objects filtered by the material_id column
+ * @method     ChildProduct[]|ObjectCollection findByMaterialId(int $material_id) Return ChildProduct objects filtered by the material_id column
  * @method     ChildProduct[]|ObjectCollection findByNote(string $note) Return ChildProduct objects filtered by the note column
  * @method     ChildProduct[]|ObjectCollection findByCubicAsb(double $cubic_asb) Return ChildProduct objects filtered by the cubic_asb column
  * @method     ChildProduct[]|ObjectCollection findByCubicKdn(double $cubic_kdn) Return ChildProduct objects filtered by the cubic_kdn column
@@ -695,14 +695,14 @@ abstract class ProductQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByComponentId(1234); // WHERE material_id = 1234
-     * $query->filterByComponentId(array(12, 34)); // WHERE material_id IN (12, 34)
-     * $query->filterByComponentId(array('min' => 12)); // WHERE material_id > 12
+     * $query->filterByMaterialId(1234); // WHERE material_id = 1234
+     * $query->filterByMaterialId(array(12, 34)); // WHERE material_id IN (12, 34)
+     * $query->filterByMaterialId(array('min' => 12)); // WHERE material_id > 12
      * </code>
      *
      * @see       filterByMaterial()
      *
-     * @param     mixed $componentId The value to use as filter.
+     * @param     mixed $materialId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -710,16 +710,16 @@ abstract class ProductQuery extends ModelCriteria
      *
      * @return $this|ChildProductQuery The current query, for fluid interface
      */
-    public function filterByComponentId($componentId = null, $comparison = null)
+    public function filterByMaterialId($materialId = null, $comparison = null)
     {
-        if (is_array($componentId)) {
+        if (is_array($materialId)) {
             $useMinMax = false;
-            if (isset($componentId['min'])) {
-                $this->addUsingAlias(ProductTableMap::COL_MATERIAL_ID, $componentId['min'], Criteria::GREATER_EQUAL);
+            if (isset($materialId['min'])) {
+                $this->addUsingAlias(ProductTableMap::COL_MATERIAL_ID, $materialId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($componentId['max'])) {
-                $this->addUsingAlias(ProductTableMap::COL_MATERIAL_ID, $componentId['max'], Criteria::LESS_EQUAL);
+            if (isset($materialId['max'])) {
+                $this->addUsingAlias(ProductTableMap::COL_MATERIAL_ID, $materialId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -730,7 +730,7 @@ abstract class ProductQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ProductTableMap::COL_MATERIAL_ID, $componentId, $comparison);
+        return $this->addUsingAlias(ProductTableMap::COL_MATERIAL_ID, $materialId, $comparison);
     }
 
     /**

@@ -4,9 +4,12 @@
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
     <column name="description" phpName="Description" type="LONGVARCHAR"/>
-    <column name="material" phpName="Material" type="VARCHAR" size="255" />
+    <column name="material_id" phpName="MaterialId" type="INTEGER"/>
     <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
     <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
+    <foreign-key foreignTable="material">
+      <reference local="material_id" foreign="id"/>
+    </foreign-key>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
@@ -81,7 +84,7 @@
     <column name="has_component" phpName="HasComponent" type="BOOLEAN" size="1" defaultValue="false"/>
     <column name="qty_per_pack" phpName="QtyPerPack" type="INTEGER" required="true" defaultValue="1"/>
     <column name="list_price" phpName="ListPrice" type="FLOAT" required="true"/>
-    <column name="material_id" phpName="ComponentId" type="INTEGER"/>
+    <column name="material_id" phpName="MaterialId" type="INTEGER"/>
     <column name="note" phpName="Note" type="LONGVARCHAR"/>
     <column name="cubic_asb" phpName="CubicAsb" type="FLOAT" required="true"/>
     <column name="cubic_kdn" phpName="CubicKdn" type="FLOAT" required="true"/>

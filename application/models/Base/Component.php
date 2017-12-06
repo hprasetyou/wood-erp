@@ -6,6 +6,8 @@ use \Component as ChildComponent;
 use \ComponentPartner as ChildComponentPartner;
 use \ComponentPartnerQuery as ChildComponentPartnerQuery;
 use \ComponentQuery as ChildComponentQuery;
+use \Material as ChildMaterial;
+use \MaterialQuery as ChildMaterialQuery;
 use \ProductComponent as ChildProductComponent;
 use \ProductComponentQuery as ChildProductComponentQuery;
 use \PurchaseOrderLine as ChildPurchaseOrderLine;
@@ -94,11 +96,11 @@ abstract class Component implements ActiveRecordInterface
     protected $description;
 
     /**
-     * The value for the material field.
+     * The value for the material_id field.
      *
-     * @var        string
+     * @var        int
      */
-    protected $material;
+    protected $material_id;
 
     /**
      * The value for the created_at field.
@@ -115,6 +117,11 @@ abstract class Component implements ActiveRecordInterface
      * @var        DateTime
      */
     protected $updated_at;
+
+    /**
+     * @var        ChildMaterial
+     */
+    protected $aMaterial;
 
     /**
      * @var        ObjectCollection|ChildProductComponent[] Collection to store aggregation of ChildProductComponent objects.
@@ -428,13 +435,13 @@ abstract class Component implements ActiveRecordInterface
     }
 
     /**
-     * Get the [material] column value.
+     * Get the [material_id] column value.
      *
-     * @return string
+     * @return int
      */
-    public function getMaterial()
+    public function getMaterialId()
     {
-        return $this->material;
+        return $this->material_id;
     }
 
     /**
@@ -538,24 +545,28 @@ abstract class Component implements ActiveRecordInterface
     } // setDescription()
 
     /**
-     * Set the value of [material] column.
+     * Set the value of [material_id] column.
      *
-     * @param string $v new value
+     * @param int $v new value
      * @return $this|\Component The current object (for fluent API support)
      */
-    public function setMaterial($v)
+    public function setMaterialId($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            $v = (int) $v;
         }
 
-        if ($this->material !== $v) {
-            $this->material = $v;
-            $this->modifiedColumns[ComponentTableMap::COL_MATERIAL] = true;
+        if ($this->material_id !== $v) {
+            $this->material_id = $v;
+            $this->modifiedColumns[ComponentTableMap::COL_MATERIAL_ID] = true;
+        }
+
+        if ($this->aMaterial !== null && $this->aMaterial->getId() !== $v) {
+            $this->aMaterial = null;
         }
 
         return $this;
-    } // setMaterial()
+    } // setMaterialId()
 
     /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
@@ -642,8 +653,8 @@ abstract class Component implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ComponentTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
             $this->description = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ComponentTableMap::translateFieldName('Material', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->material = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ComponentTableMap::translateFieldName('MaterialId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->material_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ComponentTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
@@ -686,6 +697,9 @@ abstract class Component implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aMaterial !== null && $this->material_id !== $this->aMaterial->getId()) {
+            $this->aMaterial = null;
+        }
     } // ensureConsistency
 
     /**
@@ -725,6 +739,7 @@ abstract class Component implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aMaterial = null;
             $this->collProductComponents = null;
 
             $this->collPurchaseOrderLines = null;
@@ -834,6 +849,18 @@ abstract class Component implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aMaterial !== null) {
+                if ($this->aMaterial->isModified() || $this->aMaterial->isNew()) {
+                    $affectedRows += $this->aMaterial->save($con);
+                }
+                $this->setMaterial($this->aMaterial);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -932,8 +959,8 @@ abstract class Component implements ActiveRecordInterface
         if ($this->isColumnModified(ComponentTableMap::COL_DESCRIPTION)) {
             $modifiedColumns[':p' . $index++]  = 'description';
         }
-        if ($this->isColumnModified(ComponentTableMap::COL_MATERIAL)) {
-            $modifiedColumns[':p' . $index++]  = 'material';
+        if ($this->isColumnModified(ComponentTableMap::COL_MATERIAL_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'material_id';
         }
         if ($this->isColumnModified(ComponentTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
@@ -961,8 +988,8 @@ abstract class Component implements ActiveRecordInterface
                     case 'description':
                         $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
                         break;
-                    case 'material':
-                        $stmt->bindValue($identifier, $this->material, PDO::PARAM_STR);
+                    case 'material_id':
+                        $stmt->bindValue($identifier, $this->material_id, PDO::PARAM_INT);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -1042,7 +1069,7 @@ abstract class Component implements ActiveRecordInterface
                 return $this->getDescription();
                 break;
             case 3:
-                return $this->getMaterial();
+                return $this->getMaterialId();
                 break;
             case 4:
                 return $this->getCreatedAt();
@@ -1083,7 +1110,7 @@ abstract class Component implements ActiveRecordInterface
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
             $keys[2] => $this->getDescription(),
-            $keys[3] => $this->getMaterial(),
+            $keys[3] => $this->getMaterialId(),
             $keys[4] => $this->getCreatedAt(),
             $keys[5] => $this->getUpdatedAt(),
         );
@@ -1101,6 +1128,21 @@ abstract class Component implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
+            if (null !== $this->aMaterial) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'material';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'material';
+                        break;
+                    default:
+                        $key = 'Material';
+                }
+
+                $result[$key] = $this->aMaterial->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
             if (null !== $this->collProductComponents) {
 
                 switch ($keyType) {
@@ -1190,7 +1232,7 @@ abstract class Component implements ActiveRecordInterface
                 $this->setDescription($value);
                 break;
             case 3:
-                $this->setMaterial($value);
+                $this->setMaterialId($value);
                 break;
             case 4:
                 $this->setCreatedAt($value);
@@ -1234,7 +1276,7 @@ abstract class Component implements ActiveRecordInterface
             $this->setDescription($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setMaterial($arr[$keys[3]]);
+            $this->setMaterialId($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
             $this->setCreatedAt($arr[$keys[4]]);
@@ -1292,8 +1334,8 @@ abstract class Component implements ActiveRecordInterface
         if ($this->isColumnModified(ComponentTableMap::COL_DESCRIPTION)) {
             $criteria->add(ComponentTableMap::COL_DESCRIPTION, $this->description);
         }
-        if ($this->isColumnModified(ComponentTableMap::COL_MATERIAL)) {
-            $criteria->add(ComponentTableMap::COL_MATERIAL, $this->material);
+        if ($this->isColumnModified(ComponentTableMap::COL_MATERIAL_ID)) {
+            $criteria->add(ComponentTableMap::COL_MATERIAL_ID, $this->material_id);
         }
         if ($this->isColumnModified(ComponentTableMap::COL_CREATED_AT)) {
             $criteria->add(ComponentTableMap::COL_CREATED_AT, $this->created_at);
@@ -1389,7 +1431,7 @@ abstract class Component implements ActiveRecordInterface
     {
         $copyObj->setName($this->getName());
         $copyObj->setDescription($this->getDescription());
-        $copyObj->setMaterial($this->getMaterial());
+        $copyObj->setMaterialId($this->getMaterialId());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
 
@@ -1444,6 +1486,57 @@ abstract class Component implements ActiveRecordInterface
         $this->copyInto($copyObj, $deepCopy);
 
         return $copyObj;
+    }
+
+    /**
+     * Declares an association between this object and a ChildMaterial object.
+     *
+     * @param  ChildMaterial $v
+     * @return $this|\Component The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setMaterial(ChildMaterial $v = null)
+    {
+        if ($v === null) {
+            $this->setMaterialId(NULL);
+        } else {
+            $this->setMaterialId($v->getId());
+        }
+
+        $this->aMaterial = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildMaterial object, it will not be re-added.
+        if ($v !== null) {
+            $v->addComponent($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildMaterial object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildMaterial The associated ChildMaterial object.
+     * @throws PropelException
+     */
+    public function getMaterial(ConnectionInterface $con = null)
+    {
+        if ($this->aMaterial === null && ($this->material_id != 0)) {
+            $this->aMaterial = ChildMaterialQuery::create()->findPk($this->material_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aMaterial->addComponents($this);
+             */
+        }
+
+        return $this->aMaterial;
     }
 
 
@@ -2278,10 +2371,13 @@ abstract class Component implements ActiveRecordInterface
      */
     public function clear()
     {
+        if (null !== $this->aMaterial) {
+            $this->aMaterial->removeComponent($this);
+        }
         $this->id = null;
         $this->name = null;
         $this->description = null;
-        $this->material = null;
+        $this->material_id = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;
@@ -2323,6 +2419,7 @@ abstract class Component implements ActiveRecordInterface
         $this->collProductComponents = null;
         $this->collPurchaseOrderLines = null;
         $this->collComponentPartners = null;
+        $this->aMaterial = null;
     }
 
     /**

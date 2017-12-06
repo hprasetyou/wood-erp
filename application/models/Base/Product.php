@@ -723,7 +723,7 @@ abstract class Product implements ActiveRecordInterface
      *
      * @return int
      */
-    public function getComponentId()
+    public function getMaterialId()
     {
         return $this->material_id;
     }
@@ -1106,7 +1106,7 @@ abstract class Product implements ActiveRecordInterface
      * @param int $v new value
      * @return $this|\Product The current object (for fluent API support)
      */
-    public function setComponentId($v)
+    public function setMaterialId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
@@ -1122,7 +1122,7 @@ abstract class Product implements ActiveRecordInterface
         }
 
         return $this;
-    } // setComponentId()
+    } // setMaterialId()
 
     /**
      * Set the value of [note] column.
@@ -1487,7 +1487,7 @@ abstract class Product implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : ProductTableMap::translateFieldName('ListPrice', TableMap::TYPE_PHPNAME, $indexType)];
             $this->list_price = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : ProductTableMap::translateFieldName('ComponentId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : ProductTableMap::translateFieldName('MaterialId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->material_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : ProductTableMap::translateFieldName('Note', TableMap::TYPE_PHPNAME, $indexType)];
@@ -2133,7 +2133,7 @@ abstract class Product implements ActiveRecordInterface
                 return $this->getListPrice();
                 break;
             case 9:
-                return $this->getComponentId();
+                return $this->getMaterialId();
                 break;
             case 10:
                 return $this->getNote();
@@ -2216,7 +2216,7 @@ abstract class Product implements ActiveRecordInterface
             $keys[6] => $this->getHasComponent(),
             $keys[7] => $this->getQtyPerPack(),
             $keys[8] => $this->getListPrice(),
-            $keys[9] => $this->getComponentId(),
+            $keys[9] => $this->getMaterialId(),
             $keys[10] => $this->getNote(),
             $keys[11] => $this->getCubicAsb(),
             $keys[12] => $this->getCubicKdn(),
@@ -2398,7 +2398,7 @@ abstract class Product implements ActiveRecordInterface
                 $this->setListPrice($value);
                 break;
             case 9:
-                $this->setComponentId($value);
+                $this->setMaterialId($value);
                 break;
             case 10:
                 $this->setNote($value);
@@ -2496,7 +2496,7 @@ abstract class Product implements ActiveRecordInterface
             $this->setListPrice($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setComponentId($arr[$keys[9]]);
+            $this->setMaterialId($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
             $this->setNote($arr[$keys[10]]);
@@ -2747,7 +2747,7 @@ abstract class Product implements ActiveRecordInterface
         $copyObj->setHasComponent($this->getHasComponent());
         $copyObj->setQtyPerPack($this->getQtyPerPack());
         $copyObj->setListPrice($this->getListPrice());
-        $copyObj->setComponentId($this->getComponentId());
+        $copyObj->setMaterialId($this->getMaterialId());
         $copyObj->setNote($this->getNote());
         $copyObj->setCubicAsb($this->getCubicAsb());
         $copyObj->setCubicKdn($this->getCubicKdn());
@@ -2838,9 +2838,9 @@ abstract class Product implements ActiveRecordInterface
     public function setMaterial(ChildMaterial $v = null)
     {
         if ($v === null) {
-            $this->setComponentId(NULL);
+            $this->setMaterialId(NULL);
         } else {
-            $this->setComponentId($v->getId());
+            $this->setMaterialId($v->getId());
         }
 
         $this->aMaterial = $v;

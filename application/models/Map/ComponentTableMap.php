@@ -87,9 +87,9 @@ class ComponentTableMap extends TableMap
     const COL_DESCRIPTION = 'component.description';
 
     /**
-     * the column name for the material field
+     * the column name for the material_id field
      */
-    const COL_MATERIAL = 'component.material';
+    const COL_MATERIAL_ID = 'component.material_id';
 
     /**
      * the column name for the created_at field
@@ -113,10 +113,10 @@ class ComponentTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Description', 'Material', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'description', 'material', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ComponentTableMap::COL_ID, ComponentTableMap::COL_NAME, ComponentTableMap::COL_DESCRIPTION, ComponentTableMap::COL_MATERIAL, ComponentTableMap::COL_CREATED_AT, ComponentTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'description', 'material', 'created_at', 'updated_at', ),
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Description', 'MaterialId', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'description', 'materialId', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ComponentTableMap::COL_ID, ComponentTableMap::COL_NAME, ComponentTableMap::COL_DESCRIPTION, ComponentTableMap::COL_MATERIAL_ID, ComponentTableMap::COL_CREATED_AT, ComponentTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'description', 'material_id', 'created_at', 'updated_at', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
@@ -127,10 +127,10 @@ class ComponentTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Description' => 2, 'Material' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'material' => 3, 'createdAt' => 4, 'updatedAt' => 5, ),
-        self::TYPE_COLNAME       => array(ComponentTableMap::COL_ID => 0, ComponentTableMap::COL_NAME => 1, ComponentTableMap::COL_DESCRIPTION => 2, ComponentTableMap::COL_MATERIAL => 3, ComponentTableMap::COL_CREATED_AT => 4, ComponentTableMap::COL_UPDATED_AT => 5, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'material' => 3, 'created_at' => 4, 'updated_at' => 5, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Description' => 2, 'MaterialId' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'materialId' => 3, 'createdAt' => 4, 'updatedAt' => 5, ),
+        self::TYPE_COLNAME       => array(ComponentTableMap::COL_ID => 0, ComponentTableMap::COL_NAME => 1, ComponentTableMap::COL_DESCRIPTION => 2, ComponentTableMap::COL_MATERIAL_ID => 3, ComponentTableMap::COL_CREATED_AT => 4, ComponentTableMap::COL_UPDATED_AT => 5, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'material_id' => 3, 'created_at' => 4, 'updated_at' => 5, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
@@ -154,7 +154,7 @@ class ComponentTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', true, 255, null);
         $this->addColumn('description', 'Description', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('material', 'Material', 'VARCHAR', false, 255, null);
+        $this->addForeignKey('material_id', 'MaterialId', 'INTEGER', 'material', 'id', false, null, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -164,6 +164,13 @@ class ComponentTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('Material', '\\Material', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':material_id',
+    1 => ':id',
+  ),
+), null, null, null, false);
         $this->addRelation('ProductComponent', '\\ProductComponent', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -331,14 +338,14 @@ class ComponentTableMap extends TableMap
             $criteria->addSelectColumn(ComponentTableMap::COL_ID);
             $criteria->addSelectColumn(ComponentTableMap::COL_NAME);
             $criteria->addSelectColumn(ComponentTableMap::COL_DESCRIPTION);
-            $criteria->addSelectColumn(ComponentTableMap::COL_MATERIAL);
+            $criteria->addSelectColumn(ComponentTableMap::COL_MATERIAL_ID);
             $criteria->addSelectColumn(ComponentTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(ComponentTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.name');
             $criteria->addSelectColumn($alias . '.description');
-            $criteria->addSelectColumn($alias . '.material');
+            $criteria->addSelectColumn($alias . '.material_id');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }

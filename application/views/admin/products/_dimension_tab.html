@@ -3,11 +3,11 @@
     <h3>{{res.string.assembled}} ({{res.string.in_cm}})</h3>
     <div class="row ">
       <div {% if products %}style="display:none"{% endif %} class="input-wrap">
-        <div class="col-sm-2 WCol">
+        <div class="col-sm-2">
           <div class="form-group">
             <label class="control-label col-sm-12" for="first-name">W</label>
             <div class="col-sm-10">
-              <div {% if products %}style="display:none" {% endif %} class="input-wrap">
+              <div class="input-wrap">
                 <input type="number" id="WidthAsb"
                 value="{{ products.WidthAsb }}"
                 name="WidthAsb" required="required"
@@ -22,7 +22,7 @@
         </div>
         <div class="col-sm-2">
           <div class="form-group">
-            <label class="control-label col-sm-12" for="first-name">{{ products.isRound?'ø':'D'}}</label>
+            <label class="control-label col-sm-12" for="first-name">D</label>
             <div class="col-md-10">
               <div {% if products %}style="display:none" {% endif %} class="input-wrap">
                 <input type="number" id="DepthAsb"
@@ -34,6 +34,7 @@
               <p class="control-value">{{ products.DepthAsb }}</p>
               {% endif %}
             </div>
+            <div class="col-sm-2 nopadding"><span class="measure"><i class="fa fa-times" aria-hidden="true"></i></span></div>
           </div>
         </div>
         <div class="col-sm-2">
@@ -50,17 +51,14 @@
               <p class="control-value">{{ products.HeightAsb }}</p>
               {% endif %}
             </div>
-            <div class="col-sm-2 nopadding"><span class="measure"><i class="fa fa-times" aria-hidden="true"></i></span></div>
           </div>
         </div>
       </div>
       {% if products %}
       <div class="control-value">
         <label for="">
-          {% if products.IsRound == false %}
           {{products.WidthAsb}} W x
-          {% endif %}
-          {{ products.DepthAsb ~ (products.IsRound?" ø":" D") }} x
+          {{ products.DepthAsb }} D x
           {{products.HeightAsb}} H
         </label>
       </div>
@@ -82,7 +80,7 @@
     <h3>{{res.string.packing_dimension}} ({{res.string.in_cm}})</h3>
     <div class="row ">
       <div {% if products %}style="display:none"{% endif %} class="input-wrap">
-        <div class="col-sm-2 WCol">
+        <div class="col-sm-2">
           <div class="form-group">
             <label class="control-label col-sm-12" for="first-name">W</label>
             <div class="col-sm-10">
@@ -101,7 +99,7 @@
         </div>
         <div class="col-sm-2">
           <div class="form-group">
-            <label class="control-label col-sm-12" for="first-name">{{ products.isRound?'ø':'D'}}</label>
+            <label class="control-label col-sm-12" for="first-name">D</label>
             <div class="col-md-10">
               <div {% if products %}style="display:none" {% endif %} class="input-wrap">
                 <input type="number" id="DepthKdn"
@@ -113,6 +111,7 @@
               <p class="control-value">{{ products.DepthKdn }}</p>
               {% endif %}
             </div>
+            <div class="col-sm-2 nopadding"><span class="measure"><i class="fa fa-times" aria-hidden="true"></i></span></div>
           </div>
         </div>
         <div class="col-sm-2">
@@ -129,17 +128,14 @@
               <p class="control-value">{{ products.HeightKdn }}</p>
               {% endif %}
             </div>
-            <div class="col-sm-2 nopadding"><span class="measure"><i class="fa fa-times" aria-hidden="true"></i></span></div>
           </div>
         </div>
       </div>
       {% if products %}
       <div class="control-value">
         <label for="">
-          {% if products.IsRound == false %}
           {{products.WidthKdn}} W x
-          {% endif %}
-          {{ products.DepthKdn ~ (products.IsRound?" ø":" D") }} x
+          {{ products.DepthKdn}} D x
           {{products.HeightKdn}} H
         </label>
       </div>

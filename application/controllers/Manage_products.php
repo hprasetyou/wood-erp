@@ -82,6 +82,7 @@ class Manage_products extends MY_Controller{
   }
 
   function write($id=null){
+    $this->form['MaterialId'] = 'ProdMaterial';
 
     $data = parent::write($id);
 		$this->load->helper('base64toimage');

@@ -34,5 +34,24 @@
 
 {% endblock %}
 {% block bottom%}
+<script type="text/javascript">
+$(document).ready(function () {
+	$('input:checkbox').trigger('change')
+	$('#MaterialId').on("select2:opening", function() {
+		setTimeout(function(){
+			if($('.select2-dropdown').find('.select2-add').length < 1){
+				$('.select2-dropdown').append('<span class="select2-add"><a onclick="create_new_material()" class="btn btn-select2-new" style="width:100%" href="#">Add new</a></span>')
+			}
+		}, 500);
+	});
 
+})
+
+function create_new_material(){
+	$('#MaterialId').select2('close');
+	$('#MaterialId').parents('.input-wrap').hide()
+	$('#Material').show()
+	$('#Material').find('input').focus()
+}
+</script>
 {% endblock %}
