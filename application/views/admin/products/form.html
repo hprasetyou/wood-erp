@@ -135,7 +135,7 @@
 										<input type="number" id="ListPrice" value="{{ products.ListPrice }}" name="ListPrice" required="required" class="form-control  col-md-7 col-xs-12">
 									</div>
 									{% if products %}
-									<p class="control-value">{{ products.ListPrice }}</p>
+									<p class="control-value">{{ products.ListPrice | monetary }}</p>
 									{% endif %}
 								</div>
 							</div>

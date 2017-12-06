@@ -23,6 +23,12 @@ class Template {
     $filter_cubic = new Twig_Filter('cubic', function ($string) {
         return number_format(($string/1000000), 3, '.', '').' m3';
     });
+    $currency = new Twig_Filter('monetary', function ($val,$cur_code = 'USD'){
+      $curr = CurrencyQuery::create()->findOneByCode($cur_code);
+      $val = number_format($val, 2, ',', '.');
+      return $curr->getPlacement()=='before'?$curr->getSymbol()." ".$val:$val." ".$curr->getSymbol();
+    });
+    $this->twig->addFilter($currency);
     $this->twig->addFilter($filter_cubic);
 
   }
