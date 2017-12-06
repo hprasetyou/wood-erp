@@ -469,4 +469,13 @@
     <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
     <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" />
   </table>
+  <table name="currency" phpName="Currency">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="name" phpName="Name" type="VARCHAR" size="18" />
+    <column name="code" phpName="Code" type="VARCHAR" size="3" required="true"/>
+    <column name="symbol" phpName="Symbol" type="VARCHAR" size="3" required="true"/>
+    <column name="placement" phpName="Placement" type="CHAR" sqlType="ENUM('after','before')" defaultValue="before" required="true"/>
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" />
+  </table>
 </database>
