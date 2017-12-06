@@ -11,7 +11,7 @@ class ExchangeRateTest extends \PHPUnit_Framework_TestCase
 
     //check number of exchange rate in db
     $rateall = ExchangeRateQuery::create()->count();
-
+    //rate today
     $ratetoday = ExchangeRateQuery::create()
     ->filterByBase("USD")
     ->filterByTarget(array("IDR","EUR"))

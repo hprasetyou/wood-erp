@@ -5,13 +5,13 @@
 class Task extends CI_Controller
 {
   function run(){
-    $tasks = SysTask::create();
+    $tasks = SysTaskQuery::create();
     //find task by Scheduled Execution
     foreach ($this->get_day_repeat_task() as $key => $value) {
       # code...
       $task_name = $value->getName();
       write_log("executing task $task_name . . . .");
-
+      $this->execute($value->getType(),$value->getContent());
     }
   }
 
@@ -22,7 +22,11 @@ class Task extends CI_Controller
         # code...
         break;
       case 'call_func':
-
+        $action = explode(":",$content);
+        $lib = strtolower($action[0]);
+        $func = $action[1];
+        $this->load->library($lib);
+        $this->$lib->$func();
         # code...
         break;
 
