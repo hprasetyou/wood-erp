@@ -43,7 +43,7 @@
                     </div>
 
                     {% if suppliers %}
-                    <p class="control-value">{{ suppliers.Phone }}</p>
+                    <p class="control-value">{{ suppliers.Phone  | replace({", ":"<br>"}) |raw }}</p>
                     {% endif %}
                   </div>
                 </div>
@@ -71,7 +71,7 @@
                       <a href="#" id="addEmail"> + {{res.string.add_more}}</a>
                     </div>
                     {% if suppliers %}
-                    <p class="control-value">{{ suppliers.Email }}</p>
+                    <p class="control-value">{{ suppliers.Email | replace({", ":"<br>"}) |raw }}</p>
                     {% endif %}
                   </div>
                 </div>

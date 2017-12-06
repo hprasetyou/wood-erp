@@ -54,7 +54,7 @@
                       <a href="#" id="addPhone"> + {{res.string.add_more}}</a>
                     </div>
                     {% if customers %}
-                    <p class="control-value">{{ customers.Phone }}</p>
+                    <p class="control-value">{{ customers.Phone | replace({", ":"<br>"}) |raw }}</p>
                     {% endif %}
                   </div>
                 </div>
@@ -82,7 +82,7 @@
                       <a href="#" id="addEmail"> + {{res.string.add_more}}</a>
                     </div>
                     {% if customers %}
-                    <p class="control-value">{{ customers.Email }}</p>
+                    <p class="control-value">{{ customers.Email | replace({", ":"<br>"}) |raw }}</p>
                     {% endif %}
                   </div>
                 </div>

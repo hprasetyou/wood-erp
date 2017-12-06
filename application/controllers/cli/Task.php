@@ -10,7 +10,7 @@ class Task extends CI_Controller
     foreach ($this->get_day_repeat_task() as $key => $value) {
       # code...
       $task_name = $value->getName();
-      write_log("executing task $task_name . . . .");
+      task_run_logger("executing task $task_name . . . .");
       $this->execute($value->getType(),$value->getContent());
       $value->setLastExecution(date("Y-m-d h:i:s"))
       ->save();

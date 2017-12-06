@@ -54,13 +54,18 @@ jQuery.fn.loadTableData = function(
           ordr = true;
            break;
         case 'datetime-human':
-        ordr = true;
-        render_data = new Function("data", "type","row","meta",
-         "return moment(data.date).fromNow();")
+          ordr = true;
+          render_data = new Function("data", "type","row","meta",
+           "return moment(data.date).fromNow();")
 
           break;
-           default:
-              break;
+        case 'underneath_comma':
+          ordr = true;
+          render_data = new Function("data", "type","row","meta",
+           "return data.replace(\", \",\"<br>\")")
+          break;
+        default:
+          break;
 
          }
          fl.push({
