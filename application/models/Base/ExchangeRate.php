@@ -2,11 +2,11 @@
 
 namespace Base;
 
-use \SysTaskQuery as ChildSysTaskQuery;
+use \ExchangeRateQuery as ChildExchangeRateQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
-use Map\SysTaskTableMap;
+use Map\ExchangeRateTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -21,18 +21,18 @@ use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'sys_task' table.
+ * Base class that represents a row from the 'exchange_rate' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class SysTask implements ActiveRecordInterface
+abstract class ExchangeRate implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Map\\SysTaskTableMap';
+    const TABLE_MAP = '\\Map\\ExchangeRateTableMap';
 
 
     /**
@@ -76,69 +76,25 @@ abstract class SysTask implements ActiveRecordInterface
     protected $name;
 
     /**
-     * The value for the priority field.
-     *
-     * Note: this column has a database default value of: 0
-     * @var        int
-     */
-    protected $priority;
-
-    /**
-     * The value for the content field.
+     * The value for the base field.
      *
      * @var        string
      */
-    protected $content;
+    protected $base;
 
     /**
-     * The value for the description field.
+     * The value for the target field.
      *
      * @var        string
      */
-    protected $description;
+    protected $target;
 
     /**
-     * The value for the type field.
+     * The value for the rate field.
      *
-     * @var        string
+     * @var        double
      */
-    protected $type;
-
-    /**
-     * The value for the time_execution field.
-     *
-     * @var        DateTime
-     */
-    protected $time_execution;
-
-    /**
-     * The value for the scheduled_execution field.
-     *
-     * @var        DateTime
-     */
-    protected $scheduled_execution;
-
-    /**
-     * The value for the day_repeat field.
-     *
-     * @var        string
-     */
-    protected $day_repeat;
-
-    /**
-     * The value for the is_executed field.
-     *
-     * Note: this column has a database default value of: false
-     * @var        boolean
-     */
-    protected $is_executed;
-
-    /**
-     * The value for the last_execution field.
-     *
-     * @var        DateTime
-     */
-    protected $last_execution;
+    protected $rate;
 
     /**
      * The value for the created_at field.
@@ -172,12 +128,10 @@ abstract class SysTask implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->priority = 0;
-        $this->is_executed = false;
     }
 
     /**
-     * Initializes internal state of Base\SysTask object.
+     * Initializes internal state of Base\ExchangeRate object.
      * @see applyDefaults()
      */
     public function __construct()
@@ -274,9 +228,9 @@ abstract class SysTask implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>SysTask</code> instance.  If
-     * <code>obj</code> is an instance of <code>SysTask</code>, delegates to
-     * <code>equals(SysTask)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>ExchangeRate</code> instance.  If
+     * <code>obj</code> is an instance of <code>ExchangeRate</code>, delegates to
+     * <code>equals(ExchangeRate)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -342,7 +296,7 @@ abstract class SysTask implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|SysTask The current object, for fluid interface
+     * @return $this|ExchangeRate The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -424,133 +378,33 @@ abstract class SysTask implements ActiveRecordInterface
     }
 
     /**
-     * Get the [priority] column value.
-     *
-     * @return int
-     */
-    public function getPriority()
-    {
-        return $this->priority;
-    }
-
-    /**
-     * Get the [content] column value.
+     * Get the [base] column value.
      *
      * @return string
      */
-    public function getContent()
+    public function getBase()
     {
-        return $this->content;
+        return $this->base;
     }
 
     /**
-     * Get the [description] column value.
+     * Get the [target] column value.
      *
      * @return string
      */
-    public function getDescription()
+    public function getTarget()
     {
-        return $this->description;
+        return $this->target;
     }
 
     /**
-     * Get the [type] column value.
+     * Get the [rate] column value.
      *
-     * @return string
+     * @return double
      */
-    public function getType()
+    public function getRate()
     {
-        return $this->type;
-    }
-
-    /**
-     * Get the [optionally formatted] temporal [time_execution] column value.
-     *
-     *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw DateTime object will be returned.
-     *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
-     *
-     * @throws PropelException - if unable to parse/validate the date/time value.
-     */
-    public function getTimeExecution($format = NULL)
-    {
-        if ($format === null) {
-            return $this->time_execution;
-        } else {
-            return $this->time_execution instanceof \DateTimeInterface ? $this->time_execution->format($format) : null;
-        }
-    }
-
-    /**
-     * Get the [optionally formatted] temporal [scheduled_execution] column value.
-     *
-     *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw DateTime object will be returned.
-     *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
-     *
-     * @throws PropelException - if unable to parse/validate the date/time value.
-     */
-    public function getScheduledExecution($format = NULL)
-    {
-        if ($format === null) {
-            return $this->scheduled_execution;
-        } else {
-            return $this->scheduled_execution instanceof \DateTimeInterface ? $this->scheduled_execution->format($format) : null;
-        }
-    }
-
-    /**
-     * Get the [day_repeat] column value.
-     *
-     * @return string
-     */
-    public function getDayRepeat()
-    {
-        return $this->day_repeat;
-    }
-
-    /**
-     * Get the [is_executed] column value.
-     *
-     * @return boolean
-     */
-    public function getIsExecuted()
-    {
-        return $this->is_executed;
-    }
-
-    /**
-     * Get the [is_executed] column value.
-     *
-     * @return boolean
-     */
-    public function isExecuted()
-    {
-        return $this->getIsExecuted();
-    }
-
-    /**
-     * Get the [optionally formatted] temporal [last_execution] column value.
-     *
-     *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw DateTime object will be returned.
-     *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
-     *
-     * @throws PropelException - if unable to parse/validate the date/time value.
-     */
-    public function getLastExecution($format = NULL)
-    {
-        if ($format === null) {
-            return $this->last_execution;
-        } else {
-            return $this->last_execution instanceof \DateTimeInterface ? $this->last_execution->format($format) : null;
-        }
+        return $this->rate;
     }
 
     /**
@@ -597,7 +451,7 @@ abstract class SysTask implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param int $v new value
-     * @return $this|\SysTask The current object (for fluent API support)
+     * @return $this|\ExchangeRate The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -607,7 +461,7 @@ abstract class SysTask implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[SysTaskTableMap::COL_ID] = true;
+            $this->modifiedColumns[ExchangeRateTableMap::COL_ID] = true;
         }
 
         return $this;
@@ -617,7 +471,7 @@ abstract class SysTask implements ActiveRecordInterface
      * Set the value of [name] column.
      *
      * @param string $v new value
-     * @return $this|\SysTask The current object (for fluent API support)
+     * @return $this|\ExchangeRate The current object (for fluent API support)
      */
     public function setName($v)
     {
@@ -627,206 +481,78 @@ abstract class SysTask implements ActiveRecordInterface
 
         if ($this->name !== $v) {
             $this->name = $v;
-            $this->modifiedColumns[SysTaskTableMap::COL_NAME] = true;
+            $this->modifiedColumns[ExchangeRateTableMap::COL_NAME] = true;
         }
 
         return $this;
     } // setName()
 
     /**
-     * Set the value of [priority] column.
-     *
-     * @param int $v new value
-     * @return $this|\SysTask The current object (for fluent API support)
-     */
-    public function setPriority($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->priority !== $v) {
-            $this->priority = $v;
-            $this->modifiedColumns[SysTaskTableMap::COL_PRIORITY] = true;
-        }
-
-        return $this;
-    } // setPriority()
-
-    /**
-     * Set the value of [content] column.
+     * Set the value of [base] column.
      *
      * @param string $v new value
-     * @return $this|\SysTask The current object (for fluent API support)
+     * @return $this|\ExchangeRate The current object (for fluent API support)
      */
-    public function setContent($v)
+    public function setBase($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->content !== $v) {
-            $this->content = $v;
-            $this->modifiedColumns[SysTaskTableMap::COL_CONTENT] = true;
+        if ($this->base !== $v) {
+            $this->base = $v;
+            $this->modifiedColumns[ExchangeRateTableMap::COL_BASE] = true;
         }
 
         return $this;
-    } // setContent()
+    } // setBase()
 
     /**
-     * Set the value of [description] column.
+     * Set the value of [target] column.
      *
      * @param string $v new value
-     * @return $this|\SysTask The current object (for fluent API support)
+     * @return $this|\ExchangeRate The current object (for fluent API support)
      */
-    public function setDescription($v)
+    public function setTarget($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->description !== $v) {
-            $this->description = $v;
-            $this->modifiedColumns[SysTaskTableMap::COL_DESCRIPTION] = true;
+        if ($this->target !== $v) {
+            $this->target = $v;
+            $this->modifiedColumns[ExchangeRateTableMap::COL_TARGET] = true;
         }
 
         return $this;
-    } // setDescription()
+    } // setTarget()
 
     /**
-     * Set the value of [type] column.
+     * Set the value of [rate] column.
      *
-     * @param string $v new value
-     * @return $this|\SysTask The current object (for fluent API support)
+     * @param double $v new value
+     * @return $this|\ExchangeRate The current object (for fluent API support)
      */
-    public function setType($v)
+    public function setRate($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            $v = (double) $v;
         }
 
-        if ($this->type !== $v) {
-            $this->type = $v;
-            $this->modifiedColumns[SysTaskTableMap::COL_TYPE] = true;
-        }
-
-        return $this;
-    } // setType()
-
-    /**
-     * Sets the value of [time_execution] column to a normalized version of the date/time value specified.
-     *
-     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
-     *               Empty strings are treated as NULL.
-     * @return $this|\SysTask The current object (for fluent API support)
-     */
-    public function setTimeExecution($v)
-    {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->time_execution !== null || $dt !== null) {
-            if ($this->time_execution === null || $dt === null || $dt->format("H:i:s.u") !== $this->time_execution->format("H:i:s.u")) {
-                $this->time_execution = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[SysTaskTableMap::COL_TIME_EXECUTION] = true;
-            }
-        } // if either are not null
-
-        return $this;
-    } // setTimeExecution()
-
-    /**
-     * Sets the value of [scheduled_execution] column to a normalized version of the date/time value specified.
-     *
-     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
-     *               Empty strings are treated as NULL.
-     * @return $this|\SysTask The current object (for fluent API support)
-     */
-    public function setScheduledExecution($v)
-    {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->scheduled_execution !== null || $dt !== null) {
-            if ($this->scheduled_execution === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->scheduled_execution->format("Y-m-d H:i:s.u")) {
-                $this->scheduled_execution = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[SysTaskTableMap::COL_SCHEDULED_EXECUTION] = true;
-            }
-        } // if either are not null
-
-        return $this;
-    } // setScheduledExecution()
-
-    /**
-     * Set the value of [day_repeat] column.
-     *
-     * @param string $v new value
-     * @return $this|\SysTask The current object (for fluent API support)
-     */
-    public function setDayRepeat($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->day_repeat !== $v) {
-            $this->day_repeat = $v;
-            $this->modifiedColumns[SysTaskTableMap::COL_DAY_REPEAT] = true;
+        if ($this->rate !== $v) {
+            $this->rate = $v;
+            $this->modifiedColumns[ExchangeRateTableMap::COL_RATE] = true;
         }
 
         return $this;
-    } // setDayRepeat()
-
-    /**
-     * Sets the value of the [is_executed] column.
-     * Non-boolean arguments are converted using the following rules:
-     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     *
-     * @param  boolean|integer|string $v The new value
-     * @return $this|\SysTask The current object (for fluent API support)
-     */
-    public function setIsExecuted($v)
-    {
-        if ($v !== null) {
-            if (is_string($v)) {
-                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-            } else {
-                $v = (boolean) $v;
-            }
-        }
-
-        if ($this->is_executed !== $v) {
-            $this->is_executed = $v;
-            $this->modifiedColumns[SysTaskTableMap::COL_IS_EXECUTED] = true;
-        }
-
-        return $this;
-    } // setIsExecuted()
-
-    /**
-     * Sets the value of [last_execution] column to a normalized version of the date/time value specified.
-     *
-     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
-     *               Empty strings are treated as NULL.
-     * @return $this|\SysTask The current object (for fluent API support)
-     */
-    public function setLastExecution($v)
-    {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->last_execution !== null || $dt !== null) {
-            if ($this->last_execution === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->last_execution->format("Y-m-d H:i:s.u")) {
-                $this->last_execution = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[SysTaskTableMap::COL_LAST_EXECUTION] = true;
-            }
-        } // if either are not null
-
-        return $this;
-    } // setLastExecution()
+    } // setRate()
 
     /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\SysTask The current object (for fluent API support)
+     * @return $this|\ExchangeRate The current object (for fluent API support)
      */
     public function setCreatedAt($v)
     {
@@ -834,7 +560,7 @@ abstract class SysTask implements ActiveRecordInterface
         if ($this->created_at !== null || $dt !== null) {
             if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_at->format("Y-m-d H:i:s.u")) {
                 $this->created_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[SysTaskTableMap::COL_CREATED_AT] = true;
+                $this->modifiedColumns[ExchangeRateTableMap::COL_CREATED_AT] = true;
             }
         } // if either are not null
 
@@ -846,7 +572,7 @@ abstract class SysTask implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\SysTask The current object (for fluent API support)
+     * @return $this|\ExchangeRate The current object (for fluent API support)
      */
     public function setUpdatedAt($v)
     {
@@ -854,7 +580,7 @@ abstract class SysTask implements ActiveRecordInterface
         if ($this->updated_at !== null || $dt !== null) {
             if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated_at->format("Y-m-d H:i:s.u")) {
                 $this->updated_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[SysTaskTableMap::COL_UPDATED_AT] = true;
+                $this->modifiedColumns[ExchangeRateTableMap::COL_UPDATED_AT] = true;
             }
         } // if either are not null
 
@@ -871,14 +597,6 @@ abstract class SysTask implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->priority !== 0) {
-                return false;
-            }
-
-            if ($this->is_executed !== false) {
-                return false;
-            }
-
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -905,52 +623,28 @@ abstract class SysTask implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : SysTaskTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ExchangeRateTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : SysTaskTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ExchangeRateTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : SysTaskTableMap::translateFieldName('Priority', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->priority = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ExchangeRateTableMap::translateFieldName('Base', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->base = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : SysTaskTableMap::translateFieldName('Content', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->content = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ExchangeRateTableMap::translateFieldName('Target', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->target = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : SysTaskTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->description = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ExchangeRateTableMap::translateFieldName('Rate', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->rate = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : SysTaskTableMap::translateFieldName('Type', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->type = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : SysTaskTableMap::translateFieldName('TimeExecution', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->time_execution = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : SysTaskTableMap::translateFieldName('ScheduledExecution', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
-            $this->scheduled_execution = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : SysTaskTableMap::translateFieldName('DayRepeat', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->day_repeat = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : SysTaskTableMap::translateFieldName('IsExecuted', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_executed = (null !== $col) ? (boolean) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : SysTaskTableMap::translateFieldName('LastExecution', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
-            $this->last_execution = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : SysTaskTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ExchangeRateTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : SysTaskTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ExchangeRateTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -963,10 +657,10 @@ abstract class SysTask implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 13; // 13 = SysTaskTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = ExchangeRateTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\SysTask'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\ExchangeRate'), 0, $e);
         }
     }
 
@@ -1008,13 +702,13 @@ abstract class SysTask implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(SysTaskTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(ExchangeRateTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildSysTaskQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildExchangeRateQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -1033,8 +727,8 @@ abstract class SysTask implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see SysTask::setDeleted()
-     * @see SysTask::isDeleted()
+     * @see ExchangeRate::setDeleted()
+     * @see ExchangeRate::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -1043,11 +737,11 @@ abstract class SysTask implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SysTaskTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ExchangeRateTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildSysTaskQuery::create()
+            $deleteQuery = ChildExchangeRateQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -1082,7 +776,7 @@ abstract class SysTask implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SysTaskTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ExchangeRateTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -1101,7 +795,7 @@ abstract class SysTask implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                SysTaskTableMap::addInstanceToPool($this);
+                ExchangeRateTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -1158,54 +852,36 @@ abstract class SysTask implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[SysTaskTableMap::COL_ID] = true;
+        $this->modifiedColumns[ExchangeRateTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . SysTaskTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ExchangeRateTableMap::COL_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(SysTaskTableMap::COL_ID)) {
+        if ($this->isColumnModified(ExchangeRateTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(SysTaskTableMap::COL_NAME)) {
+        if ($this->isColumnModified(ExchangeRateTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'name';
         }
-        if ($this->isColumnModified(SysTaskTableMap::COL_PRIORITY)) {
-            $modifiedColumns[':p' . $index++]  = 'priority';
+        if ($this->isColumnModified(ExchangeRateTableMap::COL_BASE)) {
+            $modifiedColumns[':p' . $index++]  = 'base';
         }
-        if ($this->isColumnModified(SysTaskTableMap::COL_CONTENT)) {
-            $modifiedColumns[':p' . $index++]  = 'content';
+        if ($this->isColumnModified(ExchangeRateTableMap::COL_TARGET)) {
+            $modifiedColumns[':p' . $index++]  = 'target';
         }
-        if ($this->isColumnModified(SysTaskTableMap::COL_DESCRIPTION)) {
-            $modifiedColumns[':p' . $index++]  = 'description';
+        if ($this->isColumnModified(ExchangeRateTableMap::COL_RATE)) {
+            $modifiedColumns[':p' . $index++]  = 'rate';
         }
-        if ($this->isColumnModified(SysTaskTableMap::COL_TYPE)) {
-            $modifiedColumns[':p' . $index++]  = 'type';
-        }
-        if ($this->isColumnModified(SysTaskTableMap::COL_TIME_EXECUTION)) {
-            $modifiedColumns[':p' . $index++]  = 'time_execution';
-        }
-        if ($this->isColumnModified(SysTaskTableMap::COL_SCHEDULED_EXECUTION)) {
-            $modifiedColumns[':p' . $index++]  = 'scheduled_execution';
-        }
-        if ($this->isColumnModified(SysTaskTableMap::COL_DAY_REPEAT)) {
-            $modifiedColumns[':p' . $index++]  = 'day_repeat';
-        }
-        if ($this->isColumnModified(SysTaskTableMap::COL_IS_EXECUTED)) {
-            $modifiedColumns[':p' . $index++]  = 'is_executed';
-        }
-        if ($this->isColumnModified(SysTaskTableMap::COL_LAST_EXECUTION)) {
-            $modifiedColumns[':p' . $index++]  = 'last_execution';
-        }
-        if ($this->isColumnModified(SysTaskTableMap::COL_CREATED_AT)) {
+        if ($this->isColumnModified(ExchangeRateTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
-        if ($this->isColumnModified(SysTaskTableMap::COL_UPDATED_AT)) {
+        if ($this->isColumnModified(ExchangeRateTableMap::COL_UPDATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'updated_at';
         }
 
         $sql = sprintf(
-            'INSERT INTO sys_task (%s) VALUES (%s)',
+            'INSERT INTO exchange_rate (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -1220,32 +896,14 @@ abstract class SysTask implements ActiveRecordInterface
                     case 'name':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
-                    case 'priority':
-                        $stmt->bindValue($identifier, $this->priority, PDO::PARAM_INT);
+                    case 'base':
+                        $stmt->bindValue($identifier, $this->base, PDO::PARAM_STR);
                         break;
-                    case 'content':
-                        $stmt->bindValue($identifier, $this->content, PDO::PARAM_STR);
+                    case 'target':
+                        $stmt->bindValue($identifier, $this->target, PDO::PARAM_STR);
                         break;
-                    case 'description':
-                        $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
-                        break;
-                    case 'type':
-                        $stmt->bindValue($identifier, $this->type, PDO::PARAM_STR);
-                        break;
-                    case 'time_execution':
-                        $stmt->bindValue($identifier, $this->time_execution ? $this->time_execution->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
-                        break;
-                    case 'scheduled_execution':
-                        $stmt->bindValue($identifier, $this->scheduled_execution ? $this->scheduled_execution->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
-                        break;
-                    case 'day_repeat':
-                        $stmt->bindValue($identifier, $this->day_repeat, PDO::PARAM_STR);
-                        break;
-                    case 'is_executed':
-                        $stmt->bindValue($identifier, (int) $this->is_executed, PDO::PARAM_INT);
-                        break;
-                    case 'last_execution':
-                        $stmt->bindValue($identifier, $this->last_execution ? $this->last_execution->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                    case 'rate':
+                        $stmt->bindValue($identifier, $this->rate, PDO::PARAM_STR);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -1299,7 +957,7 @@ abstract class SysTask implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = SysTaskTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = ExchangeRateTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -1322,36 +980,18 @@ abstract class SysTask implements ActiveRecordInterface
                 return $this->getName();
                 break;
             case 2:
-                return $this->getPriority();
+                return $this->getBase();
                 break;
             case 3:
-                return $this->getContent();
+                return $this->getTarget();
                 break;
             case 4:
-                return $this->getDescription();
+                return $this->getRate();
                 break;
             case 5:
-                return $this->getType();
-                break;
-            case 6:
-                return $this->getTimeExecution();
-                break;
-            case 7:
-                return $this->getScheduledExecution();
-                break;
-            case 8:
-                return $this->getDayRepeat();
-                break;
-            case 9:
-                return $this->getIsExecuted();
-                break;
-            case 10:
-                return $this->getLastExecution();
-                break;
-            case 11:
                 return $this->getCreatedAt();
                 break;
-            case 12:
+            case 6:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1377,44 +1017,26 @@ abstract class SysTask implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
 
-        if (isset($alreadyDumpedObjects['SysTask'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['ExchangeRate'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['SysTask'][$this->hashCode()] = true;
-        $keys = SysTaskTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['ExchangeRate'][$this->hashCode()] = true;
+        $keys = ExchangeRateTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
-            $keys[2] => $this->getPriority(),
-            $keys[3] => $this->getContent(),
-            $keys[4] => $this->getDescription(),
-            $keys[5] => $this->getType(),
-            $keys[6] => $this->getTimeExecution(),
-            $keys[7] => $this->getScheduledExecution(),
-            $keys[8] => $this->getDayRepeat(),
-            $keys[9] => $this->getIsExecuted(),
-            $keys[10] => $this->getLastExecution(),
-            $keys[11] => $this->getCreatedAt(),
-            $keys[12] => $this->getUpdatedAt(),
+            $keys[2] => $this->getBase(),
+            $keys[3] => $this->getTarget(),
+            $keys[4] => $this->getRate(),
+            $keys[5] => $this->getCreatedAt(),
+            $keys[6] => $this->getUpdatedAt(),
         );
+        if ($result[$keys[5]] instanceof \DateTimeInterface) {
+            $result[$keys[5]] = $result[$keys[5]]->format('c');
+        }
+
         if ($result[$keys[6]] instanceof \DateTimeInterface) {
             $result[$keys[6]] = $result[$keys[6]]->format('c');
-        }
-
-        if ($result[$keys[7]] instanceof \DateTimeInterface) {
-            $result[$keys[7]] = $result[$keys[7]]->format('c');
-        }
-
-        if ($result[$keys[10]] instanceof \DateTimeInterface) {
-            $result[$keys[10]] = $result[$keys[10]]->format('c');
-        }
-
-        if ($result[$keys[11]] instanceof \DateTimeInterface) {
-            $result[$keys[11]] = $result[$keys[11]]->format('c');
-        }
-
-        if ($result[$keys[12]] instanceof \DateTimeInterface) {
-            $result[$keys[12]] = $result[$keys[12]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1435,11 +1057,11 @@ abstract class SysTask implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\SysTask
+     * @return $this|\ExchangeRate
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = SysTaskTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = ExchangeRateTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1450,7 +1072,7 @@ abstract class SysTask implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\SysTask
+     * @return $this|\ExchangeRate
      */
     public function setByPosition($pos, $value)
     {
@@ -1462,36 +1084,18 @@ abstract class SysTask implements ActiveRecordInterface
                 $this->setName($value);
                 break;
             case 2:
-                $this->setPriority($value);
+                $this->setBase($value);
                 break;
             case 3:
-                $this->setContent($value);
+                $this->setTarget($value);
                 break;
             case 4:
-                $this->setDescription($value);
+                $this->setRate($value);
                 break;
             case 5:
-                $this->setType($value);
-                break;
-            case 6:
-                $this->setTimeExecution($value);
-                break;
-            case 7:
-                $this->setScheduledExecution($value);
-                break;
-            case 8:
-                $this->setDayRepeat($value);
-                break;
-            case 9:
-                $this->setIsExecuted($value);
-                break;
-            case 10:
-                $this->setLastExecution($value);
-                break;
-            case 11:
                 $this->setCreatedAt($value);
                 break;
-            case 12:
+            case 6:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1518,7 +1122,7 @@ abstract class SysTask implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = SysTaskTableMap::getFieldNames($keyType);
+        $keys = ExchangeRateTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setId($arr[$keys[0]]);
@@ -1527,37 +1131,19 @@ abstract class SysTask implements ActiveRecordInterface
             $this->setName($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setPriority($arr[$keys[2]]);
+            $this->setBase($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setContent($arr[$keys[3]]);
+            $this->setTarget($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setDescription($arr[$keys[4]]);
+            $this->setRate($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setType($arr[$keys[5]]);
+            $this->setCreatedAt($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setTimeExecution($arr[$keys[6]]);
-        }
-        if (array_key_exists($keys[7], $arr)) {
-            $this->setScheduledExecution($arr[$keys[7]]);
-        }
-        if (array_key_exists($keys[8], $arr)) {
-            $this->setDayRepeat($arr[$keys[8]]);
-        }
-        if (array_key_exists($keys[9], $arr)) {
-            $this->setIsExecuted($arr[$keys[9]]);
-        }
-        if (array_key_exists($keys[10], $arr)) {
-            $this->setLastExecution($arr[$keys[10]]);
-        }
-        if (array_key_exists($keys[11], $arr)) {
-            $this->setCreatedAt($arr[$keys[11]]);
-        }
-        if (array_key_exists($keys[12], $arr)) {
-            $this->setUpdatedAt($arr[$keys[12]]);
+            $this->setUpdatedAt($arr[$keys[6]]);
         }
     }
 
@@ -1578,7 +1164,7 @@ abstract class SysTask implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\SysTask The current object, for fluid interface
+     * @return $this|\ExchangeRate The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1598,46 +1184,28 @@ abstract class SysTask implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(SysTaskTableMap::DATABASE_NAME);
+        $criteria = new Criteria(ExchangeRateTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(SysTaskTableMap::COL_ID)) {
-            $criteria->add(SysTaskTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(ExchangeRateTableMap::COL_ID)) {
+            $criteria->add(ExchangeRateTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(SysTaskTableMap::COL_NAME)) {
-            $criteria->add(SysTaskTableMap::COL_NAME, $this->name);
+        if ($this->isColumnModified(ExchangeRateTableMap::COL_NAME)) {
+            $criteria->add(ExchangeRateTableMap::COL_NAME, $this->name);
         }
-        if ($this->isColumnModified(SysTaskTableMap::COL_PRIORITY)) {
-            $criteria->add(SysTaskTableMap::COL_PRIORITY, $this->priority);
+        if ($this->isColumnModified(ExchangeRateTableMap::COL_BASE)) {
+            $criteria->add(ExchangeRateTableMap::COL_BASE, $this->base);
         }
-        if ($this->isColumnModified(SysTaskTableMap::COL_CONTENT)) {
-            $criteria->add(SysTaskTableMap::COL_CONTENT, $this->content);
+        if ($this->isColumnModified(ExchangeRateTableMap::COL_TARGET)) {
+            $criteria->add(ExchangeRateTableMap::COL_TARGET, $this->target);
         }
-        if ($this->isColumnModified(SysTaskTableMap::COL_DESCRIPTION)) {
-            $criteria->add(SysTaskTableMap::COL_DESCRIPTION, $this->description);
+        if ($this->isColumnModified(ExchangeRateTableMap::COL_RATE)) {
+            $criteria->add(ExchangeRateTableMap::COL_RATE, $this->rate);
         }
-        if ($this->isColumnModified(SysTaskTableMap::COL_TYPE)) {
-            $criteria->add(SysTaskTableMap::COL_TYPE, $this->type);
+        if ($this->isColumnModified(ExchangeRateTableMap::COL_CREATED_AT)) {
+            $criteria->add(ExchangeRateTableMap::COL_CREATED_AT, $this->created_at);
         }
-        if ($this->isColumnModified(SysTaskTableMap::COL_TIME_EXECUTION)) {
-            $criteria->add(SysTaskTableMap::COL_TIME_EXECUTION, $this->time_execution);
-        }
-        if ($this->isColumnModified(SysTaskTableMap::COL_SCHEDULED_EXECUTION)) {
-            $criteria->add(SysTaskTableMap::COL_SCHEDULED_EXECUTION, $this->scheduled_execution);
-        }
-        if ($this->isColumnModified(SysTaskTableMap::COL_DAY_REPEAT)) {
-            $criteria->add(SysTaskTableMap::COL_DAY_REPEAT, $this->day_repeat);
-        }
-        if ($this->isColumnModified(SysTaskTableMap::COL_IS_EXECUTED)) {
-            $criteria->add(SysTaskTableMap::COL_IS_EXECUTED, $this->is_executed);
-        }
-        if ($this->isColumnModified(SysTaskTableMap::COL_LAST_EXECUTION)) {
-            $criteria->add(SysTaskTableMap::COL_LAST_EXECUTION, $this->last_execution);
-        }
-        if ($this->isColumnModified(SysTaskTableMap::COL_CREATED_AT)) {
-            $criteria->add(SysTaskTableMap::COL_CREATED_AT, $this->created_at);
-        }
-        if ($this->isColumnModified(SysTaskTableMap::COL_UPDATED_AT)) {
-            $criteria->add(SysTaskTableMap::COL_UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(ExchangeRateTableMap::COL_UPDATED_AT)) {
+            $criteria->add(ExchangeRateTableMap::COL_UPDATED_AT, $this->updated_at);
         }
 
         return $criteria;
@@ -1655,8 +1223,8 @@ abstract class SysTask implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildSysTaskQuery::create();
-        $criteria->add(SysTaskTableMap::COL_ID, $this->id);
+        $criteria = ChildExchangeRateQuery::create();
+        $criteria->add(ExchangeRateTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1718,7 +1286,7 @@ abstract class SysTask implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \SysTask (or compatible) type.
+     * @param      object $copyObj An object of \ExchangeRate (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1726,15 +1294,9 @@ abstract class SysTask implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setName($this->getName());
-        $copyObj->setPriority($this->getPriority());
-        $copyObj->setContent($this->getContent());
-        $copyObj->setDescription($this->getDescription());
-        $copyObj->setType($this->getType());
-        $copyObj->setTimeExecution($this->getTimeExecution());
-        $copyObj->setScheduledExecution($this->getScheduledExecution());
-        $copyObj->setDayRepeat($this->getDayRepeat());
-        $copyObj->setIsExecuted($this->getIsExecuted());
-        $copyObj->setLastExecution($this->getLastExecution());
+        $copyObj->setBase($this->getBase());
+        $copyObj->setTarget($this->getTarget());
+        $copyObj->setRate($this->getRate());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
         if ($makeNew) {
@@ -1752,7 +1314,7 @@ abstract class SysTask implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \SysTask Clone of current object.
+     * @return \ExchangeRate Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1774,15 +1336,9 @@ abstract class SysTask implements ActiveRecordInterface
     {
         $this->id = null;
         $this->name = null;
-        $this->priority = null;
-        $this->content = null;
-        $this->description = null;
-        $this->type = null;
-        $this->time_execution = null;
-        $this->scheduled_execution = null;
-        $this->day_repeat = null;
-        $this->is_executed = null;
-        $this->last_execution = null;
+        $this->base = null;
+        $this->target = null;
+        $this->rate = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;
@@ -1815,7 +1371,7 @@ abstract class SysTask implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(SysTaskTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(ExchangeRateTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

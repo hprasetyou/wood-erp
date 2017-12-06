@@ -28,6 +28,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildSysTaskQuery orderByTimeExecution($order = Criteria::ASC) Order by the time_execution column
  * @method     ChildSysTaskQuery orderByScheduledExecution($order = Criteria::ASC) Order by the scheduled_execution column
  * @method     ChildSysTaskQuery orderByDayRepeat($order = Criteria::ASC) Order by the day_repeat column
+ * @method     ChildSysTaskQuery orderByIsExecuted($order = Criteria::ASC) Order by the is_executed column
+ * @method     ChildSysTaskQuery orderByLastExecution($order = Criteria::ASC) Order by the last_execution column
  * @method     ChildSysTaskQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildSysTaskQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -40,6 +42,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildSysTaskQuery groupByTimeExecution() Group by the time_execution column
  * @method     ChildSysTaskQuery groupByScheduledExecution() Group by the scheduled_execution column
  * @method     ChildSysTaskQuery groupByDayRepeat() Group by the day_repeat column
+ * @method     ChildSysTaskQuery groupByIsExecuted() Group by the is_executed column
+ * @method     ChildSysTaskQuery groupByLastExecution() Group by the last_execution column
  * @method     ChildSysTaskQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildSysTaskQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -63,6 +67,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildSysTask findOneByTimeExecution(string $time_execution) Return the first ChildSysTask filtered by the time_execution column
  * @method     ChildSysTask findOneByScheduledExecution(string $scheduled_execution) Return the first ChildSysTask filtered by the scheduled_execution column
  * @method     ChildSysTask findOneByDayRepeat(string $day_repeat) Return the first ChildSysTask filtered by the day_repeat column
+ * @method     ChildSysTask findOneByIsExecuted(boolean $is_executed) Return the first ChildSysTask filtered by the is_executed column
+ * @method     ChildSysTask findOneByLastExecution(string $last_execution) Return the first ChildSysTask filtered by the last_execution column
  * @method     ChildSysTask findOneByCreatedAt(string $created_at) Return the first ChildSysTask filtered by the created_at column
  * @method     ChildSysTask findOneByUpdatedAt(string $updated_at) Return the first ChildSysTask filtered by the updated_at column *
 
@@ -78,6 +84,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildSysTask requireOneByTimeExecution(string $time_execution) Return the first ChildSysTask filtered by the time_execution column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSysTask requireOneByScheduledExecution(string $scheduled_execution) Return the first ChildSysTask filtered by the scheduled_execution column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSysTask requireOneByDayRepeat(string $day_repeat) Return the first ChildSysTask filtered by the day_repeat column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildSysTask requireOneByIsExecuted(boolean $is_executed) Return the first ChildSysTask filtered by the is_executed column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildSysTask requireOneByLastExecution(string $last_execution) Return the first ChildSysTask filtered by the last_execution column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSysTask requireOneByCreatedAt(string $created_at) Return the first ChildSysTask filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSysTask requireOneByUpdatedAt(string $updated_at) Return the first ChildSysTask filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -91,6 +99,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildSysTask[]|ObjectCollection findByTimeExecution(string $time_execution) Return ChildSysTask objects filtered by the time_execution column
  * @method     ChildSysTask[]|ObjectCollection findByScheduledExecution(string $scheduled_execution) Return ChildSysTask objects filtered by the scheduled_execution column
  * @method     ChildSysTask[]|ObjectCollection findByDayRepeat(string $day_repeat) Return ChildSysTask objects filtered by the day_repeat column
+ * @method     ChildSysTask[]|ObjectCollection findByIsExecuted(boolean $is_executed) Return ChildSysTask objects filtered by the is_executed column
+ * @method     ChildSysTask[]|ObjectCollection findByLastExecution(string $last_execution) Return ChildSysTask objects filtered by the last_execution column
  * @method     ChildSysTask[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildSysTask objects filtered by the created_at column
  * @method     ChildSysTask[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildSysTask objects filtered by the updated_at column
  * @method     ChildSysTask[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -191,7 +201,7 @@ abstract class SysTaskQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, priority, content, description, type, time_execution, scheduled_execution, day_repeat, created_at, updated_at FROM sys_task WHERE id = :p0';
+        $sql = 'SELECT id, name, priority, content, description, type, time_execution, scheduled_execution, day_repeat, is_executed, last_execution, created_at, updated_at FROM sys_task WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -572,6 +582,76 @@ abstract class SysTaskQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(SysTaskTableMap::COL_DAY_REPEAT, $dayRepeat, $comparison);
+    }
+
+    /**
+     * Filter the query on the is_executed column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIsExecuted(true); // WHERE is_executed = true
+     * $query->filterByIsExecuted('yes'); // WHERE is_executed = true
+     * </code>
+     *
+     * @param     boolean|string $isExecuted The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildSysTaskQuery The current query, for fluid interface
+     */
+    public function filterByIsExecuted($isExecuted = null, $comparison = null)
+    {
+        if (is_string($isExecuted)) {
+            $isExecuted = in_array(strtolower($isExecuted), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(SysTaskTableMap::COL_IS_EXECUTED, $isExecuted, $comparison);
+    }
+
+    /**
+     * Filter the query on the last_execution column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByLastExecution('2011-03-14'); // WHERE last_execution = '2011-03-14'
+     * $query->filterByLastExecution('now'); // WHERE last_execution = '2011-03-14'
+     * $query->filterByLastExecution(array('max' => 'yesterday')); // WHERE last_execution > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $lastExecution The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildSysTaskQuery The current query, for fluid interface
+     */
+    public function filterByLastExecution($lastExecution = null, $comparison = null)
+    {
+        if (is_array($lastExecution)) {
+            $useMinMax = false;
+            if (isset($lastExecution['min'])) {
+                $this->addUsingAlias(SysTaskTableMap::COL_LAST_EXECUTION, $lastExecution['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($lastExecution['max'])) {
+                $this->addUsingAlias(SysTaskTableMap::COL_LAST_EXECUTION, $lastExecution['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(SysTaskTableMap::COL_LAST_EXECUTION, $lastExecution, $comparison);
     }
 
     /**

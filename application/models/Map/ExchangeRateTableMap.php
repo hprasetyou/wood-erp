@@ -2,8 +2,8 @@
 
 namespace Map;
 
-use \SysTask;
-use \SysTaskQuery;
+use \ExchangeRate;
+use \ExchangeRateQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'sys_task' table.
+ * This class defines the structure of the 'exchange_rate' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class SysTaskTableMap extends TableMap
+class ExchangeRateTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class SysTaskTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.SysTaskTableMap';
+    const CLASS_NAME = '.Map.ExchangeRateTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class SysTaskTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'sys_task';
+    const TABLE_NAME = 'exchange_rate';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\SysTask';
+    const OM_CLASS = '\\ExchangeRate';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'SysTask';
+    const CLASS_DEFAULT = 'ExchangeRate';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 13;
+    const NUM_COLUMNS = 7;
 
     /**
      * The number of lazy-loaded columns
@@ -69,72 +69,42 @@ class SysTaskTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 13;
+    const NUM_HYDRATE_COLUMNS = 7;
 
     /**
      * the column name for the id field
      */
-    const COL_ID = 'sys_task.id';
+    const COL_ID = 'exchange_rate.id';
 
     /**
      * the column name for the name field
      */
-    const COL_NAME = 'sys_task.name';
+    const COL_NAME = 'exchange_rate.name';
 
     /**
-     * the column name for the priority field
+     * the column name for the base field
      */
-    const COL_PRIORITY = 'sys_task.priority';
+    const COL_BASE = 'exchange_rate.base';
 
     /**
-     * the column name for the content field
+     * the column name for the target field
      */
-    const COL_CONTENT = 'sys_task.content';
+    const COL_TARGET = 'exchange_rate.target';
 
     /**
-     * the column name for the description field
+     * the column name for the rate field
      */
-    const COL_DESCRIPTION = 'sys_task.description';
-
-    /**
-     * the column name for the type field
-     */
-    const COL_TYPE = 'sys_task.type';
-
-    /**
-     * the column name for the time_execution field
-     */
-    const COL_TIME_EXECUTION = 'sys_task.time_execution';
-
-    /**
-     * the column name for the scheduled_execution field
-     */
-    const COL_SCHEDULED_EXECUTION = 'sys_task.scheduled_execution';
-
-    /**
-     * the column name for the day_repeat field
-     */
-    const COL_DAY_REPEAT = 'sys_task.day_repeat';
-
-    /**
-     * the column name for the is_executed field
-     */
-    const COL_IS_EXECUTED = 'sys_task.is_executed';
-
-    /**
-     * the column name for the last_execution field
-     */
-    const COL_LAST_EXECUTION = 'sys_task.last_execution';
+    const COL_RATE = 'exchange_rate.rate';
 
     /**
      * the column name for the created_at field
      */
-    const COL_CREATED_AT = 'sys_task.created_at';
+    const COL_CREATED_AT = 'exchange_rate.created_at';
 
     /**
      * the column name for the updated_at field
      */
-    const COL_UPDATED_AT = 'sys_task.updated_at';
+    const COL_UPDATED_AT = 'exchange_rate.updated_at';
 
     /**
      * The default string format for model objects of the related table
@@ -148,11 +118,11 @@ class SysTaskTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Priority', 'Content', 'Description', 'Type', 'TimeExecution', 'ScheduledExecution', 'DayRepeat', 'IsExecuted', 'LastExecution', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'priority', 'content', 'description', 'type', 'timeExecution', 'scheduledExecution', 'dayRepeat', 'isExecuted', 'lastExecution', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(SysTaskTableMap::COL_ID, SysTaskTableMap::COL_NAME, SysTaskTableMap::COL_PRIORITY, SysTaskTableMap::COL_CONTENT, SysTaskTableMap::COL_DESCRIPTION, SysTaskTableMap::COL_TYPE, SysTaskTableMap::COL_TIME_EXECUTION, SysTaskTableMap::COL_SCHEDULED_EXECUTION, SysTaskTableMap::COL_DAY_REPEAT, SysTaskTableMap::COL_IS_EXECUTED, SysTaskTableMap::COL_LAST_EXECUTION, SysTaskTableMap::COL_CREATED_AT, SysTaskTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'priority', 'content', 'description', 'type', 'time_execution', 'scheduled_execution', 'day_repeat', 'is_executed', 'last_execution', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Base', 'Target', 'Rate', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'base', 'target', 'rate', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ExchangeRateTableMap::COL_ID, ExchangeRateTableMap::COL_NAME, ExchangeRateTableMap::COL_BASE, ExchangeRateTableMap::COL_TARGET, ExchangeRateTableMap::COL_RATE, ExchangeRateTableMap::COL_CREATED_AT, ExchangeRateTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'base', 'target', 'rate', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -162,11 +132,11 @@ class SysTaskTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Priority' => 2, 'Content' => 3, 'Description' => 4, 'Type' => 5, 'TimeExecution' => 6, 'ScheduledExecution' => 7, 'DayRepeat' => 8, 'IsExecuted' => 9, 'LastExecution' => 10, 'CreatedAt' => 11, 'UpdatedAt' => 12, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'priority' => 2, 'content' => 3, 'description' => 4, 'type' => 5, 'timeExecution' => 6, 'scheduledExecution' => 7, 'dayRepeat' => 8, 'isExecuted' => 9, 'lastExecution' => 10, 'createdAt' => 11, 'updatedAt' => 12, ),
-        self::TYPE_COLNAME       => array(SysTaskTableMap::COL_ID => 0, SysTaskTableMap::COL_NAME => 1, SysTaskTableMap::COL_PRIORITY => 2, SysTaskTableMap::COL_CONTENT => 3, SysTaskTableMap::COL_DESCRIPTION => 4, SysTaskTableMap::COL_TYPE => 5, SysTaskTableMap::COL_TIME_EXECUTION => 6, SysTaskTableMap::COL_SCHEDULED_EXECUTION => 7, SysTaskTableMap::COL_DAY_REPEAT => 8, SysTaskTableMap::COL_IS_EXECUTED => 9, SysTaskTableMap::COL_LAST_EXECUTION => 10, SysTaskTableMap::COL_CREATED_AT => 11, SysTaskTableMap::COL_UPDATED_AT => 12, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'priority' => 2, 'content' => 3, 'description' => 4, 'type' => 5, 'time_execution' => 6, 'scheduled_execution' => 7, 'day_repeat' => 8, 'is_executed' => 9, 'last_execution' => 10, 'created_at' => 11, 'updated_at' => 12, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Base' => 2, 'Target' => 3, 'Rate' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'base' => 2, 'target' => 3, 'rate' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
+        self::TYPE_COLNAME       => array(ExchangeRateTableMap::COL_ID => 0, ExchangeRateTableMap::COL_NAME => 1, ExchangeRateTableMap::COL_BASE => 2, ExchangeRateTableMap::COL_TARGET => 3, ExchangeRateTableMap::COL_RATE => 4, ExchangeRateTableMap::COL_CREATED_AT => 5, ExchangeRateTableMap::COL_UPDATED_AT => 6, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'base' => 2, 'target' => 3, 'rate' => 4, 'created_at' => 5, 'updated_at' => 6, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -179,26 +149,20 @@ class SysTaskTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('sys_task');
-        $this->setPhpName('SysTask');
+        $this->setName('exchange_rate');
+        $this->setPhpName('ExchangeRate');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\SysTask');
+        $this->setClassName('\\ExchangeRate');
         $this->setPackage('');
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('name', 'Name', 'VARCHAR', true, 255, null);
-        $this->addColumn('priority', 'Priority', 'INTEGER', true, null, 0);
-        $this->addColumn('content', 'Content', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('description', 'Description', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('type', 'Type', 'VARCHAR', false, 255, null);
-        $this->addColumn('time_execution', 'TimeExecution', 'TIME', false, null, null);
-        $this->addColumn('scheduled_execution', 'ScheduledExecution', 'TIMESTAMP', false, null, null);
-        $this->addColumn('day_repeat', 'DayRepeat', 'VARCHAR', false, 255, null);
-        $this->addColumn('is_executed', 'IsExecuted', 'BOOLEAN', true, 1, false);
-        $this->addColumn('last_execution', 'LastExecution', 'TIMESTAMP', false, null, null);
+        $this->addColumn('name', 'Name', 'VARCHAR', false, 8, null);
+        $this->addColumn('base', 'Base', 'VARCHAR', true, 3, null);
+        $this->addColumn('target', 'Target', 'VARCHAR', true, 3, null);
+        $this->addColumn('rate', 'Rate', 'FLOAT', true, null, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
-        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
+        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
 
     /**
@@ -265,7 +229,7 @@ class SysTaskTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? SysTaskTableMap::CLASS_DEFAULT : SysTaskTableMap::OM_CLASS;
+        return $withPrefix ? ExchangeRateTableMap::CLASS_DEFAULT : ExchangeRateTableMap::OM_CLASS;
     }
 
     /**
@@ -279,22 +243,22 @@ class SysTaskTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (SysTask object, last column rank)
+     * @return array           (ExchangeRate object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = SysTaskTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = SysTaskTableMap::getInstanceFromPool($key))) {
+        $key = ExchangeRateTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = ExchangeRateTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + SysTaskTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + ExchangeRateTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = SysTaskTableMap::OM_CLASS;
-            /** @var SysTask $obj */
+            $cls = ExchangeRateTableMap::OM_CLASS;
+            /** @var ExchangeRate $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            SysTaskTableMap::addInstanceToPool($obj, $key);
+            ExchangeRateTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -317,18 +281,18 @@ class SysTaskTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = SysTaskTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = SysTaskTableMap::getInstanceFromPool($key))) {
+            $key = ExchangeRateTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = ExchangeRateTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var SysTask $obj */
+                /** @var ExchangeRate $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                SysTaskTableMap::addInstanceToPool($obj, $key);
+                ExchangeRateTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -349,31 +313,19 @@ class SysTaskTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(SysTaskTableMap::COL_ID);
-            $criteria->addSelectColumn(SysTaskTableMap::COL_NAME);
-            $criteria->addSelectColumn(SysTaskTableMap::COL_PRIORITY);
-            $criteria->addSelectColumn(SysTaskTableMap::COL_CONTENT);
-            $criteria->addSelectColumn(SysTaskTableMap::COL_DESCRIPTION);
-            $criteria->addSelectColumn(SysTaskTableMap::COL_TYPE);
-            $criteria->addSelectColumn(SysTaskTableMap::COL_TIME_EXECUTION);
-            $criteria->addSelectColumn(SysTaskTableMap::COL_SCHEDULED_EXECUTION);
-            $criteria->addSelectColumn(SysTaskTableMap::COL_DAY_REPEAT);
-            $criteria->addSelectColumn(SysTaskTableMap::COL_IS_EXECUTED);
-            $criteria->addSelectColumn(SysTaskTableMap::COL_LAST_EXECUTION);
-            $criteria->addSelectColumn(SysTaskTableMap::COL_CREATED_AT);
-            $criteria->addSelectColumn(SysTaskTableMap::COL_UPDATED_AT);
+            $criteria->addSelectColumn(ExchangeRateTableMap::COL_ID);
+            $criteria->addSelectColumn(ExchangeRateTableMap::COL_NAME);
+            $criteria->addSelectColumn(ExchangeRateTableMap::COL_BASE);
+            $criteria->addSelectColumn(ExchangeRateTableMap::COL_TARGET);
+            $criteria->addSelectColumn(ExchangeRateTableMap::COL_RATE);
+            $criteria->addSelectColumn(ExchangeRateTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(ExchangeRateTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.name');
-            $criteria->addSelectColumn($alias . '.priority');
-            $criteria->addSelectColumn($alias . '.content');
-            $criteria->addSelectColumn($alias . '.description');
-            $criteria->addSelectColumn($alias . '.type');
-            $criteria->addSelectColumn($alias . '.time_execution');
-            $criteria->addSelectColumn($alias . '.scheduled_execution');
-            $criteria->addSelectColumn($alias . '.day_repeat');
-            $criteria->addSelectColumn($alias . '.is_executed');
-            $criteria->addSelectColumn($alias . '.last_execution');
+            $criteria->addSelectColumn($alias . '.base');
+            $criteria->addSelectColumn($alias . '.target');
+            $criteria->addSelectColumn($alias . '.rate');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }
@@ -388,7 +340,7 @@ class SysTaskTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(SysTaskTableMap::DATABASE_NAME)->getTable(SysTaskTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(ExchangeRateTableMap::DATABASE_NAME)->getTable(ExchangeRateTableMap::TABLE_NAME);
     }
 
     /**
@@ -396,16 +348,16 @@ class SysTaskTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(SysTaskTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(SysTaskTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new SysTaskTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(ExchangeRateTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(ExchangeRateTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new ExchangeRateTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a SysTask or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a ExchangeRate or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or SysTask object or primary key or array of primary keys
+     * @param mixed               $values Criteria or ExchangeRate object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -416,27 +368,27 @@ class SysTaskTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SysTaskTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ExchangeRateTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \SysTask) { // it's a model object
+        } elseif ($values instanceof \ExchangeRate) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(SysTaskTableMap::DATABASE_NAME);
-            $criteria->add(SysTaskTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(ExchangeRateTableMap::DATABASE_NAME);
+            $criteria->add(ExchangeRateTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
-        $query = SysTaskQuery::create()->mergeWith($criteria);
+        $query = ExchangeRateQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            SysTaskTableMap::clearInstancePool();
+            ExchangeRateTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                SysTaskTableMap::removeInstanceFromPool($singleval);
+                ExchangeRateTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -444,20 +396,20 @@ class SysTaskTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the sys_task table.
+     * Deletes all rows from the exchange_rate table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return SysTaskQuery::create()->doDeleteAll($con);
+        return ExchangeRateQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a SysTask or Criteria object.
+     * Performs an INSERT on the database, given a ExchangeRate or Criteria object.
      *
-     * @param mixed               $criteria Criteria or SysTask object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or ExchangeRate object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -466,22 +418,22 @@ class SysTaskTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SysTaskTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ExchangeRateTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from SysTask object
+            $criteria = $criteria->buildCriteria(); // build Criteria from ExchangeRate object
         }
 
-        if ($criteria->containsKey(SysTaskTableMap::COL_ID) && $criteria->keyContainsValue(SysTaskTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.SysTaskTableMap::COL_ID.')');
+        if ($criteria->containsKey(ExchangeRateTableMap::COL_ID) && $criteria->keyContainsValue(ExchangeRateTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.ExchangeRateTableMap::COL_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = SysTaskQuery::create()->mergeWith($criteria);
+        $query = ExchangeRateQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -490,7 +442,7 @@ class SysTaskTableMap extends TableMap
         });
     }
 
-} // SysTaskTableMap
+} // ExchangeRateTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-SysTaskTableMap::buildTableMap();
+ExchangeRateTableMap::buildTableMap();
