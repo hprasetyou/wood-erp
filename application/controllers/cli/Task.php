@@ -12,6 +12,8 @@ class Task extends CI_Controller
       $task_name = $value->getName();
       write_log("executing task $task_name . . . .");
       $this->execute($value->getType(),$value->getContent());
+      $value->setLastExecution(date("Y-m-d h:i:s"))
+      ->save();
     }
   }
 
