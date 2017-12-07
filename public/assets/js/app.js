@@ -140,6 +140,14 @@ jQuery.fn.loadTableData = function(
   tt.DataTable(dtconf);
 }
 
+function set_back_url(url){
+  var btn = $('.btn-back')
+  btn.removeClass('.btn-back')
+  btn.click(function(e){
+    e.preventDefault()
+    window.location.href = "/index.php/"+url
+  })
+}
 
 jQuery.fn.simpleValidation =  function(){
   var d = $(this)

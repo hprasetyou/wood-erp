@@ -151,10 +151,11 @@
 {% endif %}
 <!-- Modal -->
 {% endblock %} {% block bottom%} {% include 'common/_img_upload_modal.html'%}
+{% if not customers %}
+{% set customers = {'CompanyId':res.query_params.company_id}%}
+{% endif %}
+
 <script type="text/javascript">
-  $('.btn-back').click(function(e){
-    window.location.href = '/index.php/manage_customers/detail/{{customers.CompanyId?customers.CompanyId:res.query_params.company_id}}'
-  })
   $('#addPhone').click(function(e){
     e.preventDefault()
     var inp = '<input type="text" name="Phone[]" autofocus class="form-control autoremove col-md-7 col-xs-12">'
@@ -173,6 +174,7 @@
       }
     })
   $(document).ready(function(){
+    set_back_url('manage_customers{{customers.CompanyId?"/detail/"~customers.CompanyId:""}}')
     $('#table_PartnerLocation').loadTableData()
     })
 

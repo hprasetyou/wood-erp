@@ -161,6 +161,11 @@
 
 <!-- Modal -->
 {% endblock %} {% block bottom%} {% include 'common/_img_upload_modal.html'%}
+{% if not suppliers %}
+
+{% set suppliers = {'CompanyId':res.query_params.company_id}%}
+{% endif %}
+
 <script type="text/javascript">
   $('#addPhone').click(function(e){
     e.preventDefault()
@@ -180,6 +185,7 @@
       }
     })
   $(document).ready(function(){
+      set_back_url('manage_suppliers{{suppliers.CompanyId?"/detail/"~suppliers.CompanyId:""}}')
       $('#table_PartnerBank').loadTableData()
       $('#table_PartnerLocation').loadTableData()
     })
