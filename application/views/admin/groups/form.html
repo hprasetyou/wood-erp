@@ -1,4 +1,4 @@
- {% extends "dashboard.html" %} {% set title=" Group " %} {% if groups %} {% set bc_text = groups.id %} {% else %} {% set bc_text = 'Baru' %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_groups','text': res.string.groups }, {'link':'#','text':bc_text
+ {% extends "dashboard.html" %} {% set title=" Group " %} {% if groups %} {% set bc_text = groups.id %} {% else %} {% set bc_text = res.string.new %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_groups','text': res.string.groups }, {'link':'#','text':bc_text
 }] %} {% block content %}
 <div class="row">
 	<div class="col-md-12 col-sm-12 col-xs-12">

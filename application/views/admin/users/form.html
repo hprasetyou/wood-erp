@@ -4,7 +4,7 @@
 {% if users %}
 	 {% set bc_text = users.id  %}
 {% else %}
-	 {% set bc_text = 'Baru' %}
+	 {% set bc_text = res.string.new %}
 {% endif %}
 {% set breadcrumbs = [
 	{'link': base_url~'index.php/manage_users','text': res.string.user },

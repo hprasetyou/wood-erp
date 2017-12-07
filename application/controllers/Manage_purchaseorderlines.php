@@ -9,6 +9,11 @@ class Manage_purchaseorderlines extends MY_Controller{
 		$this->tpl = 'purchaseorderlines';
   }
 
+  function get_json(){
+		$this->objobj = PurchaseOrderLineQuery::create()
+    ->filterByPurchaseOrderId($this->input->get('purchase_order_id'));
+    parent::get_json();
+  }
 
   function create(){
 
@@ -50,9 +55,49 @@ class Manage_purchaseorderlines extends MY_Controller{
 		$qty = $this->input->post('PILineQty');
   	$name = $this->input->post('PILineName');
   	$price = $this->input->post('PILinePrice');
+
     foreach ($this->input->post('PILineId') as $key => $line) {
       # code...
       $ids = explode("-",$line);
+      if(isset($ids[2])){
+        $cp = ComponentPartnerQuery::create()
+        ->orderByCreatedAt('desc')
+        ->filterByComponentId($ids[2])
+        ->filterByPartnerId($this->input->post('PartnerId'))
+        ->findOne();
+        if(($cp?$cp->getPrice():1) != $price[$key]){
+          $newcp = new ComponentPartner;
+          $newcp->setComponentId($ids[2])
+          ->setPartnerId($this->input->post('PartnerId'))
+          ->setPrice($price[$key])
+          ->save();
+        }
+      }else{
+        $pp = ProductPartnerQuery::create()
+        ->orderByCreatedAt('desc')
+        ->filterByProductId($ids[1])
+        ->filterByPartnerId($this->input->post('PartnerId'))
+        ->filterByType("buy")
+        ->findOne();
+        if(($pp?$pp->getProductPrice():1) != $price[$key]){
+          $newpp = new ProductPartner;
+          $newpp->setProductId($ids[1])
+          ->setPartnerId($this->input->post('PartnerId'))
+          ->setProductPrice($price[$key])
+          ->setType("buy")
+          ->save();
+        }
+      }
+      $line = PurchaseOrderLineQuery::create()
+      ->filterByName($name[$key])
+      ->filterByPurchaseOrderId($po_id)
+      ->filterByProformaInvoiceLineId($ids[0])
+      ->filterByProductId($ids[1])
+      ->filterByComponentId((isset($ids[2])?$ids[2]:null))
+      ->findOne();
+      if($line){
+        $qty[$key] = $qty[$key]+$line->getQty();
+      }
       $this->form = array(
        'Name' => array(
          'value'=>$name[$key]
@@ -77,15 +122,14 @@ class Manage_purchaseorderlines extends MY_Controller{
          'value'=> $qty[$key]
        ),
       );
-      $data = parent::write();
-      write_log("pl line $data saved . . . . .");
+      $data = parent::write($line?$line->getId():null);
     }
     echo json_encode(array('status'=>'ok'));
 	}
 
   function delete($id){
 		$data = parent::delete($id);
-		redirect('manage_purchaseorderlines');
+    echo json_encode(array('status'=>'ok'));
   }
 
 }

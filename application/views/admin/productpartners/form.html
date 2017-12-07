@@ -4,7 +4,7 @@
 {% if productpartners %}
 	 {% set bc_text = productpartners.id  %}
 {% else %}
-	 {% set bc_text = 'Baru' %}
+	 {% set bc_text = res.string.new %}
 {% endif %}
 {% set breadcrumbs = [
 	{'link': base_url~'index.php/manage_productpartners','text': res.string.productpartner },

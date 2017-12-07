@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-sm-12">
-    <div class="box-info embed-form">
+    <div {% if purchaseorders %}style="display:none"{% endif %} class="box-info embed-form">
         <div class="box-header with-border">
             {{res.string.add_pi_to_po}}
         </div>
@@ -23,7 +23,7 @@
 </div>
 <div class="row">
 <div class="col-sm-12">
-  <table data-controller="manage_purchaseorderlines" class="table table-striped " id="table_PurchaseOrderLine">
+  <table data-controller="manage_purchaseorderlines" data-action='["delete"]' data-domain='{"purchase_order_id":{{purchaseorders.Id}}}' class="table table-striped " id="table_PurchaseOrderLine">
     <thead>
       <tr>
         <th data-fieldname="name">{{res.string.name}}</th>

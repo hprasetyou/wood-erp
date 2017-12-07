@@ -1,4 +1,4 @@
- {% extends "dashboard.html" %} {% set title= res.string.supplier %} {% if suppliers %} {% set bc_text = suppliers.name %} {% else %} {% set bc_text = 'Baru' %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_suppliers','text':res.string.supplier},
+ {% extends "dashboard.html" %} {% set title= res.string.supplier %} {% if suppliers %} {% set bc_text = suppliers.name %} {% else %} {% set bc_text = res.string.new %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_suppliers','text':res.string.supplier},
 {'link':'#','text':bc_text }] %} {% block content %}
 <div class="row">
   <div class="col-md-12 col-sm-12 col-xs-12">

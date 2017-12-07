@@ -1,4 +1,4 @@
- {% extends "dashboard.html" %} {% set title=" Purchase Order " %} {% if purchaseorders %} {% set bc_text = purchaseorders.id %} {% else %} {% set bc_text = 'Baru' %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_purchaseorders','text':
+ {% extends "dashboard.html" %} {% set title=" Purchase Order " %} {% if purchaseorders %} {% set bc_text = purchaseorders.id %} {% else %} {% set bc_text = res.string.new %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_purchaseorders','text':
 res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %}
 <div class="row">
 	<div class="col-md-12 col-sm-12 col-xs-12">
@@ -232,6 +232,8 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
           '<td><input type="number" name="PILineQty[]" required max="'+$(this).parents('tr').children('td:eq(4)').text()+
           '" class="form-control PILineQty" maxlength="4" size="4" value="'+$(this).parents('tr').children('td:eq(4)').text()+'">'+
           '</td>'+
+          '<td><input type="number" name="PILinePrice[]" required '+
+                   'class="form-control" value="0">'+
           '</td></tr>');
         }
       })
@@ -247,6 +249,22 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
           $(this).val($(this).prop('max'))
         }
         })
+        $('#table_PurchaseOrderLine').on('click','.btn-delete',function(e){
+          e.preventDefault()
+          $.ajax({
+            url:"/index.php/manage_purchaseorderlines/delete/"+$(this).data('id'),
+            method:'POST',
+            data:'confirm=1&confirm=1',
+            dataType:"JSON"
+          }).done(function(o){
+            $('#table_ProformaInvoiceLine').DataTable().ajax.reload()
+            $('#table_PurchaseOrderLine').DataTable().ajax.reload(function(){
+                $('.btn-delete').show()
+            })
+
+          })
+          console.log("delete");
+        })
       $('#formAddPOLine').submit(function(e){
         e.preventDefault()
         if(!$('#Id').val()){
@@ -261,7 +279,9 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
           submitpoline($('#Id').val()).done(function(o){
 
             $('#table_ProformaInvoiceLine').DataTable().ajax.reload()
-            $('#table_PurchaseOrderLine').DataTable().ajax.reload()
+            $('#table_PurchaseOrderLine').DataTable().ajax.reload(function(){
+                $('.btn-delete').show()
+            })
             $('#modalAddPOLine').modal('hide')
           })
         }
@@ -272,7 +292,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
       return $.ajax({
         url:$('#formAddPOLine').prop('action')+'?purchase_order='+po_id,
         method:'POST',
-        data:$('#formAddPOLine').serialize(),
+        data:$('#formAddPOLine').serialize()+'&PartnerId={{purchaseorders.Id}}',
         dataType:'JSON'
       })
     }
@@ -285,6 +305,8 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
         dataType:'JSON'
       })
     }
-		$('#table_PurchaseOrderLine').loadTableData()
+		$('#table_PurchaseOrderLine').loadTableData({
+      'button':["delete"]
+    })
 	</script>
 	{% endblock %}

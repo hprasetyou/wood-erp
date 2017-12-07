@@ -1,4 +1,4 @@
- {% extends "dashboard.html" %} {% set title=" Proforma Invoice " %} {% if proformainvoices %} {% set bc_text = proformainvoices.id %} {% else %} {% set bc_text = 'Baru' %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_proformainvoices','text':
+ {% extends "dashboard.html" %} {% set title=" Proforma Invoice " %} {% if proformainvoices %} {% set bc_text = proformainvoices.id %} {% else %} {% set bc_text = res.string.new %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_proformainvoices','text':
 res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content %}
 <div class="row">
 	<div class="col-md-12 col-sm-12 col-xs-12">

@@ -1,5 +1,5 @@
  {% extends "dashboard.html" %} {% set title=" Product " %} {% if products %} {% set bc_text = products.id %} {% else %}
-{% set bc_text = 'Baru' %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_products','text': res.string.product
+{% set bc_text = res.string.new %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_products','text': res.string.product
 }, {'link':'#','text':bc_text }] %} {% block content %}
 <div class="row">
 	<div class="col-md-12 col-sm-12 col-xs-12">

@@ -341,7 +341,7 @@ echo "=========================";
 {% if $tb_name_lower %}
 	 {% set bc_text = $tb_name_lower.$header %}
 {% else %}
-	 {% set bc_text = 'Baru' %}
+	 {% set bc_text = res.string.new %}
 {% endif %}
 {% set breadcrumbs = [
 	{'link': base_url~'index.php/manage_$tb_name_lower','text': res.string.$tb_name_singular },

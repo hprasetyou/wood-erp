@@ -4,7 +4,7 @@
 {% if proformainvoicelines %}
 	 {% set bc_text = proformainvoicelines.id  %}
 {% else %}
-	 {% set bc_text = 'Baru' %}
+	 {% set bc_text = res.string.new %}
 {% endif %}
 {% set breadcrumbs = [
 	{'link': base_url~'index.php/manage_proformainvoicelines','text': res.string.proformainvoiceline },

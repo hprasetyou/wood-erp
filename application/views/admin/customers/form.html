@@ -1,6 +1,6 @@
  {% extends "dashboard.html" %} {% set title= res.string.customer %}
  {% if customers %} {% set bc_text = customers.name %}
- {% else %} {% set bc_text = 'Baru' %}
+ {% else %} {% set bc_text = res.string.new %}
   {% endif %}
 	 {% set breadcrumbs = [
 		 {'link': base_url~'index.php/manage_customers','text':res.string.customer},

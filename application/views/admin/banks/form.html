@@ -4,7 +4,7 @@
 {% if banks %}
 	 {% set bc_text = banks.id  %}
 {% else %}
-	 {% set bc_text = 'Baru' %}
+	 {% set bc_text = res.string.new %}
 {% endif %}
 {% set breadcrumbs = [
 	{'link': base_url~'index.php/manage_banks','text': res.string.bank },

@@ -4,7 +4,7 @@
 {% if finishings %}
 	 {% set bc_text = finishings.id  %}
 {% else %}
-	 {% set bc_text = 'Baru' %}
+	 {% set bc_text = res.string.new %}
 {% endif %}
 {% set breadcrumbs = [
 	{'link': base_url~'index.php/manage_finishings','text': res.string.finishing },

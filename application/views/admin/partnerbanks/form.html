@@ -4,7 +4,7 @@
 {% if partnerbanks %}
 	 {% set bc_text = partnerbanks.id  %}
 {% else %}
-	 {% set bc_text = 'Baru' %}
+	 {% set bc_text = res.string.new %}
 {% endif %}
 {% set breadcrumbs = [
 	{'link': base_url~'index.php/manage_partnerbanks','text': res.string.partnerbank },
