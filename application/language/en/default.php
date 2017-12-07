@@ -31,6 +31,7 @@
 'contact_person' => 'Contact Person',
 'country' => 'Country',
 'cubic' => 'Cubic',
+'currency' => 'Currency',
 'cubic_asb' => 'Assembled CBM',
 'cubic_dimension' => 'Cubic Dimension',
 'cubic_kdn' => 'Packing CBM',
@@ -87,6 +88,7 @@
 'net_weight' => 'Net Weight',
 'new_data' => 'New Data',
 'no' => 'No',
+'notice'=>'Notice',
 'not_knockdown' => 'Not a knockdown',
 'note' => 'Note',
 'ocean_vessel' => 'Ocean Vessel',
@@ -149,6 +151,7 @@
 'width_asb' => 'Width Assembled',
 'width_kdn' => 'Width Knockdown',
 'with_box' => 'With Carton Box',
+'warning'=>'Warning',
 'yes' => 'Yes',
 'city' => 'City'
 );

@@ -3,185 +3,63 @@
   <div class="box box-success">
     <div class="box-header with-border">
       <!-- /.box-tools -->
-      {{res.string.new_data}}
+      {{res.string.proforma_invoice_line}}
+      <a href="#" id="btnOpenAddLine" class="btn pull-right btn-primary">{{res.string.add}}</a>
     </div>
     <!-- /.box-header -->
-    <div class="box-body pi_lines" data-target="saveLine">
-      <div class="row ">
-        <div class="col-sm-6">
-          <input type="hidden" name="LineId" id="LineId">
-          <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="LineName">{{res.string.article_number}}</label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <div class="input-wrap">
-                <input type="text"
-                data-required
-                placeholder="{{ res.string.article_number }}"
-                id="LineName" value="{{ proformainvoicelines.Name }}"
-                name="LineName" class="form-control  col-md-7 col-xs-12">
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProductPartnerId">{{res.string.product}}</label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <div class="input-wrap input-group">
-                <input type="hidden" type="text" id="ProductId" name="ProductId"  >
-                <input data-required readonly type="text" required="required" name="displayProductId" id="displayProductId"  placeholder="{{ res.string.product }}" class="form-control" />
-                <span class="input-group-btn">
-                  <button class="btn btnModal btn-default" id="btnProductId"  data-target="ModalProduct" type="button">{{res.string.search}}</button>
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ListPrice">{{res.string.list_price}}</label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <div class="input-wrap">
-                <input data-required type="number"readonly placeholder="{{ res.string.list_price }}" id="ListPrice" name="ListPrice" class="form-control  col-md-7 col-xs-12">
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Price">{{res.string.price}}</label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <div class="input-wrap">
-                <input data-required type="number" placeholder="{{ res.string.price }}" id="Price" name="Price" class="form-control  col-md-7 col-xs-12">
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="CalculatedDiscount">{{res.string.calculated_discount}}</label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <div class="input-wrap">
-                <input type="text" placeholder="{{ res.string.calculated_discount }}" disabled value="0" id="CalculatedDiscount" name="CalculatedDiscount" class="form-control  col-md-7 col-xs-12">
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-6">
-          <div class="form-group" style="display:none">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="CubicDimension">{{res.string.cubic_dimension}}</label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <div class="input-wrap">
-                <input type="number" placeholder="{{ res.string.cubic_dimension }}" id="CubicDimension" name="CubicDimension" class="form-control col-md-7 col-xs-12">
-              </div>
-            </div>
-          </div>
-            <div class="form-group">
-              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Description">{{res.string.description}}</label>
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="input-wrap">
-                  <input type="text" placeholder="{{ res.string.description }}" id="Description" name="Description" class="form-control col-md-7 col-xs-12">
-                </div>
-              </div>
-            </div>
-              <div class="form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Finishing">{{res.string.finishing}}</label>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                  <div class="input-wrap">
-                    <select  id="Finishing" name="Finishing" class="form-control form-select col-md-7 col-xs-12">
-                    </select>
-                  </div>
-                </div>
-              </div>
-            <div class="form-group">
-              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Qty">{{res.string.qty}}</label>
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="input-wrap">
-                  <input data-required type="number" placeholder="{{ res.string.qty }}" id="Qty" name="Qty" class="form-control  col-md-7 col-xs-12">
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="control-label col-md-3 col-sm-3 col-xs-12"
-              for="QtyPerPack">{{res.string.qty_per_pack}}</label>
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="input-wrap">
-                  <input type="number" placeholder="{{ res.string.qty_per_pack }}"
-                  id="QtyPerPack" name="QtyPerPack" class="form-control col-md-7 col-xs-12">
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.is_sample}}</label>
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <div {% if products %}style="display:none" {% endif %} class="input-wrap">
-                  <input type="checkbox" value="1" id="IsSample" value="1" {{ products.IsSample ? "checked": "" }} name="IsSample" class="form-checkbox">
-                </div>
-                {% if products %}
-                <p class="control-value">{{ products.IsSample ? res.string.yes : res.string.no }}</p>
-                {% endif %}
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.with_box}}</label>
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <div {% if products %}style="display:none" {% endif %} class="input-wrap">
-                  <input type="checkbox" value="1" id="IsNeedBox" value="1" {{ products.IsNeedBoxIsNeedBox ? "checked": "" }} name="IsKdn" class="form-checkbox">
-                </div>
-                {% if products %}
-                <p class="control-value">{{ products.IsNeedBox ? res.string.yes : res.string.no }}</p>
-                {% endif %}
-              </div>
-            </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-6 col-sm-offset-6">
-          <a href="#" class="btn btn-default disabled" id="saveLine">{{res.string.save}}</a>
-        </div>
+    <div class="box-body" >
+      <table data-controller="manage_proformainvoicelines" class="table table-striped " id="table_ProformaInvoiceLine">
+        <thead>
+          <tr>
+            <th >{{res.string.article_number}}</th>
+            <th >{{res.string.description}}</th>
+            <th >{{ res.string.finishing}}</th>
+            <th >{{res.string.qty}}</th>
+            <th >{{res.string.qty_of_pack}}</th>
+            <th >{{res.string.cubic}}</th>
+            <th >{{res.string.total_cubic}}</th>
+            <th >{{res.string.price}}</th>
+            <th >{{res.string.total_price}}</th>
+            <th ></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for line in proformainvoices.ProformaInvoiceLines %}
+            <tr>
+              <td data-fieldname="name">{{line.ProductPartner.Name}}</td>
+              <td data-fieldname="name">{{line.Description}}</td>
+              <td data-fieldname="name">{{line.ProductFinishing}}</td>
+              <td data-fieldname="qty">{{line.Qty}}</td>
+              <td data-fieldname="qty_on_container">{{ (line.Qty/line.QtyPerPack) | round }}</td>
+              <td data-fieldname="cubic_dimension">{{line.CubicDimension | cubic}}</td>
+              <td data-fieldname="total_cubic_dimension">{{line.TotalCubicDimension | cubic}}</td>
+              <td data-fieldname="price">{{line.Price}}</td>
+              <td data-fieldname="total_price">{{ line.TotalPrice}}</td>
+              <td data-fieldname="total_price"><ul>
+                {% if line.IsSample %}<li>{{res.string.sample_product}}</li> {% endif %}
+                {% if line.IsNeedBox %} <li>{{res.string.with_box}}</li> {% endif %}
+              </ul>
+
+              </td>
+              <td>
+                <a style="display:none" href="#" data-id="{{line.Id}}" class="btn btn-default btn-edit-row"><i class="fa fa-pencil"></i></a>
+                <a style="display:none" href="#" data-id="{{line.Id}}" class="btn btn-danger btn-delete-row"><i class="fa fa-trash"></i></a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="6">Total</td>
+            <td><span id="TotalCd"></span></td>
+            <td></td>
+            <td colspan="2"><span id="TotalCol"></span></td>
+          </tr>
+        </tfoot>
+      </table>
+
       </div>
     </div>
   </div>
 </div>
-<table data-controller="manage_proformainvoicelines" class="table table-striped " id="table_ProformaInvoiceLine">
-  <thead>
-    <tr>
-      <th >{{res.string.article_number}}</th>
-      <th >{{res.string.description}}</th>
-      <th >{{ res.string.finishing}}</th>
-      <th >{{res.string.qty}}</th>
-      <th >{{res.string.qty_of_pack}}</th>
-      <th >{{res.string.cubic}}</th>
-      <th >{{res.string.total_cubic}}</th>
-      <th >{{res.string.price}}</th>
-      <th >{{res.string.total_price}}</th>
-      <th ></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for line in proformainvoices.ProformaInvoiceLines %}
-      <tr>
-        <td data-fieldname="name">{{line.ProductPartner.Name}}</td>
-        <td data-fieldname="name">{{line.Description}}</td>
-        <td data-fieldname="name">{{line.ProductFinishing}}</td>
-        <td data-fieldname="qty">{{line.Qty}}</td>
-        <td data-fieldname="qty_on_container">{{ (line.Qty/line.QtyPerPack) | round }}</td>
-        <td data-fieldname="cubic_dimension">{{line.CubicDimension | cubic}}</td>
-        <td data-fieldname="total_cubic_dimension">{{line.TotalCubicDimension | cubic}}</td>
-        <td data-fieldname="price">{{line.Price}}</td>
-        <td data-fieldname="total_price">{{ line.TotalPrice}}</td>
-        <td data-fieldname="total_price"><ul>
-          {% if line.IsSample %}<li>{{res.string.sample_product}}</li> {% endif %}
-          {% if line.IsNeedBox %} <li>{{res.string.with_box}}</li> {% endif %}
-        </ul>
-
-        </td>
-        <td>
-          <a style="display:none" href="#" data-id="{{line.Id}}" class="btn btn-default btn-edit-row"><i class="fa fa-pencil"></i></a>
-          <a style="display:none" href="#" data-id="{{line.Id}}" class="btn btn-danger btn-delete-row"><i class="fa fa-trash"></i></a>
-        </td>
-      </tr>
-    {% endfor %}
-  </tbody>
-  <tfoot>
-    <tr>
-      <td colspan="6">Total</td>
-      <td><span id="TotalCd"></span></td>
-      <td></td>
-      <td colspan="2"><span id="TotalCol"></span></td>
-    </tr>
-  </tfoot>
-</table>

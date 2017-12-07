@@ -39,6 +39,7 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
 								</div>
 							</div>
 						</div>
+
 						<div class="col-sm-6">
 							<div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.date}}</label>
@@ -52,6 +53,19 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
 								</div>
 							</div>
 						</div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.currency}}</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <div {% if proformainvoices %}style="display:none" {% endif %} class="input-wrap">
+                  {{selection_m2o('CurrencyId','Currency',null,proformainvoices.CurrencyId)| raw}}
+                </div>
+                {% if proformainvoices %}
+                <p data-fieldname="Date" class="control-value">{{ proformainvoices.Date | date('d M Y') }}</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
 					</div>
 
             <textarea name="Lines" style="display:none" id="Lines"></textarea>
@@ -80,14 +94,23 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
 	</div>
 </div>
 <!-- Modal -->
+{% include "admin/proformainvoices/_modal_add_pi_line.html"%}
 {% include "admin/customers/_modal.html" %}
 {% include "admin/products/_modal.html" %} {% endblock %}
 
 {% block bottom %}
+{% include "common/_modal_notice.html" %}
 <script>
 var Lines = [];
 var idx =0;
 $(document).ready(function(){
+  $('#btnOpenAddLine').click(function(e){
+      if($('#CustomerId').val()>0 ){
+        $('#ModalAddProformaInvoiceLine').modal('show')
+      }else{
+        notice_popup('Please specify the customer first')
+      }
+  })
   $('#Price').on('keyup change',function(e){
     var disc = 0;
     var price = $(this).val()
@@ -121,11 +144,6 @@ $(document).ready(function(){
       $('.pi_lines').find('input').val('')
     })
 
-    $('#ModalProduct, #ModalCustomer').on('hidden.bs.modal', function () {
-          // do something…
-          $('#ProductId').trigger('change')
-
-      })
     $('.pi_lines').simpleValidation()
   })
 

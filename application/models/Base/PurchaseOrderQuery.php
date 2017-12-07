@@ -24,6 +24,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method     ChildPurchaseOrderQuery orderByProformaInvoiceId($order = Criteria::ASC) Order by the proforma_invoice_id column
  * @method     ChildPurchaseOrderQuery orderBySupplierId($order = Criteria::ASC) Order by the supplier_id column
+ * @method     ChildPurchaseOrderQuery orderByCurrencyId($order = Criteria::ASC) Order by the currency_id column
  * @method     ChildPurchaseOrderQuery orderByNote($order = Criteria::ASC) Order by the note column
  * @method     ChildPurchaseOrderQuery orderByDate($order = Criteria::ASC) Order by the date column
  * @method     ChildPurchaseOrderQuery orderByPaymentTerm($order = Criteria::ASC) Order by the payment_term column
@@ -39,6 +40,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderQuery groupByName() Group by the name column
  * @method     ChildPurchaseOrderQuery groupByProformaInvoiceId() Group by the proforma_invoice_id column
  * @method     ChildPurchaseOrderQuery groupBySupplierId() Group by the supplier_id column
+ * @method     ChildPurchaseOrderQuery groupByCurrencyId() Group by the currency_id column
  * @method     ChildPurchaseOrderQuery groupByNote() Group by the note column
  * @method     ChildPurchaseOrderQuery groupByDate() Group by the date column
  * @method     ChildPurchaseOrderQuery groupByPaymentTerm() Group by the payment_term column
@@ -68,6 +70,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderQuery rightJoinWithProformaInvoice() Adds a RIGHT JOIN clause and with to the query using the ProformaInvoice relation
  * @method     ChildPurchaseOrderQuery innerJoinWithProformaInvoice() Adds a INNER JOIN clause and with to the query using the ProformaInvoice relation
  *
+ * @method     ChildPurchaseOrderQuery leftJoinCurrency($relationAlias = null) Adds a LEFT JOIN clause to the query using the Currency relation
+ * @method     ChildPurchaseOrderQuery rightJoinCurrency($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Currency relation
+ * @method     ChildPurchaseOrderQuery innerJoinCurrency($relationAlias = null) Adds a INNER JOIN clause to the query using the Currency relation
+ *
+ * @method     ChildPurchaseOrderQuery joinWithCurrency($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Currency relation
+ *
+ * @method     ChildPurchaseOrderQuery leftJoinWithCurrency() Adds a LEFT JOIN clause and with to the query using the Currency relation
+ * @method     ChildPurchaseOrderQuery rightJoinWithCurrency() Adds a RIGHT JOIN clause and with to the query using the Currency relation
+ * @method     ChildPurchaseOrderQuery innerJoinWithCurrency() Adds a INNER JOIN clause and with to the query using the Currency relation
+ *
  * @method     ChildPurchaseOrderQuery leftJoinSupplier($relationAlias = null) Adds a LEFT JOIN clause to the query using the Supplier relation
  * @method     ChildPurchaseOrderQuery rightJoinSupplier($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Supplier relation
  * @method     ChildPurchaseOrderQuery innerJoinSupplier($relationAlias = null) Adds a INNER JOIN clause to the query using the Supplier relation
@@ -88,7 +100,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderQuery rightJoinWithPurchaseOrderLine() Adds a RIGHT JOIN clause and with to the query using the PurchaseOrderLine relation
  * @method     ChildPurchaseOrderQuery innerJoinWithPurchaseOrderLine() Adds a INNER JOIN clause and with to the query using the PurchaseOrderLine relation
  *
- * @method     \ProformaInvoiceQuery|\PartnerQuery|\PurchaseOrderLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \ProformaInvoiceQuery|\CurrencyQuery|\PartnerQuery|\PurchaseOrderLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildPurchaseOrder findOne(ConnectionInterface $con = null) Return the first ChildPurchaseOrder matching the query
  * @method     ChildPurchaseOrder findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPurchaseOrder matching the query, or a new ChildPurchaseOrder object populated from the query conditions when no match is found
@@ -97,6 +109,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrder findOneByName(string $name) Return the first ChildPurchaseOrder filtered by the name column
  * @method     ChildPurchaseOrder findOneByProformaInvoiceId(int $proforma_invoice_id) Return the first ChildPurchaseOrder filtered by the proforma_invoice_id column
  * @method     ChildPurchaseOrder findOneBySupplierId(int $supplier_id) Return the first ChildPurchaseOrder filtered by the supplier_id column
+ * @method     ChildPurchaseOrder findOneByCurrencyId(int $currency_id) Return the first ChildPurchaseOrder filtered by the currency_id column
  * @method     ChildPurchaseOrder findOneByNote(string $note) Return the first ChildPurchaseOrder filtered by the note column
  * @method     ChildPurchaseOrder findOneByDate(string $date) Return the first ChildPurchaseOrder filtered by the date column
  * @method     ChildPurchaseOrder findOneByPaymentTerm(string $payment_term) Return the first ChildPurchaseOrder filtered by the payment_term column
@@ -115,6 +128,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrder requireOneByName(string $name) Return the first ChildPurchaseOrder filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByProformaInvoiceId(int $proforma_invoice_id) Return the first ChildPurchaseOrder filtered by the proforma_invoice_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneBySupplierId(int $supplier_id) Return the first ChildPurchaseOrder filtered by the supplier_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPurchaseOrder requireOneByCurrencyId(int $currency_id) Return the first ChildPurchaseOrder filtered by the currency_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByNote(string $note) Return the first ChildPurchaseOrder filtered by the note column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByDate(string $date) Return the first ChildPurchaseOrder filtered by the date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByPaymentTerm(string $payment_term) Return the first ChildPurchaseOrder filtered by the payment_term column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -131,6 +145,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrder[]|ObjectCollection findByName(string $name) Return ChildPurchaseOrder objects filtered by the name column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByProformaInvoiceId(int $proforma_invoice_id) Return ChildPurchaseOrder objects filtered by the proforma_invoice_id column
  * @method     ChildPurchaseOrder[]|ObjectCollection findBySupplierId(int $supplier_id) Return ChildPurchaseOrder objects filtered by the supplier_id column
+ * @method     ChildPurchaseOrder[]|ObjectCollection findByCurrencyId(int $currency_id) Return ChildPurchaseOrder objects filtered by the currency_id column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByNote(string $note) Return ChildPurchaseOrder objects filtered by the note column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByDate(string $date) Return ChildPurchaseOrder objects filtered by the date column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByPaymentTerm(string $payment_term) Return ChildPurchaseOrder objects filtered by the payment_term column
@@ -239,7 +254,7 @@ abstract class PurchaseOrderQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, proforma_invoice_id, supplier_id, note, date, payment_term, shipment_term, packing_type, down_payment, down_payment_deadline, total_price, created_at, updated_at FROM purchase_order WHERE id = :p0';
+        $sql = 'SELECT id, name, proforma_invoice_id, supplier_id, currency_id, note, date, payment_term, shipment_term, packing_type, down_payment, down_payment_deadline, total_price, created_at, updated_at FROM purchase_order WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -479,6 +494,49 @@ abstract class PurchaseOrderQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PurchaseOrderTableMap::COL_SUPPLIER_ID, $supplierId, $comparison);
+    }
+
+    /**
+     * Filter the query on the currency_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCurrencyId(1234); // WHERE currency_id = 1234
+     * $query->filterByCurrencyId(array(12, 34)); // WHERE currency_id IN (12, 34)
+     * $query->filterByCurrencyId(array('min' => 12)); // WHERE currency_id > 12
+     * </code>
+     *
+     * @see       filterByCurrency()
+     *
+     * @param     mixed $currencyId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPurchaseOrderQuery The current query, for fluid interface
+     */
+    public function filterByCurrencyId($currencyId = null, $comparison = null)
+    {
+        if (is_array($currencyId)) {
+            $useMinMax = false;
+            if (isset($currencyId['min'])) {
+                $this->addUsingAlias(PurchaseOrderTableMap::COL_CURRENCY_ID, $currencyId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($currencyId['max'])) {
+                $this->addUsingAlias(PurchaseOrderTableMap::COL_CURRENCY_ID, $currencyId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PurchaseOrderTableMap::COL_CURRENCY_ID, $currencyId, $comparison);
     }
 
     /**
@@ -910,6 +968,83 @@ abstract class PurchaseOrderQuery extends ModelCriteria
         return $this
             ->joinProformaInvoice($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'ProformaInvoice', '\ProformaInvoiceQuery');
+    }
+
+    /**
+     * Filter the query by a related \Currency object
+     *
+     * @param \Currency|ObjectCollection $currency The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildPurchaseOrderQuery The current query, for fluid interface
+     */
+    public function filterByCurrency($currency, $comparison = null)
+    {
+        if ($currency instanceof \Currency) {
+            return $this
+                ->addUsingAlias(PurchaseOrderTableMap::COL_CURRENCY_ID, $currency->getId(), $comparison);
+        } elseif ($currency instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(PurchaseOrderTableMap::COL_CURRENCY_ID, $currency->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByCurrency() only accepts arguments of type \Currency or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Currency relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildPurchaseOrderQuery The current query, for fluid interface
+     */
+    public function joinCurrency($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Currency');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Currency');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Currency relation Currency object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \CurrencyQuery A secondary query class using the current class as primary query
+     */
+    public function useCurrencyQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinCurrency($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Currency', '\CurrencyQuery');
     }
 
     /**

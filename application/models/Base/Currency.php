@@ -2,16 +2,21 @@
 
 namespace Base;
 
+use \Currency as ChildCurrency;
 use \CurrencyQuery as ChildCurrencyQuery;
+use \PurchaseOrder as ChildPurchaseOrder;
+use \PurchaseOrderQuery as ChildPurchaseOrderQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
 use Map\CurrencyTableMap;
+use Map\PurchaseOrderTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
+use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
@@ -114,12 +119,24 @@ abstract class Currency implements ActiveRecordInterface
     protected $updated_at;
 
     /**
+     * @var        ObjectCollection|ChildPurchaseOrder[] Collection to store aggregation of ChildPurchaseOrder objects.
+     */
+    protected $collPurchaseOrders;
+    protected $collPurchaseOrdersPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildPurchaseOrder[]
+     */
+    protected $purchaseOrdersScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -724,6 +741,8 @@ abstract class Currency implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->collPurchaseOrders = null;
+
         } // if (deep)
     }
 
@@ -836,6 +855,23 @@ abstract class Currency implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
+            }
+
+            if ($this->purchaseOrdersScheduledForDeletion !== null) {
+                if (!$this->purchaseOrdersScheduledForDeletion->isEmpty()) {
+                    \PurchaseOrderQuery::create()
+                        ->filterByPrimaryKeys($this->purchaseOrdersScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->purchaseOrdersScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collPurchaseOrders !== null) {
+                foreach ($this->collPurchaseOrders as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             $this->alreadyInSave = false;
@@ -1017,10 +1053,11 @@ abstract class Currency implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
         if (isset($alreadyDumpedObjects['Currency'][$this->hashCode()])) {
@@ -1050,6 +1087,23 @@ abstract class Currency implements ActiveRecordInterface
             $result[$key] = $virtualColumn;
         }
 
+        if ($includeForeignObjects) {
+            if (null !== $this->collPurchaseOrders) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'purchaseOrders';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'purchase_orders';
+                        break;
+                    default:
+                        $key = 'PurchaseOrders';
+                }
+
+                $result[$key] = $this->collPurchaseOrders->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+        }
 
         return $result;
     }
@@ -1305,6 +1359,20 @@ abstract class Currency implements ActiveRecordInterface
         $copyObj->setPlacement($this->getPlacement());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
+
+        if ($deepCopy) {
+            // important: temporarily setNew(false) because this affects the behavior of
+            // the getter/setter methods for fkey referrer objects.
+            $copyObj->setNew(false);
+
+            foreach ($this->getPurchaseOrders() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addPurchaseOrder($relObj->copy($deepCopy));
+                }
+            }
+
+        } // if ($deepCopy)
+
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1331,6 +1399,298 @@ abstract class Currency implements ActiveRecordInterface
         $this->copyInto($copyObj, $deepCopy);
 
         return $copyObj;
+    }
+
+
+    /**
+     * Initializes a collection based on the name of a relation.
+     * Avoids crafting an 'init[$relationName]s' method name
+     * that wouldn't work when StandardEnglishPluralizer is used.
+     *
+     * @param      string $relationName The name of the relation to initialize
+     * @return void
+     */
+    public function initRelation($relationName)
+    {
+        if ('PurchaseOrder' == $relationName) {
+            $this->initPurchaseOrders();
+            return;
+        }
+    }
+
+    /**
+     * Clears out the collPurchaseOrders collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addPurchaseOrders()
+     */
+    public function clearPurchaseOrders()
+    {
+        $this->collPurchaseOrders = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collPurchaseOrders collection loaded partially.
+     */
+    public function resetPartialPurchaseOrders($v = true)
+    {
+        $this->collPurchaseOrdersPartial = $v;
+    }
+
+    /**
+     * Initializes the collPurchaseOrders collection.
+     *
+     * By default this just sets the collPurchaseOrders collection to an empty array (like clearcollPurchaseOrders());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initPurchaseOrders($overrideExisting = true)
+    {
+        if (null !== $this->collPurchaseOrders && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = PurchaseOrderTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collPurchaseOrders = new $collectionClassName;
+        $this->collPurchaseOrders->setModel('\PurchaseOrder');
+    }
+
+    /**
+     * Gets an array of ChildPurchaseOrder objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildCurrency is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildPurchaseOrder[] List of ChildPurchaseOrder objects
+     * @throws PropelException
+     */
+    public function getPurchaseOrders(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPurchaseOrdersPartial && !$this->isNew();
+        if (null === $this->collPurchaseOrders || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collPurchaseOrders) {
+                // return empty collection
+                $this->initPurchaseOrders();
+            } else {
+                $collPurchaseOrders = ChildPurchaseOrderQuery::create(null, $criteria)
+                    ->filterByCurrency($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collPurchaseOrdersPartial && count($collPurchaseOrders)) {
+                        $this->initPurchaseOrders(false);
+
+                        foreach ($collPurchaseOrders as $obj) {
+                            if (false == $this->collPurchaseOrders->contains($obj)) {
+                                $this->collPurchaseOrders->append($obj);
+                            }
+                        }
+
+                        $this->collPurchaseOrdersPartial = true;
+                    }
+
+                    return $collPurchaseOrders;
+                }
+
+                if ($partial && $this->collPurchaseOrders) {
+                    foreach ($this->collPurchaseOrders as $obj) {
+                        if ($obj->isNew()) {
+                            $collPurchaseOrders[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collPurchaseOrders = $collPurchaseOrders;
+                $this->collPurchaseOrdersPartial = false;
+            }
+        }
+
+        return $this->collPurchaseOrders;
+    }
+
+    /**
+     * Sets a collection of ChildPurchaseOrder objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $purchaseOrders A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildCurrency The current object (for fluent API support)
+     */
+    public function setPurchaseOrders(Collection $purchaseOrders, ConnectionInterface $con = null)
+    {
+        /** @var ChildPurchaseOrder[] $purchaseOrdersToDelete */
+        $purchaseOrdersToDelete = $this->getPurchaseOrders(new Criteria(), $con)->diff($purchaseOrders);
+
+
+        $this->purchaseOrdersScheduledForDeletion = $purchaseOrdersToDelete;
+
+        foreach ($purchaseOrdersToDelete as $purchaseOrderRemoved) {
+            $purchaseOrderRemoved->setCurrency(null);
+        }
+
+        $this->collPurchaseOrders = null;
+        foreach ($purchaseOrders as $purchaseOrder) {
+            $this->addPurchaseOrder($purchaseOrder);
+        }
+
+        $this->collPurchaseOrders = $purchaseOrders;
+        $this->collPurchaseOrdersPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related PurchaseOrder objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related PurchaseOrder objects.
+     * @throws PropelException
+     */
+    public function countPurchaseOrders(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPurchaseOrdersPartial && !$this->isNew();
+        if (null === $this->collPurchaseOrders || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collPurchaseOrders) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getPurchaseOrders());
+            }
+
+            $query = ChildPurchaseOrderQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByCurrency($this)
+                ->count($con);
+        }
+
+        return count($this->collPurchaseOrders);
+    }
+
+    /**
+     * Method called to associate a ChildPurchaseOrder object to this object
+     * through the ChildPurchaseOrder foreign key attribute.
+     *
+     * @param  ChildPurchaseOrder $l ChildPurchaseOrder
+     * @return $this|\Currency The current object (for fluent API support)
+     */
+    public function addPurchaseOrder(ChildPurchaseOrder $l)
+    {
+        if ($this->collPurchaseOrders === null) {
+            $this->initPurchaseOrders();
+            $this->collPurchaseOrdersPartial = true;
+        }
+
+        if (!$this->collPurchaseOrders->contains($l)) {
+            $this->doAddPurchaseOrder($l);
+
+            if ($this->purchaseOrdersScheduledForDeletion and $this->purchaseOrdersScheduledForDeletion->contains($l)) {
+                $this->purchaseOrdersScheduledForDeletion->remove($this->purchaseOrdersScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildPurchaseOrder $purchaseOrder The ChildPurchaseOrder object to add.
+     */
+    protected function doAddPurchaseOrder(ChildPurchaseOrder $purchaseOrder)
+    {
+        $this->collPurchaseOrders[]= $purchaseOrder;
+        $purchaseOrder->setCurrency($this);
+    }
+
+    /**
+     * @param  ChildPurchaseOrder $purchaseOrder The ChildPurchaseOrder object to remove.
+     * @return $this|ChildCurrency The current object (for fluent API support)
+     */
+    public function removePurchaseOrder(ChildPurchaseOrder $purchaseOrder)
+    {
+        if ($this->getPurchaseOrders()->contains($purchaseOrder)) {
+            $pos = $this->collPurchaseOrders->search($purchaseOrder);
+            $this->collPurchaseOrders->remove($pos);
+            if (null === $this->purchaseOrdersScheduledForDeletion) {
+                $this->purchaseOrdersScheduledForDeletion = clone $this->collPurchaseOrders;
+                $this->purchaseOrdersScheduledForDeletion->clear();
+            }
+            $this->purchaseOrdersScheduledForDeletion[]= clone $purchaseOrder;
+            $purchaseOrder->setCurrency(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Currency is new, it will return
+     * an empty collection; or if this Currency has previously
+     * been saved, it will retrieve related PurchaseOrders from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Currency.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildPurchaseOrder[] List of ChildPurchaseOrder objects
+     */
+    public function getPurchaseOrdersJoinProformaInvoice(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildPurchaseOrderQuery::create(null, $criteria);
+        $query->joinWith('ProformaInvoice', $joinBehavior);
+
+        return $this->getPurchaseOrders($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Currency is new, it will return
+     * an empty collection; or if this Currency has previously
+     * been saved, it will retrieve related PurchaseOrders from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Currency.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildPurchaseOrder[] List of ChildPurchaseOrder objects
+     */
+    public function getPurchaseOrdersJoinSupplier(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildPurchaseOrderQuery::create(null, $criteria);
+        $query->joinWith('Supplier', $joinBehavior);
+
+        return $this->getPurchaseOrders($query, $con);
     }
 
     /**
@@ -1366,8 +1726,14 @@ abstract class Currency implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collPurchaseOrders) {
+                foreach ($this->collPurchaseOrders as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        $this->collPurchaseOrders = null;
     }
 
     /**
