@@ -91,7 +91,8 @@ class Manage_proformainvoices extends MY_Controller{
   }
 
   function write($id=null){
-    $data = parent::write($id,$fields);
+    $this->form['CurrencyId'] = 'CurrencyId';
+    $data = parent::write($id);
 
     $lines = json_decode($this->input->post('Lines'));
 
@@ -147,7 +148,11 @@ class Manage_proformainvoices extends MY_Controller{
       }
     }
 
-    redirect('manage_proformainvoices/detail/'.$data->getId());
+    if($this->input->is_ajax_request()){
+      echo $data->toJSON();
+    }else{
+      redirect('manage_proformainvoices/detail/'.$data->getId());
+    }
   }
 
   function delete($id){

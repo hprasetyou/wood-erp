@@ -16,6 +16,8 @@ use \ProductImageQuery as ChildProductImageQuery;
 use \ProductPartner as ChildProductPartner;
 use \ProductPartnerQuery as ChildProductPartnerQuery;
 use \ProductQuery as ChildProductQuery;
+use \ProformaInvoiceLine as ChildProformaInvoiceLine;
+use \ProformaInvoiceLineQuery as ChildProformaInvoiceLineQuery;
 use \PurchaseOrderLine as ChildPurchaseOrderLine;
 use \PurchaseOrderLineQuery as ChildPurchaseOrderLineQuery;
 use \DateTime;
@@ -26,6 +28,7 @@ use Map\ProductFinishingTableMap;
 use Map\ProductImageTableMap;
 use Map\ProductPartnerTableMap;
 use Map\ProductTableMap;
+use Map\ProformaInvoiceLineTableMap;
 use Map\PurchaseOrderLineTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -287,6 +290,12 @@ abstract class Product implements ActiveRecordInterface
     protected $collProductImagesPartial;
 
     /**
+     * @var        ObjectCollection|ChildProformaInvoiceLine[] Collection to store aggregation of ChildProformaInvoiceLine objects.
+     */
+    protected $collProformaInvoiceLines;
+    protected $collProformaInvoiceLinesPartial;
+
+    /**
      * @var        ObjectCollection|ChildPurchaseOrderLine[] Collection to store aggregation of ChildPurchaseOrderLine objects.
      */
     protected $collPurchaseOrderLines;
@@ -339,6 +348,12 @@ abstract class Product implements ActiveRecordInterface
      * @var ObjectCollection|ChildProductImage[]
      */
     protected $productImagesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildProformaInvoiceLine[]
+     */
+    protected $proformaInvoiceLinesScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -1618,6 +1633,8 @@ abstract class Product implements ActiveRecordInterface
 
             $this->collProductImages = null;
 
+            $this->collProformaInvoiceLines = null;
+
             $this->collPurchaseOrderLines = null;
 
             $this->collFinishings = null;
@@ -1839,6 +1856,23 @@ abstract class Product implements ActiveRecordInterface
 
             if ($this->collProductImages !== null) {
                 foreach ($this->collProductImages as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->proformaInvoiceLinesScheduledForDeletion !== null) {
+                if (!$this->proformaInvoiceLinesScheduledForDeletion->isEmpty()) {
+                    \ProformaInvoiceLineQuery::create()
+                        ->filterByPrimaryKeys($this->proformaInvoiceLinesScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->proformaInvoiceLinesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collProformaInvoiceLines !== null) {
+                foreach ($this->collProformaInvoiceLines as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -2321,6 +2355,21 @@ abstract class Product implements ActiveRecordInterface
 
                 $result[$key] = $this->collProductImages->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
+            if (null !== $this->collProformaInvoiceLines) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'proformaInvoiceLines';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'proforma_invoice_lines';
+                        break;
+                    default:
+                        $key = 'ProformaInvoiceLines';
+                }
+
+                $result[$key] = $this->collProformaInvoiceLines->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
             if (null !== $this->collPurchaseOrderLines) {
 
                 switch ($keyType) {
@@ -2792,6 +2841,12 @@ abstract class Product implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getProformaInvoiceLines() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addProformaInvoiceLine($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getPurchaseOrderLines() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addPurchaseOrderLine($relObj->copy($deepCopy));
@@ -2904,6 +2959,10 @@ abstract class Product implements ActiveRecordInterface
         }
         if ('ProductImage' == $relationName) {
             $this->initProductImages();
+            return;
+        }
+        if ('ProformaInvoiceLine' == $relationName) {
+            $this->initProformaInvoiceLines();
             return;
         }
         if ('PurchaseOrderLine' == $relationName) {
@@ -3891,6 +3950,256 @@ abstract class Product implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collProformaInvoiceLines collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addProformaInvoiceLines()
+     */
+    public function clearProformaInvoiceLines()
+    {
+        $this->collProformaInvoiceLines = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collProformaInvoiceLines collection loaded partially.
+     */
+    public function resetPartialProformaInvoiceLines($v = true)
+    {
+        $this->collProformaInvoiceLinesPartial = $v;
+    }
+
+    /**
+     * Initializes the collProformaInvoiceLines collection.
+     *
+     * By default this just sets the collProformaInvoiceLines collection to an empty array (like clearcollProformaInvoiceLines());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initProformaInvoiceLines($overrideExisting = true)
+    {
+        if (null !== $this->collProformaInvoiceLines && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = ProformaInvoiceLineTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collProformaInvoiceLines = new $collectionClassName;
+        $this->collProformaInvoiceLines->setModel('\ProformaInvoiceLine');
+    }
+
+    /**
+     * Gets an array of ChildProformaInvoiceLine objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildProduct is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildProformaInvoiceLine[] List of ChildProformaInvoiceLine objects
+     * @throws PropelException
+     */
+    public function getProformaInvoiceLines(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collProformaInvoiceLinesPartial && !$this->isNew();
+        if (null === $this->collProformaInvoiceLines || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collProformaInvoiceLines) {
+                // return empty collection
+                $this->initProformaInvoiceLines();
+            } else {
+                $collProformaInvoiceLines = ChildProformaInvoiceLineQuery::create(null, $criteria)
+                    ->filterByProduct($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collProformaInvoiceLinesPartial && count($collProformaInvoiceLines)) {
+                        $this->initProformaInvoiceLines(false);
+
+                        foreach ($collProformaInvoiceLines as $obj) {
+                            if (false == $this->collProformaInvoiceLines->contains($obj)) {
+                                $this->collProformaInvoiceLines->append($obj);
+                            }
+                        }
+
+                        $this->collProformaInvoiceLinesPartial = true;
+                    }
+
+                    return $collProformaInvoiceLines;
+                }
+
+                if ($partial && $this->collProformaInvoiceLines) {
+                    foreach ($this->collProformaInvoiceLines as $obj) {
+                        if ($obj->isNew()) {
+                            $collProformaInvoiceLines[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collProformaInvoiceLines = $collProformaInvoiceLines;
+                $this->collProformaInvoiceLinesPartial = false;
+            }
+        }
+
+        return $this->collProformaInvoiceLines;
+    }
+
+    /**
+     * Sets a collection of ChildProformaInvoiceLine objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $proformaInvoiceLines A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildProduct The current object (for fluent API support)
+     */
+    public function setProformaInvoiceLines(Collection $proformaInvoiceLines, ConnectionInterface $con = null)
+    {
+        /** @var ChildProformaInvoiceLine[] $proformaInvoiceLinesToDelete */
+        $proformaInvoiceLinesToDelete = $this->getProformaInvoiceLines(new Criteria(), $con)->diff($proformaInvoiceLines);
+
+
+        $this->proformaInvoiceLinesScheduledForDeletion = $proformaInvoiceLinesToDelete;
+
+        foreach ($proformaInvoiceLinesToDelete as $proformaInvoiceLineRemoved) {
+            $proformaInvoiceLineRemoved->setProduct(null);
+        }
+
+        $this->collProformaInvoiceLines = null;
+        foreach ($proformaInvoiceLines as $proformaInvoiceLine) {
+            $this->addProformaInvoiceLine($proformaInvoiceLine);
+        }
+
+        $this->collProformaInvoiceLines = $proformaInvoiceLines;
+        $this->collProformaInvoiceLinesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related ProformaInvoiceLine objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related ProformaInvoiceLine objects.
+     * @throws PropelException
+     */
+    public function countProformaInvoiceLines(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collProformaInvoiceLinesPartial && !$this->isNew();
+        if (null === $this->collProformaInvoiceLines || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collProformaInvoiceLines) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getProformaInvoiceLines());
+            }
+
+            $query = ChildProformaInvoiceLineQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByProduct($this)
+                ->count($con);
+        }
+
+        return count($this->collProformaInvoiceLines);
+    }
+
+    /**
+     * Method called to associate a ChildProformaInvoiceLine object to this object
+     * through the ChildProformaInvoiceLine foreign key attribute.
+     *
+     * @param  ChildProformaInvoiceLine $l ChildProformaInvoiceLine
+     * @return $this|\Product The current object (for fluent API support)
+     */
+    public function addProformaInvoiceLine(ChildProformaInvoiceLine $l)
+    {
+        if ($this->collProformaInvoiceLines === null) {
+            $this->initProformaInvoiceLines();
+            $this->collProformaInvoiceLinesPartial = true;
+        }
+
+        if (!$this->collProformaInvoiceLines->contains($l)) {
+            $this->doAddProformaInvoiceLine($l);
+
+            if ($this->proformaInvoiceLinesScheduledForDeletion and $this->proformaInvoiceLinesScheduledForDeletion->contains($l)) {
+                $this->proformaInvoiceLinesScheduledForDeletion->remove($this->proformaInvoiceLinesScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildProformaInvoiceLine $proformaInvoiceLine The ChildProformaInvoiceLine object to add.
+     */
+    protected function doAddProformaInvoiceLine(ChildProformaInvoiceLine $proformaInvoiceLine)
+    {
+        $this->collProformaInvoiceLines[]= $proformaInvoiceLine;
+        $proformaInvoiceLine->setProduct($this);
+    }
+
+    /**
+     * @param  ChildProformaInvoiceLine $proformaInvoiceLine The ChildProformaInvoiceLine object to remove.
+     * @return $this|ChildProduct The current object (for fluent API support)
+     */
+    public function removeProformaInvoiceLine(ChildProformaInvoiceLine $proformaInvoiceLine)
+    {
+        if ($this->getProformaInvoiceLines()->contains($proformaInvoiceLine)) {
+            $pos = $this->collProformaInvoiceLines->search($proformaInvoiceLine);
+            $this->collProformaInvoiceLines->remove($pos);
+            if (null === $this->proformaInvoiceLinesScheduledForDeletion) {
+                $this->proformaInvoiceLinesScheduledForDeletion = clone $this->collProformaInvoiceLines;
+                $this->proformaInvoiceLinesScheduledForDeletion->clear();
+            }
+            $this->proformaInvoiceLinesScheduledForDeletion[]= clone $proformaInvoiceLine;
+            $proformaInvoiceLine->setProduct(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Product is new, it will return
+     * an empty collection; or if this Product has previously
+     * been saved, it will retrieve related ProformaInvoiceLines from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Product.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildProformaInvoiceLine[] List of ChildProformaInvoiceLine objects
+     */
+    public function getProformaInvoiceLinesJoinProformaInvoice(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildProformaInvoiceLineQuery::create(null, $criteria);
+        $query->joinWith('ProformaInvoice', $joinBehavior);
+
+        return $this->getProformaInvoiceLines($query, $con);
+    }
+
+    /**
      * Clears out the collPurchaseOrderLines collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
@@ -4506,6 +4815,11 @@ abstract class Product implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collProformaInvoiceLines) {
+                foreach ($this->collProformaInvoiceLines as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collPurchaseOrderLines) {
                 foreach ($this->collPurchaseOrderLines as $o) {
                     $o->clearAllReferences($deep);
@@ -4522,6 +4836,7 @@ abstract class Product implements ActiveRecordInterface
         $this->collProductPartners = null;
         $this->collProductFinishings = null;
         $this->collProductImages = null;
+        $this->collProformaInvoiceLines = null;
         $this->collPurchaseOrderLines = null;
         $this->collFinishings = null;
         $this->aMaterial = null;

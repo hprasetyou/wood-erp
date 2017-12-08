@@ -103,6 +103,7 @@ abstract class PurchaseOrder implements ActiveRecordInterface
     /**
      * The value for the currency_id field.
      *
+     * Note: this column has a database default value of: 1
      * @var        int
      */
     protected $currency_id;
@@ -222,6 +223,7 @@ abstract class PurchaseOrder implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
+        $this->currency_id = 1;
     }
 
     /**
@@ -963,6 +965,10 @@ abstract class PurchaseOrder implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->currency_id !== 1) {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -2086,7 +2092,7 @@ abstract class PurchaseOrder implements ActiveRecordInterface
     public function setCurrency(ChildCurrency $v = null)
     {
         if ($v === null) {
-            $this->setCurrencyId(NULL);
+            $this->setCurrencyId(1);
         } else {
             $this->setCurrencyId($v->getId());
         }

@@ -270,6 +270,7 @@
   <table name="proforma_invoice" phpName="ProformaInvoice">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="name" phpName="Name" type="VARCHAR" size="255"/>
+    <column name="currency_id" phpName="CurrencyId" type="INTEGER" required="true" defaultValue="1"/>
     <column name="customer_id" phpName="CustomerId" type="INTEGER" required="true"/>
     <column name="date" phpName="Date" type="DATE"/>
     <column name="description" phpName="Description" size="255" type="VARCHAR"/>
@@ -279,12 +280,16 @@
     <foreign-key foreignTable="partner">
       <reference local="customer_id" foreign="id"/>
     </foreign-key>
+    <foreign-key foreignTable="currency">
+      <reference local="currency_id" foreign="id"/>
+    </foreign-key>
   </table>
   <table name="proforma_invoice_line" phpName="ProformaInvoiceLine">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="proforma_invoice_id" phpName="ProformaInvoiceId" type="INTEGER" required="true"/>
-    <column name="product_partner_id" phpName="ProductPartnerId" type="INTEGER" required="true"/>
+    <column name="product_id" phpName="ProductId" type="INTEGER" required="true"/>
     <column name="product_finishing" phpName="ProductFinishing" size="255" type="VARCHAR"/>
+    <column name="name" phpName="Name" size="255" type="VARCHAR"/>
     <column name="description" phpName="Description" size="255" type="VARCHAR"/>
     <column name="qty" phpName="Qty" type="INTEGER"/>
     <column name="qty_per_pack" phpName="QtyPerPack" type="INTEGER"/>
@@ -299,8 +304,8 @@
     <foreign-key foreignTable="proforma_invoice">
       <reference local="proforma_invoice_id" foreign="id"/>
     </foreign-key>
-    <foreign-key foreignTable="product_partner">
-      <reference local="product_partner_id" foreign="id"/>
+    <foreign-key foreignTable="product">
+      <reference local="product_id" foreign="id"/>
     </foreign-key>
   </table>
   <table name="packing_list" phpName="PackingList">
@@ -344,7 +349,7 @@
     <column name="name" phpName="Name" required="true" type="VARCHAR" size="255"/>
     <column name="proforma_invoice_id" phpName="ProformaInvoiceId" type="INTEGER" required="true"/>
     <column name="supplier_id" phpName="SupplierId" type="INTEGER" required="true"/>
-    <column name="currency_id" phpName="CurrencyId" type="INTEGER" required="true"/>
+    <column name="currency_id" phpName="CurrencyId" type="INTEGER" required="true" defaultValue="1"/>
     <column name="note" phpName="Note" type="LONGVARCHAR"/>
     <column name="date" phpName="Date" type="DATE"/>
     <column name="payment_term" phpName="PaymentTerm" type="VARCHAR" size="255"/>

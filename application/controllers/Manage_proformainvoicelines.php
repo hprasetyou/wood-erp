@@ -5,36 +5,23 @@ class Manage_proformainvoicelines extends MY_Controller{
 
   function __construct(){
     parent::__construct();
-		$this->objname = 'ProformaInvoiceLine';
+		$this->set_objname('ProformaInvoiceLine');
 		$this->tpl = 'proformainvoicelines';
-    $this->form = array(
-     'ProformaInvoiceId' => 'ProformaInvoiceId',
-     'ProductPartnerId' => 'ProductPartnerId',
-     'ProductFinishing' => 'ProductFinishing',
-     'Description' => 'Description',
-     'Qty' => 'Qty',
-     'QtyPerPack' => 'QtyPerPack',
-     'CubicDimension' => 'CubicDimension',
-     'TotalCubicDimension' => 'TotalCubicDimension',
-     'Price' => 'Price',
-     'TotalPrice' => 'TotalPrice',
-     'IsSample' => 'IsSample',
-     'IsNeedBox' => 'IsNeedBox',
-    );
+
   }
 
   function get_json(){
     $this->objobj = ProformaInvoiceLineQuery::create()
-    ->joinWith('ProductPartner')
     ->filterByProformaInvoiceId($this->input->get('proforma_invoice'));
+    $this->custom_column['qty_of_pack'] = "ceil(_{Qty}_/_{QtyPerPack}_)" ;
     if($this->input->get('check_qty_for_pl')){
-      $this->custom_column = array('avail_qty'=>" function() use(_{PackingListLines}_,_{Qty}_){
+      $this->custom_column['avail_qty'] =" function() use(_{PackingListLines}_,_{Qty}_){
           \$sumpll = 0;
           foreach(_{PackingListLines}_ as \$pll){
             \$sumpll += \$pll->getQty();
           }
           return _{Qty}_ - \$sumpll;
-        }");
+        }";
     }
     parent::get_json();
 
@@ -107,24 +94,58 @@ class Manage_proformainvoicelines extends MY_Controller{
   }
 
   function detail($id){
-
-		$proforma_invoices = ProformaInvoiceQuery::create()->find();
-
-		$product_partners = ProductPartnerQuery::create()->find();
-
-		$proformainvoiceline = ProformaInvoiceLineQuery::create()->findPK($id);
-		$this->template->render('admin/proformainvoicelines/form',array('proformainvoicelines'=>$proformainvoiceline,
-		'proforma_invoices'=> $proforma_invoices,
-
-		'product_partners'=> $product_partners,
-			));
+		$proformainvoiceline = ProformaInvoiceLineQuery::create()
+    ->findPK($id);
+		echo $proformainvoiceline->toJSON();
   }
 
 	function write($id=null){
+    $pi = ProformaInvoiceQuery::create()
+    ->findPK($this->input->post('ProformaInvoiceId'));
+    $productcust = ProductPartnerQuery::create()
+    ->filterByProductId($this->input->post('ProductId'))
+    ->filterByPartnerId($pi->getCustomerId())
+    ->filterByType('sell')
+    ->orderByCreatedAt('desc')
+    ->findOne();
 
-		$data = parent::write($id);
-		redirect('manage_proformainvoicelines/detail/'.$data->getId());
-	}
+    if(!$productcust){
+      $productcust = new ProductPartner();
+      $productcust->setProductId($this->input->post('ProductId'));
+      $productcust->setPartnerId($pi->getCustomerId());
+      $productcust->setType('sell');
+    }
+    $productcust->setName($this->input->post('Name'));
+    $productcust->setDescription($this->input->post('Description'));
+    $productcust->setProductPrice($this->input->post('Price'));
+    $productcust->save();
+    //check if product already added
+    $line = ProformaInvoiceLineQuery::create()
+    ->filterByProductId($this->input->post('ProductId'))
+    ->filterByProformaInvoiceId($this->input->post('ProformaInvoiceId'))
+    ->findOne();
+    $oldqty = 0;
+    if($line){
+      $id = $line->getId();
+      $oldqty = $line->getQty();
+    }
+    $prod = $productcust->getProduct();
+    $qty = $this->input->post('Qty')+$oldqty;
+    $pack_qty = ceil($qty/$this->input->post('QtyPerPack'));
+    $cbm = $this->input->post('CubicDimension')*($this->input->post('QtyPerPack')/$prod->getQtyPerPack());
+    $this->form['CubicDimension'] = array('value'=>$cbm);
+    $this->form['Qty'] = array('value' =>$qty);
+    $this->form['ProductId'] = 'ProductId';
+    $this->form['ProformaInvoiceId'] = 'ProformaInvoiceId';
+    $this->form['TotalCubicDimension'] = array('value' =>
+      $pack_qty*$cbm
+    );
+    $this->form['TotalPrice'] = array('value' =>
+      $pack_qty*$this->input->post('Price')
+    );
+  	$data = parent::write($id);
+    echo $data->toJSON();
+}
 
   function delete($id){
 		$data = parent::delete($id);

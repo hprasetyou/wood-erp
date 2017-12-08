@@ -59,7 +59,7 @@ class ProformaInvoiceTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 8;
+    const NUM_COLUMNS = 9;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class ProformaInvoiceTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 8;
+    const NUM_HYDRATE_COLUMNS = 9;
 
     /**
      * the column name for the id field
@@ -80,6 +80,11 @@ class ProformaInvoiceTableMap extends TableMap
      * the column name for the name field
      */
     const COL_NAME = 'proforma_invoice.name';
+
+    /**
+     * the column name for the currency_id field
+     */
+    const COL_CURRENCY_ID = 'proforma_invoice.currency_id';
 
     /**
      * the column name for the customer_id field
@@ -123,11 +128,11 @@ class ProformaInvoiceTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'CustomerId', 'Date', 'Description', 'State', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'customerId', 'date', 'description', 'state', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ProformaInvoiceTableMap::COL_ID, ProformaInvoiceTableMap::COL_NAME, ProformaInvoiceTableMap::COL_CUSTOMER_ID, ProformaInvoiceTableMap::COL_DATE, ProformaInvoiceTableMap::COL_DESCRIPTION, ProformaInvoiceTableMap::COL_STATE, ProformaInvoiceTableMap::COL_CREATED_AT, ProformaInvoiceTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'customer_id', 'date', 'description', 'state', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'CurrencyId', 'CustomerId', 'Date', 'Description', 'State', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'currencyId', 'customerId', 'date', 'description', 'state', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ProformaInvoiceTableMap::COL_ID, ProformaInvoiceTableMap::COL_NAME, ProformaInvoiceTableMap::COL_CURRENCY_ID, ProformaInvoiceTableMap::COL_CUSTOMER_ID, ProformaInvoiceTableMap::COL_DATE, ProformaInvoiceTableMap::COL_DESCRIPTION, ProformaInvoiceTableMap::COL_STATE, ProformaInvoiceTableMap::COL_CREATED_AT, ProformaInvoiceTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'currency_id', 'customer_id', 'date', 'description', 'state', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -137,11 +142,11 @@ class ProformaInvoiceTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'CustomerId' => 2, 'Date' => 3, 'Description' => 4, 'State' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'customerId' => 2, 'date' => 3, 'description' => 4, 'state' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
-        self::TYPE_COLNAME       => array(ProformaInvoiceTableMap::COL_ID => 0, ProformaInvoiceTableMap::COL_NAME => 1, ProformaInvoiceTableMap::COL_CUSTOMER_ID => 2, ProformaInvoiceTableMap::COL_DATE => 3, ProformaInvoiceTableMap::COL_DESCRIPTION => 4, ProformaInvoiceTableMap::COL_STATE => 5, ProformaInvoiceTableMap::COL_CREATED_AT => 6, ProformaInvoiceTableMap::COL_UPDATED_AT => 7, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'customer_id' => 2, 'date' => 3, 'description' => 4, 'state' => 5, 'created_at' => 6, 'updated_at' => 7, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'CurrencyId' => 2, 'CustomerId' => 3, 'Date' => 4, 'Description' => 5, 'State' => 6, 'CreatedAt' => 7, 'UpdatedAt' => 8, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'currencyId' => 2, 'customerId' => 3, 'date' => 4, 'description' => 5, 'state' => 6, 'createdAt' => 7, 'updatedAt' => 8, ),
+        self::TYPE_COLNAME       => array(ProformaInvoiceTableMap::COL_ID => 0, ProformaInvoiceTableMap::COL_NAME => 1, ProformaInvoiceTableMap::COL_CURRENCY_ID => 2, ProformaInvoiceTableMap::COL_CUSTOMER_ID => 3, ProformaInvoiceTableMap::COL_DATE => 4, ProformaInvoiceTableMap::COL_DESCRIPTION => 5, ProformaInvoiceTableMap::COL_STATE => 6, ProformaInvoiceTableMap::COL_CREATED_AT => 7, ProformaInvoiceTableMap::COL_UPDATED_AT => 8, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'currency_id' => 2, 'customer_id' => 3, 'date' => 4, 'description' => 5, 'state' => 6, 'created_at' => 7, 'updated_at' => 8, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -163,6 +168,7 @@ class ProformaInvoiceTableMap extends TableMap
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', false, 255, null);
+        $this->addForeignKey('currency_id', 'CurrencyId', 'INTEGER', 'currency', 'id', true, null, 1);
         $this->addForeignKey('customer_id', 'CustomerId', 'INTEGER', 'partner', 'id', true, null, null);
         $this->addColumn('date', 'Date', 'DATE', false, null, null);
         $this->addColumn('description', 'Description', 'VARCHAR', false, 255, null);
@@ -180,6 +186,13 @@ class ProformaInvoiceTableMap extends TableMap
   0 =>
   array (
     0 => ':customer_id',
+    1 => ':id',
+  ),
+), null, null, null, false);
+        $this->addRelation('Currency', '\\Currency', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':currency_id',
     1 => ':id',
   ),
 ), null, null, null, false);
@@ -342,6 +355,7 @@ class ProformaInvoiceTableMap extends TableMap
         if (null === $alias) {
             $criteria->addSelectColumn(ProformaInvoiceTableMap::COL_ID);
             $criteria->addSelectColumn(ProformaInvoiceTableMap::COL_NAME);
+            $criteria->addSelectColumn(ProformaInvoiceTableMap::COL_CURRENCY_ID);
             $criteria->addSelectColumn(ProformaInvoiceTableMap::COL_CUSTOMER_ID);
             $criteria->addSelectColumn(ProformaInvoiceTableMap::COL_DATE);
             $criteria->addSelectColumn(ProformaInvoiceTableMap::COL_DESCRIPTION);
@@ -351,6 +365,7 @@ class ProformaInvoiceTableMap extends TableMap
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.name');
+            $criteria->addSelectColumn($alias . '.currency_id');
             $criteria->addSelectColumn($alias . '.customer_id');
             $criteria->addSelectColumn($alias . '.date');
             $criteria->addSelectColumn($alias . '.description');

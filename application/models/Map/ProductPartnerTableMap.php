@@ -196,13 +196,6 @@ class ProductPartnerTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, null, false);
-        $this->addRelation('ProformaInvoiceLine', '\\ProformaInvoiceLine', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':product_partner_id',
-    1 => ':id',
-  ),
-), null, null, 'ProformaInvoiceLines', false);
     } // buildRelations()
 
     /**

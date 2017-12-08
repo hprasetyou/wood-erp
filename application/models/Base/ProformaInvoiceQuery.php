@@ -22,6 +22,7 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildProformaInvoiceQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildProformaInvoiceQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method     ChildProformaInvoiceQuery orderByCurrencyId($order = Criteria::ASC) Order by the currency_id column
  * @method     ChildProformaInvoiceQuery orderByCustomerId($order = Criteria::ASC) Order by the customer_id column
  * @method     ChildProformaInvoiceQuery orderByDate($order = Criteria::ASC) Order by the date column
  * @method     ChildProformaInvoiceQuery orderByDescription($order = Criteria::ASC) Order by the description column
@@ -31,6 +32,7 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildProformaInvoiceQuery groupById() Group by the id column
  * @method     ChildProformaInvoiceQuery groupByName() Group by the name column
+ * @method     ChildProformaInvoiceQuery groupByCurrencyId() Group by the currency_id column
  * @method     ChildProformaInvoiceQuery groupByCustomerId() Group by the customer_id column
  * @method     ChildProformaInvoiceQuery groupByDate() Group by the date column
  * @method     ChildProformaInvoiceQuery groupByDescription() Group by the description column
@@ -56,6 +58,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceQuery rightJoinWithPartner() Adds a RIGHT JOIN clause and with to the query using the Partner relation
  * @method     ChildProformaInvoiceQuery innerJoinWithPartner() Adds a INNER JOIN clause and with to the query using the Partner relation
  *
+ * @method     ChildProformaInvoiceQuery leftJoinCurrency($relationAlias = null) Adds a LEFT JOIN clause to the query using the Currency relation
+ * @method     ChildProformaInvoiceQuery rightJoinCurrency($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Currency relation
+ * @method     ChildProformaInvoiceQuery innerJoinCurrency($relationAlias = null) Adds a INNER JOIN clause to the query using the Currency relation
+ *
+ * @method     ChildProformaInvoiceQuery joinWithCurrency($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Currency relation
+ *
+ * @method     ChildProformaInvoiceQuery leftJoinWithCurrency() Adds a LEFT JOIN clause and with to the query using the Currency relation
+ * @method     ChildProformaInvoiceQuery rightJoinWithCurrency() Adds a RIGHT JOIN clause and with to the query using the Currency relation
+ * @method     ChildProformaInvoiceQuery innerJoinWithCurrency() Adds a INNER JOIN clause and with to the query using the Currency relation
+ *
  * @method     ChildProformaInvoiceQuery leftJoinProformaInvoiceLine($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProformaInvoiceLine relation
  * @method     ChildProformaInvoiceQuery rightJoinProformaInvoiceLine($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProformaInvoiceLine relation
  * @method     ChildProformaInvoiceQuery innerJoinProformaInvoiceLine($relationAlias = null) Adds a INNER JOIN clause to the query using the ProformaInvoiceLine relation
@@ -76,13 +88,14 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceQuery rightJoinWithPurchaseOrder() Adds a RIGHT JOIN clause and with to the query using the PurchaseOrder relation
  * @method     ChildProformaInvoiceQuery innerJoinWithPurchaseOrder() Adds a INNER JOIN clause and with to the query using the PurchaseOrder relation
  *
- * @method     \PartnerQuery|\ProformaInvoiceLineQuery|\PurchaseOrderQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \PartnerQuery|\CurrencyQuery|\ProformaInvoiceLineQuery|\PurchaseOrderQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildProformaInvoice findOne(ConnectionInterface $con = null) Return the first ChildProformaInvoice matching the query
  * @method     ChildProformaInvoice findOneOrCreate(ConnectionInterface $con = null) Return the first ChildProformaInvoice matching the query, or a new ChildProformaInvoice object populated from the query conditions when no match is found
  *
  * @method     ChildProformaInvoice findOneById(int $id) Return the first ChildProformaInvoice filtered by the id column
  * @method     ChildProformaInvoice findOneByName(string $name) Return the first ChildProformaInvoice filtered by the name column
+ * @method     ChildProformaInvoice findOneByCurrencyId(int $currency_id) Return the first ChildProformaInvoice filtered by the currency_id column
  * @method     ChildProformaInvoice findOneByCustomerId(int $customer_id) Return the first ChildProformaInvoice filtered by the customer_id column
  * @method     ChildProformaInvoice findOneByDate(string $date) Return the first ChildProformaInvoice filtered by the date column
  * @method     ChildProformaInvoice findOneByDescription(string $description) Return the first ChildProformaInvoice filtered by the description column
@@ -95,6 +108,7 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildProformaInvoice requireOneById(int $id) Return the first ChildProformaInvoice filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByName(string $name) Return the first ChildProformaInvoice filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProformaInvoice requireOneByCurrencyId(int $currency_id) Return the first ChildProformaInvoice filtered by the currency_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByCustomerId(int $customer_id) Return the first ChildProformaInvoice filtered by the customer_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByDate(string $date) Return the first ChildProformaInvoice filtered by the date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByDescription(string $description) Return the first ChildProformaInvoice filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -105,6 +119,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoice[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildProformaInvoice objects based on current ModelCriteria
  * @method     ChildProformaInvoice[]|ObjectCollection findById(int $id) Return ChildProformaInvoice objects filtered by the id column
  * @method     ChildProformaInvoice[]|ObjectCollection findByName(string $name) Return ChildProformaInvoice objects filtered by the name column
+ * @method     ChildProformaInvoice[]|ObjectCollection findByCurrencyId(int $currency_id) Return ChildProformaInvoice objects filtered by the currency_id column
  * @method     ChildProformaInvoice[]|ObjectCollection findByCustomerId(int $customer_id) Return ChildProformaInvoice objects filtered by the customer_id column
  * @method     ChildProformaInvoice[]|ObjectCollection findByDate(string $date) Return ChildProformaInvoice objects filtered by the date column
  * @method     ChildProformaInvoice[]|ObjectCollection findByDescription(string $description) Return ChildProformaInvoice objects filtered by the description column
@@ -209,7 +224,7 @@ abstract class ProformaInvoiceQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, customer_id, date, description, state, created_at, updated_at FROM proforma_invoice WHERE id = :p0';
+        $sql = 'SELECT id, name, currency_id, customer_id, date, description, state, created_at, updated_at FROM proforma_invoice WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -363,6 +378,49 @@ abstract class ProformaInvoiceQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProformaInvoiceTableMap::COL_NAME, $name, $comparison);
+    }
+
+    /**
+     * Filter the query on the currency_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCurrencyId(1234); // WHERE currency_id = 1234
+     * $query->filterByCurrencyId(array(12, 34)); // WHERE currency_id IN (12, 34)
+     * $query->filterByCurrencyId(array('min' => 12)); // WHERE currency_id > 12
+     * </code>
+     *
+     * @see       filterByCurrency()
+     *
+     * @param     mixed $currencyId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProformaInvoiceQuery The current query, for fluid interface
+     */
+    public function filterByCurrencyId($currencyId = null, $comparison = null)
+    {
+        if (is_array($currencyId)) {
+            $useMinMax = false;
+            if (isset($currencyId['min'])) {
+                $this->addUsingAlias(ProformaInvoiceTableMap::COL_CURRENCY_ID, $currencyId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($currencyId['max'])) {
+                $this->addUsingAlias(ProformaInvoiceTableMap::COL_CURRENCY_ID, $currencyId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProformaInvoiceTableMap::COL_CURRENCY_ID, $currencyId, $comparison);
     }
 
     /**
@@ -662,6 +720,83 @@ abstract class ProformaInvoiceQuery extends ModelCriteria
         return $this
             ->joinPartner($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Partner', '\PartnerQuery');
+    }
+
+    /**
+     * Filter the query by a related \Currency object
+     *
+     * @param \Currency|ObjectCollection $currency The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildProformaInvoiceQuery The current query, for fluid interface
+     */
+    public function filterByCurrency($currency, $comparison = null)
+    {
+        if ($currency instanceof \Currency) {
+            return $this
+                ->addUsingAlias(ProformaInvoiceTableMap::COL_CURRENCY_ID, $currency->getId(), $comparison);
+        } elseif ($currency instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(ProformaInvoiceTableMap::COL_CURRENCY_ID, $currency->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByCurrency() only accepts arguments of type \Currency or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Currency relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildProformaInvoiceQuery The current query, for fluid interface
+     */
+    public function joinCurrency($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Currency');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Currency');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Currency relation Currency object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \CurrencyQuery A secondary query class using the current class as primary query
+     */
+    public function useCurrencyQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinCurrency($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Currency', '\CurrencyQuery');
     }
 
     /**

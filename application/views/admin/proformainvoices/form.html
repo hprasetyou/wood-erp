@@ -8,17 +8,18 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
 					{% include 'common/_form_header.html' with {'back_url':'/index.php/manage_proformainvoices'~back_link, 'title': res.string.proforma_invoice, 'delete_url':'/index.php/manage_proformainvoices/delete/{{ proformainvoices.Id }}', 'object':proformainvoices}
 					%}
 				</div>
+        <input type="hidden" id="PIId" value="{{ proformainvoices.Id }}">
 				<div class="box-body">
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.article_number}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
-									<div {% if proformainvoices %}style="display:none" {% endif %} class="input-wrap">
+                  <div {% if proformainvoices %}style="display:none"{%else%}class="input-wrap "{% endif %}>
 										<input type="text" placeholder="{{ res.string.name }}" value="{{ proformainvoices?proformainvoices.Name:code  }}" name="Name" class="form-control  col-md-7 col-xs-12">
 									</div>
 									{% if proformainvoices %}
-									<p data-fieldname="Name" class="control-value">{{ proformainvoices.Name }}</p>
+									<p data-fieldname="Name" class="value">{{ proformainvoices.Name }}</p>
 									{% endif %}
 								</div>
 							</div>
@@ -26,15 +27,15 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
 							<div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="CustomerId">{{res.string.customer}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
-									<div {% if proformainvoices %}style="display:none" {% endif %} class="input-wrap input-group">
+									<div {% if proformainvoices %}style="display:none"{%else%}class="input-wrap input-group "{% endif %}>
 										<input type="hidden" type="text" id="CustomerId" value="{{ proformainvoices.CustomerId }}" name="CustomerId">
 										<input type="text" required="required" name="displayCustomerId" id="displayCustomerId" placeholder="{{ res.string.customer }}" value="{{ proformainvoices.Partner.Name }}" class="form-control" />
 										<span class="input-group-btn">
-								<button class="btn btnModal btn-default" id="btnCustomerId"  data-target="ModalCustomer" type="button">{{res.string.search}}</button>
-							</span>
+    								<button class="btn btnModal btn-default" id="btnCustomerId"  data-target="ModalCustomer" type="button">{{res.string.search}}</button>
+    							</span>
 									</div>
 									{% if proformainvoices %}
-									<p data-fieldname="Partner.Name" class="control-value">{{ proformainvoices.Partner.Name }}</p>
+									<p data-fieldname="Partner.Name" class="value">{{ proformainvoices.Partner.Name }}</p>
 									{% endif %}
 								</div>
 							</div>
@@ -61,7 +62,7 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
                   {{selection_m2o('CurrencyId','Currency',null,proformainvoices.CurrencyId)| raw}}
                 </div>
                 {% if proformainvoices %}
-                <p data-fieldname="Date" class="control-value">{{ proformainvoices.Date | date('d M Y') }}</p>
+                <p data-fieldname="Date" class="control-value">{{ proformainvoices.Currency.Name }}</p>
                 {% endif %}
               </div>
             </div>
@@ -103,9 +104,87 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
 <script>
 var Lines = [];
 var idx =0;
+
+function refresh_line(){
+  $('#table_ProformaInvoiceLine').DataTable().ajax.reload(function(d){
+      console.log("reload dttable");
+      get_total()
+      $('#ModalAddProformaInvoiceLine').find('input').val('')
+      $('#ModalAddProformaInvoiceLine').find('input').checked = false;
+      $('#ModalAddProformaInvoiceLine').modal('hide')
+      $('#table_ProformaInvoiceLine').find('.btn-delete').show()
+      $('#table_ProformaInvoiceLine').find('.btn-edit').show()
+  })
+}
 $(document).ready(function(){
+  $('#table_ProformaInvoiceLine').on('click','.btn-delete',function(e){
+    $.ajax({
+      url:'/index.php/manage_proformainvoicelines/delete/'+$(this).data('id'),
+      data:'&confirm=1',
+      method:'POST'
+    }).done(function(o){
+      refresh_line()
+    })
+  })
+
+  $('#table_ProformaInvoiceLine').on('click','.btn-edit',function(e){
+    $.ajax({
+      url:'/index.php/manage_proformainvoicelines/detail/'+$(this).data('id'),
+      method:'GET',
+      dataType:'JSON'
+    }).done(function(o){
+      console.log(o);
+      $('#LineId').val(o.Id)
+      $('#ModalAddProformaInvoiceLine').find('input').each(function(i){
+
+        if(o.hasOwnProperty($(this).prop('name'))){
+          switch ($(this).prop('type')) {
+            case 'text':
+              $(this).val(o[$(this).prop('name')])
+              break;
+            case 'hidden':
+              $(this).val(o[$(this).prop('name')])
+              break;
+            case 'number':
+              $(this).val(o[$(this).prop('name')])
+              break;
+            case 'checkbox':
+              $(this).checked = o[$(this).prop('name')]
+              break;
+            default:
+          }
+          $(this).change();
+
+        }else{
+          console.log("dont have");
+        }
+
+        $('#Finishing').data('value',o.ProductFinishing)
+
+      })
+
+      $('#ModalAddProformaInvoiceLine').modal('show')
+    })
+  })
+  $('#form_ProformaInvoiceLine').submit(function(e){
+    e.preventDefault()
+    if($('#PIId').val()>0){
+        console.log('hahahahahha');
+          write_line($('#PIId').val()).done(function(o){
+            refresh_line()
+          })
+    }else{
+      write_pi().done(function(o){
+        write_line(o.Id).done(function(o){
+          location.reload();
+        })
+      })
+
+    }
+  })
   $('#btnOpenAddLine').click(function(e){
       if($('#CustomerId').val()>0 ){
+        $('#LineId').val("")
         $('#ModalAddProformaInvoiceLine').modal('show')
       }else{
         notice_popup('Please specify the customer first')
@@ -118,36 +197,23 @@ $(document).ready(function(){
     var gap = normal_price - price
     $('#CalculatedDiscount').val(((gap/normal_price)*100).toFixed(2))
   })
-  get_total()
-    $('#table_ProformaInvoiceLine').loadTableData(
-      {
-        search:false,
-        serverSide:false,
-        paging:false
-      })
-    $('#saveLine').click(function(e){
-      e.preventDefault();
-      mod_line({
-        Id:$('#LineId').val(),
-        Name:$('#LineName').val(),
-        ProductId: $('#ProductId').val(),
-        Qty:$('#Qty').val(),
-        Description:$('#Description').val(),
-        Finishing:$('#Finishing').val(),
-        Price:$('#Price').val(),
-        ListPrice:$('#ListPrice').val(),
-        CubicDimension:$('#CubicDimension').val(),
-        QtyPerPack:$('#QtyPerPack').val(),
-        IsSample:$('#IsSample').is(":checked"),
-        IsNeedBox:$('#IsNeedBox').is(":checked")
-      },'write')
-      $('.pi_lines').find('input').val('')
+
+    $('#table_ProformaInvoiceLine').loadTableData({
+      button:['edit','delete'],
+      complete:function(settings, json) {
+        console.log("complete");
+
+          get_total()
+        $('#table_ProformaInvoiceLine').css('width','100%')
+      }
     })
+
 
     $('.pi_lines').simpleValidation()
   })
 
   $('#ProductId').change(function(){
+    console.log("prod changed");
       $.ajax({
         url:'/index.php/manage_products/get_detail_json/'+$(this).val()+
         '?customer_id='+$('#CustomerId').val(),
@@ -164,21 +230,32 @@ $(document).ready(function(){
             })
           }
           repopulate_select2('#Finishing',sdf)
-
+          $('#Finishing').val(function(){
+            return $(this).data('value')
+          }).trigger('change');
           if(o.ProductPartners){
             price = o.ProductPartners[0].ProductPrice
             art = o.ProductPartners[0].Name
             desc = o.ProductPartners[0].Description
           }
+
           for (var i in o) {
             if (o.hasOwnProperty(i)) {
+              var shouldfill = true
+              if($('#LineId').val()>1 && i == 'QtyPerPack'){
+                shouldfill = false
+              }
+              if(shouldfill){
               $('#'+i).val(o[i])
+              }
             }
           }
+          console.log(desc);
           $('#CubicDimension').val(o.IsKdn?o.CubicKdn:o.CubicAsb)
           $('#LineName').val(art)
           $('#Description').val(desc)
           $('#Price').val(price)
+          $('#displayProductId').val(o.Name+' - '+ o.Description)
           $('#Price').trigger('change')
         }
       })
@@ -198,87 +275,6 @@ $(document).ready(function(){
     $('#TotalCd').text(ctot + ' m3')
   }
 
-  function mod_line(data,method){
-$('#LineId').val("")
-    idx = idx+1
-    var t = $('#table_ProformaInvoiceLine').DataTable();
-
-    if(method == 'write'){
-      Lines.push({
-        index:idx,
-        Id: data.Id,
-        Name: data.Name,
-        Description:data.Description,
-        Finishing: data.Finishing,
-        ProductId: data.ProductId,
-        Qty: data.Qty,
-        CubicDimension: data.CubicDimension,
-        Price: data.Price,
-        ListPrice: data.ListPrice,
-        QtyPerPack: data.QtyPerPack,
-        IsSample: data.IsSample,
-        IsNeedBox: data.IsNeedBox,
-        Type:method
-      })
-      var special = "<ul>"
-      if(data.IsSample){
-        special += "<li>{{res.string.is_sample}}</li>"
-      }
-      if(data.IsNeedBox){
-        special += "<li>{{res.string.with_box}}</li>"
-      }
-      special += "</ul>"
-      console.log(data.CubicDimension/1000000);
-      var cd = parseFloat(data.CubicDimension/1000000).toFixed(3);
-      var nr = [
-        data.Name,
-        data.Description,
-        data.Finishing,
-        data.Qty,
-        Math.ceil(data.Qty/data.QtyPerPack),
-        cd + ' m3',
-        cd*data.Qty + ' m3',
-        data.Price,
-        data.Price*data.Qty,
-        special,
-        '<a href="#" data-index="'+ idx+'" '+
-        'class="btn btn-default btn-edit-row">'+
-        '<i class="fa fa-pencil"></i></a>'+
-        '<a href="#" data-index="'+ idx+'" '+
-        'class="btn btn-danger btn-delete-row">'+
-        '<i class="fa fa-trash"></i></a>'
-      ];
-      if(data.Id > 0 || $('#LineId').data('edit')>0){
-        if($('#LineId').data('edit')>0){
-          Lines.splice(Lines.map(function(x) {return x.index; }).indexOf($(edrow).data('index')),1)
-        }
-
-        t.row( $(edrow).parents('tr') )
-          .remove()
-          .draw();
-        $('#LineId').data('edit',0);
-      }
-        t.row.add(nr).draw()
-    }else if (method=='delete') {
-      console.log($(data._selector));
-
-        if($(data._selector).data('id')){
-          console.log('removeeeeeeeeee');
-          Lines.push({
-            index:idx,
-            Id:$(data._selector).data('id'),
-            Type:method
-          })
-        }else{
-          Lines.splice(Lines.map(function(x) {return x.index; }).indexOf(data.index),1)
-        }
-        t.row( $(data._selector).parents('tr') )
-          .remove()
-          .draw();
-    }
-    $('#Lines').text(JSON.stringify(Lines))
-    get_total()
-  }
   $('#table_ProformaInvoiceLine').on( 'click','.btn-delete-row',function(e){
     e.preventDefault()
     console.log('hahahahahah');
@@ -291,63 +287,26 @@ $('#LineId').val("")
   })
   var edrow = false;
 
-  $('#table_ProformaInvoiceLine').on( 'click','.btn-edit-row',function(e){
-    e.preventDefault()
-    edrow = this
-    if($(this).data('id')){
-      $.ajax({
-        url:'/index.php/manage_proformainvoices/get_line_detail/'+$(this).data('id'),
-        dataType:'JSON',
-        success:function(o){
-          console.log(o);
-          populate_form_line(o);
-        }
-      })
-    }else{
-    $('#LineId').data('edit',1)
-      var d = Lines[Lines.map(function(x) {return x.index; }).indexOf($(this).data('index'))];
-      console.log(d);
-      populate_form_line({
-        index:$(this).data('index'),
-        ProductPartner:{
-          Name:d.Name,
-          ProductId:d.ProductId,
-          Product:{
-            ListPrice:d.ListPrice,
-            Name:d.Name,
-            Description:d.Description,
-            NetCubic:d.CubicDimension
-          },
-          ProductPrice:d.Price,
-          Description:d.Description
-        },
-        Qty:d.Qty,
-        QtyPerPack:d.QtyPerPack,
-        IsSample:d.IsSample,
-        IsNeedBox:d.IsNeedBox
-      })
-      // populate_form_line()
-    }
-  })
 
-  function populate_form_line(data){
-      $('#LineId').val(data.Id)
-      $('#LineName').val(data.ProductPartner.Name)
-      $('#ProductId').val(data.ProductPartner.ProductId)
-      $('#ListPrice').val(data.ProductPartner.Product.ListPrice)
-      $('#displayProductId').val(data.ProductPartner.Product.Name+' - '+data.ProductPartner.Product.Description)
-      $('#Price').val(data.ProductPartner.ProductPrice)
-      $('#CubicDimension').val(data.ProductPartner.Product.NetCubic)
-      $('#Description').val(data.ProductPartner.Description)
-      $('#Qty').val(data.Qty)
-      $('#QtyPerPack').val(data.QtyPerPack)
-      $('#IsSample').prop('checked', data.IsSample);
-      $('#IsNeedBox').prop('checked', data.IsNeedBox);
-      $('#Price').trigger('change')
-      $('#ProductId').trigger('change')
-      $('html, body').animate({
-          scrollTop: $("#detail").offset().top
-      }, 200);
-  }
+
+    function write_pi(){
+      var frm = $('#form_ProformaInvoice')
+      return $.ajax({
+        url:frm.prop('action'),
+        method:'POST',
+        dataType:"JSON",
+        data:frm.serialize()
+      })
+    }
+
+    function write_line(pi_id,id=''){
+      var frm = $('#form_ProformaInvoiceLine')
+      return $.ajax({
+        url:frm.prop('action')+$('#LineId').val()+"?proforma_invoice_id="+pi_id,
+        method:'POST',
+        dataType:"JSON",
+        data:frm.serialize()+'&ProformaInvoiceId='+pi_id
+      })
+    }
 </script>
 {% endblock %}

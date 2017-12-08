@@ -2,6 +2,8 @@
 
 namespace Base;
 
+use \Currency as ChildCurrency;
+use \CurrencyQuery as ChildCurrencyQuery;
 use \Partner as ChildPartner;
 use \PartnerQuery as ChildPartnerQuery;
 use \ProformaInvoice as ChildProformaInvoice;
@@ -86,6 +88,14 @@ abstract class ProformaInvoice implements ActiveRecordInterface
     protected $name;
 
     /**
+     * The value for the currency_id field.
+     *
+     * Note: this column has a database default value of: 1
+     * @var        int
+     */
+    protected $currency_id;
+
+    /**
      * The value for the customer_id field.
      *
      * @var        int
@@ -136,6 +146,11 @@ abstract class ProformaInvoice implements ActiveRecordInterface
     protected $aPartner;
 
     /**
+     * @var        ChildCurrency
+     */
+    protected $aCurrency;
+
+    /**
      * @var        ObjectCollection|ChildProformaInvoiceLine[] Collection to store aggregation of ChildProformaInvoiceLine objects.
      */
     protected $collProformaInvoiceLines;
@@ -175,6 +190,7 @@ abstract class ProformaInvoice implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
+        $this->currency_id = 1;
         $this->state = 'draft';
     }
 
@@ -426,6 +442,16 @@ abstract class ProformaInvoice implements ActiveRecordInterface
     }
 
     /**
+     * Get the [currency_id] column value.
+     *
+     * @return int
+     */
+    public function getCurrencyId()
+    {
+        return $this->currency_id;
+    }
+
+    /**
      * Get the [customer_id] column value.
      *
      * @return int
@@ -554,6 +580,30 @@ abstract class ProformaInvoice implements ActiveRecordInterface
 
         return $this;
     } // setName()
+
+    /**
+     * Set the value of [currency_id] column.
+     *
+     * @param int $v new value
+     * @return $this|\ProformaInvoice The current object (for fluent API support)
+     */
+    public function setCurrencyId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->currency_id !== $v) {
+            $this->currency_id = $v;
+            $this->modifiedColumns[ProformaInvoiceTableMap::COL_CURRENCY_ID] = true;
+        }
+
+        if ($this->aCurrency !== null && $this->aCurrency->getId() !== $v) {
+            $this->aCurrency = null;
+        }
+
+        return $this;
+    } // setCurrencyId()
 
     /**
      * Set the value of [customer_id] column.
@@ -689,6 +739,10 @@ abstract class ProformaInvoice implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->currency_id !== 1) {
+                return false;
+            }
+
             if ($this->state !== 'draft') {
                 return false;
             }
@@ -725,28 +779,31 @@ abstract class ProformaInvoice implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProformaInvoiceTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProformaInvoiceTableMap::translateFieldName('CustomerId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProformaInvoiceTableMap::translateFieldName('CurrencyId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->currency_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProformaInvoiceTableMap::translateFieldName('CustomerId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->customer_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProformaInvoiceTableMap::translateFieldName('Date', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProformaInvoiceTableMap::translateFieldName('Date', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00') {
                 $col = null;
             }
             $this->date = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProformaInvoiceTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ProformaInvoiceTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
             $this->description = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ProformaInvoiceTableMap::translateFieldName('State', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ProformaInvoiceTableMap::translateFieldName('State', TableMap::TYPE_PHPNAME, $indexType)];
             $this->state = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ProformaInvoiceTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : ProformaInvoiceTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : ProformaInvoiceTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : ProformaInvoiceTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -759,7 +816,7 @@ abstract class ProformaInvoice implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 8; // 8 = ProformaInvoiceTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 9; // 9 = ProformaInvoiceTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\ProformaInvoice'), 0, $e);
@@ -781,6 +838,9 @@ abstract class ProformaInvoice implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aCurrency !== null && $this->currency_id !== $this->aCurrency->getId()) {
+            $this->aCurrency = null;
+        }
         if ($this->aPartner !== null && $this->customer_id !== $this->aPartner->getId()) {
             $this->aPartner = null;
         }
@@ -824,6 +884,7 @@ abstract class ProformaInvoice implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aPartner = null;
+            $this->aCurrency = null;
             $this->collProformaInvoiceLines = null;
 
             $this->collPurchaseOrders = null;
@@ -943,6 +1004,13 @@ abstract class ProformaInvoice implements ActiveRecordInterface
                 $this->setPartner($this->aPartner);
             }
 
+            if ($this->aCurrency !== null) {
+                if ($this->aCurrency->isModified() || $this->aCurrency->isNew()) {
+                    $affectedRows += $this->aCurrency->save($con);
+                }
+                $this->setCurrency($this->aCurrency);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -1020,6 +1088,9 @@ abstract class ProformaInvoice implements ActiveRecordInterface
         if ($this->isColumnModified(ProformaInvoiceTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'name';
         }
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_CURRENCY_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'currency_id';
+        }
         if ($this->isColumnModified(ProformaInvoiceTableMap::COL_CUSTOMER_ID)) {
             $modifiedColumns[':p' . $index++]  = 'customer_id';
         }
@@ -1054,6 +1125,9 @@ abstract class ProformaInvoice implements ActiveRecordInterface
                         break;
                     case 'name':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+                        break;
+                    case 'currency_id':
+                        $stmt->bindValue($identifier, $this->currency_id, PDO::PARAM_INT);
                         break;
                     case 'customer_id':
                         $stmt->bindValue($identifier, $this->customer_id, PDO::PARAM_INT);
@@ -1142,21 +1216,24 @@ abstract class ProformaInvoice implements ActiveRecordInterface
                 return $this->getName();
                 break;
             case 2:
-                return $this->getCustomerId();
+                return $this->getCurrencyId();
                 break;
             case 3:
-                return $this->getDate();
+                return $this->getCustomerId();
                 break;
             case 4:
-                return $this->getDescription();
+                return $this->getDate();
                 break;
             case 5:
-                return $this->getState();
+                return $this->getDescription();
                 break;
             case 6:
-                return $this->getCreatedAt();
+                return $this->getState();
                 break;
             case 7:
+                return $this->getCreatedAt();
+                break;
+            case 8:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1191,23 +1268,24 @@ abstract class ProformaInvoice implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
-            $keys[2] => $this->getCustomerId(),
-            $keys[3] => $this->getDate(),
-            $keys[4] => $this->getDescription(),
-            $keys[5] => $this->getState(),
-            $keys[6] => $this->getCreatedAt(),
-            $keys[7] => $this->getUpdatedAt(),
+            $keys[2] => $this->getCurrencyId(),
+            $keys[3] => $this->getCustomerId(),
+            $keys[4] => $this->getDate(),
+            $keys[5] => $this->getDescription(),
+            $keys[6] => $this->getState(),
+            $keys[7] => $this->getCreatedAt(),
+            $keys[8] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[3]] instanceof \DateTimeInterface) {
-            $result[$keys[3]] = $result[$keys[3]]->format('c');
-        }
-
-        if ($result[$keys[6]] instanceof \DateTimeInterface) {
-            $result[$keys[6]] = $result[$keys[6]]->format('c');
+        if ($result[$keys[4]] instanceof \DateTimeInterface) {
+            $result[$keys[4]] = $result[$keys[4]]->format('c');
         }
 
         if ($result[$keys[7]] instanceof \DateTimeInterface) {
             $result[$keys[7]] = $result[$keys[7]]->format('c');
+        }
+
+        if ($result[$keys[8]] instanceof \DateTimeInterface) {
+            $result[$keys[8]] = $result[$keys[8]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1230,6 +1308,21 @@ abstract class ProformaInvoice implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aPartner->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aCurrency) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'currency';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'currency';
+                        break;
+                    default:
+                        $key = 'Currency';
+                }
+
+                $result[$key] = $this->aCurrency->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->collProformaInvoiceLines) {
 
@@ -1302,21 +1395,24 @@ abstract class ProformaInvoice implements ActiveRecordInterface
                 $this->setName($value);
                 break;
             case 2:
-                $this->setCustomerId($value);
+                $this->setCurrencyId($value);
                 break;
             case 3:
-                $this->setDate($value);
+                $this->setCustomerId($value);
                 break;
             case 4:
-                $this->setDescription($value);
+                $this->setDate($value);
                 break;
             case 5:
-                $this->setState($value);
+                $this->setDescription($value);
                 break;
             case 6:
-                $this->setCreatedAt($value);
+                $this->setState($value);
                 break;
             case 7:
+                $this->setCreatedAt($value);
+                break;
+            case 8:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1352,22 +1448,25 @@ abstract class ProformaInvoice implements ActiveRecordInterface
             $this->setName($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setCustomerId($arr[$keys[2]]);
+            $this->setCurrencyId($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setDate($arr[$keys[3]]);
+            $this->setCustomerId($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setDescription($arr[$keys[4]]);
+            $this->setDate($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setState($arr[$keys[5]]);
+            $this->setDescription($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setCreatedAt($arr[$keys[6]]);
+            $this->setState($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setUpdatedAt($arr[$keys[7]]);
+            $this->setCreatedAt($arr[$keys[7]]);
+        }
+        if (array_key_exists($keys[8], $arr)) {
+            $this->setUpdatedAt($arr[$keys[8]]);
         }
     }
 
@@ -1415,6 +1514,9 @@ abstract class ProformaInvoice implements ActiveRecordInterface
         }
         if ($this->isColumnModified(ProformaInvoiceTableMap::COL_NAME)) {
             $criteria->add(ProformaInvoiceTableMap::COL_NAME, $this->name);
+        }
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_CURRENCY_ID)) {
+            $criteria->add(ProformaInvoiceTableMap::COL_CURRENCY_ID, $this->currency_id);
         }
         if ($this->isColumnModified(ProformaInvoiceTableMap::COL_CUSTOMER_ID)) {
             $criteria->add(ProformaInvoiceTableMap::COL_CUSTOMER_ID, $this->customer_id);
@@ -1521,6 +1623,7 @@ abstract class ProformaInvoice implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setName($this->getName());
+        $copyObj->setCurrencyId($this->getCurrencyId());
         $copyObj->setCustomerId($this->getCustomerId());
         $copyObj->setDate($this->getDate());
         $copyObj->setDescription($this->getDescription());
@@ -1624,6 +1727,57 @@ abstract class ProformaInvoice implements ActiveRecordInterface
         }
 
         return $this->aPartner;
+    }
+
+    /**
+     * Declares an association between this object and a ChildCurrency object.
+     *
+     * @param  ChildCurrency $v
+     * @return $this|\ProformaInvoice The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setCurrency(ChildCurrency $v = null)
+    {
+        if ($v === null) {
+            $this->setCurrencyId(1);
+        } else {
+            $this->setCurrencyId($v->getId());
+        }
+
+        $this->aCurrency = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildCurrency object, it will not be re-added.
+        if ($v !== null) {
+            $v->addProformaInvoice($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildCurrency object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildCurrency The associated ChildCurrency object.
+     * @throws PropelException
+     */
+    public function getCurrency(ConnectionInterface $con = null)
+    {
+        if ($this->aCurrency === null && ($this->currency_id != 0)) {
+            $this->aCurrency = ChildCurrencyQuery::create()->findPk($this->currency_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aCurrency->addProformaInvoices($this);
+             */
+        }
+
+        return $this->aCurrency;
     }
 
 
@@ -1889,10 +2043,10 @@ abstract class ProformaInvoice implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildProformaInvoiceLine[] List of ChildProformaInvoiceLine objects
      */
-    public function getProformaInvoiceLinesJoinProductPartner(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getProformaInvoiceLinesJoinProduct(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildProformaInvoiceLineQuery::create(null, $criteria);
-        $query->joinWith('ProductPartner', $joinBehavior);
+        $query->joinWith('Product', $joinBehavior);
 
         return $this->getProformaInvoiceLines($query, $con);
     }
@@ -2182,8 +2336,12 @@ abstract class ProformaInvoice implements ActiveRecordInterface
         if (null !== $this->aPartner) {
             $this->aPartner->removeProformaInvoice($this);
         }
+        if (null !== $this->aCurrency) {
+            $this->aCurrency->removeProformaInvoice($this);
+        }
         $this->id = null;
         $this->name = null;
+        $this->currency_id = null;
         $this->customer_id = null;
         $this->date = null;
         $this->description = null;
@@ -2224,6 +2382,7 @@ abstract class ProformaInvoice implements ActiveRecordInterface
         $this->collProformaInvoiceLines = null;
         $this->collPurchaseOrders = null;
         $this->aPartner = null;
+        $this->aCurrency = null;
     }
 
     /**

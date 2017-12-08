@@ -133,9 +133,13 @@ jQuery.fn.loadTableData = function(
   if(conf.serverSide){
     dtconf.ajax =  base_url[0]+"index.php/"+c+"/"+fs+params
     dtconf.columns = fl
-    dtconf.initComplete = function(settings, json) {
-      tt.css('width','100%')
+    if(!conf.hasOwnProperty('complete')){
+      conf.complete = function(settings, json) {
+        tt.css('width','100%')
+      }
     }
+
+    dtconf.initComplete = conf.complete
   }
   tt.DataTable(dtconf);
 }
@@ -334,8 +338,9 @@ $.fn.modal.Constructor.prototype.enforceFocus = function () {
 
 function repopulate_select2(el,newdata){
  $(el).select2('destroy');
- $(el).html('')
+ $(el).html('<option value="">Select</option>')
  $(el).select2({
    data:newdata
  })
+ $('.select2').css('width','100%');
 }
