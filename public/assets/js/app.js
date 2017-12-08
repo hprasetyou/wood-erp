@@ -82,8 +82,8 @@ jQuery.fn.loadTableData = function(
           render_data = new Function("data", "type","row","meta",
          "var cdata = {symbol:'Rp.',rate:13400};"+
          "return '"+(curdata.position == 'before'? curdata.symbol:'')
-         +" '+("+curdata.rate+"*data).format(2, 3, '.', ',') "
-         +(curdata.position == 'after'? curdata.symbol:''))
+         +" '+("+curdata.rate+"*data).format(2, 3, '.', ',')+' "
+         +(curdata.position == 'after'? curdata.symbol:'')+"'")
         default:
           break;
 
