@@ -96,6 +96,18 @@ class Manage_proformainvoicelines extends MY_Controller{
   function detail($id){
 		$proformainvoiceline = ProformaInvoiceLineQuery::create()
     ->findPK($id);
+    $currency = $proformainvoiceline->getProformaInvoice()
+    ->getCurrency()->getCode();
+    $proformainvoiceline->setPrice(
+      exchange_rate(
+        $proformainvoiceline->getPrice(),$currency
+        )
+    );
+    $proformainvoiceline->setTotalPrice(
+      exchange_rate(
+        $proformainvoiceline->getTotalPrice(),$currency
+        )
+    );
 		echo $proformainvoiceline->toJSON();
   }
 
@@ -108,7 +120,8 @@ class Manage_proformainvoicelines extends MY_Controller{
     ->filterByType('sell')
     ->orderByCreatedAt('desc')
     ->findOne();
-
+    //convert to USD
+    $price = exchange_rate($this->input->post('Price'),"USD",$pi->getCurrency()->getCode());
     if(!$productcust){
       $productcust = new ProductPartner();
       $productcust->setProductId($this->input->post('ProductId'));
@@ -117,7 +130,7 @@ class Manage_proformainvoicelines extends MY_Controller{
     }
     $productcust->setName($this->input->post('Name'));
     $productcust->setDescription($this->input->post('Description'));
-    $productcust->setProductPrice($this->input->post('Price'));
+    $productcust->setProductPrice($price);
     $productcust->save();
     //check if product already added
     $line = ProformaInvoiceLineQuery::create()
@@ -125,7 +138,7 @@ class Manage_proformainvoicelines extends MY_Controller{
     ->filterByProformaInvoiceId($this->input->post('ProformaInvoiceId'))
     ->findOne();
     $oldqty = 0;
-    if($line){
+    if($line and $id == null){
       $id = $line->getId();
       $oldqty = $line->getQty();
     }
@@ -140,8 +153,13 @@ class Manage_proformainvoicelines extends MY_Controller{
     $this->form['TotalCubicDimension'] = array('value' =>
       $pack_qty*$cbm
     );
+    //Should be in USD
+    $this->form['Price'] = array('value' =>
+      $price
+    );
+    //Should be in USD
     $this->form['TotalPrice'] = array('value' =>
-      $pack_qty*$this->input->post('Price')
+      $pack_qty*$price
     );
   	$data = parent::write($id);
     echo $data->toJSON();

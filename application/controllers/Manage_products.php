@@ -43,6 +43,14 @@ class Manage_products extends MY_Controller{
     $ProductPartner = $ProductPartner->findPk($id);
     $o = $ProductPartner? $ProductPartner: $sproduct;
     $p = json_decode($o->toJSON());
+
+    if($this->input->get('currency_id')){
+      //if need to be exchanged to currency_id
+      $currency = CurrencyQuery::create()->findPk($this->input->get('currency_id'));
+
+      $p->ListPrice = exchange_rate($p->ListPrice,$currency->getCode());
+    }
+
     $p->Finishings = json_decode($o->getFinishings()->toJSON())->Finishings;
     echo json_encode($p);
   }

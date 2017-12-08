@@ -1,4 +1,16 @@
 var base_url = window.location.href.split('index.php');
+Number.prototype.format = function(n, x, s, c) {
+    var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
+        num = this.toFixed(Math.max(0, ~~n));
+
+    return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
+};
+//only formatting, not exchange
+function format_currency(val,rule){
+  return (rule.position == 'before'? rule.symbol:'')
+  +" "+val.format(2, 3, '.', ',')
+  +(rule.position == 'after'? rule.symbol:'')
+}
 jQuery.fn
 jQuery.fn.loadTableData = function(
   conf = {search:true,
@@ -64,6 +76,14 @@ jQuery.fn.loadTableData = function(
           render_data = new Function("data", "type","row","meta",
            "return data.replace(\", \",\"<br>\")")
           break;
+        case 'currency':
+        var curdata = $(this).data('currency');
+        console.log(curdata);
+          render_data = new Function("data", "type","row","meta",
+         "var cdata = {symbol:'Rp.',rate:13400};"+
+         "return '"+(curdata.position == 'before'? curdata.symbol:'')
+         +" '+("+curdata.rate+"*data).format(2, 3, '.', ',') "
+         +(curdata.position == 'after'? curdata.symbol:''))
         default:
           break;
 

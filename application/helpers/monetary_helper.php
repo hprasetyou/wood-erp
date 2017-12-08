@@ -8,3 +8,12 @@
    $val = number_format($val, 2, ',', '.');
    return $curr->getPlacement()=='before'?$curr->getSymbol()." ".$val:$val." ".$curr->getSymbol();
  }
+
+ function exchange_rate($val,$target,$src="USD"){
+   $rate = ExchangeRateQuery::create()
+   ->filterByBase($src)
+   ->filterByTarget($target)
+   ->orderByCreatedAt('desc')
+   ->findOne();
+   return $val*(($target==$src)?1:$rate->getRate());
+ }

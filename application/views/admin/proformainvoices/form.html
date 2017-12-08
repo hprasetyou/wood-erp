@@ -216,7 +216,7 @@ $(document).ready(function(){
     console.log("prod changed");
       $.ajax({
         url:'/index.php/manage_products/get_detail_json/'+$(this).val()+
-        '?customer_id='+$('#CustomerId').val(),
+        '?customer_id='+$('#CustomerId').val()+'&currency_id='+$('#CurrencyId').val(),
         dataType:'JSON',
         success:function(o){
           var art = o.Name
@@ -242,8 +242,11 @@ $(document).ready(function(){
           for (var i in o) {
             if (o.hasOwnProperty(i)) {
               var shouldfill = true
-              if($('#LineId').val()>1 && i == 'QtyPerPack'){
-                shouldfill = false
+              if($('#LineId').val()>1){
+                if(i != 'ListPrice'){
+                  console.log(i);
+                  shouldfill = false
+                }
               }
               if(shouldfill){
               $('#'+i).val(o[i])
@@ -252,9 +255,12 @@ $(document).ready(function(){
           }
           console.log(desc);
           $('#CubicDimension').val(o.IsKdn?o.CubicKdn:o.CubicAsb)
-          $('#LineName').val(art)
-          $('#Description').val(desc)
-          $('#Price').val(price)
+
+          if(!($('#LineId').val()>1)){
+            $('#LineName').val(art)
+            $('#Description').val(desc)
+            $('#Price').val(price)
+          }
           $('#displayProductId').val(o.Name+' - '+ o.Description)
           $('#Price').trigger('change')
         }
@@ -266,13 +272,20 @@ $(document).ready(function(){
     $('#table_ProformaInvoiceLine').find('tbody tr').each(function(i){
       var stot = $(this).find("td").eq(8).text();
       var sctot = $(this).find("td").eq(6).text();
+      stot = stot.replace(/[^0-9-,]/g, '')
+      stot = stot.match(/[+-]?\d+(\.\d+)?/g).map(function(v) { return parseFloat(v); });
+      console.log(stot);
       sctot = sctot.match(/[+-]?\d+(\.\d+)?/g).map(function(v) { return parseFloat(v); });
-      console.log(sctot);
-      tot = tot + (stot>0?(stot*1):0)
+      // console.log(sctot);
+      tot = tot + (stot[0]>0?(stot[0]*1):0)
       ctot = ctot +(sctot[0]>0?(sctot[0]*1):0)
     })
-    $('#TotalCol').text(tot)
-    $('#TotalCd').text(ctot + ' m3')
+    $('#TotalCol').text(format_currency(tot,{
+      "symbol":"{{ proformainvoices.Currency.Symbol }}",
+      "rate":"{{ exchange_rate(1,proformainvoices.Currency.Code) }}",
+      "position":"{{ proformainvoices.Currency.Placement }}"}
+    ))
+    $('#TotalCd').text(parseFloat(ctot).toFixed(3) + ' m3')
   }
 
   $('#table_ProformaInvoiceLine').on( 'click','.btn-delete-row',function(e){

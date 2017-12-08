@@ -16,8 +16,15 @@
           <th data-fieldname="qty_of_pack" >{{res.string.qty_of_pack}}</th>
           <th data-fieldname="cubic_dimension" data-fieldtype="cbm" >{{res.string.cubic}}</th>
           <th data-fieldname="total_cubic_dimension" data-fieldtype="cbm" >{{res.string.total_cubic}}</th>
-          <th data-fieldname="price" >{{res.string.price}}</th>
-          <th data-fieldname="total_price" >{{res.string.total_price}}</th>
+          <th data-fieldname="price" data-fieldtype="currency"
+          data-currency='{"symbol":"{{ proformainvoices.Currency.Symbol }}"
+          ,"rate":"{{ exchange_rate(1,proformainvoices.Currency.Code) }}"
+          ,"position":"{{ proformainvoices.Currency.Placement }}"}'>
+          {{res.string.price}}</th>
+          <th data-fieldname="total_price" data-fieldtype="currency"
+          data-currency='{"symbol":"{{ proformainvoices.Currency.Symbol }}"
+          ,"rate":"{{ exchange_rate(1,proformainvoices.Currency.Code) }}"
+          ,"position":"{{ proformainvoices.Currency.Placement }}"}' >{{res.string.total_price}}</th>
           <th></th>
         </tr>
       </thead>
