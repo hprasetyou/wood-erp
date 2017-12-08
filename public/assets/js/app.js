@@ -255,6 +255,11 @@ function init_modal_selection(){
             render_data = new Function("data", "type","row","meta",
              "return data.replace(\", \",\"<br>\")")
             break;
+          case 'array':
+            ordr = true;
+            render_data = new Function("data", "type","row","meta",
+             "return data.toString()")
+            break;
           case 'currency':
           var curdata = $(this).data('currency');
           console.log(curdata);

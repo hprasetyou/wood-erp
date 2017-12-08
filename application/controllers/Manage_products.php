@@ -13,9 +13,24 @@ class Manage_products extends MY_Controller{
     $this->authorization->check_authorization('manage_products');
   }
   function get_json(){
+    $this->objobj = ProductQuery::create()->joinWith('ProductComponent');
     $this->custom_column = array('dimension'=>
     "_{WidthAsb}_.'W x'. _{DepthAsb}_ .'D x'.
-     _{HeightAsb}_ .'H ' ");
+     _{HeightAsb}_ .'H ' ",
+     'material' =>"function() use(_{ProductComponents}_,_{Material}_,\$obj){
+         \$o = [];
+         foreach(_{ProductComponents}_ as \$pc){
+         \$o[] = \$pc->getComponent()->getMaterial()->getName();
+         }
+         if(!\$obj->hasComponent()){
+            if(\$obj->getMaterial()){
+              \$o = array(\$obj->getMaterial()->getName());
+            }
+          }
+         return array_unique(\$o);
+       }
+
+       ");
     $this->objobj = ProductQuery::create();
     $this->o2m_def = array(
       array(
