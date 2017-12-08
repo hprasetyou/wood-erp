@@ -14,9 +14,7 @@ class Manage_products extends MY_Controller{
   }
   function get_json(){
     $this->custom_column = array('dimension'=>
-    "(_{IsRound}_?'': _{WidthAsb}_.'W x ').
-     _{DepthAsb}_ .
-     (_{IsRound}_?'Ø x':'D x').
+    "_{WidthAsb}_.'W x'. _{DepthAsb}_ .'D x'.
      _{HeightAsb}_ .'H ' ");
     $this->objobj = ProductQuery::create();
     $this->o2m_def = array(

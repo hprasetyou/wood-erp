@@ -13,7 +13,7 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.article_number}}</label>
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.pi_number}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
                   <div {% if proformainvoices %}style="display:none"{%else%}class="input-wrap "{% endif %}>
 										<input type="text" placeholder="{{ res.string.name }}" value="{{ proformainvoices?proformainvoices.Name:code  }}" name="Name" class="form-control  col-md-7 col-xs-12">
@@ -43,7 +43,7 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
 
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.date}}</label>
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.date_of_issue}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
 									<div {% if proformainvoices %}style="display:none" {% endif %} class="input-wrap">
 										<input type="text" placeholder="{{ res.string.date }}" id="Date" value="{{ proformainvoices.Date  | date('Y/m/d') }}" name="Date" class="form-control input-date col-md-7 col-xs-12">
@@ -110,7 +110,7 @@ function refresh_line(){
       console.log("reload dttable");
       get_total()
       $('#ModalAddProformaInvoiceLine').find('input').val('')
-      $('#ModalAddProformaInvoiceLine').find('input').checked = false;
+      $('#ModalAddProformaInvoiceLine').find('input').prop('checked',false);
       $('#ModalAddProformaInvoiceLine').modal('hide')
       $('#table_ProformaInvoiceLine').find('.btn-delete').show()
       $('#table_ProformaInvoiceLine').find('.btn-edit').show()

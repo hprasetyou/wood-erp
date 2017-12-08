@@ -216,13 +216,71 @@ function init_modal_selection(){
     var fd= ['id']
      $('#'+target).find('th').each(function(){
        if($(this).data('fieldname')){
+
          var fdt = {
            data:$(this).data('fieldname')
          }
          if($(this).data('disablesort')){
            fdt.orderable = false
          }
-         fl.push(fdt)
+
+         if($(this).data('fieldtype')){
+           var ft = $(this).data('fieldtype')
+           var ordr = false;
+           switch (ft) {
+             case 'image':
+               render_data = new Function("data", "type","row","meta",
+                "return '<img src=\"'+data.replace('original','120x120')+'\" "+
+                "class=\"img img-row\" />'")
+
+               break;
+            case 'cbm':
+            render_data = new Function("data", "type","row","meta",
+             "return parseFloat(data/1000000).toFixed(3) + ' m3';")
+
+              break;
+           case 'datetime':
+           render_data = new Function("data", "type","row","meta",
+            "return moment(data.date).format('DD MMM YYYY HH:mm:ss');")
+            ordr = true;
+             break;
+          case 'datetime-human':
+            ordr = true;
+            render_data = new Function("data", "type","row","meta",
+             "return moment(data.date).fromNow();")
+
+            break;
+          case 'underneath_comma':
+            ordr = true;
+            render_data = new Function("data", "type","row","meta",
+             "return data.replace(\", \",\"<br>\")")
+            break;
+          case 'currency':
+          var curdata = $(this).data('currency');
+          console.log(curdata);
+            render_data = new Function("data", "type","row","meta",
+           "var cdata = {symbol:'Rp.',rate:13400};"+
+           "return '"+(curdata.position == 'before'? curdata.symbol:'')
+           +" '+("+curdata.rate+"*data).format(2, 3, '.', ',')+' "
+           +(curdata.position == 'after'? curdata.symbol:'')+"'")
+          default:
+            break;
+
+           }
+           fl.push({
+            "data":$(this).data('fieldname'),
+            "orderable": ordr,
+            "render":render_data
+          })
+         }else{
+           var fdt = {
+             data:$(this).data('fieldname')
+           }
+           if($(this).data('disablesort')){
+             fdt.orderable = false
+           }
+           fl.push(fdt)
+         }
          fd.push($(this).data('fieldname'))
        }
      })
