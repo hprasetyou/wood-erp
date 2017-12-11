@@ -35,6 +35,11 @@ class Manage_proformainvoicelines extends MY_Controller{
       }
       return \$o;
     }";
+    $this->custom_column['calc_disc'] ="function() use (_{Price}_,_{Product}_){
+      \$o = \"\";
+
+      return round((_{Product}_->getListPrice() - _{Price}_)/_{Product}_->getListPrice()*100,2).' %';
+    }";
     $this->custom_column['product_material'] ="function() use (_{Product}_){
       \$o = [];
       if(_{Product}_->getHasComponent()){

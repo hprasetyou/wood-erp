@@ -10,7 +10,7 @@
       <thead>
         <tr>
           <th data-fieldname="id">Pos</th>
-          <th data-fieldname="product_image" data-fieldtype="image">{{res.string.name}}</th>
+          <th data-fieldname="product_image" data-fieldtype="image">{{res.string.image}}</th>
           <th data-fieldname="name">{{res.string.name}}</th>
           <th data-fieldname="description">{{res.string.description}}</th>
           <th data-fieldname="product_material" data-fieldtype="array">{{res.string.material}}</th>
@@ -19,6 +19,7 @@
           <th data-fieldname="qty_of_pack" >{{res.string.qty_of_pack}}</th>
           <th data-fieldname="cubic_dimension" data-fieldtype="cbm" >{{res.string.cbm_per_piece}}</th>
           <th data-fieldname="total_cubic_dimension" data-fieldtype="cbm" >{{res.string.total_cubic}}</th>
+          <th data-fieldname="calc_disc">{{res.string.discount}}</th>
           <th data-fieldname="price" data-fieldtype="currency"
           data-currency='{"symbol":"{{ proformainvoices.Currency.Symbol }}"
           ,"rate":"{{ exchange_rate(1,proformainvoices.Currency.Code) }}"
@@ -35,6 +36,7 @@
         <tr>
           <td colspan="7">Total</td>
           <td><span id="TotalCd"></span></td>
+          <td></td>
           <td></td>
           <td colspan="2"><span id="TotalCol"></span></td>
         </tr>

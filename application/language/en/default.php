@@ -48,6 +48,7 @@
 'description' => 'Description',
 'dimension' => 'Dimension',
 'display_name' => 'Display Name',
+'discount'=>'Discount',
 'down_payment' => 'Down Payment',
 'down_payment_deadline' => 'Down Payment Deadline',
 'edit' => 'Edit',
