@@ -13,7 +13,12 @@ class Manage_products extends MY_Controller{
     $this->authorization->check_authorization('manage_products');
   }
   function get_json(){
-    $this->objobj = ProductQuery::create()->joinWith('ProductComponent');
+    $this->objobj = ProductQuery::create();
+    if($this->input->get('partner_id')){
+      $this->objobj = $this->objobj->useProductPartnerQuery()
+        ->filterByPartnerId($this->input->get('partner_id'))
+      ->endUse();
+    }
     $this->custom_column = array('dimension'=>
     "_{WidthAsb}_.'W x'. _{DepthAsb}_ .'D x'.
      _{HeightAsb}_ .'H ' ",
@@ -31,7 +36,6 @@ class Manage_products extends MY_Controller{
        }
 
        ");
-    $this->objobj = ProductQuery::create();
     $this->o2m_def = array(
       array(
         'index'=>'image',

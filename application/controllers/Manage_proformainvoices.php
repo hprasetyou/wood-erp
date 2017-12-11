@@ -18,6 +18,8 @@ class Manage_proformainvoices extends MY_Controller{
   }
 
   function get_json(){
+    $this->objobj = ProformaInvoiceQuery::create()
+    ->filterByState('delete', '!=');
     if($this->input->get('customer_id')){
       $this->objobj = ProformaInvoiceQuery::create()
       ->filterByCustomerId($this->input->get('customer_id'));
@@ -157,8 +159,10 @@ class Manage_proformainvoices extends MY_Controller{
 
   function delete($id){
 		if($this->input->post('confirm')){
-			$proformainvoice = ProformaInvoiceQuery::create()->findPK($id);
-			$proformainvoice->delete();
+			ProformaInvoiceQuery::create()
+      ->findPK($id)
+      ->setState('delete')
+      ->save();
 		}
 		redirect('manage_proformainvoices');
   }

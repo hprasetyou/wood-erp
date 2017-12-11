@@ -274,7 +274,7 @@
     <column name="customer_id" phpName="CustomerId" type="INTEGER" required="true"/>
     <column name="date" phpName="Date" type="DATE"/>
     <column name="description" phpName="Description" size="255" type="VARCHAR"/>
-    <column name="state" phpName="State" type="CHAR" sqlType="ENUM('draft','confirm','done')" defaultValue="draft"/>
+    <column name="state" phpName="State" type="CHAR" sqlType="ENUM('draft','confirm','done','delete')" defaultValue="draft"/>
     <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
     <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
     <foreign-key foreignTable="partner">

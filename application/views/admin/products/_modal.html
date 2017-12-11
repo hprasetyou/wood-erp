@@ -6,21 +6,43 @@
 				<h4 class="modal-title" id="myModalLabel">Product</h4>
 			</div>
 			<div class="modal-body">
-				<table data-display="1-2" data-controller="manage_products" class="table table-striped " id="table_Product">
-					<thead>
-						<tr>
-							<th></th>
-							<th data-fieldtype="image"
-							data-fieldname="image">{{res.string.image}}</th>
-							<th data-fieldname="name">{{res.string.name }}</th>
-							<th data-fieldname="description">{{res.string.description }}</th>
-							<th data-fieldname="material" data-fieldtype="array">{{res.string.material }}</th>
-							<th data-fieldname="list_price">{{res.string.list_price }}</th>
-							<th data-disablesort="true" data-fieldname="dimension">{{res.string.assembled_dimension}}</th>
-						</tr>
-					</thead>
-				</table>
+				<div class="row" id="ProdCust" style="display:none">
+					<div class="col-sm-12">
+						<button type="button" class="btn btn-primary pull-right" id="toggleProdCust" data-toggle="button" aria-pressed="false" autocomplete="off">
+					 Only show ordered product by this customer
+					</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<table data-display="1-2" data-controller="manage_products" class="table table-striped " id="table_Product">
+							<thead>
+								<tr>
+									<th></th>
+									<th data-fieldtype="image" data-fieldname="image">{{res.string.image}}</th>
+									<th data-fieldname="name">{{res.string.name }}</th>
+									<th data-fieldname="description">{{res.string.description }}</th>
+									<th data-fieldname="material" data-fieldtype="array">{{res.string.material }}</th>
+									<th data-fieldname="list_price">{{res.string.list_price }}</th>
+									<th data-disablesort="true" data-fieldname="dimension">{{res.string.assembled_dimension}}</th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+	$('#toggleProdCust').click(function(e) {
+		url = $('#table_Product').DataTable().ajax.url()
+		if ($('#toggleProdCust').hasClass('active')) {
+			url = url.replace('partner_id=', '');
+		} else {
+			url = url + '&partner_id=' + $('#toggleProdCust').data('partner_id')
+		}
+		$('#table_Product').DataTable().ajax.url(url).load();
+	})
+</script>
