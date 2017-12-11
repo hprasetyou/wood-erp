@@ -71,6 +71,11 @@ jQuery.fn.loadTableData = function(
            "return moment(data.date).fromNow();")
 
           break;
+        case 'array':
+          ordr = true;
+          render_data = new Function("data", "type","row","meta",
+           "return data.toString()")
+          break;
         case 'underneath_comma':
           ordr = true;
           render_data = new Function("data", "type","row","meta",
@@ -160,6 +165,7 @@ jQuery.fn.loadTableData = function(
     }
 
     dtconf.initComplete = conf.complete
+    dtconf.fnRowCallback = conf.rowCallback
   }
   tt.DataTable(dtconf);
 }

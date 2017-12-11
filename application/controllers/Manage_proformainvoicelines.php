@@ -12,6 +12,9 @@ class Manage_proformainvoicelines extends MY_Controller{
 
   function get_json(){
     $this->objobj = ProformaInvoiceLineQuery::create()
+    // ->rightJoin('ProformaInvoiceLine.Product')
+    // ->rightJoin('Product.ProductImage')
+    // ->withColumn('ProductImage.Url')
     ->filterByProformaInvoiceId($this->input->get('proforma_invoice'));
     $this->custom_column['qty_of_pack'] = "ceil(_{Qty}_/_{QtyPerPack}_)" ;
     if($this->input->get('check_qty_for_pl')){
@@ -23,6 +26,30 @@ class Manage_proformainvoicelines extends MY_Controller{
           return _{Qty}_ - \$sumpll;
         }";
     }
+    $this->custom_column['product_image'] ="function() use (_{Product}_){
+      \$o = \"\";
+      foreach(_{Product}_->getProductImages() as \$images){
+        if(!\$o){
+          \$o = \$images->getUrl();
+        }
+      }
+      return \$o;
+    }";
+    $this->custom_column['product_material'] ="function() use (_{Product}_){
+      \$o = [];
+      if(_{Product}_->getHasComponent()){
+        foreach(_{Product}_->getProductComponents() as \$component){
+          array_push(\$o,\$component->getComponent()->getMaterial()->getName());
+        }
+      }else{
+        \$mat = _{Product}_->getMaterial()?_{Product}_->getMaterial()->getName():false;
+        if(\$mat){
+          array_push(\$o,\$mat);
+        }
+      }
+
+      return \$o;
+    }";
     parent::get_json();
 
   }

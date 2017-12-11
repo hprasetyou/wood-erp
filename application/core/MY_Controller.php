@@ -68,7 +68,11 @@ class MY_Controller extends CI_Controller{
      $objs->where($cond,'or');
    }
    try {
-     $orderbycol = "orderBy".$fields[$this->input->get('order[0][column]')];
+     $order_index = $this->input->get('order[0][column]');
+     if(!$order_index){
+       $order_index = 0;
+     }
+     $orderbycol = "orderBy".$fields[$order_index];
      $objs->$orderbycol($this->input->get('order[0][dir]'));
    } catch (Exception $e) {
 

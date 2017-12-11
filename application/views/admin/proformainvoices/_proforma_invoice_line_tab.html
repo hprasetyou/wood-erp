@@ -9,8 +9,11 @@
     <table data-controller="manage_proformainvoicelines" class="table table-striped " data-domain='{"proforma_invoice":{{proformainvoices.Id}}}' id="table_ProformaInvoiceLine">
       <thead>
         <tr>
+          <th data-fieldname="id">Pos</th>
+          <th data-fieldname="product_image" data-fieldtype="image">{{res.string.name}}</th>
           <th data-fieldname="name">{{res.string.name}}</th>
           <th data-fieldname="description">{{res.string.description}}</th>
+          <th data-fieldname="product_material" data-fieldtype="array">{{res.string.material}}</th>
           <th data-fieldname="product_finishing" >{{ res.string.finishing}}</th>
           <th data-fieldname="qty" >{{res.string.qty}}</th>
           <th data-fieldname="qty_of_pack" >{{res.string.qty_of_pack}}</th>
@@ -30,7 +33,7 @@
       </thead>
       <tfoot>
         <tr>
-          <td colspan="6">Total</td>
+          <td colspan="7">Total</td>
           <td><span id="TotalCd"></span></td>
           <td></td>
           <td colspan="2"><span id="TotalCol"></span></td>

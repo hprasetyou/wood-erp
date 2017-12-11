@@ -200,6 +200,14 @@ $(document).ready(function(){
 
     $('#table_ProformaInvoiceLine').loadTableData({
       button:['edit','delete'],
+      paging:false,
+      ordering:false,
+      search:false,
+      rowCallback:function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+        var index = iDisplayIndex +1;
+        $('td:eq(0)',nRow).html(index);
+        return nRow;
+      },
       complete:function(settings, json) {
         console.log("complete");
 
