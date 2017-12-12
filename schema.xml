@@ -294,6 +294,7 @@
     <column name="product_id" phpName="ProductId" type="INTEGER" required="true"/>
     <column name="product_finishing" phpName="ProductFinishing" size="255" type="VARCHAR"/>
     <column name="name" phpName="Name" size="255" type="VARCHAR"/>
+    <column name="remark" phpName="Remark" size="255" type="VARCHAR"/>
     <column name="description" phpName="Description" size="255" type="VARCHAR"/>
     <column name="qty" phpName="Qty" type="INTEGER"/>
     <column name="qty_per_pack" phpName="QtyPerPack" type="INTEGER"/>
@@ -451,6 +452,7 @@
     <column name="name" phpName="Name" required="true" type="VARCHAR" size="255"/>
     <column name="partner_id" phpName="PartnerId" type="INTEGER" required="true"/>
     <column name="country_id" phpName="CountryId" type="INTEGER" required="true"/>
+    <column name="postal" phpName="Postal" type="VARCHAR" size="7"/>
     <column name="city" phpName="City" type="VARCHAR" size="255"/>
     <column name="address" phpName="Adress" required="true" type="LONGVARCHAR" />
     <foreign-key foreignTable="country" name="partner_location_ibfk_2">

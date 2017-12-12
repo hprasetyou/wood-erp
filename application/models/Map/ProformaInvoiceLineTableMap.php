@@ -59,7 +59,7 @@ class ProformaInvoiceLineTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 16;
+    const NUM_COLUMNS = 17;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class ProformaInvoiceLineTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 16;
+    const NUM_HYDRATE_COLUMNS = 17;
 
     /**
      * the column name for the id field
@@ -95,6 +95,11 @@ class ProformaInvoiceLineTableMap extends TableMap
      * the column name for the name field
      */
     const COL_NAME = 'proforma_invoice_line.name';
+
+    /**
+     * the column name for the remark field
+     */
+    const COL_REMARK = 'proforma_invoice_line.remark';
 
     /**
      * the column name for the description field
@@ -163,11 +168,11 @@ class ProformaInvoiceLineTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'ProformaInvoiceId', 'ProductId', 'ProductFinishing', 'Name', 'Description', 'Qty', 'QtyPerPack', 'CubicDimension', 'TotalCubicDimension', 'Price', 'TotalPrice', 'IsSample', 'IsNeedBox', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'proformaInvoiceId', 'productId', 'productFinishing', 'name', 'description', 'qty', 'qtyPerPack', 'cubicDimension', 'totalCubicDimension', 'price', 'totalPrice', 'isSample', 'isNeedBox', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ProformaInvoiceLineTableMap::COL_ID, ProformaInvoiceLineTableMap::COL_PROFORMA_INVOICE_ID, ProformaInvoiceLineTableMap::COL_PRODUCT_ID, ProformaInvoiceLineTableMap::COL_PRODUCT_FINISHING, ProformaInvoiceLineTableMap::COL_NAME, ProformaInvoiceLineTableMap::COL_DESCRIPTION, ProformaInvoiceLineTableMap::COL_QTY, ProformaInvoiceLineTableMap::COL_QTY_PER_PACK, ProformaInvoiceLineTableMap::COL_CUBIC_DIMENSION, ProformaInvoiceLineTableMap::COL_TOTAL_CUBIC_DIMENSION, ProformaInvoiceLineTableMap::COL_PRICE, ProformaInvoiceLineTableMap::COL_TOTAL_PRICE, ProformaInvoiceLineTableMap::COL_IS_SAMPLE, ProformaInvoiceLineTableMap::COL_IS_NEED_BOX, ProformaInvoiceLineTableMap::COL_CREATED_AT, ProformaInvoiceLineTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'proforma_invoice_id', 'product_id', 'product_finishing', 'name', 'description', 'qty', 'qty_per_pack', 'cubic_dimension', 'total_cubic_dimension', 'price', 'total_price', 'is_sample', 'is_need_box', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
+        self::TYPE_PHPNAME       => array('Id', 'ProformaInvoiceId', 'ProductId', 'ProductFinishing', 'Name', 'Remark', 'Description', 'Qty', 'QtyPerPack', 'CubicDimension', 'TotalCubicDimension', 'Price', 'TotalPrice', 'IsSample', 'IsNeedBox', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'proformaInvoiceId', 'productId', 'productFinishing', 'name', 'remark', 'description', 'qty', 'qtyPerPack', 'cubicDimension', 'totalCubicDimension', 'price', 'totalPrice', 'isSample', 'isNeedBox', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ProformaInvoiceLineTableMap::COL_ID, ProformaInvoiceLineTableMap::COL_PROFORMA_INVOICE_ID, ProformaInvoiceLineTableMap::COL_PRODUCT_ID, ProformaInvoiceLineTableMap::COL_PRODUCT_FINISHING, ProformaInvoiceLineTableMap::COL_NAME, ProformaInvoiceLineTableMap::COL_REMARK, ProformaInvoiceLineTableMap::COL_DESCRIPTION, ProformaInvoiceLineTableMap::COL_QTY, ProformaInvoiceLineTableMap::COL_QTY_PER_PACK, ProformaInvoiceLineTableMap::COL_CUBIC_DIMENSION, ProformaInvoiceLineTableMap::COL_TOTAL_CUBIC_DIMENSION, ProformaInvoiceLineTableMap::COL_PRICE, ProformaInvoiceLineTableMap::COL_TOTAL_PRICE, ProformaInvoiceLineTableMap::COL_IS_SAMPLE, ProformaInvoiceLineTableMap::COL_IS_NEED_BOX, ProformaInvoiceLineTableMap::COL_CREATED_AT, ProformaInvoiceLineTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'proforma_invoice_id', 'product_id', 'product_finishing', 'name', 'remark', 'description', 'qty', 'qty_per_pack', 'cubic_dimension', 'total_cubic_dimension', 'price', 'total_price', 'is_sample', 'is_need_box', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, )
     );
 
     /**
@@ -177,11 +182,11 @@ class ProformaInvoiceLineTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'ProformaInvoiceId' => 1, 'ProductId' => 2, 'ProductFinishing' => 3, 'Name' => 4, 'Description' => 5, 'Qty' => 6, 'QtyPerPack' => 7, 'CubicDimension' => 8, 'TotalCubicDimension' => 9, 'Price' => 10, 'TotalPrice' => 11, 'IsSample' => 12, 'IsNeedBox' => 13, 'CreatedAt' => 14, 'UpdatedAt' => 15, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'proformaInvoiceId' => 1, 'productId' => 2, 'productFinishing' => 3, 'name' => 4, 'description' => 5, 'qty' => 6, 'qtyPerPack' => 7, 'cubicDimension' => 8, 'totalCubicDimension' => 9, 'price' => 10, 'totalPrice' => 11, 'isSample' => 12, 'isNeedBox' => 13, 'createdAt' => 14, 'updatedAt' => 15, ),
-        self::TYPE_COLNAME       => array(ProformaInvoiceLineTableMap::COL_ID => 0, ProformaInvoiceLineTableMap::COL_PROFORMA_INVOICE_ID => 1, ProformaInvoiceLineTableMap::COL_PRODUCT_ID => 2, ProformaInvoiceLineTableMap::COL_PRODUCT_FINISHING => 3, ProformaInvoiceLineTableMap::COL_NAME => 4, ProformaInvoiceLineTableMap::COL_DESCRIPTION => 5, ProformaInvoiceLineTableMap::COL_QTY => 6, ProformaInvoiceLineTableMap::COL_QTY_PER_PACK => 7, ProformaInvoiceLineTableMap::COL_CUBIC_DIMENSION => 8, ProformaInvoiceLineTableMap::COL_TOTAL_CUBIC_DIMENSION => 9, ProformaInvoiceLineTableMap::COL_PRICE => 10, ProformaInvoiceLineTableMap::COL_TOTAL_PRICE => 11, ProformaInvoiceLineTableMap::COL_IS_SAMPLE => 12, ProformaInvoiceLineTableMap::COL_IS_NEED_BOX => 13, ProformaInvoiceLineTableMap::COL_CREATED_AT => 14, ProformaInvoiceLineTableMap::COL_UPDATED_AT => 15, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'proforma_invoice_id' => 1, 'product_id' => 2, 'product_finishing' => 3, 'name' => 4, 'description' => 5, 'qty' => 6, 'qty_per_pack' => 7, 'cubic_dimension' => 8, 'total_cubic_dimension' => 9, 'price' => 10, 'total_price' => 11, 'is_sample' => 12, 'is_need_box' => 13, 'created_at' => 14, 'updated_at' => 15, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'ProformaInvoiceId' => 1, 'ProductId' => 2, 'ProductFinishing' => 3, 'Name' => 4, 'Remark' => 5, 'Description' => 6, 'Qty' => 7, 'QtyPerPack' => 8, 'CubicDimension' => 9, 'TotalCubicDimension' => 10, 'Price' => 11, 'TotalPrice' => 12, 'IsSample' => 13, 'IsNeedBox' => 14, 'CreatedAt' => 15, 'UpdatedAt' => 16, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'proformaInvoiceId' => 1, 'productId' => 2, 'productFinishing' => 3, 'name' => 4, 'remark' => 5, 'description' => 6, 'qty' => 7, 'qtyPerPack' => 8, 'cubicDimension' => 9, 'totalCubicDimension' => 10, 'price' => 11, 'totalPrice' => 12, 'isSample' => 13, 'isNeedBox' => 14, 'createdAt' => 15, 'updatedAt' => 16, ),
+        self::TYPE_COLNAME       => array(ProformaInvoiceLineTableMap::COL_ID => 0, ProformaInvoiceLineTableMap::COL_PROFORMA_INVOICE_ID => 1, ProformaInvoiceLineTableMap::COL_PRODUCT_ID => 2, ProformaInvoiceLineTableMap::COL_PRODUCT_FINISHING => 3, ProformaInvoiceLineTableMap::COL_NAME => 4, ProformaInvoiceLineTableMap::COL_REMARK => 5, ProformaInvoiceLineTableMap::COL_DESCRIPTION => 6, ProformaInvoiceLineTableMap::COL_QTY => 7, ProformaInvoiceLineTableMap::COL_QTY_PER_PACK => 8, ProformaInvoiceLineTableMap::COL_CUBIC_DIMENSION => 9, ProformaInvoiceLineTableMap::COL_TOTAL_CUBIC_DIMENSION => 10, ProformaInvoiceLineTableMap::COL_PRICE => 11, ProformaInvoiceLineTableMap::COL_TOTAL_PRICE => 12, ProformaInvoiceLineTableMap::COL_IS_SAMPLE => 13, ProformaInvoiceLineTableMap::COL_IS_NEED_BOX => 14, ProformaInvoiceLineTableMap::COL_CREATED_AT => 15, ProformaInvoiceLineTableMap::COL_UPDATED_AT => 16, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'proforma_invoice_id' => 1, 'product_id' => 2, 'product_finishing' => 3, 'name' => 4, 'remark' => 5, 'description' => 6, 'qty' => 7, 'qty_per_pack' => 8, 'cubic_dimension' => 9, 'total_cubic_dimension' => 10, 'price' => 11, 'total_price' => 12, 'is_sample' => 13, 'is_need_box' => 14, 'created_at' => 15, 'updated_at' => 16, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, )
     );
 
     /**
@@ -206,6 +211,7 @@ class ProformaInvoiceLineTableMap extends TableMap
         $this->addForeignKey('product_id', 'ProductId', 'INTEGER', 'product', 'id', true, null, null);
         $this->addColumn('product_finishing', 'ProductFinishing', 'VARCHAR', false, 255, null);
         $this->addColumn('name', 'Name', 'VARCHAR', false, 255, null);
+        $this->addColumn('remark', 'Remark', 'VARCHAR', false, 255, null);
         $this->addColumn('description', 'Description', 'VARCHAR', false, 255, null);
         $this->addColumn('qty', 'Qty', 'INTEGER', false, null, null);
         $this->addColumn('qty_per_pack', 'QtyPerPack', 'INTEGER', false, null, null);
@@ -400,6 +406,7 @@ class ProformaInvoiceLineTableMap extends TableMap
             $criteria->addSelectColumn(ProformaInvoiceLineTableMap::COL_PRODUCT_ID);
             $criteria->addSelectColumn(ProformaInvoiceLineTableMap::COL_PRODUCT_FINISHING);
             $criteria->addSelectColumn(ProformaInvoiceLineTableMap::COL_NAME);
+            $criteria->addSelectColumn(ProformaInvoiceLineTableMap::COL_REMARK);
             $criteria->addSelectColumn(ProformaInvoiceLineTableMap::COL_DESCRIPTION);
             $criteria->addSelectColumn(ProformaInvoiceLineTableMap::COL_QTY);
             $criteria->addSelectColumn(ProformaInvoiceLineTableMap::COL_QTY_PER_PACK);
@@ -417,6 +424,7 @@ class ProformaInvoiceLineTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.product_id');
             $criteria->addSelectColumn($alias . '.product_finishing');
             $criteria->addSelectColumn($alias . '.name');
+            $criteria->addSelectColumn($alias . '.remark');
             $criteria->addSelectColumn($alias . '.description');
             $criteria->addSelectColumn($alias . '.qty');
             $criteria->addSelectColumn($alias . '.qty_per_pack');

@@ -92,6 +92,13 @@ abstract class PartnerLocation implements ActiveRecordInterface
     protected $country_id;
 
     /**
+     * The value for the postal field.
+     *
+     * @var        string
+     */
+    protected $postal;
+
+    /**
      * The value for the city field.
      *
      * @var        string
@@ -389,6 +396,16 @@ abstract class PartnerLocation implements ActiveRecordInterface
     }
 
     /**
+     * Get the [postal] column value.
+     *
+     * @return string
+     */
+    public function getPostal()
+    {
+        return $this->postal;
+    }
+
+    /**
      * Get the [city] column value.
      *
      * @return string
@@ -497,6 +514,26 @@ abstract class PartnerLocation implements ActiveRecordInterface
     } // setCountryId()
 
     /**
+     * Set the value of [postal] column.
+     *
+     * @param string $v new value
+     * @return $this|\PartnerLocation The current object (for fluent API support)
+     */
+    public function setPostal($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->postal !== $v) {
+            $this->postal = $v;
+            $this->modifiedColumns[PartnerLocationTableMap::COL_POSTAL] = true;
+        }
+
+        return $this;
+    } // setPostal()
+
+    /**
      * Set the value of [city] column.
      *
      * @param string $v new value
@@ -584,10 +621,13 @@ abstract class PartnerLocation implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : PartnerLocationTableMap::translateFieldName('CountryId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->country_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : PartnerLocationTableMap::translateFieldName('City', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : PartnerLocationTableMap::translateFieldName('Postal', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->postal = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : PartnerLocationTableMap::translateFieldName('City', TableMap::TYPE_PHPNAME, $indexType)];
             $this->city = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : PartnerLocationTableMap::translateFieldName('Adress', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PartnerLocationTableMap::translateFieldName('Adress', TableMap::TYPE_PHPNAME, $indexType)];
             $this->address = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
@@ -597,7 +637,7 @@ abstract class PartnerLocation implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 6; // 6 = PartnerLocationTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = PartnerLocationTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\PartnerLocation'), 0, $e);
@@ -837,6 +877,9 @@ abstract class PartnerLocation implements ActiveRecordInterface
         if ($this->isColumnModified(PartnerLocationTableMap::COL_COUNTRY_ID)) {
             $modifiedColumns[':p' . $index++]  = 'country_id';
         }
+        if ($this->isColumnModified(PartnerLocationTableMap::COL_POSTAL)) {
+            $modifiedColumns[':p' . $index++]  = 'postal';
+        }
         if ($this->isColumnModified(PartnerLocationTableMap::COL_CITY)) {
             $modifiedColumns[':p' . $index++]  = 'city';
         }
@@ -865,6 +908,9 @@ abstract class PartnerLocation implements ActiveRecordInterface
                         break;
                     case 'country_id':
                         $stmt->bindValue($identifier, $this->country_id, PDO::PARAM_INT);
+                        break;
+                    case 'postal':
+                        $stmt->bindValue($identifier, $this->postal, PDO::PARAM_STR);
                         break;
                     case 'city':
                         $stmt->bindValue($identifier, $this->city, PDO::PARAM_STR);
@@ -947,9 +993,12 @@ abstract class PartnerLocation implements ActiveRecordInterface
                 return $this->getCountryId();
                 break;
             case 4:
-                return $this->getCity();
+                return $this->getPostal();
                 break;
             case 5:
+                return $this->getCity();
+                break;
+            case 6:
                 return $this->getAdress();
                 break;
             default:
@@ -986,8 +1035,9 @@ abstract class PartnerLocation implements ActiveRecordInterface
             $keys[1] => $this->getName(),
             $keys[2] => $this->getPartnerId(),
             $keys[3] => $this->getCountryId(),
-            $keys[4] => $this->getCity(),
-            $keys[5] => $this->getAdress(),
+            $keys[4] => $this->getPostal(),
+            $keys[5] => $this->getCity(),
+            $keys[6] => $this->getAdress(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1072,9 +1122,12 @@ abstract class PartnerLocation implements ActiveRecordInterface
                 $this->setCountryId($value);
                 break;
             case 4:
-                $this->setCity($value);
+                $this->setPostal($value);
                 break;
             case 5:
+                $this->setCity($value);
+                break;
+            case 6:
                 $this->setAdress($value);
                 break;
         } // switch()
@@ -1116,10 +1169,13 @@ abstract class PartnerLocation implements ActiveRecordInterface
             $this->setCountryId($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setCity($arr[$keys[4]]);
+            $this->setPostal($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setAdress($arr[$keys[5]]);
+            $this->setCity($arr[$keys[5]]);
+        }
+        if (array_key_exists($keys[6], $arr)) {
+            $this->setAdress($arr[$keys[6]]);
         }
     }
 
@@ -1173,6 +1229,9 @@ abstract class PartnerLocation implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PartnerLocationTableMap::COL_COUNTRY_ID)) {
             $criteria->add(PartnerLocationTableMap::COL_COUNTRY_ID, $this->country_id);
+        }
+        if ($this->isColumnModified(PartnerLocationTableMap::COL_POSTAL)) {
+            $criteria->add(PartnerLocationTableMap::COL_POSTAL, $this->postal);
         }
         if ($this->isColumnModified(PartnerLocationTableMap::COL_CITY)) {
             $criteria->add(PartnerLocationTableMap::COL_CITY, $this->city);
@@ -1269,6 +1328,7 @@ abstract class PartnerLocation implements ActiveRecordInterface
         $copyObj->setName($this->getName());
         $copyObj->setPartnerId($this->getPartnerId());
         $copyObj->setCountryId($this->getCountryId());
+        $copyObj->setPostal($this->getPostal());
         $copyObj->setCity($this->getCity());
         $copyObj->setAdress($this->getAdress());
         if ($makeNew) {
@@ -1418,6 +1478,7 @@ abstract class PartnerLocation implements ActiveRecordInterface
         $this->name = null;
         $this->partner_id = null;
         $this->country_id = null;
+        $this->postal = null;
         $this->city = null;
         $this->address = null;
         $this->alreadyInSave = false;

@@ -116,16 +116,17 @@ $('#CustomerId').change(function(e){
 
 function refresh_line(){
   $('#table_ProformaInvoiceLine').DataTable().ajax.reload(function(d){
-      console.log("reload dttable");
       get_total()
-      $('#ModalAddProformaInvoiceLine').find('input').val('')
-      $('#ModalAddProformaInvoiceLine').find('input').prop('checked',false);
       $('#ModalAddProformaInvoiceLine').modal('hide')
       $('#table_ProformaInvoiceLine').find('.btn-delete').show()
       $('#table_ProformaInvoiceLine').find('.btn-edit').show()
   })
 }
 $(document).ready(function(){
+  $('#ModalAddProformaInvoiceLine').on('hidden.bs.modal', function () {
+    $('#ModalAddProformaInvoiceLine').find('input').val('')
+    $('#ModalAddProformaInvoiceLine').find('input').prop('checked',false);
+  })
   $('#CustomerId').trigger('change')
   $('#table_ProformaInvoiceLine').on('click','.btn-delete',function(e){
     $.ajax({
@@ -146,6 +147,7 @@ $(document).ready(function(){
     }).done(function(o){
       console.log(o);
       $('#LineId').val(o.Id)
+      $('#Finishing').data('value',o.ProductFinishing)
       $('#ModalAddProformaInvoiceLine').find('input').each(function(i){
 
         if(o.hasOwnProperty($(this).prop('name'))){
@@ -160,17 +162,15 @@ $(document).ready(function(){
               $(this).val(o[$(this).prop('name')])
               break;
             case 'checkbox':
-              $(this).checked = o[$(this).prop('name')]
+              $(this).prop('checked', o[$(this).prop('name')])
               break;
             default:
           }
           $(this).change();
 
         }else{
-          console.log("dont have");
         }
 
-        $('#Finishing').data('value',o.ProductFinishing)
 
       })
 
@@ -180,7 +180,6 @@ $(document).ready(function(){
   $('#form_ProformaInvoiceLine').submit(function(e){
     e.preventDefault()
     if($('#PIId').val()>0){
-        console.log('hahahahahha');
           write_line($('#PIId').val()).done(function(o){
             refresh_line()
             info_popup("Data saved!");
@@ -221,7 +220,6 @@ $(document).ready(function(){
         return nRow;
       },
       complete:function(settings, json) {
-        console.log("complete");
 
           get_total()
         $('#table_ProformaInvoiceLine').css('width','100%')
@@ -233,7 +231,6 @@ $(document).ready(function(){
   })
 
   $('#ProductId').change(function(){
-    console.log("prod changed");
       $.ajax({
         url:'/index.php/manage_products/get_detail_json/'+$(this).val()+
         '?customer_id='+$('#CustomerId').val()+'&currency_id='+$('#CurrencyId').val(),
@@ -264,7 +261,6 @@ $(document).ready(function(){
               var shouldfill = true
               if($('#LineId').val()>1){
                 if(i != 'ListPrice'){
-                  console.log(i);
                   shouldfill = false
                 }
               }
@@ -273,7 +269,6 @@ $(document).ready(function(){
               }
             }
           }
-          console.log(desc);
           $('#CubicDimension').val(o.IsKdn?o.CubicKdn:o.CubicAsb)
 
           if(!($('#LineId').val()>1)){
@@ -290,27 +285,29 @@ $(document).ready(function(){
     var tot= 0;
     var ctot = 0;
     $('#table_ProformaInvoiceLine').find('tbody tr').each(function(i){
-      var stot = $(this).find("td").eq(12).text();
-      var sctot = $(this).find("td").eq(9).text();
-      stot = stot.replace(/[^0-9-,]/g, '')
-      stot = stot.match(/[+-]?\d+(\.\d+)?/g).map(function(v) { return parseFloat(v); });
-      console.log(stot);
-      sctot = sctot.match(/[+-]?\d+(\.\d+)?/g).map(function(v) { return parseFloat(v); });
-      // console.log(sctot);
-      tot = tot + (stot[0]>0?(stot[0]*1):0)
-      ctot = ctot +(sctot[0]>0?(sctot[0]*1):0)
+      if($(this).find("td").length>9){
+        var stot = $(this).find("td").eq(12).text();
+        var sctot = $(this).find("td").eq(9).text();
+        stot = stot.replace(/[^0-9-,]/g, '')
+        stot = stot.match(/[+-]?\d+(\.\d+)?/g).map(function(v) { return parseFloat(v); });
+        sctot = sctot.match(/[+-]?\d+(\.\d+)?/g).map(function(v) { return parseFloat(v); });
+        tot = tot + (stot[0]>0?(stot[0]*1):0)
+        ctot = ctot +(sctot[0]>0?(sctot[0]*1):0)
+      }
+
     })
+    {% if proformainvoices %}
     $('#TotalCol').text(format_currency(tot,{
       "symbol":"{{ proformainvoices.Currency.Symbol }}",
       "rate":"{{ exchange_rate(1,proformainvoices.Currency.Code) }}",
       "position":"{{ proformainvoices.Currency.Placement }}"}
     ))
+    {% endif %}
     $('#TotalCd').text(parseFloat(ctot).toFixed(3) + ' m3')
   }
 
   $('#table_ProformaInvoiceLine').on( 'click','.btn-delete-row',function(e){
     e.preventDefault()
-    console.log('hahahahahah');
     var oidx = $(this).data('index')
     mod_line({
       id:$(this).data('id'),

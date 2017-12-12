@@ -51,13 +51,16 @@ class Template {
       $o .= "</select>";
       return $o;
     });
-      $exchange_rate = new Twig_Function('exchange_rate', function ($value,$target,$src="USD") {
+      $exchange_rate = new Twig_Function('exchange_rate', function ($value=1,$target,$src="USD") {
+        if(!$target){
+          $target = "USD";
+        }
         $ex = ExchangeRateQuery::create()
         ->filterByTarget($target)
         ->filterByBase($src)
         ->orderByCreatedAt('desc')
         ->findOne();
-        return ($value * (($target != $src)?$ex->getRate():1));
+        return ($value * (($target != $src)?($ex->getRate()):1));
       });
     $this->twig->addFunction($function);
     $this->twig->addFunction($exchange_rate);

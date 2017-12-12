@@ -25,6 +25,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceLineQuery orderByProductId($order = Criteria::ASC) Order by the product_id column
  * @method     ChildProformaInvoiceLineQuery orderByProductFinishing($order = Criteria::ASC) Order by the product_finishing column
  * @method     ChildProformaInvoiceLineQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method     ChildProformaInvoiceLineQuery orderByRemark($order = Criteria::ASC) Order by the remark column
  * @method     ChildProformaInvoiceLineQuery orderByDescription($order = Criteria::ASC) Order by the description column
  * @method     ChildProformaInvoiceLineQuery orderByQty($order = Criteria::ASC) Order by the qty column
  * @method     ChildProformaInvoiceLineQuery orderByQtyPerPack($order = Criteria::ASC) Order by the qty_per_pack column
@@ -42,6 +43,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceLineQuery groupByProductId() Group by the product_id column
  * @method     ChildProformaInvoiceLineQuery groupByProductFinishing() Group by the product_finishing column
  * @method     ChildProformaInvoiceLineQuery groupByName() Group by the name column
+ * @method     ChildProformaInvoiceLineQuery groupByRemark() Group by the remark column
  * @method     ChildProformaInvoiceLineQuery groupByDescription() Group by the description column
  * @method     ChildProformaInvoiceLineQuery groupByQty() Group by the qty column
  * @method     ChildProformaInvoiceLineQuery groupByQtyPerPack() Group by the qty_per_pack column
@@ -112,6 +114,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceLine findOneByProductId(int $product_id) Return the first ChildProformaInvoiceLine filtered by the product_id column
  * @method     ChildProformaInvoiceLine findOneByProductFinishing(string $product_finishing) Return the first ChildProformaInvoiceLine filtered by the product_finishing column
  * @method     ChildProformaInvoiceLine findOneByName(string $name) Return the first ChildProformaInvoiceLine filtered by the name column
+ * @method     ChildProformaInvoiceLine findOneByRemark(string $remark) Return the first ChildProformaInvoiceLine filtered by the remark column
  * @method     ChildProformaInvoiceLine findOneByDescription(string $description) Return the first ChildProformaInvoiceLine filtered by the description column
  * @method     ChildProformaInvoiceLine findOneByQty(int $qty) Return the first ChildProformaInvoiceLine filtered by the qty column
  * @method     ChildProformaInvoiceLine findOneByQtyPerPack(int $qty_per_pack) Return the first ChildProformaInvoiceLine filtered by the qty_per_pack column
@@ -132,6 +135,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceLine requireOneByProductId(int $product_id) Return the first ChildProformaInvoiceLine filtered by the product_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoiceLine requireOneByProductFinishing(string $product_finishing) Return the first ChildProformaInvoiceLine filtered by the product_finishing column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoiceLine requireOneByName(string $name) Return the first ChildProformaInvoiceLine filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProformaInvoiceLine requireOneByRemark(string $remark) Return the first ChildProformaInvoiceLine filtered by the remark column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoiceLine requireOneByDescription(string $description) Return the first ChildProformaInvoiceLine filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoiceLine requireOneByQty(int $qty) Return the first ChildProformaInvoiceLine filtered by the qty column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoiceLine requireOneByQtyPerPack(int $qty_per_pack) Return the first ChildProformaInvoiceLine filtered by the qty_per_pack column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -150,6 +154,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByProductId(int $product_id) Return ChildProformaInvoiceLine objects filtered by the product_id column
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByProductFinishing(string $product_finishing) Return ChildProformaInvoiceLine objects filtered by the product_finishing column
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByName(string $name) Return ChildProformaInvoiceLine objects filtered by the name column
+ * @method     ChildProformaInvoiceLine[]|ObjectCollection findByRemark(string $remark) Return ChildProformaInvoiceLine objects filtered by the remark column
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByDescription(string $description) Return ChildProformaInvoiceLine objects filtered by the description column
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByQty(int $qty) Return ChildProformaInvoiceLine objects filtered by the qty column
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByQtyPerPack(int $qty_per_pack) Return ChildProformaInvoiceLine objects filtered by the qty_per_pack column
@@ -259,7 +264,7 @@ abstract class ProformaInvoiceLineQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, proforma_invoice_id, product_id, product_finishing, name, description, qty, qty_per_pack, cubic_dimension, total_cubic_dimension, price, total_price, is_sample, is_need_box, created_at, updated_at FROM proforma_invoice_line WHERE id = :p0';
+        $sql = 'SELECT id, proforma_invoice_id, product_id, product_finishing, name, remark, description, qty, qty_per_pack, cubic_dimension, total_cubic_dimension, price, total_price, is_sample, is_need_box, created_at, updated_at FROM proforma_invoice_line WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -524,6 +529,31 @@ abstract class ProformaInvoiceLineQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProformaInvoiceLineTableMap::COL_NAME, $name, $comparison);
+    }
+
+    /**
+     * Filter the query on the remark column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByRemark('fooValue');   // WHERE remark = 'fooValue'
+     * $query->filterByRemark('%fooValue%', Criteria::LIKE); // WHERE remark LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $remark The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProformaInvoiceLineQuery The current query, for fluid interface
+     */
+    public function filterByRemark($remark = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($remark)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProformaInvoiceLineTableMap::COL_REMARK, $remark, $comparison);
     }
 
     /**

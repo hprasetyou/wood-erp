@@ -24,6 +24,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerLocationQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method     ChildPartnerLocationQuery orderByPartnerId($order = Criteria::ASC) Order by the partner_id column
  * @method     ChildPartnerLocationQuery orderByCountryId($order = Criteria::ASC) Order by the country_id column
+ * @method     ChildPartnerLocationQuery orderByPostal($order = Criteria::ASC) Order by the postal column
  * @method     ChildPartnerLocationQuery orderByCity($order = Criteria::ASC) Order by the city column
  * @method     ChildPartnerLocationQuery orderByAdress($order = Criteria::ASC) Order by the address column
  *
@@ -31,6 +32,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerLocationQuery groupByName() Group by the name column
  * @method     ChildPartnerLocationQuery groupByPartnerId() Group by the partner_id column
  * @method     ChildPartnerLocationQuery groupByCountryId() Group by the country_id column
+ * @method     ChildPartnerLocationQuery groupByPostal() Group by the postal column
  * @method     ChildPartnerLocationQuery groupByCity() Group by the city column
  * @method     ChildPartnerLocationQuery groupByAdress() Group by the address column
  *
@@ -71,6 +73,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerLocation findOneByName(string $name) Return the first ChildPartnerLocation filtered by the name column
  * @method     ChildPartnerLocation findOneByPartnerId(int $partner_id) Return the first ChildPartnerLocation filtered by the partner_id column
  * @method     ChildPartnerLocation findOneByCountryId(int $country_id) Return the first ChildPartnerLocation filtered by the country_id column
+ * @method     ChildPartnerLocation findOneByPostal(string $postal) Return the first ChildPartnerLocation filtered by the postal column
  * @method     ChildPartnerLocation findOneByCity(string $city) Return the first ChildPartnerLocation filtered by the city column
  * @method     ChildPartnerLocation findOneByAdress(string $address) Return the first ChildPartnerLocation filtered by the address column *
 
@@ -81,6 +84,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerLocation requireOneByName(string $name) Return the first ChildPartnerLocation filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartnerLocation requireOneByPartnerId(int $partner_id) Return the first ChildPartnerLocation filtered by the partner_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartnerLocation requireOneByCountryId(int $country_id) Return the first ChildPartnerLocation filtered by the country_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPartnerLocation requireOneByPostal(string $postal) Return the first ChildPartnerLocation filtered by the postal column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartnerLocation requireOneByCity(string $city) Return the first ChildPartnerLocation filtered by the city column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartnerLocation requireOneByAdress(string $address) Return the first ChildPartnerLocation filtered by the address column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -89,6 +93,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerLocation[]|ObjectCollection findByName(string $name) Return ChildPartnerLocation objects filtered by the name column
  * @method     ChildPartnerLocation[]|ObjectCollection findByPartnerId(int $partner_id) Return ChildPartnerLocation objects filtered by the partner_id column
  * @method     ChildPartnerLocation[]|ObjectCollection findByCountryId(int $country_id) Return ChildPartnerLocation objects filtered by the country_id column
+ * @method     ChildPartnerLocation[]|ObjectCollection findByPostal(string $postal) Return ChildPartnerLocation objects filtered by the postal column
  * @method     ChildPartnerLocation[]|ObjectCollection findByCity(string $city) Return ChildPartnerLocation objects filtered by the city column
  * @method     ChildPartnerLocation[]|ObjectCollection findByAdress(string $address) Return ChildPartnerLocation objects filtered by the address column
  * @method     ChildPartnerLocation[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -189,7 +194,7 @@ abstract class PartnerLocationQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, partner_id, country_id, city, address FROM partner_location WHERE id = :p0';
+        $sql = 'SELECT id, name, partner_id, country_id, postal, city, address FROM partner_location WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -429,6 +434,31 @@ abstract class PartnerLocationQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PartnerLocationTableMap::COL_COUNTRY_ID, $countryId, $comparison);
+    }
+
+    /**
+     * Filter the query on the postal column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByPostal('fooValue');   // WHERE postal = 'fooValue'
+     * $query->filterByPostal('%fooValue%', Criteria::LIKE); // WHERE postal LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $postal The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPartnerLocationQuery The current query, for fluid interface
+     */
+    public function filterByPostal($postal = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($postal)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PartnerLocationTableMap::COL_POSTAL, $postal, $comparison);
     }
 
     /**

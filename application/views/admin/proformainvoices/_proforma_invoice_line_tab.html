@@ -9,7 +9,7 @@
     <table data-controller="manage_proformainvoicelines" class="table table-striped " data-domain='{"proforma_invoice":{{proformainvoices.Id}}}' id="table_ProformaInvoiceLine">
       <thead>
         <tr>
-          <th data-fieldname="id">Pos</th>
+          <th data-fieldname="id">#</th>
           <th data-fieldname="product_image" data-fieldtype="image">{{res.string.image}}</th>
           <th data-fieldname="name">{{res.string.name}}</th>
           <th data-fieldname="description">{{res.string.description}}</th>
@@ -29,6 +29,8 @@
           data-currency='{"symbol":"{{ proformainvoices.Currency.Symbol }}"
           ,"rate":"{{ exchange_rate(1,proformainvoices.Currency.Code) }}"
           ,"position":"{{ proformainvoices.Currency.Placement }}"}' >{{res.string.total_price}}</th>
+          <th data-fieldname="remark" >{{res.string.remark}}</th>
+          <th data-fieldname="extra" data-fieldtype="array"></th>
           <th></th>
         </tr>
       </thead>

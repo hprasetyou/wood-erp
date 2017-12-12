@@ -218,7 +218,24 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
   var line_url = "/index.php/manage_proformainvoicelines/get_json/?check_qty_for_pl=1&proforma_invoice="
   $('#table_PackingListLine').loadTableData({
     search:false,
-    button:['edit','delete']
+    paging:false,
+    ordering:false,
+    button:['edit','delete'],
+    drawCallback:function(settings){
+            var api = this.api();
+            var rows = api.rows( {page:'current'} ).nodes();
+            var last=null;
+
+            api.column(7, {page:'current'} ).data().each( function ( group, i ) {
+                if ( last !== group ) {
+                    $(rows).eq( i ).before(
+                        '<tr class="group"><td colspan="9">'+group+'</td></tr>'
+                    );
+
+                    last = group;
+                }
+            } );
+        }
   })
   $(document).ready(function(){
     $('#CustomerId').trigger('change')

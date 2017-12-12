@@ -26,14 +26,19 @@ class Manage_partnerlocations extends MY_Controller{
 
 	function write($id=null){
     $this->form['CountryId'] = 'CountryId';
-    $this->form['PartnerId'] = 'PartnerId';
+    if(!$id){
+      $this->form['PartnerId'] = 'PartnerId';
+    }
 		$data = parent::write($id);
     if($this->input->is_ajax_request()){
 			echo $data->toJSON();
 		}else{
       $src = $this->input->post('Src');
       $partner_id = $this->input->post('PartnerId');
-			redirect("manage_$src/detail/$partner_id");
+      if($src){
+        redirect("manage_$src/detail/$partner_id");
+      }
+      redirect("manage_partnerlocations/detail/$id");
 		}
 	}
 

@@ -52,7 +52,7 @@ jQuery.fn.loadTableData = function(
            case 'image':
              render_data = new Function("data", "type","row","meta",
               "return '<img src=\"'+data.replace('original','120x120')+'\" "+
-              "class=\"img img-row\" />'")
+              "class=\"img img-row\" style=\"max-width:100px\" />'")
 
              break;
           case 'cbm':
@@ -74,7 +74,9 @@ jQuery.fn.loadTableData = function(
         case 'array':
           ordr = true;
           render_data = new Function("data", "type","row","meta",
-           "return data.toString()")
+           "var o ='';"+
+           "for(var i in data){o += '<span class=\"label label-primary\">'+data[i]+'</span><br> '};"+
+           "return o")
           break;
         case 'underneath_comma':
           ordr = true;
@@ -114,13 +116,13 @@ jQuery.fn.loadTableData = function(
    for (var b in conf.button) {
      switch (conf.button[b]) {
        case 'show':
-          btns += "<a data-id=\"'+data+'\" class=\"btn btn-sm btn-default pulloginl-right btn-select\" href=\""+base_url[0]+"index.php/"+c+"/detail/'+data+'\"><i class=\"fa fa-search\"></i> Detail</a>"
+          btns += "<a data-id=\"'+data+'\" class=\"btn btn-sm btn-default pulloginl-right btn-select\" href=\""+base_url[0]+"index.php/"+c+"/detail/'+data+'\"><i class=\"fa fa-search\"></i> </a>"
          break;
        case 'edit':
-          btns += "<a data-id=\"'+data+'\" class=\"btn btn-row-action btn-sm btn-primary pulloginl-right btn-edit\" href=\"#\"><i class=\"fa fa-pencil\"></i> Edit</a>"
+          btns += "<a data-id=\"'+data+'\" class=\"btn btn-row-action btn-sm btn-primary pulloginl-right btn-edit\" href=\"#\"><i class=\"fa fa-pencil\"></i> </a>"
          break;
        case 'delete':
-          btns += "<a data-id=\"'+data+'\" class=\"btn btn-sm btn-row-action btn-danger pulloginl-right btn-delete\" href=\"#\"><i class=\"fa fa-trash\"></i> Delete</a>"
+          btns += "<a data-id=\"'+data+'\" class=\"btn btn-sm btn-row-action btn-danger pulloginl-right btn-delete\" href=\"#\"><i class=\"fa fa-trash\"></i> </a>"
          break;
 
        default:
@@ -166,6 +168,7 @@ jQuery.fn.loadTableData = function(
 
     dtconf.initComplete = conf.complete
     dtconf.fnRowCallback = conf.rowCallback
+    dtconf.drawCallback = conf.drawCallback
   }
   tt.DataTable(dtconf);
 }
@@ -237,7 +240,7 @@ function init_modal_selection(){
              case 'image':
                render_data = new Function("data", "type","row","meta",
                 "return '<img src=\"'+data.replace('original','120x120')+'\" "+
-                "class=\"img img-row\" />'")
+                "class=\"img img-row\" style=\"max-width:100px\" />'")
 
                break;
             case 'cbm':

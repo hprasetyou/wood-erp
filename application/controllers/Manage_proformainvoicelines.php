@@ -35,6 +35,16 @@ class Manage_proformainvoicelines extends MY_Controller{
       }
       return \$o;
     }";
+    $this->custom_column['extra'] ="function() use(_{IsSample}_,_{IsNeedBox}_){
+        \$o = [];
+        if(_{IsSample}_){
+          array_push(\$o,string('is_sample'));
+        }
+        if(_{IsNeedBox}_){
+          array_push(\$o,string('with_box'));
+        }
+        return \$o;
+    }";
     $this->custom_column['calc_disc'] ="function() use (_{Price}_,_{Product}_){
       \$o = \"\";
 
@@ -44,7 +54,9 @@ class Manage_proformainvoicelines extends MY_Controller{
       \$o = [];
       if(_{Product}_->getHasComponent()){
         foreach(_{Product}_->getProductComponents() as \$component){
-          array_push(\$o,\$component->getComponent()->getMaterial()->getName());
+          if(!in_array(\$component->getComponent()->getMaterial()->getName(),\$o)){
+            array_push(\$o,\$component->getComponent()->getMaterial()->getName());
+          }
         }
       }else{
         \$mat = _{Product}_->getMaterial()?_{Product}_->getMaterial()->getName():false;

@@ -66,17 +66,31 @@
 						</div>
 
 					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Adress">{{res.string.address}}</label>
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Postal">{{res.string.postal}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partnerlocations %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" placeholder="{{ res.string.address }}" id="Adress" value="{{ partnerlocations.Adress }}"
-							name="Adress" required="required" class="form-control  col-md-7 col-xs-12">
+							<input type="text" placeholder="{{ res.string.postal }}" id="Postal" value="{{ partnerlocations.Postal }}"
+							name="Postal" required="required" class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if partnerlocations %}
-									<p class="control-value">{{ partnerlocations.Adress  }}</p>
+									<p class="control-value">{{ partnerlocations.Postal  }}</p>
 								{% endif %}
 							</div>
 						</div>
+
+						<div class="form-group">
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Adress">{{res.string.address}}</label>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+							<div {% if partnerlocations %}style="display:none"{% endif %} class="input-wrap">
+								<input type="text" placeholder="{{ res.string.address }}" id="Adress" value="{{ partnerlocations.Adress }}"
+								name="Adress" required="required" class="form-control  col-md-7 col-xs-12">
+							</div>
+									{% if partnerlocations %}
+										<p class="control-value">{{ partnerlocations.Adress  }}</p>
+									{% endif %}
+								</div>
+							</div>
+
 
 				</div>
 		</form>

@@ -15,5 +15,5 @@
    ->filterByTarget($target)
    ->orderByCreatedAt('desc')
    ->findOne();
-   return $val*(($target==$src)?1:$rate->getRate());
+   return round($val*(($target==$src)?1:$rate->getRate()),2);
  }

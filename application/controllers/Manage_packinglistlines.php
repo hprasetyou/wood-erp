@@ -18,13 +18,15 @@ class Manage_packinglistlines extends MY_Controller{
       'cubic_dimension' => "_{ProformaInvoiceLineCubicDimension}_",
       'total_cubic_dimension' => "_{ProformaInvoiceLineCubicDimension}_ * _{Qty}_",
       'pack' => "ceil(_{Qty}_/_{ProformaInvoiceLineQtyPerPack}_)",
-      'description' => "_{ProformaInvoiceLineDescription}_"
+      'description' => "_{ProformaInvoiceLineDescription}_",
+      'flegt'=>"_{ProductIsFlegt}_?'Flegt Item':'Non Flegt Item'"
     );
     $this->objobj = PackingListLineQuery::create()
     ->join('ProformaInvoiceLine')
     ->join('ProformaInvoiceLine.Product')
     ->join('ProformaInvoiceLine.ProformaInvoice')
     ->withColumn('Product.Name')
+    ->withColumn('Product.IsFlegt')
     ->withColumn('ProformaInvoice.Name')
     ->withColumn('ProformaInvoiceLine.CubicDimension')
     ->withColumn('ProformaInvoiceLine.TotalCubicDimension')

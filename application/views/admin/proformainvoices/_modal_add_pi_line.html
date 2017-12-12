@@ -17,7 +17,7 @@
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <div class="input-wrap input-group">
                     <input type="hidden" type="text" id="ProductId" name="ProductId"  >
-                    <input data-required readonly type="text" required="required" name="displayProductId" id="displayProductId"  placeholder="{{ res.string.product }}" class="form-control" />
+                    <input required readonly type="text" name="displayProductId" id="displayProductId"  placeholder="{{ res.string.product }}" class="form-control" />
                     <span class="input-group-btn">
                       <button class="btn btnModal btn-default" id="btnProductId"  data-target="ModalProduct" type="button">{{res.string.search}}</button>
                     </span>
@@ -25,12 +25,12 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="LineName">{{res.string.article_number}}</label>
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="LineName">{{res.string.customer_art_no}}</label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <div class="input-wrap">
                     <input type="text"
-                    data-required
-                    placeholder="{{ res.string.article_number }}"
+                    required
+                    placeholder="{{ res.string.customer_art_no }}"
                     id="LineName" value="{{ proformainvoicelines.Name }}"
                     name="Name" class="form-control  col-md-7 col-xs-12">
                   </div>
@@ -40,7 +40,7 @@
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ListPrice">{{res.string.list_price}}</label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <div class="input-wrap">
-                    <input data-required type="number"readonly placeholder="{{ res.string.list_price }}" id="ListPrice" name="ListPrice" class="form-control  col-md-7 col-xs-12">
+                    <input required type="text"readonly placeholder="{{ res.string.list_price }}" id="ListPrice" name="ListPrice" class="form-control  col-md-7 col-xs-12">
                   </div>
                 </div>
               </div>
@@ -48,7 +48,7 @@
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Price">{{res.string.price}}</label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <div class="input-wrap">
-                    <input data-required type="number" placeholder="{{ res.string.price }}" id="Price" name="Price" class="form-control  col-md-7 col-xs-12">
+                    <input required type="text" placeholder="{{ res.string.price }}" id="Price" name="Price" class="form-control  col-md-7 col-xs-12">
                   </div>
                 </div>
               </div>
@@ -66,7 +66,7 @@
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="CubicDimension">{{res.string.cubic_dimension}}</label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <div class="input-wrap">
-                    <input type="number" placeholder="{{ res.string.cubic_dimension }}" id="CubicDimension" name="CubicDimension" class="form-control col-md-7 col-xs-12">
+                    <input type="text" placeholder="{{ res.string.cubic_dimension }}" id="CubicDimension" name="CubicDimension" class="form-control col-md-7 col-xs-12">
                   </div>
                 </div>
               </div>
@@ -91,7 +91,7 @@
                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Qty">{{res.string.qty}}</label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="input-wrap">
-                      <input data-required type="number" placeholder="{{ res.string.qty }}" id="Qty" name="Qty" class="form-control  col-md-7 col-xs-12">
+                      <input required type="text" placeholder="{{ res.string.qty }}" id="Qty" name="Qty" class="form-control  col-md-7 col-xs-12">
                     </div>
                   </div>
                 </div>
@@ -100,7 +100,7 @@
                   for="QtyPerPack">{{res.string.qty_per_pack}}</label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="input-wrap">
-                      <input type="number" placeholder="{{ res.string.qty_per_pack }}"
+                      <input type="text" placeholder="{{ res.string.qty_per_pack }}"
                       id="QtyPerPack" name="QtyPerPack" class="form-control col-md-7 col-xs-12">
                     </div>
                   </div>
@@ -120,13 +120,25 @@
                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.with_box}}</label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
                     <div {% if products %}style="display:none" {% endif %} class="input-wrap">
-                      <input type="checkbox" value="1" id="IsNeedBox" value="1" {{ products.IsNeedBoxIsNeedBox ? "checked": "" }} name="IsKdn" class="form-checkbox">
+                      <input type="checkbox" value="1" id="IsNeedBox" {{ products.IsNeedBoxIsNeedBox ? "checked": "" }} name="IsNeedBox" class="form-checkbox">
                     </div>
                     {% if products %}
                     <p class="control-value">{{ products.IsNeedBox ? res.string.yes : res.string.no }}</p>
                     {% endif %}
                   </div>
                 </div>
+	              <div class="form-group">
+	                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Remark">{{res.string.remark}}</label>
+	                <div class="col-md-6 col-sm-6 col-xs-12">
+	                  <div class="input-wrap">
+	                    <input type="text"
+	                    placeholder="{{ res.string.remark }}"
+	                    id="Remark"
+											size="30"
+	                    name="Remark" class="form-control  col-md-7 col-xs-12">
+	                  </div>
+	                </div>
+	              </div>
             </div>
           </div>
 
