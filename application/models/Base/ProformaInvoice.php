@@ -110,11 +110,32 @@ abstract class ProformaInvoice implements ActiveRecordInterface
     protected $date;
 
     /**
+     * The value for the confirm_date field.
+     *
+     * @var        DateTime
+     */
+    protected $confirm_date;
+
+    /**
      * The value for the description field.
      *
      * @var        string
      */
     protected $description;
+
+    /**
+     * The value for the total_cubic_dimension field.
+     *
+     * @var        double
+     */
+    protected $total_cubic_dimension;
+
+    /**
+     * The value for the total_price field.
+     *
+     * @var        double
+     */
+    protected $total_price;
 
     /**
      * The value for the state field.
@@ -482,6 +503,26 @@ abstract class ProformaInvoice implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [confirm_date] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getConfirmDate($format = NULL)
+    {
+        if ($format === null) {
+            return $this->confirm_date;
+        } else {
+            return $this->confirm_date instanceof \DateTimeInterface ? $this->confirm_date->format($format) : null;
+        }
+    }
+
+    /**
      * Get the [description] column value.
      *
      * @return string
@@ -489,6 +530,26 @@ abstract class ProformaInvoice implements ActiveRecordInterface
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Get the [total_cubic_dimension] column value.
+     *
+     * @return double
+     */
+    public function getTotalCubicDimension()
+    {
+        return $this->total_cubic_dimension;
+    }
+
+    /**
+     * Get the [total_price] column value.
+     *
+     * @return double
+     */
+    public function getTotalPrice()
+    {
+        return $this->total_price;
     }
 
     /**
@@ -650,6 +711,26 @@ abstract class ProformaInvoice implements ActiveRecordInterface
     } // setDate()
 
     /**
+     * Sets the value of [confirm_date] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\ProformaInvoice The current object (for fluent API support)
+     */
+    public function setConfirmDate($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->confirm_date !== null || $dt !== null) {
+            if ($this->confirm_date === null || $dt === null || $dt->format("Y-m-d") !== $this->confirm_date->format("Y-m-d")) {
+                $this->confirm_date = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[ProformaInvoiceTableMap::COL_CONFIRM_DATE] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setConfirmDate()
+
+    /**
      * Set the value of [description] column.
      *
      * @param string $v new value
@@ -668,6 +749,46 @@ abstract class ProformaInvoice implements ActiveRecordInterface
 
         return $this;
     } // setDescription()
+
+    /**
+     * Set the value of [total_cubic_dimension] column.
+     *
+     * @param double $v new value
+     * @return $this|\ProformaInvoice The current object (for fluent API support)
+     */
+    public function setTotalCubicDimension($v)
+    {
+        if ($v !== null) {
+            $v = (double) $v;
+        }
+
+        if ($this->total_cubic_dimension !== $v) {
+            $this->total_cubic_dimension = $v;
+            $this->modifiedColumns[ProformaInvoiceTableMap::COL_TOTAL_CUBIC_DIMENSION] = true;
+        }
+
+        return $this;
+    } // setTotalCubicDimension()
+
+    /**
+     * Set the value of [total_price] column.
+     *
+     * @param double $v new value
+     * @return $this|\ProformaInvoice The current object (for fluent API support)
+     */
+    public function setTotalPrice($v)
+    {
+        if ($v !== null) {
+            $v = (double) $v;
+        }
+
+        if ($this->total_price !== $v) {
+            $this->total_price = $v;
+            $this->modifiedColumns[ProformaInvoiceTableMap::COL_TOTAL_PRICE] = true;
+        }
+
+        return $this;
+    } // setTotalPrice()
 
     /**
      * Set the value of [state] column.
@@ -791,19 +912,31 @@ abstract class ProformaInvoice implements ActiveRecordInterface
             }
             $this->date = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ProformaInvoiceTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ProformaInvoiceTableMap::translateFieldName('ConfirmDate', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00') {
+                $col = null;
+            }
+            $this->confirm_date = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ProformaInvoiceTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
             $this->description = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ProformaInvoiceTableMap::translateFieldName('State', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : ProformaInvoiceTableMap::translateFieldName('TotalCubicDimension', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->total_cubic_dimension = (null !== $col) ? (double) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : ProformaInvoiceTableMap::translateFieldName('TotalPrice', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->total_price = (null !== $col) ? (double) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : ProformaInvoiceTableMap::translateFieldName('State', TableMap::TYPE_PHPNAME, $indexType)];
             $this->state = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : ProformaInvoiceTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : ProformaInvoiceTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : ProformaInvoiceTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : ProformaInvoiceTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -816,7 +949,7 @@ abstract class ProformaInvoice implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 9; // 9 = ProformaInvoiceTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 12; // 12 = ProformaInvoiceTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\ProformaInvoice'), 0, $e);
@@ -1097,8 +1230,17 @@ abstract class ProformaInvoice implements ActiveRecordInterface
         if ($this->isColumnModified(ProformaInvoiceTableMap::COL_DATE)) {
             $modifiedColumns[':p' . $index++]  = 'date';
         }
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_CONFIRM_DATE)) {
+            $modifiedColumns[':p' . $index++]  = 'confirm_date';
+        }
         if ($this->isColumnModified(ProformaInvoiceTableMap::COL_DESCRIPTION)) {
             $modifiedColumns[':p' . $index++]  = 'description';
+        }
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_TOTAL_CUBIC_DIMENSION)) {
+            $modifiedColumns[':p' . $index++]  = 'total_cubic_dimension';
+        }
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_TOTAL_PRICE)) {
+            $modifiedColumns[':p' . $index++]  = 'total_price';
         }
         if ($this->isColumnModified(ProformaInvoiceTableMap::COL_STATE)) {
             $modifiedColumns[':p' . $index++]  = 'state';
@@ -1135,8 +1277,17 @@ abstract class ProformaInvoice implements ActiveRecordInterface
                     case 'date':
                         $stmt->bindValue($identifier, $this->date ? $this->date->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
+                    case 'confirm_date':
+                        $stmt->bindValue($identifier, $this->confirm_date ? $this->confirm_date->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                        break;
                     case 'description':
                         $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
+                        break;
+                    case 'total_cubic_dimension':
+                        $stmt->bindValue($identifier, $this->total_cubic_dimension, PDO::PARAM_STR);
+                        break;
+                    case 'total_price':
+                        $stmt->bindValue($identifier, $this->total_price, PDO::PARAM_STR);
                         break;
                     case 'state':
                         $stmt->bindValue($identifier, $this->state, PDO::PARAM_STR);
@@ -1225,15 +1376,24 @@ abstract class ProformaInvoice implements ActiveRecordInterface
                 return $this->getDate();
                 break;
             case 5:
-                return $this->getDescription();
+                return $this->getConfirmDate();
                 break;
             case 6:
-                return $this->getState();
+                return $this->getDescription();
                 break;
             case 7:
-                return $this->getCreatedAt();
+                return $this->getTotalCubicDimension();
                 break;
             case 8:
+                return $this->getTotalPrice();
+                break;
+            case 9:
+                return $this->getState();
+                break;
+            case 10:
+                return $this->getCreatedAt();
+                break;
+            case 11:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1271,21 +1431,28 @@ abstract class ProformaInvoice implements ActiveRecordInterface
             $keys[2] => $this->getCurrencyId(),
             $keys[3] => $this->getCustomerId(),
             $keys[4] => $this->getDate(),
-            $keys[5] => $this->getDescription(),
-            $keys[6] => $this->getState(),
-            $keys[7] => $this->getCreatedAt(),
-            $keys[8] => $this->getUpdatedAt(),
+            $keys[5] => $this->getConfirmDate(),
+            $keys[6] => $this->getDescription(),
+            $keys[7] => $this->getTotalCubicDimension(),
+            $keys[8] => $this->getTotalPrice(),
+            $keys[9] => $this->getState(),
+            $keys[10] => $this->getCreatedAt(),
+            $keys[11] => $this->getUpdatedAt(),
         );
         if ($result[$keys[4]] instanceof \DateTimeInterface) {
             $result[$keys[4]] = $result[$keys[4]]->format('c');
         }
 
-        if ($result[$keys[7]] instanceof \DateTimeInterface) {
-            $result[$keys[7]] = $result[$keys[7]]->format('c');
+        if ($result[$keys[5]] instanceof \DateTimeInterface) {
+            $result[$keys[5]] = $result[$keys[5]]->format('c');
         }
 
-        if ($result[$keys[8]] instanceof \DateTimeInterface) {
-            $result[$keys[8]] = $result[$keys[8]]->format('c');
+        if ($result[$keys[10]] instanceof \DateTimeInterface) {
+            $result[$keys[10]] = $result[$keys[10]]->format('c');
+        }
+
+        if ($result[$keys[11]] instanceof \DateTimeInterface) {
+            $result[$keys[11]] = $result[$keys[11]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1404,15 +1571,24 @@ abstract class ProformaInvoice implements ActiveRecordInterface
                 $this->setDate($value);
                 break;
             case 5:
-                $this->setDescription($value);
+                $this->setConfirmDate($value);
                 break;
             case 6:
-                $this->setState($value);
+                $this->setDescription($value);
                 break;
             case 7:
-                $this->setCreatedAt($value);
+                $this->setTotalCubicDimension($value);
                 break;
             case 8:
+                $this->setTotalPrice($value);
+                break;
+            case 9:
+                $this->setState($value);
+                break;
+            case 10:
+                $this->setCreatedAt($value);
+                break;
+            case 11:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1457,16 +1633,25 @@ abstract class ProformaInvoice implements ActiveRecordInterface
             $this->setDate($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setDescription($arr[$keys[5]]);
+            $this->setConfirmDate($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setState($arr[$keys[6]]);
+            $this->setDescription($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setCreatedAt($arr[$keys[7]]);
+            $this->setTotalCubicDimension($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setUpdatedAt($arr[$keys[8]]);
+            $this->setTotalPrice($arr[$keys[8]]);
+        }
+        if (array_key_exists($keys[9], $arr)) {
+            $this->setState($arr[$keys[9]]);
+        }
+        if (array_key_exists($keys[10], $arr)) {
+            $this->setCreatedAt($arr[$keys[10]]);
+        }
+        if (array_key_exists($keys[11], $arr)) {
+            $this->setUpdatedAt($arr[$keys[11]]);
         }
     }
 
@@ -1524,8 +1709,17 @@ abstract class ProformaInvoice implements ActiveRecordInterface
         if ($this->isColumnModified(ProformaInvoiceTableMap::COL_DATE)) {
             $criteria->add(ProformaInvoiceTableMap::COL_DATE, $this->date);
         }
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_CONFIRM_DATE)) {
+            $criteria->add(ProformaInvoiceTableMap::COL_CONFIRM_DATE, $this->confirm_date);
+        }
         if ($this->isColumnModified(ProformaInvoiceTableMap::COL_DESCRIPTION)) {
             $criteria->add(ProformaInvoiceTableMap::COL_DESCRIPTION, $this->description);
+        }
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_TOTAL_CUBIC_DIMENSION)) {
+            $criteria->add(ProformaInvoiceTableMap::COL_TOTAL_CUBIC_DIMENSION, $this->total_cubic_dimension);
+        }
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_TOTAL_PRICE)) {
+            $criteria->add(ProformaInvoiceTableMap::COL_TOTAL_PRICE, $this->total_price);
         }
         if ($this->isColumnModified(ProformaInvoiceTableMap::COL_STATE)) {
             $criteria->add(ProformaInvoiceTableMap::COL_STATE, $this->state);
@@ -1626,7 +1820,10 @@ abstract class ProformaInvoice implements ActiveRecordInterface
         $copyObj->setCurrencyId($this->getCurrencyId());
         $copyObj->setCustomerId($this->getCustomerId());
         $copyObj->setDate($this->getDate());
+        $copyObj->setConfirmDate($this->getConfirmDate());
         $copyObj->setDescription($this->getDescription());
+        $copyObj->setTotalCubicDimension($this->getTotalCubicDimension());
+        $copyObj->setTotalPrice($this->getTotalPrice());
         $copyObj->setState($this->getState());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
@@ -2344,7 +2541,10 @@ abstract class ProformaInvoice implements ActiveRecordInterface
         $this->currency_id = null;
         $this->customer_id = null;
         $this->date = null;
+        $this->confirm_date = null;
         $this->description = null;
+        $this->total_cubic_dimension = null;
+        $this->total_price = null;
         $this->state = null;
         $this->created_at = null;
         $this->updated_at = null;

@@ -83,7 +83,7 @@ jQuery.fn.loadTableData = function(
           break;
         case 'currency':
         var curdata = $(this).data('currency');
-        console.log(curdata);
+          ordr = true;
           render_data = new Function("data", "type","row","meta",
          "var cdata = {symbol:'Rp.',rate:13400};"+
          "return '"+(curdata.position == 'before'? curdata.symbol:'')
@@ -268,7 +268,7 @@ function init_modal_selection(){
             break;
           case 'currency':
           var curdata = $(this).data('currency');
-          console.log(curdata);
+            ordr = true;
             render_data = new Function("data", "type","row","meta",
            "var cdata = {symbol:'Rp.',rate:13400};"+
            "return '"+(curdata.position == 'before'? curdata.symbol:'')

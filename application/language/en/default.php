@@ -65,6 +65,7 @@
 'height_asb' => 'Height Assembled',
 'height_kdn' => 'Height Knockdown',
 'image' => 'Image',
+'info' => 'Info',
 'image_list' => 'Image List',
 'img_upload_error_msg' => 'Maximum filesize is 1mb',
 'in_cm' => 'In cm',

@@ -24,6 +24,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildComponentQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method     ChildComponentQuery orderByDescription($order = Criteria::ASC) Order by the description column
  * @method     ChildComponentQuery orderByMaterialId($order = Criteria::ASC) Order by the material_id column
+ * @method     ChildComponentQuery orderByType($order = Criteria::ASC) Order by the type column
  * @method     ChildComponentQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildComponentQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -31,6 +32,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildComponentQuery groupByName() Group by the name column
  * @method     ChildComponentQuery groupByDescription() Group by the description column
  * @method     ChildComponentQuery groupByMaterialId() Group by the material_id column
+ * @method     ChildComponentQuery groupByType() Group by the type column
  * @method     ChildComponentQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildComponentQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -91,6 +93,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildComponent findOneByName(string $name) Return the first ChildComponent filtered by the name column
  * @method     ChildComponent findOneByDescription(string $description) Return the first ChildComponent filtered by the description column
  * @method     ChildComponent findOneByMaterialId(int $material_id) Return the first ChildComponent filtered by the material_id column
+ * @method     ChildComponent findOneByType(string $type) Return the first ChildComponent filtered by the type column
  * @method     ChildComponent findOneByCreatedAt(string $created_at) Return the first ChildComponent filtered by the created_at column
  * @method     ChildComponent findOneByUpdatedAt(string $updated_at) Return the first ChildComponent filtered by the updated_at column *
 
@@ -101,6 +104,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildComponent requireOneByName(string $name) Return the first ChildComponent filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildComponent requireOneByDescription(string $description) Return the first ChildComponent filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildComponent requireOneByMaterialId(int $material_id) Return the first ChildComponent filtered by the material_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildComponent requireOneByType(string $type) Return the first ChildComponent filtered by the type column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildComponent requireOneByCreatedAt(string $created_at) Return the first ChildComponent filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildComponent requireOneByUpdatedAt(string $updated_at) Return the first ChildComponent filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -109,6 +113,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildComponent[]|ObjectCollection findByName(string $name) Return ChildComponent objects filtered by the name column
  * @method     ChildComponent[]|ObjectCollection findByDescription(string $description) Return ChildComponent objects filtered by the description column
  * @method     ChildComponent[]|ObjectCollection findByMaterialId(int $material_id) Return ChildComponent objects filtered by the material_id column
+ * @method     ChildComponent[]|ObjectCollection findByType(string $type) Return ChildComponent objects filtered by the type column
  * @method     ChildComponent[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildComponent objects filtered by the created_at column
  * @method     ChildComponent[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildComponent objects filtered by the updated_at column
  * @method     ChildComponent[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -209,7 +214,7 @@ abstract class ComponentQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, description, material_id, created_at, updated_at FROM component WHERE id = :p0';
+        $sql = 'SELECT id, name, description, material_id, type, created_at, updated_at FROM component WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -431,6 +436,31 @@ abstract class ComponentQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ComponentTableMap::COL_MATERIAL_ID, $materialId, $comparison);
+    }
+
+    /**
+     * Filter the query on the type column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByType('fooValue');   // WHERE type = 'fooValue'
+     * $query->filterByType('%fooValue%', Criteria::LIKE); // WHERE type LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $type The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildComponentQuery The current query, for fluid interface
+     */
+    public function filterByType($type = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($type)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ComponentTableMap::COL_TYPE, $type, $comparison);
     }
 
     /**

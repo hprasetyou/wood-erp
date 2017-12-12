@@ -47,7 +47,8 @@
     "morris.js": "morrisjs/morris.js#^0.5.1",
     "lightgallery": "^1.6.5",
     "lg-thumbnail": "^1.1.0",
-    "lg-fullscreen": "^1.0.1"
+    "lg-fullscreen": "^1.0.1",
+    "sweetalert": "^2.0.7"
   },
   "resolutions": {
     "jquery": "^2.2.3",

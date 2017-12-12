@@ -102,6 +102,7 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
 {% include "admin/customers/_modal.html" %}
 {% include "admin/products/_modal.html" %}
 {% include "common/_modal_notice.html" %}
+{% include "common/_modal_info.html" %}
 <script>
 var Lines = [];
 var idx =0;
@@ -133,6 +134,7 @@ $(document).ready(function(){
       method:'POST'
     }).done(function(o){
       refresh_line()
+      info_popup("Data saved!");
     })
   })
 
@@ -181,6 +183,7 @@ $(document).ready(function(){
         console.log('hahahahahha');
           write_line($('#PIId').val()).done(function(o){
             refresh_line()
+            info_popup("Data saved!");
           })
     }else{
       write_pi().done(function(o){
@@ -287,8 +290,8 @@ $(document).ready(function(){
     var tot= 0;
     var ctot = 0;
     $('#table_ProformaInvoiceLine').find('tbody tr').each(function(i){
-      var stot = $(this).find("td").eq(8).text();
-      var sctot = $(this).find("td").eq(6).text();
+      var stot = $(this).find("td").eq(12).text();
+      var sctot = $(this).find("td").eq(9).text();
       stot = stot.replace(/[^0-9-,]/g, '')
       stot = stot.match(/[+-]?\d+(\.\d+)?/g).map(function(v) { return parseFloat(v); });
       console.log(stot);

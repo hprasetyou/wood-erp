@@ -5,6 +5,7 @@
     <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
     <column name="description" phpName="Description" type="LONGVARCHAR"/>
     <column name="material_id" phpName="MaterialId" type="INTEGER"/>
+    <column name="type" phpName="Type" type="CHAR" sqlType="ENUM('component','support')" defaultValue="component"/>
     <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
     <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>
     <foreign-key foreignTable="material">
@@ -273,7 +274,10 @@
     <column name="currency_id" phpName="CurrencyId" type="INTEGER" required="true" defaultValue="1"/>
     <column name="customer_id" phpName="CustomerId" type="INTEGER" required="true"/>
     <column name="date" phpName="Date" type="DATE"/>
+    <column name="confirm_date" phpName="ConfirmDate" type="DATE"/>
     <column name="description" phpName="Description" size="255" type="VARCHAR"/>
+    <column name="total_cubic_dimension" phpName="TotalCubicDimension" type="FLOAT"/>
+    <column name="total_price" phpName="TotalPrice" type="FLOAT"/>
     <column name="state" phpName="State" type="CHAR" sqlType="ENUM('draft','confirm','done','delete')" defaultValue="draft"/>
     <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
     <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" required="true"/>

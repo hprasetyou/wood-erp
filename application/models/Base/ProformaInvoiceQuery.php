@@ -25,7 +25,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceQuery orderByCurrencyId($order = Criteria::ASC) Order by the currency_id column
  * @method     ChildProformaInvoiceQuery orderByCustomerId($order = Criteria::ASC) Order by the customer_id column
  * @method     ChildProformaInvoiceQuery orderByDate($order = Criteria::ASC) Order by the date column
+ * @method     ChildProformaInvoiceQuery orderByConfirmDate($order = Criteria::ASC) Order by the confirm_date column
  * @method     ChildProformaInvoiceQuery orderByDescription($order = Criteria::ASC) Order by the description column
+ * @method     ChildProformaInvoiceQuery orderByTotalCubicDimension($order = Criteria::ASC) Order by the total_cubic_dimension column
+ * @method     ChildProformaInvoiceQuery orderByTotalPrice($order = Criteria::ASC) Order by the total_price column
  * @method     ChildProformaInvoiceQuery orderByState($order = Criteria::ASC) Order by the state column
  * @method     ChildProformaInvoiceQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildProformaInvoiceQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
@@ -35,7 +38,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceQuery groupByCurrencyId() Group by the currency_id column
  * @method     ChildProformaInvoiceQuery groupByCustomerId() Group by the customer_id column
  * @method     ChildProformaInvoiceQuery groupByDate() Group by the date column
+ * @method     ChildProformaInvoiceQuery groupByConfirmDate() Group by the confirm_date column
  * @method     ChildProformaInvoiceQuery groupByDescription() Group by the description column
+ * @method     ChildProformaInvoiceQuery groupByTotalCubicDimension() Group by the total_cubic_dimension column
+ * @method     ChildProformaInvoiceQuery groupByTotalPrice() Group by the total_price column
  * @method     ChildProformaInvoiceQuery groupByState() Group by the state column
  * @method     ChildProformaInvoiceQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildProformaInvoiceQuery groupByUpdatedAt() Group by the updated_at column
@@ -98,7 +104,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoice findOneByCurrencyId(int $currency_id) Return the first ChildProformaInvoice filtered by the currency_id column
  * @method     ChildProformaInvoice findOneByCustomerId(int $customer_id) Return the first ChildProformaInvoice filtered by the customer_id column
  * @method     ChildProformaInvoice findOneByDate(string $date) Return the first ChildProformaInvoice filtered by the date column
+ * @method     ChildProformaInvoice findOneByConfirmDate(string $confirm_date) Return the first ChildProformaInvoice filtered by the confirm_date column
  * @method     ChildProformaInvoice findOneByDescription(string $description) Return the first ChildProformaInvoice filtered by the description column
+ * @method     ChildProformaInvoice findOneByTotalCubicDimension(double $total_cubic_dimension) Return the first ChildProformaInvoice filtered by the total_cubic_dimension column
+ * @method     ChildProformaInvoice findOneByTotalPrice(double $total_price) Return the first ChildProformaInvoice filtered by the total_price column
  * @method     ChildProformaInvoice findOneByState(string $state) Return the first ChildProformaInvoice filtered by the state column
  * @method     ChildProformaInvoice findOneByCreatedAt(string $created_at) Return the first ChildProformaInvoice filtered by the created_at column
  * @method     ChildProformaInvoice findOneByUpdatedAt(string $updated_at) Return the first ChildProformaInvoice filtered by the updated_at column *
@@ -111,7 +120,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoice requireOneByCurrencyId(int $currency_id) Return the first ChildProformaInvoice filtered by the currency_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByCustomerId(int $customer_id) Return the first ChildProformaInvoice filtered by the customer_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByDate(string $date) Return the first ChildProformaInvoice filtered by the date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProformaInvoice requireOneByConfirmDate(string $confirm_date) Return the first ChildProformaInvoice filtered by the confirm_date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByDescription(string $description) Return the first ChildProformaInvoice filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProformaInvoice requireOneByTotalCubicDimension(double $total_cubic_dimension) Return the first ChildProformaInvoice filtered by the total_cubic_dimension column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProformaInvoice requireOneByTotalPrice(double $total_price) Return the first ChildProformaInvoice filtered by the total_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByState(string $state) Return the first ChildProformaInvoice filtered by the state column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByCreatedAt(string $created_at) Return the first ChildProformaInvoice filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByUpdatedAt(string $updated_at) Return the first ChildProformaInvoice filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -122,7 +134,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoice[]|ObjectCollection findByCurrencyId(int $currency_id) Return ChildProformaInvoice objects filtered by the currency_id column
  * @method     ChildProformaInvoice[]|ObjectCollection findByCustomerId(int $customer_id) Return ChildProformaInvoice objects filtered by the customer_id column
  * @method     ChildProformaInvoice[]|ObjectCollection findByDate(string $date) Return ChildProformaInvoice objects filtered by the date column
+ * @method     ChildProformaInvoice[]|ObjectCollection findByConfirmDate(string $confirm_date) Return ChildProformaInvoice objects filtered by the confirm_date column
  * @method     ChildProformaInvoice[]|ObjectCollection findByDescription(string $description) Return ChildProformaInvoice objects filtered by the description column
+ * @method     ChildProformaInvoice[]|ObjectCollection findByTotalCubicDimension(double $total_cubic_dimension) Return ChildProformaInvoice objects filtered by the total_cubic_dimension column
+ * @method     ChildProformaInvoice[]|ObjectCollection findByTotalPrice(double $total_price) Return ChildProformaInvoice objects filtered by the total_price column
  * @method     ChildProformaInvoice[]|ObjectCollection findByState(string $state) Return ChildProformaInvoice objects filtered by the state column
  * @method     ChildProformaInvoice[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildProformaInvoice objects filtered by the created_at column
  * @method     ChildProformaInvoice[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildProformaInvoice objects filtered by the updated_at column
@@ -224,7 +239,7 @@ abstract class ProformaInvoiceQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, currency_id, customer_id, date, description, state, created_at, updated_at FROM proforma_invoice WHERE id = :p0';
+        $sql = 'SELECT id, name, currency_id, customer_id, date, confirm_date, description, total_cubic_dimension, total_price, state, created_at, updated_at FROM proforma_invoice WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -510,6 +525,49 @@ abstract class ProformaInvoiceQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the confirm_date column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByConfirmDate('2011-03-14'); // WHERE confirm_date = '2011-03-14'
+     * $query->filterByConfirmDate('now'); // WHERE confirm_date = '2011-03-14'
+     * $query->filterByConfirmDate(array('max' => 'yesterday')); // WHERE confirm_date > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $confirmDate The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProformaInvoiceQuery The current query, for fluid interface
+     */
+    public function filterByConfirmDate($confirmDate = null, $comparison = null)
+    {
+        if (is_array($confirmDate)) {
+            $useMinMax = false;
+            if (isset($confirmDate['min'])) {
+                $this->addUsingAlias(ProformaInvoiceTableMap::COL_CONFIRM_DATE, $confirmDate['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($confirmDate['max'])) {
+                $this->addUsingAlias(ProformaInvoiceTableMap::COL_CONFIRM_DATE, $confirmDate['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProformaInvoiceTableMap::COL_CONFIRM_DATE, $confirmDate, $comparison);
+    }
+
+    /**
      * Filter the query on the description column
      *
      * Example usage:
@@ -532,6 +590,88 @@ abstract class ProformaInvoiceQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProformaInvoiceTableMap::COL_DESCRIPTION, $description, $comparison);
+    }
+
+    /**
+     * Filter the query on the total_cubic_dimension column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByTotalCubicDimension(1234); // WHERE total_cubic_dimension = 1234
+     * $query->filterByTotalCubicDimension(array(12, 34)); // WHERE total_cubic_dimension IN (12, 34)
+     * $query->filterByTotalCubicDimension(array('min' => 12)); // WHERE total_cubic_dimension > 12
+     * </code>
+     *
+     * @param     mixed $totalCubicDimension The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProformaInvoiceQuery The current query, for fluid interface
+     */
+    public function filterByTotalCubicDimension($totalCubicDimension = null, $comparison = null)
+    {
+        if (is_array($totalCubicDimension)) {
+            $useMinMax = false;
+            if (isset($totalCubicDimension['min'])) {
+                $this->addUsingAlias(ProformaInvoiceTableMap::COL_TOTAL_CUBIC_DIMENSION, $totalCubicDimension['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($totalCubicDimension['max'])) {
+                $this->addUsingAlias(ProformaInvoiceTableMap::COL_TOTAL_CUBIC_DIMENSION, $totalCubicDimension['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProformaInvoiceTableMap::COL_TOTAL_CUBIC_DIMENSION, $totalCubicDimension, $comparison);
+    }
+
+    /**
+     * Filter the query on the total_price column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByTotalPrice(1234); // WHERE total_price = 1234
+     * $query->filterByTotalPrice(array(12, 34)); // WHERE total_price IN (12, 34)
+     * $query->filterByTotalPrice(array('min' => 12)); // WHERE total_price > 12
+     * </code>
+     *
+     * @param     mixed $totalPrice The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProformaInvoiceQuery The current query, for fluid interface
+     */
+    public function filterByTotalPrice($totalPrice = null, $comparison = null)
+    {
+        if (is_array($totalPrice)) {
+            $useMinMax = false;
+            if (isset($totalPrice['min'])) {
+                $this->addUsingAlias(ProformaInvoiceTableMap::COL_TOTAL_PRICE, $totalPrice['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($totalPrice['max'])) {
+                $this->addUsingAlias(ProformaInvoiceTableMap::COL_TOTAL_PRICE, $totalPrice['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProformaInvoiceTableMap::COL_TOTAL_PRICE, $totalPrice, $comparison);
     }
 
     /**

@@ -194,6 +194,16 @@ class Manage_proformainvoicelines extends MY_Controller{
       $pack_qty*$price
     );
   	$data = parent::write($id);
+    $total = ProformaInvoiceLineQuery::create()
+    ->select('ProformaInvoiceId')
+    ->withColumn('SUM(ProformaInvoiceLine.TotalCubicDimension)','TotalCubicDimension')
+    ->withColumn('SUM(ProformaInvoiceLine.TotalPrice)','TotalPrice')
+    ->filterByProformaInvoice($pi)
+    ->findOne();
+    //set total on pi
+    $pi->setTotalCubicDimension($total['TotalCubicDimension'])
+    ->setTotalPrice($total['TotalPrice'])
+    ->save();
     echo $data->toJSON();
 }
 

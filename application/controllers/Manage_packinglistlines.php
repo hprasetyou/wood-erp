@@ -13,7 +13,7 @@ class Manage_packinglistlines extends MY_Controller{
 
   function get_json(){
     $this->custom_column = array(
-      'product_name'=>"_{ProductPartnerName}_",
+      'product_name'=>"_{ProductName}_",
       'pi_name'=>"_{ProformaInvoiceName}_",
       'cubic_dimension' => "_{ProformaInvoiceLineCubicDimension}_",
       'total_cubic_dimension' => "_{ProformaInvoiceLineCubicDimension}_ * _{Qty}_",
@@ -22,9 +22,9 @@ class Manage_packinglistlines extends MY_Controller{
     );
     $this->objobj = PackingListLineQuery::create()
     ->join('ProformaInvoiceLine')
-    ->join('ProformaInvoiceLine.ProductPartner')
+    ->join('ProformaInvoiceLine.Product')
     ->join('ProformaInvoiceLine.ProformaInvoice')
-    ->withColumn('ProductPartner.Name')
+    ->withColumn('Product.Name')
     ->withColumn('ProformaInvoice.Name')
     ->withColumn('ProformaInvoiceLine.CubicDimension')
     ->withColumn('ProformaInvoiceLine.TotalCubicDimension')
