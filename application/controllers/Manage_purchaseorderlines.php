@@ -59,34 +59,19 @@ class Manage_purchaseorderlines extends MY_Controller{
     foreach ($this->input->post('PILineId') as $key => $line) {
       # code...
       $ids = explode("-",$line);
-      if(isset($ids[2])){
-        $cp = ComponentPartnerQuery::create()
-        ->orderByCreatedAt('desc')
-        ->filterByComponentId($ids[2])
-        ->filterByPartnerId($this->input->post('PartnerId'))
-        ->findOne();
-        if(($cp?$cp->getPrice():1) != $price[$key]){
-          $newcp = new ComponentPartner;
-          $newcp->setComponentId($ids[2])
-          ->setPartnerId($this->input->post('PartnerId'))
-          ->setPrice($price[$key])
-          ->save();
-        }
-      }else{
-        $pp = ProductPartnerQuery::create()
-        ->orderByCreatedAt('desc')
-        ->filterByProductId($ids[1])
-        ->filterByPartnerId($this->input->post('PartnerId'))
-        ->filterByType("buy")
-        ->findOne();
-        if(($pp?$pp->getProductPrice():1) != $price[$key]){
-          $newpp = new ProductPartner;
-          $newpp->setProductId($ids[1])
-          ->setPartnerId($this->input->post('PartnerId'))
-          ->setProductPrice($price[$key])
-          ->setType("buy")
-          ->save();
-        }
+      $pp = ProductPartnerQuery::create()
+      ->orderByCreatedAt('desc')
+      ->filterByProductId(isset($ids[2])?$ids[1]:$ids[1])
+      ->filterByPartnerId($this->input->post('PartnerId'))
+      ->filterByType("buy")
+      ->findOne();
+      if(($pp?$pp->getProductPrice():1) != $price[$key]){
+        $newpp = new ProductPartner;
+        $newpp->setProductId(isset($ids[2])?$ids[1]:$ids[1])
+        ->setPartnerId($this->input->post('PartnerId'))
+        ->setProductPrice($price[$key])
+        ->setType("buy")
+        ->save();
       }
       $line = PurchaseOrderLineQuery::create()
       ->filterByName($name[$key])
