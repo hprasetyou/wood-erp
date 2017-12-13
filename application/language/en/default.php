@@ -104,6 +104,7 @@
 'packing_type' => 'Packing Type',
 'packinglist' => 'Packing List',
 'partner_id' => 'Partner Id',
+'packing'=>'Packing',
 'password' => 'Password',
 'payment_term' => 'Payment Term',
 'people' => 'People',
