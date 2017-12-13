@@ -11,6 +11,13 @@ function format_currency(val,rule){
   +" "+val.format(2, 3, '.', ',')
   +(rule.position == 'after'? rule.symbol:'')
 }
+
+$(document).ready(function(){
+  $('table').on('click','tr',function(e){
+    console.log($(this).find('.btn-select').prop('href'));
+    window.location = $(this).find('.btn-select').prop('href')
+  })
+})
 jQuery.fn
 jQuery.fn.loadTableData = function(
   conf = {search:true,

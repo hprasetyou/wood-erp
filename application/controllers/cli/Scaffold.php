@@ -117,7 +117,7 @@ class Scaffold extends CI_Controller {
 		$humanize_tb_name = $this->split_camel(Inflector::singularize($tb_name));
 		$tb_name_lower = strtolower(Inflector::pluralize($tb_name));
 		$singular_tb_name = strtolower($tb_name);
-		$table =  "\t<table data-controller=\"manage_$tb_name_lower\" class=\"table table-striped \" id=\"table_$tb_name\">\n";
+		$table =  "\t<table data-controller=\"manage_$tb_name_lower\" class=\"table table-striped table-hover \" id=\"table_$tb_name\">\n";
 		$table .= "\t\t<thead>\n";
 		$table .= "\t\t\t<tr>\n";
 		$dtcolumn ="[";
@@ -377,7 +377,7 @@ $modals
 private function _view_modal_template($tb_name,$fields){
 	$humanize_tb_name = $this->split_camel(Inflector::singularize($tb_name));
 	$tb_name_lower = strtolower(Inflector::pluralize($tb_name));
-	$table =  "\t<table data-display=\"2\" data-controller=\"manage_$tb_name_lower\" class=\"table table-striped \" id=\"table_$tb_name\">\n";
+	$table =  "\t<table data-display=\"2\" data-controller=\"manage_$tb_name_lower\" class=\"table table-striped table-hover \" id=\"table_$tb_name\">\n";
 	$table .= "\t\t<thead>\n";
 	$table .= "\t\t\t<tr>\n";
 	$table .= "\t\t\t\t<th></th>\n";
