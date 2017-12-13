@@ -13,10 +13,17 @@ function format_currency(val,rule){
 }
 
 $(document).ready(function(){
-  $('table').on('click','tr',function(e){
-    console.log($(this).find('.btn-select').prop('href'));
-    window.location = $(this).find('.btn-select').prop('href')
-  })
+    $('table').on('click','tbody>tr',function(e){
+      if($(this).find('.btn-select').length>0){
+        window.location = $(this).find('.btn-select').prop('href')
+      }
+    })
+    $('table').on('mouseover','tbody>tr',function(e){
+      if($(this).find('.btn-select').length>0){
+        $(this).css('cursor','pointer')
+      }
+    })
+
 })
 jQuery.fn
 jQuery.fn.loadTableData = function(
@@ -123,7 +130,7 @@ jQuery.fn.loadTableData = function(
    for (var b in conf.button) {
      switch (conf.button[b]) {
        case 'show':
-          btns += "<a data-id=\"'+data+'\" class=\"btn btn-sm btn-default pulloginl-right btn-select\" href=\""+base_url[0]+"index.php/"+c+"/detail/'+data+'\"><i class=\"fa fa-search\"></i> </a>"
+          btns += "<a data-id=\"'+data+'\" style=\"display:none\" class=\"btn btn-sm btn-default pulloginl-right btn-select\" href=\""+base_url[0]+"index.php/"+c+"/detail/'+data+'\"><i class=\"fa fa-search\"></i> </a>"
          break;
        case 'edit':
           btns += "<a data-id=\"'+data+'\" class=\"btn btn-row-action btn-sm btn-primary pulloginl-right btn-edit\" href=\"#\"><i class=\"fa fa-pencil\"></i> </a>"
