@@ -9,8 +9,6 @@ use \FinishingQuery as ChildFinishingQuery;
 use \Material as ChildMaterial;
 use \MaterialQuery as ChildMaterialQuery;
 use \Product as ChildProduct;
-use \ProductComponent as ChildProductComponent;
-use \ProductComponentQuery as ChildProductComponentQuery;
 use \ProductFinishing as ChildProductFinishing;
 use \ProductFinishingQuery as ChildProductFinishingQuery;
 use \ProductImage as ChildProductImage;
@@ -26,7 +24,6 @@ use \DateTime;
 use \Exception;
 use \PDO;
 use Map\ComponentProductTableMap;
-use Map\ProductComponentTableMap;
 use Map\ProductFinishingTableMap;
 use Map\ProductImageTableMap;
 use Map\ProductPartnerTableMap;
@@ -289,12 +286,6 @@ abstract class Product implements ActiveRecordInterface
     protected $collParentsPartial;
 
     /**
-     * @var        ObjectCollection|ChildProductComponent[] Collection to store aggregation of ChildProductComponent objects.
-     */
-    protected $collProductComponents;
-    protected $collProductComponentsPartial;
-
-    /**
      * @var        ObjectCollection|ChildProductPartner[] Collection to store aggregation of ChildProductPartner objects.
      */
     protected $collProductPartners;
@@ -359,12 +350,6 @@ abstract class Product implements ActiveRecordInterface
      * @var ObjectCollection|ChildComponentProduct[]
      */
     protected $parentsScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildProductComponent[]
-     */
-    protected $productComponentsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -1702,8 +1687,6 @@ abstract class Product implements ActiveRecordInterface
 
             $this->collParents = null;
 
-            $this->collProductComponents = null;
-
             $this->collProductPartners = null;
 
             $this->collProductFinishings = null;
@@ -1898,23 +1881,6 @@ abstract class Product implements ActiveRecordInterface
 
             if ($this->collParents !== null) {
                 foreach ($this->collParents as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->productComponentsScheduledForDeletion !== null) {
-                if (!$this->productComponentsScheduledForDeletion->isEmpty()) {
-                    \ProductComponentQuery::create()
-                        ->filterByPrimaryKeys($this->productComponentsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->productComponentsScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collProductComponents !== null) {
-                foreach ($this->collProductComponents as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -2446,21 +2412,6 @@ abstract class Product implements ActiveRecordInterface
 
                 $result[$key] = $this->collParents->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
-            if (null !== $this->collProductComponents) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'productComponents';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'product_components';
-                        break;
-                    default:
-                        $key = 'ProductComponents';
-                }
-
-                $result[$key] = $this->collProductComponents->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
             if (null !== $this->collProductPartners) {
 
                 switch ($keyType) {
@@ -2990,12 +2941,6 @@ abstract class Product implements ActiveRecordInterface
                 }
             }
 
-            foreach ($this->getProductComponents() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addProductComponent($relObj->copy($deepCopy));
-                }
-            }
-
             foreach ($this->getProductPartners() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addProductPartner($relObj->copy($deepCopy));
@@ -3124,10 +3069,6 @@ abstract class Product implements ActiveRecordInterface
         }
         if ('Parent' == $relationName) {
             $this->initParents();
-            return;
-        }
-        if ('ProductComponent' == $relationName) {
-            $this->initProductComponents();
             return;
         }
         if ('ProductPartner' == $relationName) {
@@ -3600,256 +3541,6 @@ abstract class Product implements ActiveRecordInterface
         }
 
         return $this;
-    }
-
-    /**
-     * Clears out the collProductComponents collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addProductComponents()
-     */
-    public function clearProductComponents()
-    {
-        $this->collProductComponents = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collProductComponents collection loaded partially.
-     */
-    public function resetPartialProductComponents($v = true)
-    {
-        $this->collProductComponentsPartial = $v;
-    }
-
-    /**
-     * Initializes the collProductComponents collection.
-     *
-     * By default this just sets the collProductComponents collection to an empty array (like clearcollProductComponents());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initProductComponents($overrideExisting = true)
-    {
-        if (null !== $this->collProductComponents && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = ProductComponentTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collProductComponents = new $collectionClassName;
-        $this->collProductComponents->setModel('\ProductComponent');
-    }
-
-    /**
-     * Gets an array of ChildProductComponent objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildProduct is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildProductComponent[] List of ChildProductComponent objects
-     * @throws PropelException
-     */
-    public function getProductComponents(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collProductComponentsPartial && !$this->isNew();
-        if (null === $this->collProductComponents || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collProductComponents) {
-                // return empty collection
-                $this->initProductComponents();
-            } else {
-                $collProductComponents = ChildProductComponentQuery::create(null, $criteria)
-                    ->filterByProduct($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collProductComponentsPartial && count($collProductComponents)) {
-                        $this->initProductComponents(false);
-
-                        foreach ($collProductComponents as $obj) {
-                            if (false == $this->collProductComponents->contains($obj)) {
-                                $this->collProductComponents->append($obj);
-                            }
-                        }
-
-                        $this->collProductComponentsPartial = true;
-                    }
-
-                    return $collProductComponents;
-                }
-
-                if ($partial && $this->collProductComponents) {
-                    foreach ($this->collProductComponents as $obj) {
-                        if ($obj->isNew()) {
-                            $collProductComponents[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collProductComponents = $collProductComponents;
-                $this->collProductComponentsPartial = false;
-            }
-        }
-
-        return $this->collProductComponents;
-    }
-
-    /**
-     * Sets a collection of ChildProductComponent objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $productComponents A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildProduct The current object (for fluent API support)
-     */
-    public function setProductComponents(Collection $productComponents, ConnectionInterface $con = null)
-    {
-        /** @var ChildProductComponent[] $productComponentsToDelete */
-        $productComponentsToDelete = $this->getProductComponents(new Criteria(), $con)->diff($productComponents);
-
-
-        $this->productComponentsScheduledForDeletion = $productComponentsToDelete;
-
-        foreach ($productComponentsToDelete as $productComponentRemoved) {
-            $productComponentRemoved->setProduct(null);
-        }
-
-        $this->collProductComponents = null;
-        foreach ($productComponents as $productComponent) {
-            $this->addProductComponent($productComponent);
-        }
-
-        $this->collProductComponents = $productComponents;
-        $this->collProductComponentsPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related ProductComponent objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related ProductComponent objects.
-     * @throws PropelException
-     */
-    public function countProductComponents(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collProductComponentsPartial && !$this->isNew();
-        if (null === $this->collProductComponents || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collProductComponents) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getProductComponents());
-            }
-
-            $query = ChildProductComponentQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByProduct($this)
-                ->count($con);
-        }
-
-        return count($this->collProductComponents);
-    }
-
-    /**
-     * Method called to associate a ChildProductComponent object to this object
-     * through the ChildProductComponent foreign key attribute.
-     *
-     * @param  ChildProductComponent $l ChildProductComponent
-     * @return $this|\Product The current object (for fluent API support)
-     */
-    public function addProductComponent(ChildProductComponent $l)
-    {
-        if ($this->collProductComponents === null) {
-            $this->initProductComponents();
-            $this->collProductComponentsPartial = true;
-        }
-
-        if (!$this->collProductComponents->contains($l)) {
-            $this->doAddProductComponent($l);
-
-            if ($this->productComponentsScheduledForDeletion and $this->productComponentsScheduledForDeletion->contains($l)) {
-                $this->productComponentsScheduledForDeletion->remove($this->productComponentsScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildProductComponent $productComponent The ChildProductComponent object to add.
-     */
-    protected function doAddProductComponent(ChildProductComponent $productComponent)
-    {
-        $this->collProductComponents[]= $productComponent;
-        $productComponent->setProduct($this);
-    }
-
-    /**
-     * @param  ChildProductComponent $productComponent The ChildProductComponent object to remove.
-     * @return $this|ChildProduct The current object (for fluent API support)
-     */
-    public function removeProductComponent(ChildProductComponent $productComponent)
-    {
-        if ($this->getProductComponents()->contains($productComponent)) {
-            $pos = $this->collProductComponents->search($productComponent);
-            $this->collProductComponents->remove($pos);
-            if (null === $this->productComponentsScheduledForDeletion) {
-                $this->productComponentsScheduledForDeletion = clone $this->collProductComponents;
-                $this->productComponentsScheduledForDeletion->clear();
-            }
-            $this->productComponentsScheduledForDeletion[]= clone $productComponent;
-            $productComponent->setProduct(null);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Product is new, it will return
-     * an empty collection; or if this Product has previously
-     * been saved, it will retrieve related ProductComponents from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Product.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildProductComponent[] List of ChildProductComponent objects
-     */
-    public function getProductComponentsJoinComponent(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildProductComponentQuery::create(null, $criteria);
-        $query->joinWith('Component', $joinBehavior);
-
-        return $this->getProductComponents($query, $con);
     }
 
     /**
@@ -5105,31 +4796,6 @@ abstract class Product implements ActiveRecordInterface
         return $this->getPurchaseOrderLines($query, $con);
     }
 
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Product is new, it will return
-     * an empty collection; or if this Product has previously
-     * been saved, it will retrieve related PurchaseOrderLines from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Product.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildPurchaseOrderLine[] List of ChildPurchaseOrderLine objects
-     */
-    public function getPurchaseOrderLinesJoinComponent(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildPurchaseOrderLineQuery::create(null, $criteria);
-        $query->joinWith('Component', $joinBehavior);
-
-        return $this->getPurchaseOrderLines($query, $con);
-    }
-
     /**
      * Clears out the collFinishings collection
      *
@@ -5437,11 +5103,6 @@ abstract class Product implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collProductComponents) {
-                foreach ($this->collProductComponents as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
             if ($this->collProductPartners) {
                 foreach ($this->collProductPartners as $o) {
                     $o->clearAllReferences($deep);
@@ -5476,7 +5137,6 @@ abstract class Product implements ActiveRecordInterface
 
         $this->collListComponents = null;
         $this->collParents = null;
-        $this->collProductComponents = null;
         $this->collProductPartners = null;
         $this->collProductFinishings = null;
         $this->collProductImages = null;

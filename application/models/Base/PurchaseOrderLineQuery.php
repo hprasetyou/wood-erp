@@ -25,7 +25,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLineQuery orderByPurchaseOrderId($order = Criteria::ASC) Order by the purchase_order_id column
  * @method     ChildPurchaseOrderLineQuery orderByProformaInvoiceLineId($order = Criteria::ASC) Order by the proforma_invoice_line_id column
  * @method     ChildPurchaseOrderLineQuery orderByProductId($order = Criteria::ASC) Order by the product_id column
- * @method     ChildPurchaseOrderLineQuery orderByComponentId($order = Criteria::ASC) Order by the component_id column
  * @method     ChildPurchaseOrderLineQuery orderByNote($order = Criteria::ASC) Order by the note column
  * @method     ChildPurchaseOrderLineQuery orderByPrice($order = Criteria::ASC) Order by the price column
  * @method     ChildPurchaseOrderLineQuery orderByQty($order = Criteria::ASC) Order by the qty column
@@ -37,7 +36,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLineQuery groupByPurchaseOrderId() Group by the purchase_order_id column
  * @method     ChildPurchaseOrderLineQuery groupByProformaInvoiceLineId() Group by the proforma_invoice_line_id column
  * @method     ChildPurchaseOrderLineQuery groupByProductId() Group by the product_id column
- * @method     ChildPurchaseOrderLineQuery groupByComponentId() Group by the component_id column
  * @method     ChildPurchaseOrderLineQuery groupByNote() Group by the note column
  * @method     ChildPurchaseOrderLineQuery groupByPrice() Group by the price column
  * @method     ChildPurchaseOrderLineQuery groupByQty() Group by the qty column
@@ -82,17 +80,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLineQuery rightJoinWithProduct() Adds a RIGHT JOIN clause and with to the query using the Product relation
  * @method     ChildPurchaseOrderLineQuery innerJoinWithProduct() Adds a INNER JOIN clause and with to the query using the Product relation
  *
- * @method     ChildPurchaseOrderLineQuery leftJoinComponent($relationAlias = null) Adds a LEFT JOIN clause to the query using the Component relation
- * @method     ChildPurchaseOrderLineQuery rightJoinComponent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Component relation
- * @method     ChildPurchaseOrderLineQuery innerJoinComponent($relationAlias = null) Adds a INNER JOIN clause to the query using the Component relation
- *
- * @method     ChildPurchaseOrderLineQuery joinWithComponent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Component relation
- *
- * @method     ChildPurchaseOrderLineQuery leftJoinWithComponent() Adds a LEFT JOIN clause and with to the query using the Component relation
- * @method     ChildPurchaseOrderLineQuery rightJoinWithComponent() Adds a RIGHT JOIN clause and with to the query using the Component relation
- * @method     ChildPurchaseOrderLineQuery innerJoinWithComponent() Adds a INNER JOIN clause and with to the query using the Component relation
- *
- * @method     \PurchaseOrderQuery|\ProformaInvoiceLineQuery|\ProductQuery|\ComponentQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \PurchaseOrderQuery|\ProformaInvoiceLineQuery|\ProductQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildPurchaseOrderLine findOne(ConnectionInterface $con = null) Return the first ChildPurchaseOrderLine matching the query
  * @method     ChildPurchaseOrderLine findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPurchaseOrderLine matching the query, or a new ChildPurchaseOrderLine object populated from the query conditions when no match is found
@@ -102,7 +90,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLine findOneByPurchaseOrderId(int $purchase_order_id) Return the first ChildPurchaseOrderLine filtered by the purchase_order_id column
  * @method     ChildPurchaseOrderLine findOneByProformaInvoiceLineId(int $proforma_invoice_line_id) Return the first ChildPurchaseOrderLine filtered by the proforma_invoice_line_id column
  * @method     ChildPurchaseOrderLine findOneByProductId(int $product_id) Return the first ChildPurchaseOrderLine filtered by the product_id column
- * @method     ChildPurchaseOrderLine findOneByComponentId(int $component_id) Return the first ChildPurchaseOrderLine filtered by the component_id column
  * @method     ChildPurchaseOrderLine findOneByNote(string $note) Return the first ChildPurchaseOrderLine filtered by the note column
  * @method     ChildPurchaseOrderLine findOneByPrice(double $price) Return the first ChildPurchaseOrderLine filtered by the price column
  * @method     ChildPurchaseOrderLine findOneByQty(double $qty) Return the first ChildPurchaseOrderLine filtered by the qty column
@@ -117,7 +104,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLine requireOneByPurchaseOrderId(int $purchase_order_id) Return the first ChildPurchaseOrderLine filtered by the purchase_order_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrderLine requireOneByProformaInvoiceLineId(int $proforma_invoice_line_id) Return the first ChildPurchaseOrderLine filtered by the proforma_invoice_line_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrderLine requireOneByProductId(int $product_id) Return the first ChildPurchaseOrderLine filtered by the product_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPurchaseOrderLine requireOneByComponentId(int $component_id) Return the first ChildPurchaseOrderLine filtered by the component_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrderLine requireOneByNote(string $note) Return the first ChildPurchaseOrderLine filtered by the note column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrderLine requireOneByPrice(double $price) Return the first ChildPurchaseOrderLine filtered by the price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrderLine requireOneByQty(double $qty) Return the first ChildPurchaseOrderLine filtered by the qty column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -130,7 +116,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByPurchaseOrderId(int $purchase_order_id) Return ChildPurchaseOrderLine objects filtered by the purchase_order_id column
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByProformaInvoiceLineId(int $proforma_invoice_line_id) Return ChildPurchaseOrderLine objects filtered by the proforma_invoice_line_id column
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByProductId(int $product_id) Return ChildPurchaseOrderLine objects filtered by the product_id column
- * @method     ChildPurchaseOrderLine[]|ObjectCollection findByComponentId(int $component_id) Return ChildPurchaseOrderLine objects filtered by the component_id column
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByNote(string $note) Return ChildPurchaseOrderLine objects filtered by the note column
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByPrice(double $price) Return ChildPurchaseOrderLine objects filtered by the price column
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByQty(double $qty) Return ChildPurchaseOrderLine objects filtered by the qty column
@@ -234,7 +219,7 @@ abstract class PurchaseOrderLineQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, purchase_order_id, proforma_invoice_line_id, product_id, component_id, note, price, qty, created_at, updated_at FROM purchase_order_line WHERE id = :p0';
+        $sql = 'SELECT id, name, purchase_order_id, proforma_invoice_line_id, product_id, note, price, qty, created_at, updated_at FROM purchase_order_line WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -517,49 +502,6 @@ abstract class PurchaseOrderLineQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PurchaseOrderLineTableMap::COL_PRODUCT_ID, $productId, $comparison);
-    }
-
-    /**
-     * Filter the query on the component_id column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByComponentId(1234); // WHERE component_id = 1234
-     * $query->filterByComponentId(array(12, 34)); // WHERE component_id IN (12, 34)
-     * $query->filterByComponentId(array('min' => 12)); // WHERE component_id > 12
-     * </code>
-     *
-     * @see       filterByComponent()
-     *
-     * @param     mixed $componentId The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildPurchaseOrderLineQuery The current query, for fluid interface
-     */
-    public function filterByComponentId($componentId = null, $comparison = null)
-    {
-        if (is_array($componentId)) {
-            $useMinMax = false;
-            if (isset($componentId['min'])) {
-                $this->addUsingAlias(PurchaseOrderLineTableMap::COL_COMPONENT_ID, $componentId['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($componentId['max'])) {
-                $this->addUsingAlias(PurchaseOrderLineTableMap::COL_COMPONENT_ID, $componentId['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(PurchaseOrderLineTableMap::COL_COMPONENT_ID, $componentId, $comparison);
     }
 
     /**
@@ -984,83 +926,6 @@ abstract class PurchaseOrderLineQuery extends ModelCriteria
         return $this
             ->joinProduct($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Product', '\ProductQuery');
-    }
-
-    /**
-     * Filter the query by a related \Component object
-     *
-     * @param \Component|ObjectCollection $component The related object(s) to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @throws \Propel\Runtime\Exception\PropelException
-     *
-     * @return ChildPurchaseOrderLineQuery The current query, for fluid interface
-     */
-    public function filterByComponent($component, $comparison = null)
-    {
-        if ($component instanceof \Component) {
-            return $this
-                ->addUsingAlias(PurchaseOrderLineTableMap::COL_COMPONENT_ID, $component->getId(), $comparison);
-        } elseif ($component instanceof ObjectCollection) {
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-
-            return $this
-                ->addUsingAlias(PurchaseOrderLineTableMap::COL_COMPONENT_ID, $component->toKeyValue('PrimaryKey', 'Id'), $comparison);
-        } else {
-            throw new PropelException('filterByComponent() only accepts arguments of type \Component or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the Component relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildPurchaseOrderLineQuery The current query, for fluid interface
-     */
-    public function joinComponent($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Component');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'Component');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the Component relation Component object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \ComponentQuery A secondary query class using the current class as primary query
-     */
-    public function useComponentQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-    {
-        return $this
-            ->joinComponent($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Component', '\ComponentQuery');
     }
 
     /**

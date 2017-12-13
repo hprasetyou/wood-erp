@@ -110,16 +110,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery rightJoinWithParent() Adds a RIGHT JOIN clause and with to the query using the Parent relation
  * @method     ChildProductQuery innerJoinWithParent() Adds a INNER JOIN clause and with to the query using the Parent relation
  *
- * @method     ChildProductQuery leftJoinProductComponent($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProductComponent relation
- * @method     ChildProductQuery rightJoinProductComponent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProductComponent relation
- * @method     ChildProductQuery innerJoinProductComponent($relationAlias = null) Adds a INNER JOIN clause to the query using the ProductComponent relation
- *
- * @method     ChildProductQuery joinWithProductComponent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ProductComponent relation
- *
- * @method     ChildProductQuery leftJoinWithProductComponent() Adds a LEFT JOIN clause and with to the query using the ProductComponent relation
- * @method     ChildProductQuery rightJoinWithProductComponent() Adds a RIGHT JOIN clause and with to the query using the ProductComponent relation
- * @method     ChildProductQuery innerJoinWithProductComponent() Adds a INNER JOIN clause and with to the query using the ProductComponent relation
- *
  * @method     ChildProductQuery leftJoinProductPartner($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProductPartner relation
  * @method     ChildProductQuery rightJoinProductPartner($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProductPartner relation
  * @method     ChildProductQuery innerJoinProductPartner($relationAlias = null) Adds a INNER JOIN clause to the query using the ProductPartner relation
@@ -170,7 +160,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery rightJoinWithPurchaseOrderLine() Adds a RIGHT JOIN clause and with to the query using the PurchaseOrderLine relation
  * @method     ChildProductQuery innerJoinWithPurchaseOrderLine() Adds a INNER JOIN clause and with to the query using the PurchaseOrderLine relation
  *
- * @method     \MaterialQuery|\ComponentProductQuery|\ProductComponentQuery|\ProductPartnerQuery|\ProductFinishingQuery|\ProductImageQuery|\ProformaInvoiceLineQuery|\PurchaseOrderLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \MaterialQuery|\ComponentProductQuery|\ProductPartnerQuery|\ProductFinishingQuery|\ProductImageQuery|\ProformaInvoiceLineQuery|\PurchaseOrderLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildProduct findOne(ConnectionInterface $con = null) Return the first ChildProduct matching the query
  * @method     ChildProduct findOneOrCreate(ConnectionInterface $con = null) Return the first ChildProduct matching the query, or a new ChildProduct object populated from the query conditions when no match is found
@@ -1576,79 +1566,6 @@ abstract class ProductQuery extends ModelCriteria
         return $this
             ->joinParent($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Parent', '\ComponentProductQuery');
-    }
-
-    /**
-     * Filter the query by a related \ProductComponent object
-     *
-     * @param \ProductComponent|ObjectCollection $productComponent the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildProductQuery The current query, for fluid interface
-     */
-    public function filterByProductComponent($productComponent, $comparison = null)
-    {
-        if ($productComponent instanceof \ProductComponent) {
-            return $this
-                ->addUsingAlias(ProductTableMap::COL_ID, $productComponent->getProductId(), $comparison);
-        } elseif ($productComponent instanceof ObjectCollection) {
-            return $this
-                ->useProductComponentQuery()
-                ->filterByPrimaryKeys($productComponent->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByProductComponent() only accepts arguments of type \ProductComponent or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the ProductComponent relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildProductQuery The current query, for fluid interface
-     */
-    public function joinProductComponent($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('ProductComponent');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'ProductComponent');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the ProductComponent relation ProductComponent object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \ProductComponentQuery A secondary query class using the current class as primary query
-     */
-    public function useProductComponentQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinProductComponent($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'ProductComponent', '\ProductComponentQuery');
     }
 
     /**

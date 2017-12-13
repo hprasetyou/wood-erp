@@ -35,10 +35,13 @@ class Template {
   }
 
   function apply_func(){
-    $function = new Twig_Function('selection_m2o', function ($name,$model,$domain=null,$val) {
+    $function = new Twig_Function('selection_m2o', function ($name,$model,$domain=null,$val,$id = null) {
+      if(!$id){
+        $id=$name;
+      }
       $objs = "{$model}Query";
       $data = $objs::create()->find();
-      $o = "<select name=\"$name\" id=\"$name\" class=\"form-control form-select\">";
+      $o = "<select name=\"$name\" id=\"$id\" class=\"form-control form-select\">";
       foreach ($data as $key => $value) {
         $id = $value->getId();
         $name = $value->getName();

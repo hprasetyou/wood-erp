@@ -152,13 +152,6 @@ class MaterialTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Component', '\\Component', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':material_id',
-    1 => ':id',
-  ),
-), null, null, 'Components', false);
         $this->addRelation('Product', '\\Product', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (

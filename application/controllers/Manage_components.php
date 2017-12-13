@@ -5,13 +5,16 @@ class Manage_components extends MY_Controller{
 
   function __construct(){
     parent::__construct();
-		$this->set_objname('Component');
+		$this->set_objname('Product');
 		$this->tpl = 'components';
     $this->authorization->check_authorization('manage_components');
   }
 
+
   function get_json(){
-    $this->objobj = ComponentQuery::create()->join('Material')
+    $this->objobj = ProductQuery::create()
+    ->filterByType('component')
+    ->join('Material')
     ->withColumn('Material.Name');
     $this->custom_column = array('material'=>'_{MaterialName}_');
     if($this->input->get('avail_component')){
@@ -28,7 +31,7 @@ class Manage_components extends MY_Controller{
 
   function detail($id){
 
-		$component = ComponentQuery::create()->findPK($id);
+		$component = ProductQuery::create()->findPK($id);
 		$this->template->render('admin/components/form',array('components'=>$component,));
   }
 

@@ -87,14 +87,13 @@ class Manage_proformainvoicelines extends MY_Controller{
 
       if($prod->getHasComponent()){
         foreach (ComponentProductQuery::create()->findByProductId($prod->getId()) as $prodcomponent) {
-          $o[$i]['id'] = $line->getId().'-'.$prod->getId().'-'.$prodcomponent->getComponent()->getId();
+          $o[$i]['id'] = $line->getId().'-'.$prodcomponent->getComponent()->getId();
           $o[$i]['article_number'] = $line->getProduct()->getName();
           $o[$i]['description'] = $line->getDescription();
           $o[$i]['has_component'] = $prodcomponent->getComponent()->getDescription();
           $polines = PurchaseOrderLineQuery::create()
           ->filterByProformaInvoiceLineId($line->getId())
-          ->filterByProductId($prod->getId())
-          ->filterByComponentId($prodcomponent->getComponent()->getId())
+          ->filterByProductId($prodcomponent->getComponentId())
           ->find();
           $done = 0;
           foreach ($polines as $poline) {

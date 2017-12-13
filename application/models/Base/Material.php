@@ -2,8 +2,6 @@
 
 namespace Base;
 
-use \Component as ChildComponent;
-use \ComponentQuery as ChildComponentQuery;
 use \Material as ChildMaterial;
 use \MaterialQuery as ChildMaterialQuery;
 use \Product as ChildProduct;
@@ -11,7 +9,6 @@ use \ProductQuery as ChildProductQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
-use Map\ComponentTableMap;
 use Map\MaterialTableMap;
 use Map\ProductTableMap;
 use Propel\Runtime\Propel;
@@ -100,12 +97,6 @@ abstract class Material implements ActiveRecordInterface
     protected $updated_at;
 
     /**
-     * @var        ObjectCollection|ChildComponent[] Collection to store aggregation of ChildComponent objects.
-     */
-    protected $collComponents;
-    protected $collComponentsPartial;
-
-    /**
      * @var        ObjectCollection|ChildProduct[] Collection to store aggregation of ChildProduct objects.
      */
     protected $collProducts;
@@ -118,12 +109,6 @@ abstract class Material implements ActiveRecordInterface
      * @var boolean
      */
     protected $alreadyInSave = false;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildComponent[]
-     */
-    protected $componentsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -630,8 +615,6 @@ abstract class Material implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collComponents = null;
-
             $this->collProducts = null;
 
         } // if (deep)
@@ -746,24 +729,6 @@ abstract class Material implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
-            }
-
-            if ($this->componentsScheduledForDeletion !== null) {
-                if (!$this->componentsScheduledForDeletion->isEmpty()) {
-                    foreach ($this->componentsScheduledForDeletion as $component) {
-                        // need to save related object because we set the relation to null
-                        $component->save($con);
-                    }
-                    $this->componentsScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collComponents !== null) {
-                foreach ($this->collComponents as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
             }
 
             if ($this->productsScheduledForDeletion !== null) {
@@ -968,21 +933,6 @@ abstract class Material implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->collComponents) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'components';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'components';
-                        break;
-                    default:
-                        $key = 'Components';
-                }
-
-                $result[$key] = $this->collComponents->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
             if (null !== $this->collProducts) {
 
                 switch ($keyType) {
@@ -1230,12 +1180,6 @@ abstract class Material implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getComponents() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addComponent($relObj->copy($deepCopy));
-                }
-            }
-
             foreach ($this->getProducts() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addProduct($relObj->copy($deepCopy));
@@ -1283,239 +1227,10 @@ abstract class Material implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('Component' == $relationName) {
-            $this->initComponents();
-            return;
-        }
         if ('Product' == $relationName) {
             $this->initProducts();
             return;
         }
-    }
-
-    /**
-     * Clears out the collComponents collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addComponents()
-     */
-    public function clearComponents()
-    {
-        $this->collComponents = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collComponents collection loaded partially.
-     */
-    public function resetPartialComponents($v = true)
-    {
-        $this->collComponentsPartial = $v;
-    }
-
-    /**
-     * Initializes the collComponents collection.
-     *
-     * By default this just sets the collComponents collection to an empty array (like clearcollComponents());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initComponents($overrideExisting = true)
-    {
-        if (null !== $this->collComponents && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = ComponentTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collComponents = new $collectionClassName;
-        $this->collComponents->setModel('\Component');
-    }
-
-    /**
-     * Gets an array of ChildComponent objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildMaterial is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildComponent[] List of ChildComponent objects
-     * @throws PropelException
-     */
-    public function getComponents(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collComponentsPartial && !$this->isNew();
-        if (null === $this->collComponents || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collComponents) {
-                // return empty collection
-                $this->initComponents();
-            } else {
-                $collComponents = ChildComponentQuery::create(null, $criteria)
-                    ->filterByMaterial($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collComponentsPartial && count($collComponents)) {
-                        $this->initComponents(false);
-
-                        foreach ($collComponents as $obj) {
-                            if (false == $this->collComponents->contains($obj)) {
-                                $this->collComponents->append($obj);
-                            }
-                        }
-
-                        $this->collComponentsPartial = true;
-                    }
-
-                    return $collComponents;
-                }
-
-                if ($partial && $this->collComponents) {
-                    foreach ($this->collComponents as $obj) {
-                        if ($obj->isNew()) {
-                            $collComponents[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collComponents = $collComponents;
-                $this->collComponentsPartial = false;
-            }
-        }
-
-        return $this->collComponents;
-    }
-
-    /**
-     * Sets a collection of ChildComponent objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $components A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildMaterial The current object (for fluent API support)
-     */
-    public function setComponents(Collection $components, ConnectionInterface $con = null)
-    {
-        /** @var ChildComponent[] $componentsToDelete */
-        $componentsToDelete = $this->getComponents(new Criteria(), $con)->diff($components);
-
-
-        $this->componentsScheduledForDeletion = $componentsToDelete;
-
-        foreach ($componentsToDelete as $componentRemoved) {
-            $componentRemoved->setMaterial(null);
-        }
-
-        $this->collComponents = null;
-        foreach ($components as $component) {
-            $this->addComponent($component);
-        }
-
-        $this->collComponents = $components;
-        $this->collComponentsPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related Component objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related Component objects.
-     * @throws PropelException
-     */
-    public function countComponents(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collComponentsPartial && !$this->isNew();
-        if (null === $this->collComponents || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collComponents) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getComponents());
-            }
-
-            $query = ChildComponentQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByMaterial($this)
-                ->count($con);
-        }
-
-        return count($this->collComponents);
-    }
-
-    /**
-     * Method called to associate a ChildComponent object to this object
-     * through the ChildComponent foreign key attribute.
-     *
-     * @param  ChildComponent $l ChildComponent
-     * @return $this|\Material The current object (for fluent API support)
-     */
-    public function addComponent(ChildComponent $l)
-    {
-        if ($this->collComponents === null) {
-            $this->initComponents();
-            $this->collComponentsPartial = true;
-        }
-
-        if (!$this->collComponents->contains($l)) {
-            $this->doAddComponent($l);
-
-            if ($this->componentsScheduledForDeletion and $this->componentsScheduledForDeletion->contains($l)) {
-                $this->componentsScheduledForDeletion->remove($this->componentsScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildComponent $component The ChildComponent object to add.
-     */
-    protected function doAddComponent(ChildComponent $component)
-    {
-        $this->collComponents[]= $component;
-        $component->setMaterial($this);
-    }
-
-    /**
-     * @param  ChildComponent $component The ChildComponent object to remove.
-     * @return $this|ChildMaterial The current object (for fluent API support)
-     */
-    public function removeComponent(ChildComponent $component)
-    {
-        if ($this->getComponents()->contains($component)) {
-            $pos = $this->collComponents->search($component);
-            $this->collComponents->remove($pos);
-            if (null === $this->componentsScheduledForDeletion) {
-                $this->componentsScheduledForDeletion = clone $this->collComponents;
-                $this->componentsScheduledForDeletion->clear();
-            }
-            $this->componentsScheduledForDeletion[]= $component;
-            $component->setMaterial(null);
-        }
-
-        return $this;
     }
 
     /**
@@ -1773,11 +1488,6 @@ abstract class Material implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collComponents) {
-                foreach ($this->collComponents as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
             if ($this->collProducts) {
                 foreach ($this->collProducts as $o) {
                     $o->clearAllReferences($deep);
@@ -1785,7 +1495,6 @@ abstract class Material implements ActiveRecordInterface
             }
         } // if ($deep)
 
-        $this->collComponents = null;
         $this->collProducts = null;
     }
 

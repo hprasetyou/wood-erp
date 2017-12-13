@@ -29,6 +29,7 @@
     <div {% if components %}style="display:none" {% endif %} class="input-wrap">
       {{selection_m2o('MaterialId','Material',null,components.MaterialId) | raw }}
     </div>
+    <input type="text" style="display:none" name="Material" id="Material" class="form-control" value="">
     {% if components %}
     <p class="control-value">{{ components.Material.Name }}</p>
     {% endif %}

@@ -12,6 +12,7 @@ class Manage_purchaseorderlines extends MY_Controller{
   function get_json(){
 		$this->objobj = PurchaseOrderLineQuery::create()
     ->filterByPurchaseOrderId($this->input->get('purchase_order_id'));
+    $this->custom_column['product_id'] = "_{Product}_->getDescription()";
     parent::get_json();
   }
 
@@ -61,13 +62,13 @@ class Manage_purchaseorderlines extends MY_Controller{
       $ids = explode("-",$line);
       $pp = ProductPartnerQuery::create()
       ->orderByCreatedAt('desc')
-      ->filterByProductId(isset($ids[2])?$ids[1]:$ids[1])
+      ->filterByProductId($ids[1])
       ->filterByPartnerId($this->input->post('PartnerId'))
       ->filterByType("buy")
       ->findOne();
       if(($pp?$pp->getProductPrice():1) != $price[$key]){
         $newpp = new ProductPartner;
-        $newpp->setProductId(isset($ids[2])?$ids[1]:$ids[1])
+        $newpp->setProductId($ids[1])
         ->setPartnerId($this->input->post('PartnerId'))
         ->setProductPrice($price[$key])
         ->setType("buy")
@@ -78,7 +79,6 @@ class Manage_purchaseorderlines extends MY_Controller{
       ->filterByPurchaseOrderId($po_id)
       ->filterByProformaInvoiceLineId($ids[0])
       ->filterByProductId($ids[1])
-      ->filterByComponentId((isset($ids[2])?$ids[2]:null))
       ->findOne();
       if($line){
         $qty[$key] = $qty[$key]+$line->getQty();
@@ -94,10 +94,7 @@ class Manage_purchaseorderlines extends MY_Controller{
          'value'=> $ids[0]
        ),
        'ProductId' =>  array(
-         'value'=> $ids[1]
-       ),
-       'ComponentId'  =>  array(
-         'value'=> (isset($ids[2])?$ids[2]:null)
+         'value'=> ($ids[1])
        ),
        'Note' => 'Note',
        'Price' => array(

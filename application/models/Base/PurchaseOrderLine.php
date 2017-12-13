@@ -2,8 +2,6 @@
 
 namespace Base;
 
-use \Component as ChildComponent;
-use \ComponentQuery as ChildComponentQuery;
 use \Product as ChildProduct;
 use \ProductQuery as ChildProductQuery;
 use \ProformaInvoiceLine as ChildProformaInvoiceLine;
@@ -105,13 +103,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
     protected $product_id;
 
     /**
-     * The value for the component_id field.
-     *
-     * @var        int
-     */
-    protected $component_id;
-
-    /**
      * The value for the note field.
      *
      * @var        string
@@ -162,11 +153,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      * @var        ChildProduct
      */
     protected $aProduct;
-
-    /**
-     * @var        ChildComponent
-     */
-    protected $aComponent;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -464,16 +450,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
     }
 
     /**
-     * Get the [component_id] column value.
-     *
-     * @return int
-     */
-    public function getComponentId()
-    {
-        return $this->component_id;
-    }
-
-    /**
      * Get the [note] column value.
      *
      * @return string
@@ -656,30 +632,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
     } // setProductId()
 
     /**
-     * Set the value of [component_id] column.
-     *
-     * @param int $v new value
-     * @return $this|\PurchaseOrderLine The current object (for fluent API support)
-     */
-    public function setComponentId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->component_id !== $v) {
-            $this->component_id = $v;
-            $this->modifiedColumns[PurchaseOrderLineTableMap::COL_COMPONENT_ID] = true;
-        }
-
-        if ($this->aComponent !== null && $this->aComponent->getId() !== $v) {
-            $this->aComponent = null;
-        }
-
-        return $this;
-    } // setComponentId()
-
-    /**
      * Set the value of [note] column.
      *
      * @param string $v new value
@@ -830,25 +782,22 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : PurchaseOrderLineTableMap::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->product_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : PurchaseOrderLineTableMap::translateFieldName('ComponentId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->component_id = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PurchaseOrderLineTableMap::translateFieldName('Note', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : PurchaseOrderLineTableMap::translateFieldName('Note', TableMap::TYPE_PHPNAME, $indexType)];
             $this->note = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PurchaseOrderLineTableMap::translateFieldName('Price', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PurchaseOrderLineTableMap::translateFieldName('Price', TableMap::TYPE_PHPNAME, $indexType)];
             $this->price = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PurchaseOrderLineTableMap::translateFieldName('Qty', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PurchaseOrderLineTableMap::translateFieldName('Qty', TableMap::TYPE_PHPNAME, $indexType)];
             $this->qty = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PurchaseOrderLineTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PurchaseOrderLineTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PurchaseOrderLineTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PurchaseOrderLineTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -861,7 +810,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 11; // 11 = PurchaseOrderLineTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 10; // 10 = PurchaseOrderLineTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\PurchaseOrderLine'), 0, $e);
@@ -891,9 +840,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
         }
         if ($this->aProduct !== null && $this->product_id !== $this->aProduct->getId()) {
             $this->aProduct = null;
-        }
-        if ($this->aComponent !== null && $this->component_id !== $this->aComponent->getId()) {
-            $this->aComponent = null;
         }
     } // ensureConsistency
 
@@ -937,7 +883,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
             $this->aPurchaseOrder = null;
             $this->aProformaInvoiceLine = null;
             $this->aProduct = null;
-            $this->aComponent = null;
         } // if (deep)
     }
 
@@ -1067,13 +1012,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
                 $this->setProduct($this->aProduct);
             }
 
-            if ($this->aComponent !== null) {
-                if ($this->aComponent->isModified() || $this->aComponent->isNew()) {
-                    $affectedRows += $this->aComponent->save($con);
-                }
-                $this->setComponent($this->aComponent);
-            }
-
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -1126,9 +1064,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
         if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_PRODUCT_ID)) {
             $modifiedColumns[':p' . $index++]  = 'product_id';
         }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_COMPONENT_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'component_id';
-        }
         if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_NOTE)) {
             $modifiedColumns[':p' . $index++]  = 'note';
         }
@@ -1169,9 +1104,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
                         break;
                     case 'product_id':
                         $stmt->bindValue($identifier, $this->product_id, PDO::PARAM_INT);
-                        break;
-                    case 'component_id':
-                        $stmt->bindValue($identifier, $this->component_id, PDO::PARAM_INT);
                         break;
                     case 'note':
                         $stmt->bindValue($identifier, $this->note, PDO::PARAM_STR);
@@ -1266,21 +1198,18 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
                 return $this->getProductId();
                 break;
             case 5:
-                return $this->getComponentId();
-                break;
-            case 6:
                 return $this->getNote();
                 break;
-            case 7:
+            case 6:
                 return $this->getPrice();
                 break;
-            case 8:
+            case 7:
                 return $this->getQty();
                 break;
-            case 9:
+            case 8:
                 return $this->getCreatedAt();
                 break;
-            case 10:
+            case 9:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1318,19 +1247,18 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
             $keys[2] => $this->getPurchaseOrderId(),
             $keys[3] => $this->getProformaInvoiceLineId(),
             $keys[4] => $this->getProductId(),
-            $keys[5] => $this->getComponentId(),
-            $keys[6] => $this->getNote(),
-            $keys[7] => $this->getPrice(),
-            $keys[8] => $this->getQty(),
-            $keys[9] => $this->getCreatedAt(),
-            $keys[10] => $this->getUpdatedAt(),
+            $keys[5] => $this->getNote(),
+            $keys[6] => $this->getPrice(),
+            $keys[7] => $this->getQty(),
+            $keys[8] => $this->getCreatedAt(),
+            $keys[9] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[9]] instanceof \DateTimeInterface) {
-            $result[$keys[9]] = $result[$keys[9]]->format('c');
+        if ($result[$keys[8]] instanceof \DateTimeInterface) {
+            $result[$keys[8]] = $result[$keys[8]]->format('c');
         }
 
-        if ($result[$keys[10]] instanceof \DateTimeInterface) {
-            $result[$keys[10]] = $result[$keys[10]]->format('c');
+        if ($result[$keys[9]] instanceof \DateTimeInterface) {
+            $result[$keys[9]] = $result[$keys[9]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1384,21 +1312,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
 
                 $result[$key] = $this->aProduct->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->aComponent) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'component';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'component';
-                        break;
-                    default:
-                        $key = 'Component';
-                }
-
-                $result[$key] = $this->aComponent->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
         }
 
         return $result;
@@ -1449,21 +1362,18 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
                 $this->setProductId($value);
                 break;
             case 5:
-                $this->setComponentId($value);
-                break;
-            case 6:
                 $this->setNote($value);
                 break;
-            case 7:
+            case 6:
                 $this->setPrice($value);
                 break;
-            case 8:
+            case 7:
                 $this->setQty($value);
                 break;
-            case 9:
+            case 8:
                 $this->setCreatedAt($value);
                 break;
-            case 10:
+            case 9:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1508,22 +1418,19 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
             $this->setProductId($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setComponentId($arr[$keys[5]]);
+            $this->setNote($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setNote($arr[$keys[6]]);
+            $this->setPrice($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setPrice($arr[$keys[7]]);
+            $this->setQty($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setQty($arr[$keys[8]]);
+            $this->setCreatedAt($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setCreatedAt($arr[$keys[9]]);
-        }
-        if (array_key_exists($keys[10], $arr)) {
-            $this->setUpdatedAt($arr[$keys[10]]);
+            $this->setUpdatedAt($arr[$keys[9]]);
         }
     }
 
@@ -1580,9 +1487,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_PRODUCT_ID)) {
             $criteria->add(PurchaseOrderLineTableMap::COL_PRODUCT_ID, $this->product_id);
-        }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_COMPONENT_ID)) {
-            $criteria->add(PurchaseOrderLineTableMap::COL_COMPONENT_ID, $this->component_id);
         }
         if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_NOTE)) {
             $criteria->add(PurchaseOrderLineTableMap::COL_NOTE, $this->note);
@@ -1689,7 +1593,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
         $copyObj->setPurchaseOrderId($this->getPurchaseOrderId());
         $copyObj->setProformaInvoiceLineId($this->getProformaInvoiceLineId());
         $copyObj->setProductId($this->getProductId());
-        $copyObj->setComponentId($this->getComponentId());
         $copyObj->setNote($this->getNote());
         $copyObj->setPrice($this->getPrice());
         $copyObj->setQty($this->getQty());
@@ -1877,57 +1780,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildComponent object.
-     *
-     * @param  ChildComponent $v
-     * @return $this|\PurchaseOrderLine The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setComponent(ChildComponent $v = null)
-    {
-        if ($v === null) {
-            $this->setComponentId(NULL);
-        } else {
-            $this->setComponentId($v->getId());
-        }
-
-        $this->aComponent = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildComponent object, it will not be re-added.
-        if ($v !== null) {
-            $v->addPurchaseOrderLine($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildComponent object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildComponent The associated ChildComponent object.
-     * @throws PropelException
-     */
-    public function getComponent(ConnectionInterface $con = null)
-    {
-        if ($this->aComponent === null && ($this->component_id != 0)) {
-            $this->aComponent = ChildComponentQuery::create()->findPk($this->component_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aComponent->addPurchaseOrderLines($this);
-             */
-        }
-
-        return $this->aComponent;
-    }
-
-    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -1943,15 +1795,11 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
         if (null !== $this->aProduct) {
             $this->aProduct->removePurchaseOrderLine($this);
         }
-        if (null !== $this->aComponent) {
-            $this->aComponent->removePurchaseOrderLine($this);
-        }
         $this->id = null;
         $this->name = null;
         $this->purchase_order_id = null;
         $this->proforma_invoice_line_id = null;
         $this->product_id = null;
-        $this->component_id = null;
         $this->note = null;
         $this->price = null;
         $this->qty = null;
@@ -1981,7 +1829,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
         $this->aPurchaseOrder = null;
         $this->aProformaInvoiceLine = null;
         $this->aProduct = null;
-        $this->aComponent = null;
     }
 
     /**
