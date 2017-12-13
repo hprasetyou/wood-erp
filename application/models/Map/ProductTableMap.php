@@ -249,19 +249,19 @@ class ProductTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', true, 255, null);
         $this->addColumn('description', 'Description', 'VARCHAR', false, 255, null);
-        $this->addColumn('is_round', 'IsRound', 'BOOLEAN', true, 1, false);
-        $this->addColumn('is_kdn', 'IsKdn', 'BOOLEAN', true, 1, false);
-        $this->addColumn('is_flegt', 'IsFlegt', 'BOOLEAN', true, 1, false);
+        $this->addColumn('is_round', 'IsRound', 'BOOLEAN', false, 1, false);
+        $this->addColumn('is_kdn', 'IsKdn', 'BOOLEAN', false, 1, false);
+        $this->addColumn('is_flegt', 'IsFlegt', 'BOOLEAN', false, 1, false);
         $this->addColumn('has_component', 'HasComponent', 'BOOLEAN', false, 1, false);
-        $this->addColumn('qty_per_pack', 'QtyPerPack', 'INTEGER', true, null, 1);
-        $this->addColumn('list_price', 'ListPrice', 'FLOAT', true, null, null);
+        $this->addColumn('qty_per_pack', 'QtyPerPack', 'INTEGER', false, null, 1);
+        $this->addColumn('list_price', 'ListPrice', 'FLOAT', false, null, null);
         $this->addForeignKey('material_id', 'MaterialId', 'INTEGER', 'material', 'id', false, null, null);
         $this->addColumn('note', 'Note', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('cubic_asb', 'CubicAsb', 'FLOAT', true, null, null);
-        $this->addColumn('cubic_kdn', 'CubicKdn', 'FLOAT', true, null, null);
-        $this->addColumn('width_asb', 'WidthAsb', 'FLOAT', true, null, null);
-        $this->addColumn('height_asb', 'HeightAsb', 'FLOAT', true, null, null);
-        $this->addColumn('depth_asb', 'DepthAsb', 'FLOAT', true, null, null);
+        $this->addColumn('cubic_asb', 'CubicAsb', 'FLOAT', false, null, null);
+        $this->addColumn('cubic_kdn', 'CubicKdn', 'FLOAT', false, null, null);
+        $this->addColumn('width_asb', 'WidthAsb', 'FLOAT', false, null, null);
+        $this->addColumn('height_asb', 'HeightAsb', 'FLOAT', false, null, null);
+        $this->addColumn('depth_asb', 'DepthAsb', 'FLOAT', false, null, null);
         $this->addColumn('width_kdn', 'WidthKdn', 'FLOAT', false, null, null);
         $this->addColumn('height_kdn', 'HeightKdn', 'FLOAT', false, null, null);
         $this->addColumn('depth_kdn', 'DepthKdn', 'FLOAT', false, null, null);
@@ -270,7 +270,7 @@ class ProductTableMap extends TableMap
         $this->addColumn('gross_weight', 'GrossWeight', 'FLOAT', false, null, null);
         $this->addColumn('type', 'Type', 'CHAR', false, null, 'product');
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
-        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
+        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
 
     /**
@@ -285,20 +285,20 @@ class ProductTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, null, false);
-        $this->addRelation('ComponentProductRelatedByProductId', '\\ComponentProduct', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('ListComponent', '\\ComponentProduct', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':product_id',
     1 => ':id',
   ),
-), null, null, 'ComponentProductsRelatedByProductId', false);
-        $this->addRelation('ComponentProductRelatedByComponentId', '\\ComponentProduct', RelationMap::ONE_TO_MANY, array (
+), null, null, 'ListComponents', false);
+        $this->addRelation('Parent', '\\ComponentProduct', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':component_id',
     1 => ':id',
   ),
-), null, null, 'ComponentProductsRelatedByComponentId', false);
+), null, null, 'Parents', false);
         $this->addRelation('ProductComponent', '\\ProductComponent', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (

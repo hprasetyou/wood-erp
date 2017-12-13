@@ -17,7 +17,7 @@
               <input type="hidden" type="text" id="ComponentId" value="{{ productcomponents.ComponentId }}" name="ComponentId">
               <input type="text" name="displayComponentId" id="displayComponentId" value="{{ productcomponents.Component }}" class="form-control" />
               <span class="input-group-btn">
-                      <button class="btn btnModal btn-default" id="btnComponentId"  data-target="ModalComponent" type="button">{{res.string.search}}</button>
+                      <button class="btn btnModal btn-default" id="btnComponentId" data-target="ModalComponent" type="button">{{res.string.search}}</button>
                     </span>
             </div>
           </div>
@@ -52,9 +52,9 @@
     </tr>
   </thead>
   <tbody>
-    {% for component in products.ProductComponents %}
+    {% for component in components %}
     <tr>
-      <td>{{component.Component.Name}}</td>
+      <td>{{component.Component.Description}}</td>
       <td>{{component.Component.Material.Name}}</td>
       <td>{{component.Qty}}</td>
       <td><a href="#" data-id="{{component.Id}}" class="btn btn-danger btn-delete-row"><i class="fa fa-trash"></i></a></td>

@@ -1367,7 +1367,7 @@ abstract class ComponentProduct implements ActiveRecordInterface
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildProduct object, it will not be re-added.
         if ($v !== null) {
-            $v->addComponentProductRelatedByProductId($this);
+            $v->addListComponent($this);
         }
 
 
@@ -1391,7 +1391,7 @@ abstract class ComponentProduct implements ActiveRecordInterface
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aProduct->addComponentProductsRelatedByProductId($this);
+                $this->aProduct->addListComponents($this);
              */
         }
 
@@ -1418,7 +1418,7 @@ abstract class ComponentProduct implements ActiveRecordInterface
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildProduct object, it will not be re-added.
         if ($v !== null) {
-            $v->addComponentProductRelatedByComponentId($this);
+            $v->addParent($this);
         }
 
 
@@ -1442,7 +1442,7 @@ abstract class ComponentProduct implements ActiveRecordInterface
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aComponent->addComponentProductsRelatedByComponentId($this);
+                $this->aComponent->addParents($this);
              */
         }
 
@@ -1457,10 +1457,10 @@ abstract class ComponentProduct implements ActiveRecordInterface
     public function clear()
     {
         if (null !== $this->aProduct) {
-            $this->aProduct->removeComponentProductRelatedByProductId($this);
+            $this->aProduct->removeListComponent($this);
         }
         if (null !== $this->aComponent) {
-            $this->aComponent->removeComponentProductRelatedByComponentId($this);
+            $this->aComponent->removeParent($this);
         }
         $this->id = null;
         $this->product_id = null;

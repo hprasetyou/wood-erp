@@ -1,3 +1,4 @@
+<input type="hidden" name="Type" value="component">
 <div class="form-group">
   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.name}}</label>
   <div class="col-md-6 col-sm-6 col-xs-12">
@@ -27,10 +28,6 @@
   <div class="col-md-6 col-sm-6 col-xs-12">
     <div {% if components %}style="display:none" {% endif %} class="input-wrap">
       {{selection_m2o('MaterialId','Material',null,components.MaterialId) | raw }}
-    </div>
-    <div style="display:none" class="" id="Material">
-      <input type="text" required="required" name="Material"
-      placeholder="{{ res.string.material }}" class="form-control" />
     </div>
     {% if components %}
     <p class="control-value">{{ components.Material.Name }}</p>

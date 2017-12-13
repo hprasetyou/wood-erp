@@ -18,7 +18,7 @@
 					</div>
 					<div class="box-body">
 						<p class="text-muted font-13 m-b-30"></p>
-							<table data-controller="manage_products" class="table table-striped " id="table_Product">
+							<table data-controller="manage_products" {% if res.query_params.type %} data-domain='{"type":"{{res.query_params.type}}"}' {% endif %} class="table table-striped " id="table_Product">
 							<thead>
 								<tr>
 									<th data-fieldname="name">{{res.string.article_number}}</th>

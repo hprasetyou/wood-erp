@@ -90,25 +90,25 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery rightJoinWithMaterial() Adds a RIGHT JOIN clause and with to the query using the Material relation
  * @method     ChildProductQuery innerJoinWithMaterial() Adds a INNER JOIN clause and with to the query using the Material relation
  *
- * @method     ChildProductQuery leftJoinComponentProductRelatedByProductId($relationAlias = null) Adds a LEFT JOIN clause to the query using the ComponentProductRelatedByProductId relation
- * @method     ChildProductQuery rightJoinComponentProductRelatedByProductId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ComponentProductRelatedByProductId relation
- * @method     ChildProductQuery innerJoinComponentProductRelatedByProductId($relationAlias = null) Adds a INNER JOIN clause to the query using the ComponentProductRelatedByProductId relation
+ * @method     ChildProductQuery leftJoinListComponent($relationAlias = null) Adds a LEFT JOIN clause to the query using the ListComponent relation
+ * @method     ChildProductQuery rightJoinListComponent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ListComponent relation
+ * @method     ChildProductQuery innerJoinListComponent($relationAlias = null) Adds a INNER JOIN clause to the query using the ListComponent relation
  *
- * @method     ChildProductQuery joinWithComponentProductRelatedByProductId($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ComponentProductRelatedByProductId relation
+ * @method     ChildProductQuery joinWithListComponent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ListComponent relation
  *
- * @method     ChildProductQuery leftJoinWithComponentProductRelatedByProductId() Adds a LEFT JOIN clause and with to the query using the ComponentProductRelatedByProductId relation
- * @method     ChildProductQuery rightJoinWithComponentProductRelatedByProductId() Adds a RIGHT JOIN clause and with to the query using the ComponentProductRelatedByProductId relation
- * @method     ChildProductQuery innerJoinWithComponentProductRelatedByProductId() Adds a INNER JOIN clause and with to the query using the ComponentProductRelatedByProductId relation
+ * @method     ChildProductQuery leftJoinWithListComponent() Adds a LEFT JOIN clause and with to the query using the ListComponent relation
+ * @method     ChildProductQuery rightJoinWithListComponent() Adds a RIGHT JOIN clause and with to the query using the ListComponent relation
+ * @method     ChildProductQuery innerJoinWithListComponent() Adds a INNER JOIN clause and with to the query using the ListComponent relation
  *
- * @method     ChildProductQuery leftJoinComponentProductRelatedByComponentId($relationAlias = null) Adds a LEFT JOIN clause to the query using the ComponentProductRelatedByComponentId relation
- * @method     ChildProductQuery rightJoinComponentProductRelatedByComponentId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ComponentProductRelatedByComponentId relation
- * @method     ChildProductQuery innerJoinComponentProductRelatedByComponentId($relationAlias = null) Adds a INNER JOIN clause to the query using the ComponentProductRelatedByComponentId relation
+ * @method     ChildProductQuery leftJoinParent($relationAlias = null) Adds a LEFT JOIN clause to the query using the Parent relation
+ * @method     ChildProductQuery rightJoinParent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Parent relation
+ * @method     ChildProductQuery innerJoinParent($relationAlias = null) Adds a INNER JOIN clause to the query using the Parent relation
  *
- * @method     ChildProductQuery joinWithComponentProductRelatedByComponentId($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ComponentProductRelatedByComponentId relation
+ * @method     ChildProductQuery joinWithParent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Parent relation
  *
- * @method     ChildProductQuery leftJoinWithComponentProductRelatedByComponentId() Adds a LEFT JOIN clause and with to the query using the ComponentProductRelatedByComponentId relation
- * @method     ChildProductQuery rightJoinWithComponentProductRelatedByComponentId() Adds a RIGHT JOIN clause and with to the query using the ComponentProductRelatedByComponentId relation
- * @method     ChildProductQuery innerJoinWithComponentProductRelatedByComponentId() Adds a INNER JOIN clause and with to the query using the ComponentProductRelatedByComponentId relation
+ * @method     ChildProductQuery leftJoinWithParent() Adds a LEFT JOIN clause and with to the query using the Parent relation
+ * @method     ChildProductQuery rightJoinWithParent() Adds a RIGHT JOIN clause and with to the query using the Parent relation
+ * @method     ChildProductQuery innerJoinWithParent() Adds a INNER JOIN clause and with to the query using the Parent relation
  *
  * @method     ChildProductQuery leftJoinProductComponent($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProductComponent relation
  * @method     ChildProductQuery rightJoinProductComponent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProductComponent relation
@@ -1440,33 +1440,33 @@ abstract class ProductQuery extends ModelCriteria
      *
      * @return ChildProductQuery The current query, for fluid interface
      */
-    public function filterByComponentProductRelatedByProductId($componentProduct, $comparison = null)
+    public function filterByListComponent($componentProduct, $comparison = null)
     {
         if ($componentProduct instanceof \ComponentProduct) {
             return $this
                 ->addUsingAlias(ProductTableMap::COL_ID, $componentProduct->getProductId(), $comparison);
         } elseif ($componentProduct instanceof ObjectCollection) {
             return $this
-                ->useComponentProductRelatedByProductIdQuery()
+                ->useListComponentQuery()
                 ->filterByPrimaryKeys($componentProduct->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByComponentProductRelatedByProductId() only accepts arguments of type \ComponentProduct or Collection');
+            throw new PropelException('filterByListComponent() only accepts arguments of type \ComponentProduct or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the ComponentProductRelatedByProductId relation
+     * Adds a JOIN clause to the query using the ListComponent relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildProductQuery The current query, for fluid interface
      */
-    public function joinComponentProductRelatedByProductId($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinListComponent($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('ComponentProductRelatedByProductId');
+        $relationMap = $tableMap->getRelation('ListComponent');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -1481,14 +1481,14 @@ abstract class ProductQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'ComponentProductRelatedByProductId');
+            $this->addJoinObject($join, 'ListComponent');
         }
 
         return $this;
     }
 
     /**
-     * Use the ComponentProductRelatedByProductId relation ComponentProduct object
+     * Use the ListComponent relation ComponentProduct object
      *
      * @see useQuery()
      *
@@ -1498,11 +1498,11 @@ abstract class ProductQuery extends ModelCriteria
      *
      * @return \ComponentProductQuery A secondary query class using the current class as primary query
      */
-    public function useComponentProductRelatedByProductIdQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useListComponentQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinComponentProductRelatedByProductId($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'ComponentProductRelatedByProductId', '\ComponentProductQuery');
+            ->joinListComponent($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ListComponent', '\ComponentProductQuery');
     }
 
     /**
@@ -1513,33 +1513,33 @@ abstract class ProductQuery extends ModelCriteria
      *
      * @return ChildProductQuery The current query, for fluid interface
      */
-    public function filterByComponentProductRelatedByComponentId($componentProduct, $comparison = null)
+    public function filterByParent($componentProduct, $comparison = null)
     {
         if ($componentProduct instanceof \ComponentProduct) {
             return $this
                 ->addUsingAlias(ProductTableMap::COL_ID, $componentProduct->getComponentId(), $comparison);
         } elseif ($componentProduct instanceof ObjectCollection) {
             return $this
-                ->useComponentProductRelatedByComponentIdQuery()
+                ->useParentQuery()
                 ->filterByPrimaryKeys($componentProduct->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByComponentProductRelatedByComponentId() only accepts arguments of type \ComponentProduct or Collection');
+            throw new PropelException('filterByParent() only accepts arguments of type \ComponentProduct or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the ComponentProductRelatedByComponentId relation
+     * Adds a JOIN clause to the query using the Parent relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildProductQuery The current query, for fluid interface
      */
-    public function joinComponentProductRelatedByComponentId($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinParent($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('ComponentProductRelatedByComponentId');
+        $relationMap = $tableMap->getRelation('Parent');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -1554,14 +1554,14 @@ abstract class ProductQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'ComponentProductRelatedByComponentId');
+            $this->addJoinObject($join, 'Parent');
         }
 
         return $this;
     }
 
     /**
-     * Use the ComponentProductRelatedByComponentId relation ComponentProduct object
+     * Use the Parent relation ComponentProduct object
      *
      * @see useQuery()
      *
@@ -1571,11 +1571,11 @@ abstract class ProductQuery extends ModelCriteria
      *
      * @return \ComponentProductQuery A secondary query class using the current class as primary query
      */
-    public function useComponentProductRelatedByComponentIdQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useParentQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinComponentProductRelatedByComponentId($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'ComponentProductRelatedByComponentId', '\ComponentProductQuery');
+            ->joinParent($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Parent', '\ComponentProductQuery');
     }
 
     /**

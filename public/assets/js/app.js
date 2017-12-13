@@ -209,7 +209,8 @@ function init_modal_selection(){
   $('.btnModal').click(function(e){
     e.preventDefault()
     var target = $(this).data('target')
-    var bdm = $(this).data('domain')
+    var bdm = {}
+    bdm = $(this).data('domain')
 
     var thide = $(this).parents('.input-wrap').find('input[type="hidden"]').prop('id')
     var ttext = $(this).parents('.input-wrap').find('input[type="text"]').prop('id')
@@ -218,6 +219,7 @@ function init_modal_selection(){
     $('#'+target).find('table').attr('data-thide',thide)
     $('#'+target).find('table').attr('data-ttext',ttext)
     var c = $('#'+target).data('controller')
+    bdm = $.extend(bdm,$('#'+target).data('domain'))
     var fl = [{
       "data":"id",
       "render":new Function("data", "type","row","meta", "return '<a data-id=\"'+data+'\" class=\"btn btn-sm btn-default pull-right btn-select\" href=\"#\"><i class=\"fa fa-search\"></i> </a>'")

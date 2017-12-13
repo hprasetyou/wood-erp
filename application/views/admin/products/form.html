@@ -145,7 +145,7 @@
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.material}}</label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <div {% if products %}style="display:none" {% endif %} class="input-wrap">
-                    {{selection_m2o('ProdMaterial','Material',null,products.MaterialId) | raw }}
+                    {{selection_m2o('MaterialId','Material',null,products.MaterialId) | raw }}
                   </div>
                   {% if products %}
                   <p class="control-value">{{ products.Material.Name }}</p>

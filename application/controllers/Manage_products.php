@@ -105,6 +105,8 @@ class Manage_products extends MY_Controller{
     }
 		$this->template->render('admin/products/form',array(
       'products'=>$product,
+      'components' => ComponentProductQuery::create()
+      ->findByProduct($product),
       'finishings'=>	$finishings,
       'new_number'=>create_number(
         array('format'=>'WDX-i',
@@ -113,7 +115,7 @@ class Manage_products extends MY_Controller{
   }
 
   function write($id=null){
-    $this->form['MaterialId'] = 'ProdMaterial';
+    $this->form['MaterialId'] = 'MaterialId';
 
     $data = parent::write($id);
 		$this->load->helper('base64toimage');
@@ -158,7 +160,7 @@ class Manage_products extends MY_Controller{
         switch ($component->state) {
           case 'new':
             # code...
-            $productcomponent = new ProductComponent;
+            $productcomponent = new ComponentProduct;
             $productcomponent->setProductId($data->getId());
             $productcomponent->setComponentId($component->component_id);
             $productcomponent->setQty($component->qty);
@@ -166,7 +168,7 @@ class Manage_products extends MY_Controller{
             break;
           case 'delete':
             # code...
-            $productcomponent = ProductComponentQuery::create()
+            $productcomponent = ComponentProductQuery::create()
             ->findPk($component->id)
             ->delete();
 
@@ -177,17 +179,23 @@ class Manage_products extends MY_Controller{
 
       }
     }
-    $data->getProductFinishings()->delete();
-    foreach ($this->input->post('Finishing') as $k=> $finishing) {
-      # code...
-      $pf = new ProductFinishing;
-      $pf->setFinishingId($k);
-      $pf->setProductId($data->getId());
-      $pf->save();
+    if($this->input->post('Finishing')){
+      $data->getProductFinishings()->delete();
+      foreach ($this->input->post('Finishing') as $k=> $finishing) {
+        # code...
+        $pf = new ProductFinishing;
+        $pf->setFinishingId($k);
+        $pf->setProductId($data->getId());
+        $pf->save();
+      }
     }
 
+    if($this->input->is_ajax_request()){
+      echo $data->toJSON();
+    }else{
+      redirect('manage_products/detail/'.$data->getId());
+    }
 		//$this->loging->add_entry('products',$product->getId(),($id?'melakukan perubahan pada data':'membuat data baru'));
-		redirect('manage_products/detail/'.$data->getId());
   }
 
   function delete($id){

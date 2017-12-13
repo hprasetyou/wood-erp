@@ -279,14 +279,14 @@ abstract class Product implements ActiveRecordInterface
     /**
      * @var        ObjectCollection|ChildComponentProduct[] Collection to store aggregation of ChildComponentProduct objects.
      */
-    protected $collComponentProductsRelatedByProductId;
-    protected $collComponentProductsRelatedByProductIdPartial;
+    protected $collListComponents;
+    protected $collListComponentsPartial;
 
     /**
      * @var        ObjectCollection|ChildComponentProduct[] Collection to store aggregation of ChildComponentProduct objects.
      */
-    protected $collComponentProductsRelatedByComponentId;
-    protected $collComponentProductsRelatedByComponentIdPartial;
+    protected $collParents;
+    protected $collParentsPartial;
 
     /**
      * @var        ObjectCollection|ChildProductComponent[] Collection to store aggregation of ChildProductComponent objects.
@@ -352,13 +352,13 @@ abstract class Product implements ActiveRecordInterface
      * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildComponentProduct[]
      */
-    protected $componentProductsRelatedByProductIdScheduledForDeletion = null;
+    protected $listComponentsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildComponentProduct[]
      */
-    protected $componentProductsRelatedByComponentIdScheduledForDeletion = null;
+    protected $parentsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -1698,9 +1698,9 @@ abstract class Product implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aMaterial = null;
-            $this->collComponentProductsRelatedByProductId = null;
+            $this->collListComponents = null;
 
-            $this->collComponentProductsRelatedByComponentId = null;
+            $this->collParents = null;
 
             $this->collProductComponents = null;
 
@@ -1870,34 +1870,34 @@ abstract class Product implements ActiveRecordInterface
             }
 
 
-            if ($this->componentProductsRelatedByProductIdScheduledForDeletion !== null) {
-                if (!$this->componentProductsRelatedByProductIdScheduledForDeletion->isEmpty()) {
+            if ($this->listComponentsScheduledForDeletion !== null) {
+                if (!$this->listComponentsScheduledForDeletion->isEmpty()) {
                     \ComponentProductQuery::create()
-                        ->filterByPrimaryKeys($this->componentProductsRelatedByProductIdScheduledForDeletion->getPrimaryKeys(false))
+                        ->filterByPrimaryKeys($this->listComponentsScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->componentProductsRelatedByProductIdScheduledForDeletion = null;
+                    $this->listComponentsScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collComponentProductsRelatedByProductId !== null) {
-                foreach ($this->collComponentProductsRelatedByProductId as $referrerFK) {
+            if ($this->collListComponents !== null) {
+                foreach ($this->collListComponents as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
             }
 
-            if ($this->componentProductsRelatedByComponentIdScheduledForDeletion !== null) {
-                if (!$this->componentProductsRelatedByComponentIdScheduledForDeletion->isEmpty()) {
+            if ($this->parentsScheduledForDeletion !== null) {
+                if (!$this->parentsScheduledForDeletion->isEmpty()) {
                     \ComponentProductQuery::create()
-                        ->filterByPrimaryKeys($this->componentProductsRelatedByComponentIdScheduledForDeletion->getPrimaryKeys(false))
+                        ->filterByPrimaryKeys($this->parentsScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->componentProductsRelatedByComponentIdScheduledForDeletion = null;
+                    $this->parentsScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collComponentProductsRelatedByComponentId !== null) {
-                foreach ($this->collComponentProductsRelatedByComponentId as $referrerFK) {
+            if ($this->collParents !== null) {
+                foreach ($this->collParents as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -2416,7 +2416,7 @@ abstract class Product implements ActiveRecordInterface
 
                 $result[$key] = $this->aMaterial->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->collComponentProductsRelatedByProductId) {
+            if (null !== $this->collListComponents) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
@@ -2426,12 +2426,12 @@ abstract class Product implements ActiveRecordInterface
                         $key = 'component_products';
                         break;
                     default:
-                        $key = 'ComponentProducts';
+                        $key = 'ListComponents';
                 }
 
-                $result[$key] = $this->collComponentProductsRelatedByProductId->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collListComponents->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
-            if (null !== $this->collComponentProductsRelatedByComponentId) {
+            if (null !== $this->collParents) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
@@ -2441,10 +2441,10 @@ abstract class Product implements ActiveRecordInterface
                         $key = 'component_products';
                         break;
                     default:
-                        $key = 'ComponentProducts';
+                        $key = 'Parents';
                 }
 
-                $result[$key] = $this->collComponentProductsRelatedByComponentId->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collParents->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collProductComponents) {
 
@@ -2978,15 +2978,15 @@ abstract class Product implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getComponentProductsRelatedByProductId() as $relObj) {
+            foreach ($this->getListComponents() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addComponentProductRelatedByProductId($relObj->copy($deepCopy));
+                    $copyObj->addListComponent($relObj->copy($deepCopy));
                 }
             }
 
-            foreach ($this->getComponentProductsRelatedByComponentId() as $relObj) {
+            foreach ($this->getParents() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addComponentProductRelatedByComponentId($relObj->copy($deepCopy));
+                    $copyObj->addParent($relObj->copy($deepCopy));
                 }
             }
 
@@ -3118,12 +3118,12 @@ abstract class Product implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('ComponentProductRelatedByProductId' == $relationName) {
-            $this->initComponentProductsRelatedByProductId();
+        if ('ListComponent' == $relationName) {
+            $this->initListComponents();
             return;
         }
-        if ('ComponentProductRelatedByComponentId' == $relationName) {
-            $this->initComponentProductsRelatedByComponentId();
+        if ('Parent' == $relationName) {
+            $this->initParents();
             return;
         }
         if ('ProductComponent' == $relationName) {
@@ -3153,31 +3153,31 @@ abstract class Product implements ActiveRecordInterface
     }
 
     /**
-     * Clears out the collComponentProductsRelatedByProductId collection
+     * Clears out the collListComponents collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addComponentProductsRelatedByProductId()
+     * @see        addListComponents()
      */
-    public function clearComponentProductsRelatedByProductId()
+    public function clearListComponents()
     {
-        $this->collComponentProductsRelatedByProductId = null; // important to set this to NULL since that means it is uninitialized
+        $this->collListComponents = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collComponentProductsRelatedByProductId collection loaded partially.
+     * Reset is the collListComponents collection loaded partially.
      */
-    public function resetPartialComponentProductsRelatedByProductId($v = true)
+    public function resetPartialListComponents($v = true)
     {
-        $this->collComponentProductsRelatedByProductIdPartial = $v;
+        $this->collListComponentsPartial = $v;
     }
 
     /**
-     * Initializes the collComponentProductsRelatedByProductId collection.
+     * Initializes the collListComponents collection.
      *
-     * By default this just sets the collComponentProductsRelatedByProductId collection to an empty array (like clearcollComponentProductsRelatedByProductId());
+     * By default this just sets the collListComponents collection to an empty array (like clearcollListComponents());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -3186,16 +3186,16 @@ abstract class Product implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initComponentProductsRelatedByProductId($overrideExisting = true)
+    public function initListComponents($overrideExisting = true)
     {
-        if (null !== $this->collComponentProductsRelatedByProductId && !$overrideExisting) {
+        if (null !== $this->collListComponents && !$overrideExisting) {
             return;
         }
 
         $collectionClassName = ComponentProductTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collComponentProductsRelatedByProductId = new $collectionClassName;
-        $this->collComponentProductsRelatedByProductId->setModel('\ComponentProduct');
+        $this->collListComponents = new $collectionClassName;
+        $this->collListComponents->setModel('\ComponentProduct');
     }
 
     /**
@@ -3212,48 +3212,48 @@ abstract class Product implements ActiveRecordInterface
      * @return ObjectCollection|ChildComponentProduct[] List of ChildComponentProduct objects
      * @throws PropelException
      */
-    public function getComponentProductsRelatedByProductId(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getListComponents(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collComponentProductsRelatedByProductIdPartial && !$this->isNew();
-        if (null === $this->collComponentProductsRelatedByProductId || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collComponentProductsRelatedByProductId) {
+        $partial = $this->collListComponentsPartial && !$this->isNew();
+        if (null === $this->collListComponents || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collListComponents) {
                 // return empty collection
-                $this->initComponentProductsRelatedByProductId();
+                $this->initListComponents();
             } else {
-                $collComponentProductsRelatedByProductId = ChildComponentProductQuery::create(null, $criteria)
+                $collListComponents = ChildComponentProductQuery::create(null, $criteria)
                     ->filterByProduct($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collComponentProductsRelatedByProductIdPartial && count($collComponentProductsRelatedByProductId)) {
-                        $this->initComponentProductsRelatedByProductId(false);
+                    if (false !== $this->collListComponentsPartial && count($collListComponents)) {
+                        $this->initListComponents(false);
 
-                        foreach ($collComponentProductsRelatedByProductId as $obj) {
-                            if (false == $this->collComponentProductsRelatedByProductId->contains($obj)) {
-                                $this->collComponentProductsRelatedByProductId->append($obj);
+                        foreach ($collListComponents as $obj) {
+                            if (false == $this->collListComponents->contains($obj)) {
+                                $this->collListComponents->append($obj);
                             }
                         }
 
-                        $this->collComponentProductsRelatedByProductIdPartial = true;
+                        $this->collListComponentsPartial = true;
                     }
 
-                    return $collComponentProductsRelatedByProductId;
+                    return $collListComponents;
                 }
 
-                if ($partial && $this->collComponentProductsRelatedByProductId) {
-                    foreach ($this->collComponentProductsRelatedByProductId as $obj) {
+                if ($partial && $this->collListComponents) {
+                    foreach ($this->collListComponents as $obj) {
                         if ($obj->isNew()) {
-                            $collComponentProductsRelatedByProductId[] = $obj;
+                            $collListComponents[] = $obj;
                         }
                     }
                 }
 
-                $this->collComponentProductsRelatedByProductId = $collComponentProductsRelatedByProductId;
-                $this->collComponentProductsRelatedByProductIdPartial = false;
+                $this->collListComponents = $collListComponents;
+                $this->collListComponentsPartial = false;
             }
         }
 
-        return $this->collComponentProductsRelatedByProductId;
+        return $this->collListComponents;
     }
 
     /**
@@ -3262,29 +3262,29 @@ abstract class Product implements ActiveRecordInterface
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $componentProductsRelatedByProductId A Propel collection.
+     * @param      Collection $listComponents A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return $this|ChildProduct The current object (for fluent API support)
      */
-    public function setComponentProductsRelatedByProductId(Collection $componentProductsRelatedByProductId, ConnectionInterface $con = null)
+    public function setListComponents(Collection $listComponents, ConnectionInterface $con = null)
     {
-        /** @var ChildComponentProduct[] $componentProductsRelatedByProductIdToDelete */
-        $componentProductsRelatedByProductIdToDelete = $this->getComponentProductsRelatedByProductId(new Criteria(), $con)->diff($componentProductsRelatedByProductId);
+        /** @var ChildComponentProduct[] $listComponentsToDelete */
+        $listComponentsToDelete = $this->getListComponents(new Criteria(), $con)->diff($listComponents);
 
 
-        $this->componentProductsRelatedByProductIdScheduledForDeletion = $componentProductsRelatedByProductIdToDelete;
+        $this->listComponentsScheduledForDeletion = $listComponentsToDelete;
 
-        foreach ($componentProductsRelatedByProductIdToDelete as $componentProductRelatedByProductIdRemoved) {
-            $componentProductRelatedByProductIdRemoved->setProduct(null);
+        foreach ($listComponentsToDelete as $listComponentRemoved) {
+            $listComponentRemoved->setProduct(null);
         }
 
-        $this->collComponentProductsRelatedByProductId = null;
-        foreach ($componentProductsRelatedByProductId as $componentProductRelatedByProductId) {
-            $this->addComponentProductRelatedByProductId($componentProductRelatedByProductId);
+        $this->collListComponents = null;
+        foreach ($listComponents as $listComponent) {
+            $this->addListComponent($listComponent);
         }
 
-        $this->collComponentProductsRelatedByProductId = $componentProductsRelatedByProductId;
-        $this->collComponentProductsRelatedByProductIdPartial = false;
+        $this->collListComponents = $listComponents;
+        $this->collListComponentsPartial = false;
 
         return $this;
     }
@@ -3298,16 +3298,16 @@ abstract class Product implements ActiveRecordInterface
      * @return int             Count of related ComponentProduct objects.
      * @throws PropelException
      */
-    public function countComponentProductsRelatedByProductId(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countListComponents(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collComponentProductsRelatedByProductIdPartial && !$this->isNew();
-        if (null === $this->collComponentProductsRelatedByProductId || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collComponentProductsRelatedByProductId) {
+        $partial = $this->collListComponentsPartial && !$this->isNew();
+        if (null === $this->collListComponents || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collListComponents) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getComponentProductsRelatedByProductId());
+                return count($this->getListComponents());
             }
 
             $query = ChildComponentProductQuery::create(null, $criteria);
@@ -3320,7 +3320,7 @@ abstract class Product implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collComponentProductsRelatedByProductId);
+        return count($this->collListComponents);
     }
 
     /**
@@ -3330,18 +3330,18 @@ abstract class Product implements ActiveRecordInterface
      * @param  ChildComponentProduct $l ChildComponentProduct
      * @return $this|\Product The current object (for fluent API support)
      */
-    public function addComponentProductRelatedByProductId(ChildComponentProduct $l)
+    public function addListComponent(ChildComponentProduct $l)
     {
-        if ($this->collComponentProductsRelatedByProductId === null) {
-            $this->initComponentProductsRelatedByProductId();
-            $this->collComponentProductsRelatedByProductIdPartial = true;
+        if ($this->collListComponents === null) {
+            $this->initListComponents();
+            $this->collListComponentsPartial = true;
         }
 
-        if (!$this->collComponentProductsRelatedByProductId->contains($l)) {
-            $this->doAddComponentProductRelatedByProductId($l);
+        if (!$this->collListComponents->contains($l)) {
+            $this->doAddListComponent($l);
 
-            if ($this->componentProductsRelatedByProductIdScheduledForDeletion and $this->componentProductsRelatedByProductIdScheduledForDeletion->contains($l)) {
-                $this->componentProductsRelatedByProductIdScheduledForDeletion->remove($this->componentProductsRelatedByProductIdScheduledForDeletion->search($l));
+            if ($this->listComponentsScheduledForDeletion and $this->listComponentsScheduledForDeletion->contains($l)) {
+                $this->listComponentsScheduledForDeletion->remove($this->listComponentsScheduledForDeletion->search($l));
             }
         }
 
@@ -3349,60 +3349,60 @@ abstract class Product implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildComponentProduct $componentProductRelatedByProductId The ChildComponentProduct object to add.
+     * @param ChildComponentProduct $listComponent The ChildComponentProduct object to add.
      */
-    protected function doAddComponentProductRelatedByProductId(ChildComponentProduct $componentProductRelatedByProductId)
+    protected function doAddListComponent(ChildComponentProduct $listComponent)
     {
-        $this->collComponentProductsRelatedByProductId[]= $componentProductRelatedByProductId;
-        $componentProductRelatedByProductId->setProduct($this);
+        $this->collListComponents[]= $listComponent;
+        $listComponent->setProduct($this);
     }
 
     /**
-     * @param  ChildComponentProduct $componentProductRelatedByProductId The ChildComponentProduct object to remove.
+     * @param  ChildComponentProduct $listComponent The ChildComponentProduct object to remove.
      * @return $this|ChildProduct The current object (for fluent API support)
      */
-    public function removeComponentProductRelatedByProductId(ChildComponentProduct $componentProductRelatedByProductId)
+    public function removeListComponent(ChildComponentProduct $listComponent)
     {
-        if ($this->getComponentProductsRelatedByProductId()->contains($componentProductRelatedByProductId)) {
-            $pos = $this->collComponentProductsRelatedByProductId->search($componentProductRelatedByProductId);
-            $this->collComponentProductsRelatedByProductId->remove($pos);
-            if (null === $this->componentProductsRelatedByProductIdScheduledForDeletion) {
-                $this->componentProductsRelatedByProductIdScheduledForDeletion = clone $this->collComponentProductsRelatedByProductId;
-                $this->componentProductsRelatedByProductIdScheduledForDeletion->clear();
+        if ($this->getListComponents()->contains($listComponent)) {
+            $pos = $this->collListComponents->search($listComponent);
+            $this->collListComponents->remove($pos);
+            if (null === $this->listComponentsScheduledForDeletion) {
+                $this->listComponentsScheduledForDeletion = clone $this->collListComponents;
+                $this->listComponentsScheduledForDeletion->clear();
             }
-            $this->componentProductsRelatedByProductIdScheduledForDeletion[]= clone $componentProductRelatedByProductId;
-            $componentProductRelatedByProductId->setProduct(null);
+            $this->listComponentsScheduledForDeletion[]= clone $listComponent;
+            $listComponent->setProduct(null);
         }
 
         return $this;
     }
 
     /**
-     * Clears out the collComponentProductsRelatedByComponentId collection
+     * Clears out the collParents collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addComponentProductsRelatedByComponentId()
+     * @see        addParents()
      */
-    public function clearComponentProductsRelatedByComponentId()
+    public function clearParents()
     {
-        $this->collComponentProductsRelatedByComponentId = null; // important to set this to NULL since that means it is uninitialized
+        $this->collParents = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collComponentProductsRelatedByComponentId collection loaded partially.
+     * Reset is the collParents collection loaded partially.
      */
-    public function resetPartialComponentProductsRelatedByComponentId($v = true)
+    public function resetPartialParents($v = true)
     {
-        $this->collComponentProductsRelatedByComponentIdPartial = $v;
+        $this->collParentsPartial = $v;
     }
 
     /**
-     * Initializes the collComponentProductsRelatedByComponentId collection.
+     * Initializes the collParents collection.
      *
-     * By default this just sets the collComponentProductsRelatedByComponentId collection to an empty array (like clearcollComponentProductsRelatedByComponentId());
+     * By default this just sets the collParents collection to an empty array (like clearcollParents());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -3411,16 +3411,16 @@ abstract class Product implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initComponentProductsRelatedByComponentId($overrideExisting = true)
+    public function initParents($overrideExisting = true)
     {
-        if (null !== $this->collComponentProductsRelatedByComponentId && !$overrideExisting) {
+        if (null !== $this->collParents && !$overrideExisting) {
             return;
         }
 
         $collectionClassName = ComponentProductTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collComponentProductsRelatedByComponentId = new $collectionClassName;
-        $this->collComponentProductsRelatedByComponentId->setModel('\ComponentProduct');
+        $this->collParents = new $collectionClassName;
+        $this->collParents->setModel('\ComponentProduct');
     }
 
     /**
@@ -3437,48 +3437,48 @@ abstract class Product implements ActiveRecordInterface
      * @return ObjectCollection|ChildComponentProduct[] List of ChildComponentProduct objects
      * @throws PropelException
      */
-    public function getComponentProductsRelatedByComponentId(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getParents(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collComponentProductsRelatedByComponentIdPartial && !$this->isNew();
-        if (null === $this->collComponentProductsRelatedByComponentId || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collComponentProductsRelatedByComponentId) {
+        $partial = $this->collParentsPartial && !$this->isNew();
+        if (null === $this->collParents || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collParents) {
                 // return empty collection
-                $this->initComponentProductsRelatedByComponentId();
+                $this->initParents();
             } else {
-                $collComponentProductsRelatedByComponentId = ChildComponentProductQuery::create(null, $criteria)
+                $collParents = ChildComponentProductQuery::create(null, $criteria)
                     ->filterByComponent($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collComponentProductsRelatedByComponentIdPartial && count($collComponentProductsRelatedByComponentId)) {
-                        $this->initComponentProductsRelatedByComponentId(false);
+                    if (false !== $this->collParentsPartial && count($collParents)) {
+                        $this->initParents(false);
 
-                        foreach ($collComponentProductsRelatedByComponentId as $obj) {
-                            if (false == $this->collComponentProductsRelatedByComponentId->contains($obj)) {
-                                $this->collComponentProductsRelatedByComponentId->append($obj);
+                        foreach ($collParents as $obj) {
+                            if (false == $this->collParents->contains($obj)) {
+                                $this->collParents->append($obj);
                             }
                         }
 
-                        $this->collComponentProductsRelatedByComponentIdPartial = true;
+                        $this->collParentsPartial = true;
                     }
 
-                    return $collComponentProductsRelatedByComponentId;
+                    return $collParents;
                 }
 
-                if ($partial && $this->collComponentProductsRelatedByComponentId) {
-                    foreach ($this->collComponentProductsRelatedByComponentId as $obj) {
+                if ($partial && $this->collParents) {
+                    foreach ($this->collParents as $obj) {
                         if ($obj->isNew()) {
-                            $collComponentProductsRelatedByComponentId[] = $obj;
+                            $collParents[] = $obj;
                         }
                     }
                 }
 
-                $this->collComponentProductsRelatedByComponentId = $collComponentProductsRelatedByComponentId;
-                $this->collComponentProductsRelatedByComponentIdPartial = false;
+                $this->collParents = $collParents;
+                $this->collParentsPartial = false;
             }
         }
 
-        return $this->collComponentProductsRelatedByComponentId;
+        return $this->collParents;
     }
 
     /**
@@ -3487,29 +3487,29 @@ abstract class Product implements ActiveRecordInterface
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $componentProductsRelatedByComponentId A Propel collection.
+     * @param      Collection $parents A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return $this|ChildProduct The current object (for fluent API support)
      */
-    public function setComponentProductsRelatedByComponentId(Collection $componentProductsRelatedByComponentId, ConnectionInterface $con = null)
+    public function setParents(Collection $parents, ConnectionInterface $con = null)
     {
-        /** @var ChildComponentProduct[] $componentProductsRelatedByComponentIdToDelete */
-        $componentProductsRelatedByComponentIdToDelete = $this->getComponentProductsRelatedByComponentId(new Criteria(), $con)->diff($componentProductsRelatedByComponentId);
+        /** @var ChildComponentProduct[] $parentsToDelete */
+        $parentsToDelete = $this->getParents(new Criteria(), $con)->diff($parents);
 
 
-        $this->componentProductsRelatedByComponentIdScheduledForDeletion = $componentProductsRelatedByComponentIdToDelete;
+        $this->parentsScheduledForDeletion = $parentsToDelete;
 
-        foreach ($componentProductsRelatedByComponentIdToDelete as $componentProductRelatedByComponentIdRemoved) {
-            $componentProductRelatedByComponentIdRemoved->setComponent(null);
+        foreach ($parentsToDelete as $parentRemoved) {
+            $parentRemoved->setComponent(null);
         }
 
-        $this->collComponentProductsRelatedByComponentId = null;
-        foreach ($componentProductsRelatedByComponentId as $componentProductRelatedByComponentId) {
-            $this->addComponentProductRelatedByComponentId($componentProductRelatedByComponentId);
+        $this->collParents = null;
+        foreach ($parents as $parent) {
+            $this->addParent($parent);
         }
 
-        $this->collComponentProductsRelatedByComponentId = $componentProductsRelatedByComponentId;
-        $this->collComponentProductsRelatedByComponentIdPartial = false;
+        $this->collParents = $parents;
+        $this->collParentsPartial = false;
 
         return $this;
     }
@@ -3523,16 +3523,16 @@ abstract class Product implements ActiveRecordInterface
      * @return int             Count of related ComponentProduct objects.
      * @throws PropelException
      */
-    public function countComponentProductsRelatedByComponentId(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countParents(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collComponentProductsRelatedByComponentIdPartial && !$this->isNew();
-        if (null === $this->collComponentProductsRelatedByComponentId || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collComponentProductsRelatedByComponentId) {
+        $partial = $this->collParentsPartial && !$this->isNew();
+        if (null === $this->collParents || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collParents) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getComponentProductsRelatedByComponentId());
+                return count($this->getParents());
             }
 
             $query = ChildComponentProductQuery::create(null, $criteria);
@@ -3545,7 +3545,7 @@ abstract class Product implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collComponentProductsRelatedByComponentId);
+        return count($this->collParents);
     }
 
     /**
@@ -3555,18 +3555,18 @@ abstract class Product implements ActiveRecordInterface
      * @param  ChildComponentProduct $l ChildComponentProduct
      * @return $this|\Product The current object (for fluent API support)
      */
-    public function addComponentProductRelatedByComponentId(ChildComponentProduct $l)
+    public function addParent(ChildComponentProduct $l)
     {
-        if ($this->collComponentProductsRelatedByComponentId === null) {
-            $this->initComponentProductsRelatedByComponentId();
-            $this->collComponentProductsRelatedByComponentIdPartial = true;
+        if ($this->collParents === null) {
+            $this->initParents();
+            $this->collParentsPartial = true;
         }
 
-        if (!$this->collComponentProductsRelatedByComponentId->contains($l)) {
-            $this->doAddComponentProductRelatedByComponentId($l);
+        if (!$this->collParents->contains($l)) {
+            $this->doAddParent($l);
 
-            if ($this->componentProductsRelatedByComponentIdScheduledForDeletion and $this->componentProductsRelatedByComponentIdScheduledForDeletion->contains($l)) {
-                $this->componentProductsRelatedByComponentIdScheduledForDeletion->remove($this->componentProductsRelatedByComponentIdScheduledForDeletion->search($l));
+            if ($this->parentsScheduledForDeletion and $this->parentsScheduledForDeletion->contains($l)) {
+                $this->parentsScheduledForDeletion->remove($this->parentsScheduledForDeletion->search($l));
             }
         }
 
@@ -3574,29 +3574,29 @@ abstract class Product implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildComponentProduct $componentProductRelatedByComponentId The ChildComponentProduct object to add.
+     * @param ChildComponentProduct $parent The ChildComponentProduct object to add.
      */
-    protected function doAddComponentProductRelatedByComponentId(ChildComponentProduct $componentProductRelatedByComponentId)
+    protected function doAddParent(ChildComponentProduct $parent)
     {
-        $this->collComponentProductsRelatedByComponentId[]= $componentProductRelatedByComponentId;
-        $componentProductRelatedByComponentId->setComponent($this);
+        $this->collParents[]= $parent;
+        $parent->setComponent($this);
     }
 
     /**
-     * @param  ChildComponentProduct $componentProductRelatedByComponentId The ChildComponentProduct object to remove.
+     * @param  ChildComponentProduct $parent The ChildComponentProduct object to remove.
      * @return $this|ChildProduct The current object (for fluent API support)
      */
-    public function removeComponentProductRelatedByComponentId(ChildComponentProduct $componentProductRelatedByComponentId)
+    public function removeParent(ChildComponentProduct $parent)
     {
-        if ($this->getComponentProductsRelatedByComponentId()->contains($componentProductRelatedByComponentId)) {
-            $pos = $this->collComponentProductsRelatedByComponentId->search($componentProductRelatedByComponentId);
-            $this->collComponentProductsRelatedByComponentId->remove($pos);
-            if (null === $this->componentProductsRelatedByComponentIdScheduledForDeletion) {
-                $this->componentProductsRelatedByComponentIdScheduledForDeletion = clone $this->collComponentProductsRelatedByComponentId;
-                $this->componentProductsRelatedByComponentIdScheduledForDeletion->clear();
+        if ($this->getParents()->contains($parent)) {
+            $pos = $this->collParents->search($parent);
+            $this->collParents->remove($pos);
+            if (null === $this->parentsScheduledForDeletion) {
+                $this->parentsScheduledForDeletion = clone $this->collParents;
+                $this->parentsScheduledForDeletion->clear();
             }
-            $this->componentProductsRelatedByComponentIdScheduledForDeletion[]= clone $componentProductRelatedByComponentId;
-            $componentProductRelatedByComponentId->setComponent(null);
+            $this->parentsScheduledForDeletion[]= clone $parent;
+            $parent->setComponent(null);
         }
 
         return $this;
@@ -5427,13 +5427,13 @@ abstract class Product implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collComponentProductsRelatedByProductId) {
-                foreach ($this->collComponentProductsRelatedByProductId as $o) {
+            if ($this->collListComponents) {
+                foreach ($this->collListComponents as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collComponentProductsRelatedByComponentId) {
-                foreach ($this->collComponentProductsRelatedByComponentId as $o) {
+            if ($this->collParents) {
+                foreach ($this->collParents as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
@@ -5474,8 +5474,8 @@ abstract class Product implements ActiveRecordInterface
             }
         } // if ($deep)
 
-        $this->collComponentProductsRelatedByProductId = null;
-        $this->collComponentProductsRelatedByComponentId = null;
+        $this->collListComponents = null;
+        $this->collParents = null;
         $this->collProductComponents = null;
         $this->collProductPartners = null;
         $this->collProductFinishings = null;
