@@ -33,6 +33,7 @@
 'cubic' => 'Cubic',
 'cbm_per_piece' =>'Cbm per Piece',
 'currency' => 'Currency',
+'cust_art_nbr'=>'Cust Art Number',
 'cubic_asb' => 'Assembled CBM',
 'cubic_dimension' => 'Cubic Dimension',
 'cubic_kdn' => 'Packing CBM',
