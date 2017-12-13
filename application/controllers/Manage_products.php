@@ -116,7 +116,7 @@ class Manage_products extends MY_Controller{
 
   function write($id=null){
     $this->form['MaterialId'] = 'MaterialId';
-
+    $this->form['Type'] = array('value'=>'product'); 
     $data = parent::write($id);
 		$this->load->helper('base64toimage');
 		$prod_img = json_decode($this->input->post('imgProduct'));
