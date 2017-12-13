@@ -24,6 +24,7 @@
 'close' => 'Close',
 'cntr_no' => 'Cntr No',
 'company_id' => 'Company Id',
+'corfirm_confirmation'=>'Confirm this document',
 'component' => 'Component',
 'component_id' => 'Component Id',
 'confirm' => 'Confirm',

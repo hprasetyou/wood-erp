@@ -27,6 +27,16 @@ class Manage_proformainvoices extends MY_Controller{
     parent::get_json();
   }
 
+  function set_confirm($id){
+    $data = ProformaInvoiceQuery::create()
+    ->findPk($id);
+    if($data){
+      $data->setState('confirm')
+      ->save();
+      echo $data->toJSON();
+    }
+  }
+
   function get_line_json($id = null){
     if($id){
       $line = ProformaInvoiceLineQuery::create()

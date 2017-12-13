@@ -7,6 +7,8 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
 				<div class="box-header with-border">
 					{% include 'common/_form_header.html' with {'back_url':'/index.php/manage_proformainvoices'~back_link, 'title': res.string.proforma_invoice, 'delete_url':'/index.php/manage_proformainvoices/delete/'~ proformainvoices.Id , 'object':proformainvoices}
 					%}
+
+
 				</div>
         <input type="hidden" id="PIId" value="{{ proformainvoices.Id }}">
 				<div class="box-body">
@@ -123,6 +125,16 @@ function refresh_line(){
   })
 }
 $(document).ready(function(){
+  $('#confirmChangeState').click(function(e){
+    e.preventDefault()
+    $.ajax({
+      url:'/index.php/manage_proformainvoices/set_confirm/{{proformainvoices.Id}}',
+      method:'POST',
+      dataType:'JSON'
+    }).done(function(){
+      location.reload();
+    })
+  })
   $('#ModalAddProformaInvoiceLine').on('hidden.bs.modal', function () {
     $('#ModalAddProformaInvoiceLine').find('input').val('')
     $('#ModalAddProformaInvoiceLine').find('input').prop('checked',false);
