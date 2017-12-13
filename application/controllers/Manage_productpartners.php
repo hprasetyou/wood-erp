@@ -18,12 +18,18 @@ class Manage_productpartners extends MY_Controller{
   }
 
   function get_json(){
+    $componentproducts = ComponentProductQuery::create()
+    ->findByProductId($this->input->get('product_id'));
+    $components = [$this->input->get('product_id')];
+    foreach ($componentproducts as $key => $value) {
+      $components[] = $value->getComponentId();
+    }
     if($this->input->get('type')=='buy' ){
       $latest_price_ids = ProductPartnerQuery::create()
       ->select(array('PartnerId'))
       ->withColumn('MAX(id)','Id')
       ->groupBy(array('partner_id'))
-      ->filterByProductId($this->input->get('product_id'))
+      ->filterByProductId($components)
       ->filterByType('buy')
       ->find();
       $price_ids = [];

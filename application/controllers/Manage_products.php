@@ -26,14 +26,14 @@ class Manage_products extends MY_Controller{
     $this->custom_column = array('dimension'=>
     "_{WidthAsb}_.'W x'. _{DepthAsb}_ .'D x'.
      _{HeightAsb}_ .'H ' ",
-     'material' =>"function() use(_{ProductComponents}_,_{Material}_,\$obj){
+     'material' =>"function() use(_{Material}_,\$obj){
          \$o = [];
-         foreach(_{ProductComponents}_ as \$pc){
+         foreach(ComponentProductQuery::create()->findByProductId(\$obj->getId()) as \$pc){
          \$o[] = \$pc->getComponent()->getMaterial()->getName();
          }
          if(!\$obj->hasComponent()){
-            if(\$obj->getMaterial()){
-              \$o = array(\$obj->getMaterial()->getName());
+            if(_{Material}_){
+              \$o = array(_{Material}_->getName());
             }
           }
          return array_unique(\$o);
@@ -205,7 +205,7 @@ class Manage_products extends MY_Controller{
         $product->getProductPartners()->delete();
         $product->getProductFinishings()->delete();
         $product->getProductImages()->delete();
-        $product->getProductComponents()->delete();
+        ComponentProductQuery::create()->findByProductId($id)->delete();
         $product->delete();
         $this->loging->add_entry('products',$product->getId(),('activity_delete'));
       } catch (Exception $e) {

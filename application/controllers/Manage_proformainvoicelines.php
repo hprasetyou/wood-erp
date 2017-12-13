@@ -53,7 +53,8 @@ class Manage_proformainvoicelines extends MY_Controller{
     $this->custom_column['product_material'] ="function() use (_{Product}_){
       \$o = [];
       if(_{Product}_->getHasComponent()){
-        foreach(_{Product}_->getProductComponents() as \$component){
+
+        foreach(ComponentProductQuery::create()->findByProductId(_{Product}_->getId()) as \$component){
           if(!in_array(\$component->getComponent()->getMaterial()->getName(),\$o)){
             array_push(\$o,\$component->getComponent()->getMaterial()->getName());
           }
@@ -78,18 +79,18 @@ class Manage_proformainvoicelines extends MY_Controller{
     foreach ($lines as $line) {
       # code...
 
-      $prod = $line->getProductPartner()->getProduct();
+      $prod = $line->getProduct();
       $o[$i]['id'] = $line->getId().'-'.$prod->getId();
-      $o[$i]['article_number'] = $line->getProductPartner()->getName();
+      $o[$i]['article_number'] = $line->getProduct()->getName();
       $o[$i]['description'] = $line->getDescription();
       $o[$i]['has_component'] = $prod->getHasComponent();
 
       if($prod->getHasComponent()){
-        foreach ($prod->getProductComponents() as $prodcomponent) {
+        foreach (ComponentProductQuery::create()->findByProductId($prod->getId()) as $prodcomponent) {
           $o[$i]['id'] = $line->getId().'-'.$prod->getId().'-'.$prodcomponent->getComponent()->getId();
-          $o[$i]['article_number'] = $line->getProductPartner()->getName();
+          $o[$i]['article_number'] = $line->getProduct()->getName();
           $o[$i]['description'] = $line->getDescription();
-          $o[$i]['has_component'] = $prodcomponent->getComponent()->getName();
+          $o[$i]['has_component'] = $prodcomponent->getComponent()->getDescription();
           $polines = PurchaseOrderLineQuery::create()
           ->filterByProformaInvoiceLineId($line->getId())
           ->filterByProductId($prod->getId())
@@ -98,7 +99,6 @@ class Manage_proformainvoicelines extends MY_Controller{
           $done = 0;
           foreach ($polines as $poline) {
             # code...
-            write_log($poline);
             $done += $poline->getQty();
           }
           $o[$i]['total_qty'] = ($line->getQty() * $prodcomponent->getQty())-$done;
