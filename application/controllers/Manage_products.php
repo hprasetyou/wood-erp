@@ -13,7 +13,11 @@ class Manage_products extends MY_Controller{
     $this->authorization->check_authorization('manage_products');
   }
   function get_json(){
-    $this->objobj = ProductQuery::create();
+    $type = "product";
+    if($this->input->get('type')){
+      $type=$this->input->get('type');
+    }
+    $this->objobj = ProductQuery::create()->filterByType($type);
     if($this->input->get('partner_id')){
       $this->objobj = $this->objobj->useProductPartnerQuery()
         ->filterByPartnerId($this->input->get('partner_id'))

@@ -2,6 +2,8 @@
 
 namespace Base;
 
+use \ComponentProduct as ChildComponentProduct;
+use \ComponentProductQuery as ChildComponentProductQuery;
 use \Finishing as ChildFinishing;
 use \FinishingQuery as ChildFinishingQuery;
 use \Material as ChildMaterial;
@@ -23,6 +25,7 @@ use \PurchaseOrderLineQuery as ChildPurchaseOrderLineQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
+use Map\ComponentProductTableMap;
 use Map\ProductComponentTableMap;
 use Map\ProductFinishingTableMap;
 use Map\ProductImageTableMap;
@@ -245,6 +248,14 @@ abstract class Product implements ActiveRecordInterface
     protected $gross_weight;
 
     /**
+     * The value for the type field.
+     *
+     * Note: this column has a database default value of: 'product'
+     * @var        string
+     */
+    protected $type;
+
+    /**
      * The value for the created_at field.
      *
      * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
@@ -264,6 +275,18 @@ abstract class Product implements ActiveRecordInterface
      * @var        ChildMaterial
      */
     protected $aMaterial;
+
+    /**
+     * @var        ObjectCollection|ChildComponentProduct[] Collection to store aggregation of ChildComponentProduct objects.
+     */
+    protected $collComponentProductsRelatedByProductId;
+    protected $collComponentProductsRelatedByProductIdPartial;
+
+    /**
+     * @var        ObjectCollection|ChildComponentProduct[] Collection to store aggregation of ChildComponentProduct objects.
+     */
+    protected $collComponentProductsRelatedByComponentId;
+    protected $collComponentProductsRelatedByComponentIdPartial;
 
     /**
      * @var        ObjectCollection|ChildProductComponent[] Collection to store aggregation of ChildProductComponent objects.
@@ -327,6 +350,18 @@ abstract class Product implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildComponentProduct[]
+     */
+    protected $componentProductsRelatedByProductIdScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildComponentProduct[]
+     */
+    protected $componentProductsRelatedByComponentIdScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildProductComponent[]
      */
     protected $productComponentsScheduledForDeletion = null;
@@ -374,6 +409,7 @@ abstract class Product implements ActiveRecordInterface
         $this->is_flegt = false;
         $this->has_component = false;
         $this->qty_per_pack = 1;
+        $this->type = 'product';
     }
 
     /**
@@ -861,6 +897,16 @@ abstract class Product implements ActiveRecordInterface
     public function getGrossWeight()
     {
         return $this->gross_weight;
+    }
+
+    /**
+     * Get the [type] column value.
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 
     /**
@@ -1380,6 +1426,26 @@ abstract class Product implements ActiveRecordInterface
     } // setGrossWeight()
 
     /**
+     * Set the value of [type] column.
+     *
+     * @param string $v new value
+     * @return $this|\Product The current object (for fluent API support)
+     */
+    public function setType($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->type !== $v) {
+            $this->type = $v;
+            $this->modifiedColumns[ProductTableMap::COL_TYPE] = true;
+        }
+
+        return $this;
+    } // setType()
+
+    /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
@@ -1446,6 +1512,10 @@ abstract class Product implements ActiveRecordInterface
             }
 
             if ($this->qty_per_pack !== 1) {
+                return false;
+            }
+
+            if ($this->type !== 'product') {
                 return false;
             }
 
@@ -1541,13 +1611,16 @@ abstract class Product implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 21 + $startcol : ProductTableMap::translateFieldName('GrossWeight', TableMap::TYPE_PHPNAME, $indexType)];
             $this->gross_weight = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 22 + $startcol : ProductTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 22 + $startcol : ProductTableMap::translateFieldName('Type', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->type = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 23 + $startcol : ProductTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 23 + $startcol : ProductTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 24 + $startcol : ProductTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -1560,7 +1633,7 @@ abstract class Product implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 24; // 24 = ProductTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 25; // 25 = ProductTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Product'), 0, $e);
@@ -1625,6 +1698,10 @@ abstract class Product implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aMaterial = null;
+            $this->collComponentProductsRelatedByProductId = null;
+
+            $this->collComponentProductsRelatedByComponentId = null;
+
             $this->collProductComponents = null;
 
             $this->collProductPartners = null;
@@ -1792,6 +1869,40 @@ abstract class Product implements ActiveRecordInterface
                 }
             }
 
+
+            if ($this->componentProductsRelatedByProductIdScheduledForDeletion !== null) {
+                if (!$this->componentProductsRelatedByProductIdScheduledForDeletion->isEmpty()) {
+                    \ComponentProductQuery::create()
+                        ->filterByPrimaryKeys($this->componentProductsRelatedByProductIdScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->componentProductsRelatedByProductIdScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collComponentProductsRelatedByProductId !== null) {
+                foreach ($this->collComponentProductsRelatedByProductId as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->componentProductsRelatedByComponentIdScheduledForDeletion !== null) {
+                if (!$this->componentProductsRelatedByComponentIdScheduledForDeletion->isEmpty()) {
+                    \ComponentProductQuery::create()
+                        ->filterByPrimaryKeys($this->componentProductsRelatedByComponentIdScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->componentProductsRelatedByComponentIdScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collComponentProductsRelatedByComponentId !== null) {
+                foreach ($this->collComponentProductsRelatedByComponentId as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
 
             if ($this->productComponentsScheduledForDeletion !== null) {
                 if (!$this->productComponentsScheduledForDeletion->isEmpty()) {
@@ -1988,6 +2099,9 @@ abstract class Product implements ActiveRecordInterface
         if ($this->isColumnModified(ProductTableMap::COL_GROSS_WEIGHT)) {
             $modifiedColumns[':p' . $index++]  = 'gross_weight';
         }
+        if ($this->isColumnModified(ProductTableMap::COL_TYPE)) {
+            $modifiedColumns[':p' . $index++]  = 'type';
+        }
         if ($this->isColumnModified(ProductTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
@@ -2070,6 +2184,9 @@ abstract class Product implements ActiveRecordInterface
                         break;
                     case 'gross_weight':
                         $stmt->bindValue($identifier, $this->gross_weight, PDO::PARAM_STR);
+                        break;
+                    case 'type':
+                        $stmt->bindValue($identifier, $this->type, PDO::PARAM_STR);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -2206,9 +2323,12 @@ abstract class Product implements ActiveRecordInterface
                 return $this->getGrossWeight();
                 break;
             case 22:
-                return $this->getCreatedAt();
+                return $this->getType();
                 break;
             case 23:
+                return $this->getCreatedAt();
+                break;
+            case 24:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -2263,15 +2383,16 @@ abstract class Product implements ActiveRecordInterface
             $keys[19] => $this->getNetCubic(),
             $keys[20] => $this->getNetWeight(),
             $keys[21] => $this->getGrossWeight(),
-            $keys[22] => $this->getCreatedAt(),
-            $keys[23] => $this->getUpdatedAt(),
+            $keys[22] => $this->getType(),
+            $keys[23] => $this->getCreatedAt(),
+            $keys[24] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[22]] instanceof \DateTimeInterface) {
-            $result[$keys[22]] = $result[$keys[22]]->format('c');
-        }
-
         if ($result[$keys[23]] instanceof \DateTimeInterface) {
             $result[$keys[23]] = $result[$keys[23]]->format('c');
+        }
+
+        if ($result[$keys[24]] instanceof \DateTimeInterface) {
+            $result[$keys[24]] = $result[$keys[24]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -2294,6 +2415,36 @@ abstract class Product implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aMaterial->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collComponentProductsRelatedByProductId) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'componentProducts';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'component_products';
+                        break;
+                    default:
+                        $key = 'ComponentProducts';
+                }
+
+                $result[$key] = $this->collComponentProductsRelatedByProductId->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collComponentProductsRelatedByComponentId) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'componentProducts';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'component_products';
+                        break;
+                    default:
+                        $key = 'ComponentProducts';
+                }
+
+                $result[$key] = $this->collComponentProductsRelatedByComponentId->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collProductComponents) {
 
@@ -2486,9 +2637,12 @@ abstract class Product implements ActiveRecordInterface
                 $this->setGrossWeight($value);
                 break;
             case 22:
-                $this->setCreatedAt($value);
+                $this->setType($value);
                 break;
             case 23:
+                $this->setCreatedAt($value);
+                break;
+            case 24:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -2584,10 +2738,13 @@ abstract class Product implements ActiveRecordInterface
             $this->setGrossWeight($arr[$keys[21]]);
         }
         if (array_key_exists($keys[22], $arr)) {
-            $this->setCreatedAt($arr[$keys[22]]);
+            $this->setType($arr[$keys[22]]);
         }
         if (array_key_exists($keys[23], $arr)) {
-            $this->setUpdatedAt($arr[$keys[23]]);
+            $this->setCreatedAt($arr[$keys[23]]);
+        }
+        if (array_key_exists($keys[24], $arr)) {
+            $this->setUpdatedAt($arr[$keys[24]]);
         }
     }
 
@@ -2695,6 +2852,9 @@ abstract class Product implements ActiveRecordInterface
         }
         if ($this->isColumnModified(ProductTableMap::COL_GROSS_WEIGHT)) {
             $criteria->add(ProductTableMap::COL_GROSS_WEIGHT, $this->gross_weight);
+        }
+        if ($this->isColumnModified(ProductTableMap::COL_TYPE)) {
+            $criteria->add(ProductTableMap::COL_TYPE, $this->type);
         }
         if ($this->isColumnModified(ProductTableMap::COL_CREATED_AT)) {
             $criteria->add(ProductTableMap::COL_CREATED_AT, $this->created_at);
@@ -2809,6 +2969,7 @@ abstract class Product implements ActiveRecordInterface
         $copyObj->setNetCubic($this->getNetCubic());
         $copyObj->setNetWeight($this->getNetWeight());
         $copyObj->setGrossWeight($this->getGrossWeight());
+        $copyObj->setType($this->getType());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
 
@@ -2816,6 +2977,18 @@ abstract class Product implements ActiveRecordInterface
             // important: temporarily setNew(false) because this affects the behavior of
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
+
+            foreach ($this->getComponentProductsRelatedByProductId() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addComponentProductRelatedByProductId($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getComponentProductsRelatedByComponentId() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addComponentProductRelatedByComponentId($relObj->copy($deepCopy));
+                }
+            }
 
             foreach ($this->getProductComponents() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -2945,6 +3118,14 @@ abstract class Product implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
+        if ('ComponentProductRelatedByProductId' == $relationName) {
+            $this->initComponentProductsRelatedByProductId();
+            return;
+        }
+        if ('ComponentProductRelatedByComponentId' == $relationName) {
+            $this->initComponentProductsRelatedByComponentId();
+            return;
+        }
         if ('ProductComponent' == $relationName) {
             $this->initProductComponents();
             return;
@@ -2969,6 +3150,456 @@ abstract class Product implements ActiveRecordInterface
             $this->initPurchaseOrderLines();
             return;
         }
+    }
+
+    /**
+     * Clears out the collComponentProductsRelatedByProductId collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addComponentProductsRelatedByProductId()
+     */
+    public function clearComponentProductsRelatedByProductId()
+    {
+        $this->collComponentProductsRelatedByProductId = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collComponentProductsRelatedByProductId collection loaded partially.
+     */
+    public function resetPartialComponentProductsRelatedByProductId($v = true)
+    {
+        $this->collComponentProductsRelatedByProductIdPartial = $v;
+    }
+
+    /**
+     * Initializes the collComponentProductsRelatedByProductId collection.
+     *
+     * By default this just sets the collComponentProductsRelatedByProductId collection to an empty array (like clearcollComponentProductsRelatedByProductId());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initComponentProductsRelatedByProductId($overrideExisting = true)
+    {
+        if (null !== $this->collComponentProductsRelatedByProductId && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = ComponentProductTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collComponentProductsRelatedByProductId = new $collectionClassName;
+        $this->collComponentProductsRelatedByProductId->setModel('\ComponentProduct');
+    }
+
+    /**
+     * Gets an array of ChildComponentProduct objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildProduct is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildComponentProduct[] List of ChildComponentProduct objects
+     * @throws PropelException
+     */
+    public function getComponentProductsRelatedByProductId(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collComponentProductsRelatedByProductIdPartial && !$this->isNew();
+        if (null === $this->collComponentProductsRelatedByProductId || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collComponentProductsRelatedByProductId) {
+                // return empty collection
+                $this->initComponentProductsRelatedByProductId();
+            } else {
+                $collComponentProductsRelatedByProductId = ChildComponentProductQuery::create(null, $criteria)
+                    ->filterByProduct($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collComponentProductsRelatedByProductIdPartial && count($collComponentProductsRelatedByProductId)) {
+                        $this->initComponentProductsRelatedByProductId(false);
+
+                        foreach ($collComponentProductsRelatedByProductId as $obj) {
+                            if (false == $this->collComponentProductsRelatedByProductId->contains($obj)) {
+                                $this->collComponentProductsRelatedByProductId->append($obj);
+                            }
+                        }
+
+                        $this->collComponentProductsRelatedByProductIdPartial = true;
+                    }
+
+                    return $collComponentProductsRelatedByProductId;
+                }
+
+                if ($partial && $this->collComponentProductsRelatedByProductId) {
+                    foreach ($this->collComponentProductsRelatedByProductId as $obj) {
+                        if ($obj->isNew()) {
+                            $collComponentProductsRelatedByProductId[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collComponentProductsRelatedByProductId = $collComponentProductsRelatedByProductId;
+                $this->collComponentProductsRelatedByProductIdPartial = false;
+            }
+        }
+
+        return $this->collComponentProductsRelatedByProductId;
+    }
+
+    /**
+     * Sets a collection of ChildComponentProduct objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $componentProductsRelatedByProductId A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildProduct The current object (for fluent API support)
+     */
+    public function setComponentProductsRelatedByProductId(Collection $componentProductsRelatedByProductId, ConnectionInterface $con = null)
+    {
+        /** @var ChildComponentProduct[] $componentProductsRelatedByProductIdToDelete */
+        $componentProductsRelatedByProductIdToDelete = $this->getComponentProductsRelatedByProductId(new Criteria(), $con)->diff($componentProductsRelatedByProductId);
+
+
+        $this->componentProductsRelatedByProductIdScheduledForDeletion = $componentProductsRelatedByProductIdToDelete;
+
+        foreach ($componentProductsRelatedByProductIdToDelete as $componentProductRelatedByProductIdRemoved) {
+            $componentProductRelatedByProductIdRemoved->setProduct(null);
+        }
+
+        $this->collComponentProductsRelatedByProductId = null;
+        foreach ($componentProductsRelatedByProductId as $componentProductRelatedByProductId) {
+            $this->addComponentProductRelatedByProductId($componentProductRelatedByProductId);
+        }
+
+        $this->collComponentProductsRelatedByProductId = $componentProductsRelatedByProductId;
+        $this->collComponentProductsRelatedByProductIdPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related ComponentProduct objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related ComponentProduct objects.
+     * @throws PropelException
+     */
+    public function countComponentProductsRelatedByProductId(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collComponentProductsRelatedByProductIdPartial && !$this->isNew();
+        if (null === $this->collComponentProductsRelatedByProductId || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collComponentProductsRelatedByProductId) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getComponentProductsRelatedByProductId());
+            }
+
+            $query = ChildComponentProductQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByProduct($this)
+                ->count($con);
+        }
+
+        return count($this->collComponentProductsRelatedByProductId);
+    }
+
+    /**
+     * Method called to associate a ChildComponentProduct object to this object
+     * through the ChildComponentProduct foreign key attribute.
+     *
+     * @param  ChildComponentProduct $l ChildComponentProduct
+     * @return $this|\Product The current object (for fluent API support)
+     */
+    public function addComponentProductRelatedByProductId(ChildComponentProduct $l)
+    {
+        if ($this->collComponentProductsRelatedByProductId === null) {
+            $this->initComponentProductsRelatedByProductId();
+            $this->collComponentProductsRelatedByProductIdPartial = true;
+        }
+
+        if (!$this->collComponentProductsRelatedByProductId->contains($l)) {
+            $this->doAddComponentProductRelatedByProductId($l);
+
+            if ($this->componentProductsRelatedByProductIdScheduledForDeletion and $this->componentProductsRelatedByProductIdScheduledForDeletion->contains($l)) {
+                $this->componentProductsRelatedByProductIdScheduledForDeletion->remove($this->componentProductsRelatedByProductIdScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildComponentProduct $componentProductRelatedByProductId The ChildComponentProduct object to add.
+     */
+    protected function doAddComponentProductRelatedByProductId(ChildComponentProduct $componentProductRelatedByProductId)
+    {
+        $this->collComponentProductsRelatedByProductId[]= $componentProductRelatedByProductId;
+        $componentProductRelatedByProductId->setProduct($this);
+    }
+
+    /**
+     * @param  ChildComponentProduct $componentProductRelatedByProductId The ChildComponentProduct object to remove.
+     * @return $this|ChildProduct The current object (for fluent API support)
+     */
+    public function removeComponentProductRelatedByProductId(ChildComponentProduct $componentProductRelatedByProductId)
+    {
+        if ($this->getComponentProductsRelatedByProductId()->contains($componentProductRelatedByProductId)) {
+            $pos = $this->collComponentProductsRelatedByProductId->search($componentProductRelatedByProductId);
+            $this->collComponentProductsRelatedByProductId->remove($pos);
+            if (null === $this->componentProductsRelatedByProductIdScheduledForDeletion) {
+                $this->componentProductsRelatedByProductIdScheduledForDeletion = clone $this->collComponentProductsRelatedByProductId;
+                $this->componentProductsRelatedByProductIdScheduledForDeletion->clear();
+            }
+            $this->componentProductsRelatedByProductIdScheduledForDeletion[]= clone $componentProductRelatedByProductId;
+            $componentProductRelatedByProductId->setProduct(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collComponentProductsRelatedByComponentId collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addComponentProductsRelatedByComponentId()
+     */
+    public function clearComponentProductsRelatedByComponentId()
+    {
+        $this->collComponentProductsRelatedByComponentId = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collComponentProductsRelatedByComponentId collection loaded partially.
+     */
+    public function resetPartialComponentProductsRelatedByComponentId($v = true)
+    {
+        $this->collComponentProductsRelatedByComponentIdPartial = $v;
+    }
+
+    /**
+     * Initializes the collComponentProductsRelatedByComponentId collection.
+     *
+     * By default this just sets the collComponentProductsRelatedByComponentId collection to an empty array (like clearcollComponentProductsRelatedByComponentId());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initComponentProductsRelatedByComponentId($overrideExisting = true)
+    {
+        if (null !== $this->collComponentProductsRelatedByComponentId && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = ComponentProductTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collComponentProductsRelatedByComponentId = new $collectionClassName;
+        $this->collComponentProductsRelatedByComponentId->setModel('\ComponentProduct');
+    }
+
+    /**
+     * Gets an array of ChildComponentProduct objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildProduct is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildComponentProduct[] List of ChildComponentProduct objects
+     * @throws PropelException
+     */
+    public function getComponentProductsRelatedByComponentId(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collComponentProductsRelatedByComponentIdPartial && !$this->isNew();
+        if (null === $this->collComponentProductsRelatedByComponentId || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collComponentProductsRelatedByComponentId) {
+                // return empty collection
+                $this->initComponentProductsRelatedByComponentId();
+            } else {
+                $collComponentProductsRelatedByComponentId = ChildComponentProductQuery::create(null, $criteria)
+                    ->filterByComponent($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collComponentProductsRelatedByComponentIdPartial && count($collComponentProductsRelatedByComponentId)) {
+                        $this->initComponentProductsRelatedByComponentId(false);
+
+                        foreach ($collComponentProductsRelatedByComponentId as $obj) {
+                            if (false == $this->collComponentProductsRelatedByComponentId->contains($obj)) {
+                                $this->collComponentProductsRelatedByComponentId->append($obj);
+                            }
+                        }
+
+                        $this->collComponentProductsRelatedByComponentIdPartial = true;
+                    }
+
+                    return $collComponentProductsRelatedByComponentId;
+                }
+
+                if ($partial && $this->collComponentProductsRelatedByComponentId) {
+                    foreach ($this->collComponentProductsRelatedByComponentId as $obj) {
+                        if ($obj->isNew()) {
+                            $collComponentProductsRelatedByComponentId[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collComponentProductsRelatedByComponentId = $collComponentProductsRelatedByComponentId;
+                $this->collComponentProductsRelatedByComponentIdPartial = false;
+            }
+        }
+
+        return $this->collComponentProductsRelatedByComponentId;
+    }
+
+    /**
+     * Sets a collection of ChildComponentProduct objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $componentProductsRelatedByComponentId A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildProduct The current object (for fluent API support)
+     */
+    public function setComponentProductsRelatedByComponentId(Collection $componentProductsRelatedByComponentId, ConnectionInterface $con = null)
+    {
+        /** @var ChildComponentProduct[] $componentProductsRelatedByComponentIdToDelete */
+        $componentProductsRelatedByComponentIdToDelete = $this->getComponentProductsRelatedByComponentId(new Criteria(), $con)->diff($componentProductsRelatedByComponentId);
+
+
+        $this->componentProductsRelatedByComponentIdScheduledForDeletion = $componentProductsRelatedByComponentIdToDelete;
+
+        foreach ($componentProductsRelatedByComponentIdToDelete as $componentProductRelatedByComponentIdRemoved) {
+            $componentProductRelatedByComponentIdRemoved->setComponent(null);
+        }
+
+        $this->collComponentProductsRelatedByComponentId = null;
+        foreach ($componentProductsRelatedByComponentId as $componentProductRelatedByComponentId) {
+            $this->addComponentProductRelatedByComponentId($componentProductRelatedByComponentId);
+        }
+
+        $this->collComponentProductsRelatedByComponentId = $componentProductsRelatedByComponentId;
+        $this->collComponentProductsRelatedByComponentIdPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related ComponentProduct objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related ComponentProduct objects.
+     * @throws PropelException
+     */
+    public function countComponentProductsRelatedByComponentId(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collComponentProductsRelatedByComponentIdPartial && !$this->isNew();
+        if (null === $this->collComponentProductsRelatedByComponentId || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collComponentProductsRelatedByComponentId) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getComponentProductsRelatedByComponentId());
+            }
+
+            $query = ChildComponentProductQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByComponent($this)
+                ->count($con);
+        }
+
+        return count($this->collComponentProductsRelatedByComponentId);
+    }
+
+    /**
+     * Method called to associate a ChildComponentProduct object to this object
+     * through the ChildComponentProduct foreign key attribute.
+     *
+     * @param  ChildComponentProduct $l ChildComponentProduct
+     * @return $this|\Product The current object (for fluent API support)
+     */
+    public function addComponentProductRelatedByComponentId(ChildComponentProduct $l)
+    {
+        if ($this->collComponentProductsRelatedByComponentId === null) {
+            $this->initComponentProductsRelatedByComponentId();
+            $this->collComponentProductsRelatedByComponentIdPartial = true;
+        }
+
+        if (!$this->collComponentProductsRelatedByComponentId->contains($l)) {
+            $this->doAddComponentProductRelatedByComponentId($l);
+
+            if ($this->componentProductsRelatedByComponentIdScheduledForDeletion and $this->componentProductsRelatedByComponentIdScheduledForDeletion->contains($l)) {
+                $this->componentProductsRelatedByComponentIdScheduledForDeletion->remove($this->componentProductsRelatedByComponentIdScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildComponentProduct $componentProductRelatedByComponentId The ChildComponentProduct object to add.
+     */
+    protected function doAddComponentProductRelatedByComponentId(ChildComponentProduct $componentProductRelatedByComponentId)
+    {
+        $this->collComponentProductsRelatedByComponentId[]= $componentProductRelatedByComponentId;
+        $componentProductRelatedByComponentId->setComponent($this);
+    }
+
+    /**
+     * @param  ChildComponentProduct $componentProductRelatedByComponentId The ChildComponentProduct object to remove.
+     * @return $this|ChildProduct The current object (for fluent API support)
+     */
+    public function removeComponentProductRelatedByComponentId(ChildComponentProduct $componentProductRelatedByComponentId)
+    {
+        if ($this->getComponentProductsRelatedByComponentId()->contains($componentProductRelatedByComponentId)) {
+            $pos = $this->collComponentProductsRelatedByComponentId->search($componentProductRelatedByComponentId);
+            $this->collComponentProductsRelatedByComponentId->remove($pos);
+            if (null === $this->componentProductsRelatedByComponentIdScheduledForDeletion) {
+                $this->componentProductsRelatedByComponentIdScheduledForDeletion = clone $this->collComponentProductsRelatedByComponentId;
+                $this->componentProductsRelatedByComponentIdScheduledForDeletion->clear();
+            }
+            $this->componentProductsRelatedByComponentIdScheduledForDeletion[]= clone $componentProductRelatedByComponentId;
+            $componentProductRelatedByComponentId->setComponent(null);
+        }
+
+        return $this;
     }
 
     /**
@@ -4774,6 +5405,7 @@ abstract class Product implements ActiveRecordInterface
         $this->net_cubic = null;
         $this->net_weight = null;
         $this->gross_weight = null;
+        $this->type = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;
@@ -4795,6 +5427,16 @@ abstract class Product implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collComponentProductsRelatedByProductId) {
+                foreach ($this->collComponentProductsRelatedByProductId as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collComponentProductsRelatedByComponentId) {
+                foreach ($this->collComponentProductsRelatedByComponentId as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collProductComponents) {
                 foreach ($this->collProductComponents as $o) {
                     $o->clearAllReferences($deep);
@@ -4832,6 +5474,8 @@ abstract class Product implements ActiveRecordInterface
             }
         } // if ($deep)
 
+        $this->collComponentProductsRelatedByProductId = null;
+        $this->collComponentProductsRelatedByComponentId = null;
         $this->collProductComponents = null;
         $this->collProductPartners = null;
         $this->collProductFinishings = null;
