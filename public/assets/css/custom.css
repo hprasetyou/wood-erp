@@ -40,3 +40,8 @@ input::-webkit-inner-spin-button {
 .btn-row-action{
   display: none;
 }
+
+tr.group{
+  background-color: #e6ffe6 !important;
+  font-weight: 510;
+}
