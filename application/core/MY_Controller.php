@@ -222,4 +222,21 @@ class MY_Controller extends CI_Controller{
    return $objs;
  }
 
+
+   function set_confirm($id){
+     $qobj = $this->objname."Query";
+     $data = $qobj::create()
+     ->filterByState('draft')
+     ->filterById($id)
+     ->findOne();
+     write_log($data);
+     if($data){
+       $data->setState('confirm')
+       ->save();
+       echo $data->toJSON();
+     }else{
+       echo json_encode(array('error','data not found'));
+     }
+   }
+
 }

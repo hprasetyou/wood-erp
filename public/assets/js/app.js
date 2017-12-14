@@ -23,7 +23,18 @@ $(document).ready(function(){
         $(this).css('cursor','pointer')
       }
     })
-
+    $('#confirmChangeState').click(function(e){
+      e.preventDefault()
+      $.ajax({
+        url: window.location.href.replace('detail','set_confirm'),
+        method:'POST',
+        dataType:'JSON'
+      }).done(function(o){
+        if(!o.error){
+          location.reload();
+        }
+      })
+    })
 })
 jQuery.fn
 jQuery.fn.loadTableData = function(

@@ -130,16 +130,7 @@ $(document).ready(function(){
     $('.lineCurr').text($("#CurrencyId option:selected").text().split(' - ')[1]);
   })
   $('.lineCurr').text($("#CurrencyId option:selected").text().split(' - ')[1]);
-  $('#confirmChangeState').click(function(e){
-    e.preventDefault()
-    $.ajax({
-      url:'/index.php/manage_proformainvoices/set_confirm/{{proformainvoices.Id}}',
-      method:'POST',
-      dataType:'JSON'
-    }).done(function(){
-      location.reload();
-    })
-  })
+
   $('#ModalAddProformaInvoiceLine').on('hidden.bs.modal', function () {
     $('#ModalAddProformaInvoiceLine').find('input').val('')
     $('#ModalAddProformaInvoiceLine').find('input').prop('checked',false);
