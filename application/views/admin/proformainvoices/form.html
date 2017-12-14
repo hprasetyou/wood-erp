@@ -61,7 +61,7 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.currency}}</label>
               <div class="col-md-6 col-sm-6 col-xs-12">
                 <div {% if proformainvoices %}style="display:none" {% endif %} class="input-wrap">
-                  {{selection_m2o('CurrencyId','Currency',null,proformainvoices.CurrencyId)| raw}}
+                  {{selection_m2o('CurrencyId','Currency',null,proformainvoices.CurrencyId,'CurrencyId','Name-Symbol')| raw}}
                 </div>
                 {% if proformainvoices %}
                 <p data-fieldname="Date" class="control-value">{{ proformainvoices.Currency.Name }}</p>
@@ -124,7 +124,12 @@ function refresh_line(){
       $('#table_ProformaInvoiceLine').find('.btn-edit').show()
   })
 }
+
 $(document).ready(function(){
+  $("#CurrencyId").change(function(e){
+    $('.lineCurr').text($("#CurrencyId option:selected").text().split(' - ')[1]);
+  })
+  $('.lineCurr').text($("#CurrencyId option:selected").text().split(' - ')[1]);
   $('#confirmChangeState').click(function(e){
     e.preventDefault()
     $.ajax({

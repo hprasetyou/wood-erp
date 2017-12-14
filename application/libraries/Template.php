@@ -35,16 +35,29 @@ class Template {
   }
 
   function apply_func(){
-    $function = new Twig_Function('selection_m2o', function ($name,$model,$domain=null,$val,$id = null) {
+    $function = new Twig_Function('selection_m2o', function ($name,$model,$domain=null,$val,$id = null,$text=null) {
       if(!$id){
         $id=$name;
+      }
+      if($text){
+        $text = explode('-',$text);
+      }else{
+        $text = ['Name'];
       }
       $objs = "{$model}Query";
       $data = $objs::create()->find();
       $o = "<select name=\"$name\" id=\"$id\" class=\"form-control form-select\">";
       foreach ($data as $key => $value) {
         $id = $value->getId();
-        $name = $value->getName();
+        $name = "";
+        foreach ($text as $kt=>$t) {
+          # code...
+          $f = "get$t";
+          if($kt > 0){
+            $name .= " - ";
+          }
+          $name .= $value->$f();
+        }
         $selected = "";
         if($val == $id){
           $selected = "selected=\"selected\"";
