@@ -17,6 +17,9 @@ class Manage_components extends MY_Controller{
     ->join('Material')
     ->withColumn('Material.Name');
     $this->custom_column = array('material'=>'_{MaterialName}_');
+    $this->custom_column['type'] = "function() use(_{Type}_){
+      return string(_{Type}_);
+    }";
     if($this->input->get('avail_component')){
       $avcmp = explode(",",$this->input->get('avail_component'));
       $this->objobj = $this->objobj->filterById($avcmp);
@@ -25,8 +28,12 @@ class Manage_components extends MY_Controller{
   }
 
   function create(){
+    $this->load->helper('good_numbering');
 
-		$this->template->render('admin/components/form',array());
+		$this->template->render('admin/components/form',array('new_number'=>create_number(
+        array('format'=>'CMP-i',
+        'tb_name'=>'product',
+        'tb_field'=>'name'))));
   }
 
   function detail($id){
