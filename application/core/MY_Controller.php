@@ -200,7 +200,9 @@ class MY_Controller extends CI_Controller{
        if($type == 'BOOLEAN'){
          $obj->$func($value?true:false);
        }else{
-         $obj->$func($value);
+         if($value){
+           $obj->$func($value);
+         }
        }
      }
 

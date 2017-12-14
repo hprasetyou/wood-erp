@@ -5,23 +5,8 @@ class Manage_packinglists extends MY_Controller{
 
   function __construct(){
     parent::__construct();
-		$this->objname = 'PackingList';
+		$this->set_objname('PackingList');
 		$this->tpl = 'packinglists';
-    $this->form = array(
-     'Name' => 'Name',
-     'Date' => 'Date',
-     'LoadingDate' => 'LoadingDate',
-     'CustomerId' => 'CustomerId',
-     'OceanVessel' => 'OceanVessel',
-     'SrcLoc' => 'SrcLoc',
-     'BlNo' => 'BlNo',
-     'GoodsDescription' => 'GoodsDescription',
-     'CntrNo' => 'CntrNo',
-     'SealNo' => 'SealNo',
-     'Pod' => 'Pod',
-     'EtdSrg' => 'EtdSrg',
-     'RefDoc' => 'RefDoc'
-    );
     $this->authorization->check_authorization('manage_packinglists');
   }
 
@@ -40,6 +25,8 @@ class Manage_packinglists extends MY_Controller{
   }
 
   function get_json(){
+    $this->objobj = PackingListQuery::create()
+    ->filterByState('delete', '!=');
     $this->custom_column = array(
       'total_cubic_dimension' =>"function() use(_{PackingListLines}_){
         \$tot = 0;
@@ -67,8 +54,10 @@ class Manage_packinglists extends MY_Controller{
 	}
 
   function delete($id){
-		$data = parent::delete($id);
-		redirect('manage_packinglists');
+    PackingListQuery::create()->findPk($id)
+    ->setState('delete')
+    ->save();
+    redirect('manage_packinglists');
   }
 
 }

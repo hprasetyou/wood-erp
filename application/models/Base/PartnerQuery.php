@@ -23,7 +23,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildPartnerQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method     ChildPartnerQuery orderByEmail($order = Criteria::ASC) Order by the email column
- * @method     ChildPartnerQuery orderByAddress($order = Criteria::ASC) Order by the address column
  * @method     ChildPartnerQuery orderByPhone($order = Criteria::ASC) Order by the phone column
  * @method     ChildPartnerQuery orderByWebsite($order = Criteria::ASC) Order by the website column
  * @method     ChildPartnerQuery orderByFax($order = Criteria::ASC) Order by the fax column
@@ -39,7 +38,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery groupById() Group by the id column
  * @method     ChildPartnerQuery groupByName() Group by the name column
  * @method     ChildPartnerQuery groupByEmail() Group by the email column
- * @method     ChildPartnerQuery groupByAddress() Group by the address column
  * @method     ChildPartnerQuery groupByPhone() Group by the phone column
  * @method     ChildPartnerQuery groupByWebsite() Group by the website column
  * @method     ChildPartnerQuery groupByFax() Group by the fax column
@@ -168,7 +166,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner findOneById(int $id) Return the first ChildPartner filtered by the id column
  * @method     ChildPartner findOneByName(string $name) Return the first ChildPartner filtered by the name column
  * @method     ChildPartner findOneByEmail(string $email) Return the first ChildPartner filtered by the email column
- * @method     ChildPartner findOneByAddress(string $address) Return the first ChildPartner filtered by the address column
  * @method     ChildPartner findOneByPhone(string $phone) Return the first ChildPartner filtered by the phone column
  * @method     ChildPartner findOneByWebsite(string $website) Return the first ChildPartner filtered by the website column
  * @method     ChildPartner findOneByFax(string $fax) Return the first ChildPartner filtered by the fax column
@@ -187,7 +184,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner requireOneById(int $id) Return the first ChildPartner filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByName(string $name) Return the first ChildPartner filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByEmail(string $email) Return the first ChildPartner filtered by the email column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPartner requireOneByAddress(string $address) Return the first ChildPartner filtered by the address column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByPhone(string $phone) Return the first ChildPartner filtered by the phone column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByWebsite(string $website) Return the first ChildPartner filtered by the website column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByFax(string $fax) Return the first ChildPartner filtered by the fax column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -204,7 +200,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner[]|ObjectCollection findById(int $id) Return ChildPartner objects filtered by the id column
  * @method     ChildPartner[]|ObjectCollection findByName(string $name) Return ChildPartner objects filtered by the name column
  * @method     ChildPartner[]|ObjectCollection findByEmail(string $email) Return ChildPartner objects filtered by the email column
- * @method     ChildPartner[]|ObjectCollection findByAddress(string $address) Return ChildPartner objects filtered by the address column
  * @method     ChildPartner[]|ObjectCollection findByPhone(string $phone) Return ChildPartner objects filtered by the phone column
  * @method     ChildPartner[]|ObjectCollection findByWebsite(string $website) Return ChildPartner objects filtered by the website column
  * @method     ChildPartner[]|ObjectCollection findByFax(string $fax) Return ChildPartner objects filtered by the fax column
@@ -314,7 +309,7 @@ abstract class PartnerQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, email, address, phone, website, fax, image, tax_number, role, company_id, supplier_type_id, class_key, created_at, updated_at FROM partner WHERE id = :p0';
+        $sql = 'SELECT id, name, email, phone, website, fax, image, tax_number, role, company_id, supplier_type_id, class_key, created_at, updated_at FROM partner WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -494,31 +489,6 @@ abstract class PartnerQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PartnerTableMap::COL_EMAIL, $email, $comparison);
-    }
-
-    /**
-     * Filter the query on the address column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByAddress('fooValue');   // WHERE address = 'fooValue'
-     * $query->filterByAddress('%fooValue%', Criteria::LIKE); // WHERE address LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $address The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildPartnerQuery The current query, for fluid interface
-     */
-    public function filterByAddress($address = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($address)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(PartnerTableMap::COL_ADDRESS, $address, $comparison);
     }
 
     /**

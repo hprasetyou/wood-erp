@@ -194,6 +194,21 @@ jQuery.fn.loadTableData = function(
     dtconf.initComplete = conf.complete
     dtconf.fnRowCallback = conf.rowCallback
     dtconf.drawCallback = conf.drawCallback
+    dtconf.createdRow = function(row, data, index){
+      switch (data.state) {
+        case 'draft':
+          $(row).addClass('draftline')
+          break;
+        case 'confirm':
+          $(row).addClass('confline')
+          break;
+        case 'done':
+          $(row).addClass('doneline')
+          break;
+        default:
+
+      }
+    }
   }
   tt.DataTable(dtconf);
 }

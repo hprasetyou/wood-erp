@@ -45,3 +45,12 @@ tr.group{
   background-color: #e6ffe6 !important;
   font-weight: 510;
 }
+
+tr.draftline{
+  color: #777;
+  font-weight: 500;
+}
+tr.confline{
+  color: #0066ff;
+  font-weight: 500;
+}

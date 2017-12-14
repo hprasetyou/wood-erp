@@ -108,13 +108,6 @@ abstract class Partner implements ActiveRecordInterface
     protected $email;
 
     /**
-     * The value for the address field.
-     *
-     * @var        string
-     */
-    protected $address;
-
-    /**
      * The value for the phone field.
      *
      * @var        string
@@ -575,16 +568,6 @@ abstract class Partner implements ActiveRecordInterface
     }
 
     /**
-     * Get the [address] column value.
-     *
-     * @return string
-     */
-    public function getAddress()
-    {
-        return $this->address;
-    }
-
-    /**
      * Get the [phone] column value.
      *
      * @return string
@@ -773,26 +756,6 @@ abstract class Partner implements ActiveRecordInterface
 
         return $this;
     } // setEmail()
-
-    /**
-     * Set the value of [address] column.
-     *
-     * @param string $v new value
-     * @return $this|\Partner The current object (for fluent API support)
-     */
-    public function setAddress($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->address !== $v) {
-            $this->address = $v;
-            $this->modifiedColumns[PartnerTableMap::COL_ADDRESS] = true;
-        }
-
-        return $this;
-    } // setAddress()
 
     /**
      * Set the value of [phone] column.
@@ -1067,43 +1030,40 @@ abstract class Partner implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : PartnerTableMap::translateFieldName('Email', TableMap::TYPE_PHPNAME, $indexType)];
             $this->email = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : PartnerTableMap::translateFieldName('Address', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->address = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : PartnerTableMap::translateFieldName('Phone', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : PartnerTableMap::translateFieldName('Phone', TableMap::TYPE_PHPNAME, $indexType)];
             $this->phone = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : PartnerTableMap::translateFieldName('Website', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : PartnerTableMap::translateFieldName('Website', TableMap::TYPE_PHPNAME, $indexType)];
             $this->website = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PartnerTableMap::translateFieldName('Fax', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : PartnerTableMap::translateFieldName('Fax', TableMap::TYPE_PHPNAME, $indexType)];
             $this->fax = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PartnerTableMap::translateFieldName('Image', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PartnerTableMap::translateFieldName('Image', TableMap::TYPE_PHPNAME, $indexType)];
             $this->image = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PartnerTableMap::translateFieldName('TaxNumber', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PartnerTableMap::translateFieldName('TaxNumber', TableMap::TYPE_PHPNAME, $indexType)];
             $this->tax_number = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PartnerTableMap::translateFieldName('Role', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PartnerTableMap::translateFieldName('Role', TableMap::TYPE_PHPNAME, $indexType)];
             $this->role = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PartnerTableMap::translateFieldName('CompanyId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PartnerTableMap::translateFieldName('CompanyId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->company_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : PartnerTableMap::translateFieldName('SupplierTypeId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PartnerTableMap::translateFieldName('SupplierTypeId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->supplier_type_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : PartnerTableMap::translateFieldName('ClassKey', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : PartnerTableMap::translateFieldName('ClassKey', TableMap::TYPE_PHPNAME, $indexType)];
             $this->class_key = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : PartnerTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : PartnerTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : PartnerTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : PartnerTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -1116,7 +1076,7 @@ abstract class Partner implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 15; // 15 = PartnerTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 14; // 14 = PartnerTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Partner'), 0, $e);
@@ -1507,9 +1467,6 @@ abstract class Partner implements ActiveRecordInterface
         if ($this->isColumnModified(PartnerTableMap::COL_EMAIL)) {
             $modifiedColumns[':p' . $index++]  = 'email';
         }
-        if ($this->isColumnModified(PartnerTableMap::COL_ADDRESS)) {
-            $modifiedColumns[':p' . $index++]  = 'address';
-        }
         if ($this->isColumnModified(PartnerTableMap::COL_PHONE)) {
             $modifiedColumns[':p' . $index++]  = 'phone';
         }
@@ -1562,9 +1519,6 @@ abstract class Partner implements ActiveRecordInterface
                         break;
                     case 'email':
                         $stmt->bindValue($identifier, $this->email, PDO::PARAM_STR);
-                        break;
-                    case 'address':
-                        $stmt->bindValue($identifier, $this->address, PDO::PARAM_STR);
                         break;
                     case 'phone':
                         $stmt->bindValue($identifier, $this->phone, PDO::PARAM_STR);
@@ -1671,39 +1625,36 @@ abstract class Partner implements ActiveRecordInterface
                 return $this->getEmail();
                 break;
             case 3:
-                return $this->getAddress();
-                break;
-            case 4:
                 return $this->getPhone();
                 break;
-            case 5:
+            case 4:
                 return $this->getWebsite();
                 break;
-            case 6:
+            case 5:
                 return $this->getFax();
                 break;
-            case 7:
+            case 6:
                 return $this->getImage();
                 break;
-            case 8:
+            case 7:
                 return $this->getTaxNumber();
                 break;
-            case 9:
+            case 8:
                 return $this->getRole();
                 break;
-            case 10:
+            case 9:
                 return $this->getCompanyId();
                 break;
-            case 11:
+            case 10:
                 return $this->getSupplierTypeId();
                 break;
-            case 12:
+            case 11:
                 return $this->getClassKey();
                 break;
-            case 13:
+            case 12:
                 return $this->getCreatedAt();
                 break;
-            case 14:
+            case 13:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1739,25 +1690,24 @@ abstract class Partner implements ActiveRecordInterface
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
             $keys[2] => $this->getEmail(),
-            $keys[3] => $this->getAddress(),
-            $keys[4] => $this->getPhone(),
-            $keys[5] => $this->getWebsite(),
-            $keys[6] => $this->getFax(),
-            $keys[7] => $this->getImage(),
-            $keys[8] => $this->getTaxNumber(),
-            $keys[9] => $this->getRole(),
-            $keys[10] => $this->getCompanyId(),
-            $keys[11] => $this->getSupplierTypeId(),
-            $keys[12] => $this->getClassKey(),
-            $keys[13] => $this->getCreatedAt(),
-            $keys[14] => $this->getUpdatedAt(),
+            $keys[3] => $this->getPhone(),
+            $keys[4] => $this->getWebsite(),
+            $keys[5] => $this->getFax(),
+            $keys[6] => $this->getImage(),
+            $keys[7] => $this->getTaxNumber(),
+            $keys[8] => $this->getRole(),
+            $keys[9] => $this->getCompanyId(),
+            $keys[10] => $this->getSupplierTypeId(),
+            $keys[11] => $this->getClassKey(),
+            $keys[12] => $this->getCreatedAt(),
+            $keys[13] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[13]] instanceof \DateTimeInterface) {
-            $result[$keys[13]] = $result[$keys[13]]->format('c');
+        if ($result[$keys[12]] instanceof \DateTimeInterface) {
+            $result[$keys[12]] = $result[$keys[12]]->format('c');
         }
 
-        if ($result[$keys[14]] instanceof \DateTimeInterface) {
-            $result[$keys[14]] = $result[$keys[14]]->format('c');
+        if ($result[$keys[13]] instanceof \DateTimeInterface) {
+            $result[$keys[13]] = $result[$keys[13]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1960,39 +1910,36 @@ abstract class Partner implements ActiveRecordInterface
                 $this->setEmail($value);
                 break;
             case 3:
-                $this->setAddress($value);
-                break;
-            case 4:
                 $this->setPhone($value);
                 break;
-            case 5:
+            case 4:
                 $this->setWebsite($value);
                 break;
-            case 6:
+            case 5:
                 $this->setFax($value);
                 break;
-            case 7:
+            case 6:
                 $this->setImage($value);
                 break;
-            case 8:
+            case 7:
                 $this->setTaxNumber($value);
                 break;
-            case 9:
+            case 8:
                 $this->setRole($value);
                 break;
-            case 10:
+            case 9:
                 $this->setCompanyId($value);
                 break;
-            case 11:
+            case 10:
                 $this->setSupplierTypeId($value);
                 break;
-            case 12:
+            case 11:
                 $this->setClassKey($value);
                 break;
-            case 13:
+            case 12:
                 $this->setCreatedAt($value);
                 break;
-            case 14:
+            case 13:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -2031,40 +1978,37 @@ abstract class Partner implements ActiveRecordInterface
             $this->setEmail($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setAddress($arr[$keys[3]]);
+            $this->setPhone($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setPhone($arr[$keys[4]]);
+            $this->setWebsite($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setWebsite($arr[$keys[5]]);
+            $this->setFax($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setFax($arr[$keys[6]]);
+            $this->setImage($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setImage($arr[$keys[7]]);
+            $this->setTaxNumber($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setTaxNumber($arr[$keys[8]]);
+            $this->setRole($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setRole($arr[$keys[9]]);
+            $this->setCompanyId($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setCompanyId($arr[$keys[10]]);
+            $this->setSupplierTypeId($arr[$keys[10]]);
         }
         if (array_key_exists($keys[11], $arr)) {
-            $this->setSupplierTypeId($arr[$keys[11]]);
+            $this->setClassKey($arr[$keys[11]]);
         }
         if (array_key_exists($keys[12], $arr)) {
-            $this->setClassKey($arr[$keys[12]]);
+            $this->setCreatedAt($arr[$keys[12]]);
         }
         if (array_key_exists($keys[13], $arr)) {
-            $this->setCreatedAt($arr[$keys[13]]);
-        }
-        if (array_key_exists($keys[14], $arr)) {
-            $this->setUpdatedAt($arr[$keys[14]]);
+            $this->setUpdatedAt($arr[$keys[13]]);
         }
     }
 
@@ -2115,9 +2059,6 @@ abstract class Partner implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PartnerTableMap::COL_EMAIL)) {
             $criteria->add(PartnerTableMap::COL_EMAIL, $this->email);
-        }
-        if ($this->isColumnModified(PartnerTableMap::COL_ADDRESS)) {
-            $criteria->add(PartnerTableMap::COL_ADDRESS, $this->address);
         }
         if ($this->isColumnModified(PartnerTableMap::COL_PHONE)) {
             $criteria->add(PartnerTableMap::COL_PHONE, $this->phone);
@@ -2240,7 +2181,6 @@ abstract class Partner implements ActiveRecordInterface
     {
         $copyObj->setName($this->getName());
         $copyObj->setEmail($this->getEmail());
-        $copyObj->setAddress($this->getAddress());
         $copyObj->setPhone($this->getPhone());
         $copyObj->setWebsite($this->getWebsite());
         $copyObj->setFax($this->getFax());
@@ -4474,7 +4414,6 @@ abstract class Partner implements ActiveRecordInterface
         $this->id = null;
         $this->name = null;
         $this->email = null;
-        $this->address = null;
         $this->phone = null;
         $this->website = null;
         $this->fax = null;

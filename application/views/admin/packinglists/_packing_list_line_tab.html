@@ -12,9 +12,9 @@
           <div class="col-md-6 col-sm-6 col-xs-12">
             <div {% if packinglistlines %}style="display:none" {% endif %} class="input-wrap input-group">
               <input type="hidden" type="text" id="ProformaInvoiceId" value="{{ packinglistlines.ProformaInvoiceId }}" name="ProformaInvoiceId">
-              <input type="text" required="required" name="displayProformaInvoiceId" id="displayProformaInvoiceId" placeholder="{{ res.string.proforma_invoice_line_id }}" value="{{ packinglistlines.ProformaInvoice }}" class="form-control" />
+              <input type="text" name="displayProformaInvoiceId" id="displayProformaInvoiceId" placeholder="{{ res.string.proforma_invoice_line_id }}" value="{{ packinglistlines.ProformaInvoice }}" class="form-control" />
               <span class="input-group-btn">
-              <button data-domain='{"customer_id":13}' class="btn btnModal btn-default" id="btnProformaInvoiceId"  data-target="ModalProformaInvoice" type="button">{{res.string.search}}</button>
+              <button class="btn btnModal btn-default" id="btnProformaInvoiceId"  data-target="ModalProformaInvoice" type="button">{{res.string.search}}</button>
             </span>
             </div>
             {% if packinglistlines %}
