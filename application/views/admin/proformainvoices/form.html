@@ -109,7 +109,7 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
 var Lines = [];
 var idx =0;
 
-
+set_back_url('manage_proformainvoices')
 
 $('#CustomerId').change(function(e){
   $('#toggleProdCust').data('partner_id',$(this).val())
@@ -132,8 +132,8 @@ $(document).ready(function(){
   $('.lineCurr').text($("#CurrencyId option:selected").text().split(' - ')[1]);
 
   $('#ModalAddProformaInvoiceLine').on('hidden.bs.modal', function () {
-    $('#ModalAddProformaInvoiceLine').find('input').val('')
-    $('#ModalAddProformaInvoiceLine').find('input').prop('checked',false);
+    $('#ModalAddProformaInvoiceLine').find('input[type=hidden],input[type=text]').val('')
+    $('#ModalAddProformaInvoiceLine').find('inputinput[type=checkbox]').prop('checked',false);
   })
   $('#CustomerId').trigger('change')
   $('#table_ProformaInvoiceLine').on('click','.btn-delete',function(e){
