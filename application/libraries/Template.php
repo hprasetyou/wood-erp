@@ -90,6 +90,10 @@ class Template {
         });
     $this->twig->addFunction($function);
     $this->twig->addFunction($button);
+    $ci = $this->CI;
+    $this->twig->addFunction(new Twig_Function('uri_segment',function($index) use ($ci){
+      return $ci->uri->segment($index);
+    }));
     $this->twig->addFunction($exchange_rate);
   }
 
