@@ -24,6 +24,7 @@
 'close' => 'Close',
 'cntr_no' => 'Cntr No',
 'company_id' => 'Company Id',
+'product_order_only' => 'Show products already ordered by this customer',
 'corfirm_confirmation'=>'Confirm this document',
 'component' => 'Component',
 'component_id' => 'Component Id',
