@@ -22,7 +22,6 @@
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
     <column name="email" phpName="Email" type="VARCHAR" size="255"/>
-    <column name="address" phpName="Address" type="LONGVARCHAR"/>
     <column name="phone" phpName="Phone" type="VARCHAR" size="255"/>
     <column name="website" phpName="Website" type="VARCHAR" size="255"/>
     <column name="fax" phpName="Fax" type="VARCHAR" size="255"/>
