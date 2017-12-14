@@ -47,6 +47,7 @@
     <tr>
       <th data-fieldname="component_id">{{res.string.component}}</th>
       <th data-fieldname="qty">{{res.string.material}}</th>
+      <th data-fieldname="qty">{{res.string.type}}</th>
       <th data-fieldname="qty">{{res.string.qty}}</th>
       <th></th>
     </tr>
@@ -56,6 +57,7 @@
     <tr>
       <td>{{component.Component.Description}}</td>
       <td>{{component.Component.Material.Name}}</td>
+      <td>{{attribute(res.string,component.Component.Type)}}</td>
       <td>{{component.Qty}}</td>
       <td><a href="#" data-id="{{component.Id}}" class="btn btn-danger btn-delete-row"><i class="fa fa-trash"></i></a></td>
     </tr>

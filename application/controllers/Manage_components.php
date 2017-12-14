@@ -13,7 +13,7 @@ class Manage_components extends MY_Controller{
 
   function get_json(){
     $this->objobj = ProductQuery::create()
-    ->filterByType('component')
+    ->filterByType(array('component','support_component'))
     ->join('Material')
     ->withColumn('Material.Name');
     $this->custom_column = array('material'=>'_{MaterialName}_');
