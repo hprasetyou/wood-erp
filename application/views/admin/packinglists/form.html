@@ -79,18 +79,6 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
 							</div>
 
 							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="SrcLoc">{{res.string.src_loc}}</label>
-								<div class="col-md-6 col-sm-6 col-xs-12">
-									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
-										<input type="text" placeholder="{{ res.string.src_loc }}" id="SrcLoc" value="{{ packinglists.SrcLoc }}" name="SrcLoc" class="form-control  col-md-7 col-xs-12">
-									</div>
-									{% if packinglists %}
-									<p class="control-value">{{ packinglists.SrcLoc }}</p>
-									{% endif %}
-								</div>
-							</div>
-
-							<div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="BlNo">{{res.string.bl_no}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
 									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
@@ -175,17 +163,6 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
 								</div>
 							</div>
 
-							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="State">{{res.string.state}}</label>
-								<div class="col-md-6 col-sm-6 col-xs-12">
-									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
-										<input type="text" placeholder="{{ res.string.state }}" id="State" value="{{ packinglists.State }}" name="State" class="form-control  col-md-7 col-xs-12">
-									</div>
-									{% if packinglists %}
-									<p class="control-value">{{ packinglists.State }}</p>
-									{% endif %}
-								</div>
-							</div>
 						</div>
 					</div>
 					<div class="row" id="detail">

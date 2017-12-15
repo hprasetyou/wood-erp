@@ -307,7 +307,6 @@
     <column name="loading_date" phpName="LoadingDate" type="DATE"/>
     <column name="customer_id" phpName="CustomerId" type="INTEGER" required="true"/>
     <column name="ocean_vessel" phpName="OceanVessel" type="VARCHAR" size="255"/>
-    <column name="src_loc" phpName="SrcLoc" type="VARCHAR" size="255"/>
     <column name="bl_no" phpName="BlNo" type="VARCHAR" size="255"/>
     <column name="goods_description" phpName="GoodsDescription" type="VARCHAR" size="255"/>
     <column name="cntr_no" phpName="CntrNo" type="VARCHAR" size="255"/>
