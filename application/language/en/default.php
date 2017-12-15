@@ -109,6 +109,7 @@
 'partner_id' => 'Partner Id',
 'packing'=>'Packing',
 'password' => 'Password',
+'pl_number' => 'PL Number',
 'payment_term' => 'Payment Term',
 'people' => 'People',
 'phone' => 'Phone',
