@@ -5,6 +5,10 @@ Number.prototype.format = function(n, x, s, c) {
 
     return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
 };
+
+function format_cbm(data){
+  return parseFloat(data/1000000).toFixed(3) + ' m3';
+}
 //only formatting, not exchange
 function format_currency(val,rule){
   return (rule.position == 'before'? rule.symbol:'')

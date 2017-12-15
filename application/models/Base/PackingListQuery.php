@@ -35,6 +35,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingListQuery orderByEtdSrg($order = Criteria::ASC) Order by the etd_srg column
  * @method     ChildPackingListQuery orderByRefDoc($order = Criteria::ASC) Order by the ref_doc column
  * @method     ChildPackingListQuery orderByState($order = Criteria::ASC) Order by the state column
+ * @method     ChildPackingListQuery orderByTotalQty($order = Criteria::ASC) Order by the total_qty column
+ * @method     ChildPackingListQuery orderByTotalQtyOfPack($order = Criteria::ASC) Order by the total_qty_of_pack column
+ * @method     ChildPackingListQuery orderByTotalCubicDimension($order = Criteria::ASC) Order by the total_cubic_dimension column
  * @method     ChildPackingListQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildPackingListQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -53,6 +56,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingListQuery groupByEtdSrg() Group by the etd_srg column
  * @method     ChildPackingListQuery groupByRefDoc() Group by the ref_doc column
  * @method     ChildPackingListQuery groupByState() Group by the state column
+ * @method     ChildPackingListQuery groupByTotalQty() Group by the total_qty column
+ * @method     ChildPackingListQuery groupByTotalQtyOfPack() Group by the total_qty_of_pack column
+ * @method     ChildPackingListQuery groupByTotalCubicDimension() Group by the total_cubic_dimension column
  * @method     ChildPackingListQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildPackingListQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -104,6 +110,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingList findOneByEtdSrg(string $etd_srg) Return the first ChildPackingList filtered by the etd_srg column
  * @method     ChildPackingList findOneByRefDoc(string $ref_doc) Return the first ChildPackingList filtered by the ref_doc column
  * @method     ChildPackingList findOneByState(string $state) Return the first ChildPackingList filtered by the state column
+ * @method     ChildPackingList findOneByTotalQty(int $total_qty) Return the first ChildPackingList filtered by the total_qty column
+ * @method     ChildPackingList findOneByTotalQtyOfPack(int $total_qty_of_pack) Return the first ChildPackingList filtered by the total_qty_of_pack column
+ * @method     ChildPackingList findOneByTotalCubicDimension(double $total_cubic_dimension) Return the first ChildPackingList filtered by the total_cubic_dimension column
  * @method     ChildPackingList findOneByCreatedAt(string $created_at) Return the first ChildPackingList filtered by the created_at column
  * @method     ChildPackingList findOneByUpdatedAt(string $updated_at) Return the first ChildPackingList filtered by the updated_at column *
 
@@ -125,6 +134,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingList requireOneByEtdSrg(string $etd_srg) Return the first ChildPackingList filtered by the etd_srg column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingList requireOneByRefDoc(string $ref_doc) Return the first ChildPackingList filtered by the ref_doc column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingList requireOneByState(string $state) Return the first ChildPackingList filtered by the state column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPackingList requireOneByTotalQty(int $total_qty) Return the first ChildPackingList filtered by the total_qty column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPackingList requireOneByTotalQtyOfPack(int $total_qty_of_pack) Return the first ChildPackingList filtered by the total_qty_of_pack column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPackingList requireOneByTotalCubicDimension(double $total_cubic_dimension) Return the first ChildPackingList filtered by the total_cubic_dimension column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingList requireOneByCreatedAt(string $created_at) Return the first ChildPackingList filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingList requireOneByUpdatedAt(string $updated_at) Return the first ChildPackingList filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -144,6 +156,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingList[]|ObjectCollection findByEtdSrg(string $etd_srg) Return ChildPackingList objects filtered by the etd_srg column
  * @method     ChildPackingList[]|ObjectCollection findByRefDoc(string $ref_doc) Return ChildPackingList objects filtered by the ref_doc column
  * @method     ChildPackingList[]|ObjectCollection findByState(string $state) Return ChildPackingList objects filtered by the state column
+ * @method     ChildPackingList[]|ObjectCollection findByTotalQty(int $total_qty) Return ChildPackingList objects filtered by the total_qty column
+ * @method     ChildPackingList[]|ObjectCollection findByTotalQtyOfPack(int $total_qty_of_pack) Return ChildPackingList objects filtered by the total_qty_of_pack column
+ * @method     ChildPackingList[]|ObjectCollection findByTotalCubicDimension(double $total_cubic_dimension) Return ChildPackingList objects filtered by the total_cubic_dimension column
  * @method     ChildPackingList[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildPackingList objects filtered by the created_at column
  * @method     ChildPackingList[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildPackingList objects filtered by the updated_at column
  * @method     ChildPackingList[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -244,7 +259,7 @@ abstract class PackingListQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, date, loading_date, customer_id, ocean_vessel, src_loc, bl_no, goods_description, cntr_no, seal_no, pod, etd_srg, ref_doc, state, created_at, updated_at FROM packing_list WHERE id = :p0';
+        $sql = 'SELECT id, name, date, loading_date, customer_id, ocean_vessel, src_loc, bl_no, goods_description, cntr_no, seal_no, pod, etd_srg, ref_doc, state, total_qty, total_qty_of_pack, total_cubic_dimension, created_at, updated_at FROM packing_list WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -777,6 +792,129 @@ abstract class PackingListQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PackingListTableMap::COL_STATE, $state, $comparison);
+    }
+
+    /**
+     * Filter the query on the total_qty column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByTotalQty(1234); // WHERE total_qty = 1234
+     * $query->filterByTotalQty(array(12, 34)); // WHERE total_qty IN (12, 34)
+     * $query->filterByTotalQty(array('min' => 12)); // WHERE total_qty > 12
+     * </code>
+     *
+     * @param     mixed $totalQty The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPackingListQuery The current query, for fluid interface
+     */
+    public function filterByTotalQty($totalQty = null, $comparison = null)
+    {
+        if (is_array($totalQty)) {
+            $useMinMax = false;
+            if (isset($totalQty['min'])) {
+                $this->addUsingAlias(PackingListTableMap::COL_TOTAL_QTY, $totalQty['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($totalQty['max'])) {
+                $this->addUsingAlias(PackingListTableMap::COL_TOTAL_QTY, $totalQty['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PackingListTableMap::COL_TOTAL_QTY, $totalQty, $comparison);
+    }
+
+    /**
+     * Filter the query on the total_qty_of_pack column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByTotalQtyOfPack(1234); // WHERE total_qty_of_pack = 1234
+     * $query->filterByTotalQtyOfPack(array(12, 34)); // WHERE total_qty_of_pack IN (12, 34)
+     * $query->filterByTotalQtyOfPack(array('min' => 12)); // WHERE total_qty_of_pack > 12
+     * </code>
+     *
+     * @param     mixed $totalQtyOfPack The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPackingListQuery The current query, for fluid interface
+     */
+    public function filterByTotalQtyOfPack($totalQtyOfPack = null, $comparison = null)
+    {
+        if (is_array($totalQtyOfPack)) {
+            $useMinMax = false;
+            if (isset($totalQtyOfPack['min'])) {
+                $this->addUsingAlias(PackingListTableMap::COL_TOTAL_QTY_OF_PACK, $totalQtyOfPack['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($totalQtyOfPack['max'])) {
+                $this->addUsingAlias(PackingListTableMap::COL_TOTAL_QTY_OF_PACK, $totalQtyOfPack['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PackingListTableMap::COL_TOTAL_QTY_OF_PACK, $totalQtyOfPack, $comparison);
+    }
+
+    /**
+     * Filter the query on the total_cubic_dimension column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByTotalCubicDimension(1234); // WHERE total_cubic_dimension = 1234
+     * $query->filterByTotalCubicDimension(array(12, 34)); // WHERE total_cubic_dimension IN (12, 34)
+     * $query->filterByTotalCubicDimension(array('min' => 12)); // WHERE total_cubic_dimension > 12
+     * </code>
+     *
+     * @param     mixed $totalCubicDimension The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPackingListQuery The current query, for fluid interface
+     */
+    public function filterByTotalCubicDimension($totalCubicDimension = null, $comparison = null)
+    {
+        if (is_array($totalCubicDimension)) {
+            $useMinMax = false;
+            if (isset($totalCubicDimension['min'])) {
+                $this->addUsingAlias(PackingListTableMap::COL_TOTAL_CUBIC_DIMENSION, $totalCubicDimension['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($totalCubicDimension['max'])) {
+                $this->addUsingAlias(PackingListTableMap::COL_TOTAL_CUBIC_DIMENSION, $totalCubicDimension['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PackingListTableMap::COL_TOTAL_CUBIC_DIMENSION, $totalCubicDimension, $comparison);
     }
 
     /**

@@ -108,6 +108,27 @@ abstract class PackingListLine implements ActiveRecordInterface
     protected $qty;
 
     /**
+     * The value for the qty_of_pack field.
+     *
+     * @var        int
+     */
+    protected $qty_of_pack;
+
+    /**
+     * The value for the cubic_dimension field.
+     *
+     * @var        double
+     */
+    protected $cubic_dimension;
+
+    /**
+     * The value for the total_cubic_dimension field.
+     *
+     * @var        double
+     */
+    protected $total_cubic_dimension;
+
+    /**
      * The value for the created_at field.
      *
      * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
@@ -439,6 +460,36 @@ abstract class PackingListLine implements ActiveRecordInterface
     }
 
     /**
+     * Get the [qty_of_pack] column value.
+     *
+     * @return int
+     */
+    public function getQtyOfPack()
+    {
+        return $this->qty_of_pack;
+    }
+
+    /**
+     * Get the [cubic_dimension] column value.
+     *
+     * @return double
+     */
+    public function getCubicDimension()
+    {
+        return $this->cubic_dimension;
+    }
+
+    /**
+     * Get the [total_cubic_dimension] column value.
+     *
+     * @return double
+     */
+    public function getTotalCubicDimension()
+    {
+        return $this->total_cubic_dimension;
+    }
+
+    /**
      * Get the [optionally formatted] temporal [created_at] column value.
      *
      *
@@ -607,6 +658,66 @@ abstract class PackingListLine implements ActiveRecordInterface
     } // setQty()
 
     /**
+     * Set the value of [qty_of_pack] column.
+     *
+     * @param int $v new value
+     * @return $this|\PackingListLine The current object (for fluent API support)
+     */
+    public function setQtyOfPack($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->qty_of_pack !== $v) {
+            $this->qty_of_pack = $v;
+            $this->modifiedColumns[PackingListLineTableMap::COL_QTY_OF_PACK] = true;
+        }
+
+        return $this;
+    } // setQtyOfPack()
+
+    /**
+     * Set the value of [cubic_dimension] column.
+     *
+     * @param double $v new value
+     * @return $this|\PackingListLine The current object (for fluent API support)
+     */
+    public function setCubicDimension($v)
+    {
+        if ($v !== null) {
+            $v = (double) $v;
+        }
+
+        if ($this->cubic_dimension !== $v) {
+            $this->cubic_dimension = $v;
+            $this->modifiedColumns[PackingListLineTableMap::COL_CUBIC_DIMENSION] = true;
+        }
+
+        return $this;
+    } // setCubicDimension()
+
+    /**
+     * Set the value of [total_cubic_dimension] column.
+     *
+     * @param double $v new value
+     * @return $this|\PackingListLine The current object (for fluent API support)
+     */
+    public function setTotalCubicDimension($v)
+    {
+        if ($v !== null) {
+            $v = (double) $v;
+        }
+
+        if ($this->total_cubic_dimension !== $v) {
+            $this->total_cubic_dimension = $v;
+            $this->modifiedColumns[PackingListLineTableMap::COL_TOTAL_CUBIC_DIMENSION] = true;
+        }
+
+        return $this;
+    } // setTotalCubicDimension()
+
+    /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
@@ -700,13 +811,22 @@ abstract class PackingListLine implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : PackingListLineTableMap::translateFieldName('Qty', TableMap::TYPE_PHPNAME, $indexType)];
             $this->qty = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PackingListLineTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PackingListLineTableMap::translateFieldName('QtyOfPack', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->qty_of_pack = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PackingListLineTableMap::translateFieldName('CubicDimension', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->cubic_dimension = (null !== $col) ? (double) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PackingListLineTableMap::translateFieldName('TotalCubicDimension', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->total_cubic_dimension = (null !== $col) ? (double) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PackingListLineTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PackingListLineTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PackingListLineTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -719,7 +839,7 @@ abstract class PackingListLine implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 8; // 8 = PackingListLineTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 11; // 11 = PackingListLineTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\PackingListLine'), 0, $e);
@@ -965,6 +1085,15 @@ abstract class PackingListLine implements ActiveRecordInterface
         if ($this->isColumnModified(PackingListLineTableMap::COL_QTY)) {
             $modifiedColumns[':p' . $index++]  = 'qty';
         }
+        if ($this->isColumnModified(PackingListLineTableMap::COL_QTY_OF_PACK)) {
+            $modifiedColumns[':p' . $index++]  = 'qty_of_pack';
+        }
+        if ($this->isColumnModified(PackingListLineTableMap::COL_CUBIC_DIMENSION)) {
+            $modifiedColumns[':p' . $index++]  = 'cubic_dimension';
+        }
+        if ($this->isColumnModified(PackingListLineTableMap::COL_TOTAL_CUBIC_DIMENSION)) {
+            $modifiedColumns[':p' . $index++]  = 'total_cubic_dimension';
+        }
         if ($this->isColumnModified(PackingListLineTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
@@ -999,6 +1128,15 @@ abstract class PackingListLine implements ActiveRecordInterface
                         break;
                     case 'qty':
                         $stmt->bindValue($identifier, $this->qty, PDO::PARAM_INT);
+                        break;
+                    case 'qty_of_pack':
+                        $stmt->bindValue($identifier, $this->qty_of_pack, PDO::PARAM_INT);
+                        break;
+                    case 'cubic_dimension':
+                        $stmt->bindValue($identifier, $this->cubic_dimension, PDO::PARAM_STR);
+                        break;
+                    case 'total_cubic_dimension':
+                        $stmt->bindValue($identifier, $this->total_cubic_dimension, PDO::PARAM_STR);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -1087,9 +1225,18 @@ abstract class PackingListLine implements ActiveRecordInterface
                 return $this->getQty();
                 break;
             case 6:
-                return $this->getCreatedAt();
+                return $this->getQtyOfPack();
                 break;
             case 7:
+                return $this->getCubicDimension();
+                break;
+            case 8:
+                return $this->getTotalCubicDimension();
+                break;
+            case 9:
+                return $this->getCreatedAt();
+                break;
+            case 10:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1128,15 +1275,18 @@ abstract class PackingListLine implements ActiveRecordInterface
             $keys[3] => $this->getNetWeight(),
             $keys[4] => $this->getGrossWeight(),
             $keys[5] => $this->getQty(),
-            $keys[6] => $this->getCreatedAt(),
-            $keys[7] => $this->getUpdatedAt(),
+            $keys[6] => $this->getQtyOfPack(),
+            $keys[7] => $this->getCubicDimension(),
+            $keys[8] => $this->getTotalCubicDimension(),
+            $keys[9] => $this->getCreatedAt(),
+            $keys[10] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[6]] instanceof \DateTimeInterface) {
-            $result[$keys[6]] = $result[$keys[6]]->format('c');
+        if ($result[$keys[9]] instanceof \DateTimeInterface) {
+            $result[$keys[9]] = $result[$keys[9]]->format('c');
         }
 
-        if ($result[$keys[7]] instanceof \DateTimeInterface) {
-            $result[$keys[7]] = $result[$keys[7]]->format('c');
+        if ($result[$keys[10]] instanceof \DateTimeInterface) {
+            $result[$keys[10]] = $result[$keys[10]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1228,9 +1378,18 @@ abstract class PackingListLine implements ActiveRecordInterface
                 $this->setQty($value);
                 break;
             case 6:
-                $this->setCreatedAt($value);
+                $this->setQtyOfPack($value);
                 break;
             case 7:
+                $this->setCubicDimension($value);
+                break;
+            case 8:
+                $this->setTotalCubicDimension($value);
+                break;
+            case 9:
+                $this->setCreatedAt($value);
+                break;
+            case 10:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1278,10 +1437,19 @@ abstract class PackingListLine implements ActiveRecordInterface
             $this->setQty($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setCreatedAt($arr[$keys[6]]);
+            $this->setQtyOfPack($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setUpdatedAt($arr[$keys[7]]);
+            $this->setCubicDimension($arr[$keys[7]]);
+        }
+        if (array_key_exists($keys[8], $arr)) {
+            $this->setTotalCubicDimension($arr[$keys[8]]);
+        }
+        if (array_key_exists($keys[9], $arr)) {
+            $this->setCreatedAt($arr[$keys[9]]);
+        }
+        if (array_key_exists($keys[10], $arr)) {
+            $this->setUpdatedAt($arr[$keys[10]]);
         }
     }
 
@@ -1341,6 +1509,15 @@ abstract class PackingListLine implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PackingListLineTableMap::COL_QTY)) {
             $criteria->add(PackingListLineTableMap::COL_QTY, $this->qty);
+        }
+        if ($this->isColumnModified(PackingListLineTableMap::COL_QTY_OF_PACK)) {
+            $criteria->add(PackingListLineTableMap::COL_QTY_OF_PACK, $this->qty_of_pack);
+        }
+        if ($this->isColumnModified(PackingListLineTableMap::COL_CUBIC_DIMENSION)) {
+            $criteria->add(PackingListLineTableMap::COL_CUBIC_DIMENSION, $this->cubic_dimension);
+        }
+        if ($this->isColumnModified(PackingListLineTableMap::COL_TOTAL_CUBIC_DIMENSION)) {
+            $criteria->add(PackingListLineTableMap::COL_TOTAL_CUBIC_DIMENSION, $this->total_cubic_dimension);
         }
         if ($this->isColumnModified(PackingListLineTableMap::COL_CREATED_AT)) {
             $criteria->add(PackingListLineTableMap::COL_CREATED_AT, $this->created_at);
@@ -1439,6 +1616,9 @@ abstract class PackingListLine implements ActiveRecordInterface
         $copyObj->setNetWeight($this->getNetWeight());
         $copyObj->setGrossWeight($this->getGrossWeight());
         $copyObj->setQty($this->getQty());
+        $copyObj->setQtyOfPack($this->getQtyOfPack());
+        $copyObj->setCubicDimension($this->getCubicDimension());
+        $copyObj->setTotalCubicDimension($this->getTotalCubicDimension());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
         if ($makeNew) {
@@ -1590,6 +1770,9 @@ abstract class PackingListLine implements ActiveRecordInterface
         $this->net_weight = null;
         $this->gross_weight = null;
         $this->qty = null;
+        $this->qty_of_pack = null;
+        $this->cubic_dimension = null;
+        $this->total_cubic_dimension = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;

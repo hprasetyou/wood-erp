@@ -15,9 +15,6 @@ class Manage_packinglistlines extends MY_Controller{
     $this->custom_column = array(
       'product_name'=>"_{ProformaInvoiceLineName}_",
       'pi_name'=>"_{ProformaInvoiceName}_",
-      'cubic_dimension' => "_{ProformaInvoiceLineCubicDimension}_",
-      'total_cubic_dimension' => "_{ProformaInvoiceLineCubicDimension}_ * _{Qty}_",
-      'pack' => "ceil(_{Qty}_/_{ProformaInvoiceLineQtyPerPack}_)",
       'description' => "_{ProformaInvoiceLineDescription}_",
       'flegt'=>"_{ProductIsFlegt}_?'Flegt Item':'Non Flegt Item'"
     );
@@ -28,10 +25,10 @@ class Manage_packinglistlines extends MY_Controller{
     ->withColumn('ProformaInvoiceLine.Name')
     ->withColumn('Product.IsFlegt')
     ->withColumn('ProformaInvoice.Name')
-    ->withColumn('ProformaInvoiceLine.CubicDimension')
-    ->withColumn('ProformaInvoiceLine.QtyPerPack')
     ->withColumn('ProformaInvoiceLine.Description')
-    ->filterByPackingListId($this->input->get('packing_list'));
+    ->filterByPackingListId($this->input->get('packing_list'))
+    ->orderByProductIsFlegt()
+    ->orderByProformaInvoiceName();
     parent::get_json();
 
   }
@@ -69,11 +66,25 @@ class Manage_packinglistlines extends MY_Controller{
         write_log("more than qty; $av");
         die(json_encode(array('status'=>'error','message'=>string('pl_qty_error','activity_message'))));
       }
-
+      $qty = $this->input->post('Qty');
+      $piline = $plline->getProformaInvoiceLine();
       $this->form = array(
-       'Qty' => 'Qty'
+       'Qty' => array(
+         'value'=>$qty
+       ),
+       'QtyOfPack' => array(
+         'value'=> ceil($qty/$piline->getQtyPerPack())
+       ),
+       'CubicDimension' => array(
+         'value'=> $piline->getCubicDimension()
+       ),
+       'TotalCubicDimension' => array(
+         'value'=> $piline->getCubicDimension()*$qty
+       )
       );
-      parent::write($id);
+      $data = parent::write($id);
+
+      $pl = $plline->getPackingList();
     }
     else{
       //bulk insert
@@ -92,6 +103,15 @@ class Manage_packinglistlines extends MY_Controller{
          'Qty' => array(
            'value'=> $qty[$key]
          ),
+         'QtyOfPack' => array(
+           'value'=> ceil($qty[$key]/$piline->getQtyPerPack())
+         ),
+         'CubicDimension' => array(
+           'value'=> $piline->getCubicDimension()
+         ),
+         'TotalCubicDimension' => array(
+           'value'=> $piline->getCubicDimension()*$qty[$key]
+         ),
          'NetWeight' => array(
            'value'=> $piline->getProduct()->getNetWeight()
          ),
@@ -108,16 +128,40 @@ class Manage_packinglistlines extends MY_Controller{
           $this->form['Qty']['value'] = $qty[$key]+$plline->getQty();
           $id = $plline->getId();
         }
-        parent::write($id);
+        $data = parent::write($id);
+        $pl = $data->getPackingList();
       }
     }
+    $this->update_price($pl->getId());
     echo json_encode(array('status'=>'ok'));
 		// redirect('manage_packinglistlines/detail/'.$data->getId());
 	}
 
   function delete($id){
-		$data = parent::delete($id);
+    $pl_line = PackingListLineQuery::create()->findPk($id);
+    $pl = $pl_line->getPackingList();
+		parent::delete($id);
+    $this->update_price($pl->getId());
 		echo json_encode(array('status'=>'ok'));
+  }
+
+  function update_price($pl){
+    $pl_total = PackingListLineQuery::create()
+    ->select(['PackingListLine.PackingListId'])
+    ->withColumn('SUM(PackingListLine.Qty)','TotalQty')
+    ->withColumn('SUM(PackingListLine.QtyOfPack)','TotalQtyOfPack')
+    ->withColumn('SUM(PackingListLine.TotalCubicDimension)','TotalCubicDimension')
+    ->groupBy('PackingListId')
+    ->findOneByPackingListId($pl);
+    $pl = PackingListQuery::create()->findPk($pl);
+    $pl->setTotalQty($pl_total['TotalQty']);
+    $pl->setTotalQtyOfPack($pl_total['TotalQtyOfPack']);
+    $pl->setTotalCubicDimension($pl_total['TotalCubicDimension']);
+    $pl->save();
+    // foreach ($pi->getProformaInvoiceLine() as $key => $value) {
+    //   # code...
+    // }
+
   }
 
 }

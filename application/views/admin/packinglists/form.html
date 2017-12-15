@@ -255,11 +255,7 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
         data:"&confirm=1",
         dataType:"JSON"
       }).done(function(o){
-          $('#table_PackingListLine').DataTable().ajax.reload(function(d){
-            console.log($(this));
-              $('#table_PackingListLine').find('.btn-delete').show()
-              $('#table_PackingListLine').find('.btn-edit').show()
-          })
+          reload_line()
       })
     })
     $('#table_PackingListLine').on('click','.btn-edit',function(e){
@@ -268,10 +264,10 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
       qtyprnt.find('.help-block').text('')
       qtyprnt.removeClass('has-error')
       $('#modalEditLineQty').modal('show')
-      $('#artno').text($(this).parents('tr').children('td:eq(0)').text())
-      $('#proddesc').text($(this).parents('tr').children('td:eq(2)').text())
-      $('#elineId').val($(this).parents('tr').children('td:eq(7)').find('a').data('id'))
-      $('#elineQty').val($(this).parents('tr').children('td:eq(3)').text())
+      $('#artno').text($(this).parents('tr').children('td:eq(2)').text())
+      $('#proddesc').text($(this).parents('tr').children('td:eq(3)').text())
+      $('#elineId').val($(this).data('id'))
+      $('#elineQty').val($(this).parents('tr').children('td:eq(6)').text())
     })
   })
   $('.all_cb_pi').change(function(e){
@@ -346,7 +342,7 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
           $('#ProformaInvoiceId').val('');
           $('#ProformaInvoiceId').trigger('change');
           $('#displayProformaInvoiceId').val('');
-          $('#table_PackingListLine').DataTable().ajax.reload()
+
         })
     }else{
       $.ajax({
@@ -365,7 +361,24 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
     }
 
   })
-
+function reload_line(){
+  $('#table_PackingListLine').DataTable().ajax.reload(function(){
+      $('#table_PackingListLine').find('.btn-delete').show()
+      $('#table_PackingListLine').find('.btn-edit').show()
+      reload_data().done(function(o){
+        $('#totQtyPiece').text(o.TotalQty)
+        $('#totQtyPack').text(o.TotalQtyOfPack)
+        $('#totQtyCbm').text(format_cbm(o.TotalCubicDimension))
+      })
+  })
+}
+function reload_data(){
+  return $.ajax({
+    url:window.location.href,
+    method:'GET',
+    dataType:'JSON'
+  })
+}
   $('#frmEditLineQty').submit(function(e){
     e.preventDefault()
     $.ajax({
@@ -376,7 +389,7 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
     }).done(function(o){
         if(o.status == 'ok'){
           $('#modalEditLineQty').modal('hide')
-          $('#table_PackingListLine').DataTable().ajax.reload()
+          reload_line()
         }else if(o.status == 'error'){
           var qtyprnt = $('#elineQty').parent()
           qtyprnt.find('.help-block').text(o.message)

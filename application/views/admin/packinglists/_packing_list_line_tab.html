@@ -55,13 +55,22 @@
           <th data-fieldname="net_weight">{{res.string.net_weight}}</th>
           <th data-fieldname="gross_weight">{{res.string.gross_weight}}</th>
           <th data-fieldname="qty">{{res.string.qty}}</th>
-          <th data-fieldname="pack">{{res.string.qty_of_pack}}</th>
+          <th data-fieldname="qty_of_pack">{{res.string.qty_of_pack}}</th>
           <th data-fieldtype="cbm" data-fieldname="cubic_dimension">{{res.string.cbm_per_piece}}</th>
           <th data-fieldtype="cbm" data-fieldname="total_cubic_dimension">{{res.string.total_cubic}}</th>
           <th data-fieldname="flegt">{{res.string.is_flegt}}</th>
           <th></th>
         </tr>
       </thead>
+      <tfoot>
+        <tr>
+          <th colspan="6">{{res.string.total}}</th>
+          <th><span id="totQtyPiece">{{packinglists.TotalQty}}</span></th>
+          <th><span id="totQtyPack">{{packinglists.TotalQtyOfPack}}</span></th>
+          <th></th>
+          <th><span id="totQtyCbm">{{packinglists.TotalCubicDimension | cubic}}</span></th>
+        </tr>
+      </tfoot>
   </table>
 </div>
 

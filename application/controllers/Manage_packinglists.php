@@ -41,7 +41,11 @@ class Manage_packinglists extends MY_Controller{
 
   function detail($id){
 		$packinglist = PackingListQuery::create()->findPK($id);
-		$this->template->render('admin/packinglists/form',array('packinglists'=>$packinglist	));
+    if($this->input->is_ajax_request()){
+      echo $packinglist->toJSON();
+    }else{
+      $this->template->render('admin/packinglists/form',array('packinglists'=>$packinglist	));
+    }
   }
 
 	function write($id=null){
