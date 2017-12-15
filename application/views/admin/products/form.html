@@ -246,7 +246,7 @@
 										<a href="#tab_2" data-toggle="tab">{{ res.string.image }}</a>
 									</li>
 									<li id="component_tab">
-										<a href="#tab_3" data-toggle="tab">{{ res.string.component }}</a>
+										<a href="#tab_3" data-toggle="tab">{{ res.string.bom }}</a>
 									</li>
 									<li>
 										<a href="#tab_4" data-toggle="tab">{{ res.string.finishing }}</a>
@@ -302,8 +302,30 @@
   {% include "admin/components/_modal.html" %}
 	<script>
   var prod_comp = $('#table_ProductComponent').DataTable({
-    'ordering':false,
-    'searching':false
+      "ordering": true,
+      "order": [[ 2, 'asc' ]],
+      'searching':false,
+      'columnDefs':[
+            { "visible": false,
+            "orderable": false,
+             "targets": 2 }
+        ],
+    'drawCallback':function(settings){
+            var api = this.api();
+            var rows = api.rows( {page:'current'} ).nodes();
+            var last=null;
+
+            api.column(2, {page:'current'} ).data().each( function ( group, i ) {
+                if ( last !== group ) {
+                    $(rows).eq( i ).before(
+                        '<tr class="group"><td colspan="5">'+group+'</td></tr>'
+                    );
+
+                    last = group;
+                }
+            } );
+            $('#table_ProductComponent').css('width','100%')
+        }
   })
 		$(document).ready(function () {
 			$('input:checkbox').trigger('change')
