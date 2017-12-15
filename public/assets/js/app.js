@@ -194,6 +194,7 @@ jQuery.fn.loadTableData = function(
     dtconf.initComplete = conf.complete
     dtconf.fnRowCallback = conf.rowCallback
     dtconf.drawCallback = conf.drawCallback
+    dtconf.columnDefs = conf.columnDefs
     dtconf.createdRow = function(row, data, index){
       switch (data.state) {
         case 'draft':

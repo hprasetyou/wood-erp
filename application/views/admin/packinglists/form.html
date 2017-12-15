@@ -27,10 +27,10 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
 							</div>
 
 							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.date}}</label>
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.date_of_issue}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
 									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
-										<input type="text" placeholder="{{ res.string.date }}" id="Date" value="{{ packinglists.Date  | date('Y/m/d') }}" name="Date" class="form-control input-date col-md-7 col-xs-12">
+										<input type="text" placeholder="{{ res.string.date_of_issue }}" id="Date" value="{{ packinglists.Date  | date('Y/m/d') }}" name="Date" class="form-control input-date col-md-7 col-xs-12">
 									</div>
 									{% if packinglists %}
 									<p class="control-value">{{ packinglists.Date | date('d M Y') }}</p>
@@ -221,6 +221,9 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
     paging:false,
     ordering:false,
     button:['edit','delete'],
+    columnDefs:[
+            { "visible": false, "targets": 7 }
+        ],
     drawCallback:function(settings){
             var api = this.api();
             var rows = api.rows( {page:'current'} ).nodes();
