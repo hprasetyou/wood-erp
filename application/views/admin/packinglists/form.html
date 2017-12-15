@@ -222,17 +222,22 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
     ordering:false,
     button:['edit','delete'],
     columnDefs:[
-            { "visible": false, "targets": 7 }
+            { "visible": false, "targets": 10 }
         ],
+    rowCallback:function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+          var index = iDisplayIndex +1;
+          $('td:eq(0)',nRow).html(index);
+          return nRow;
+        },
     drawCallback:function(settings){
             var api = this.api();
             var rows = api.rows( {page:'current'} ).nodes();
             var last=null;
 
-            api.column(7, {page:'current'} ).data().each( function ( group, i ) {
+            api.column(10, {page:'current'} ).data().each( function ( group, i ) {
                 if ( last !== group ) {
                     $(rows).eq( i ).before(
-                        '<tr class="group"><td colspan="9">'+group+'</td></tr>'
+                        '<tr class="group"><td colspan="11">'+group+'</td></tr>'
                     );
 
                     last = group;
@@ -250,7 +255,11 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
         data:"&confirm=1",
         dataType:"JSON"
       }).done(function(o){
-          $('#table_PackingListLine').DataTable().ajax.reload()
+          $('#table_PackingListLine').DataTable().ajax.reload(function(d){
+            console.log($(this));
+              $('#table_PackingListLine').find('.btn-delete').show()
+              $('#table_PackingListLine').find('.btn-edit').show()
+          })
       })
     })
     $('#table_PackingListLine').on('click','.btn-edit',function(e){

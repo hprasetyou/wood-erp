@@ -87,6 +87,20 @@ abstract class PackingListLine implements ActiveRecordInterface
     protected $proforma_invoice_line_id;
 
     /**
+     * The value for the net_weight field.
+     *
+     * @var        double
+     */
+    protected $net_weight;
+
+    /**
+     * The value for the gross_weight field.
+     *
+     * @var        double
+     */
+    protected $gross_weight;
+
+    /**
      * The value for the qty field.
      *
      * @var        int
@@ -395,6 +409,26 @@ abstract class PackingListLine implements ActiveRecordInterface
     }
 
     /**
+     * Get the [net_weight] column value.
+     *
+     * @return double
+     */
+    public function getNetWeight()
+    {
+        return $this->net_weight;
+    }
+
+    /**
+     * Get the [gross_weight] column value.
+     *
+     * @return double
+     */
+    public function getGrossWeight()
+    {
+        return $this->gross_weight;
+    }
+
+    /**
      * Get the [qty] column value.
      *
      * @return int
@@ -513,6 +547,46 @@ abstract class PackingListLine implements ActiveRecordInterface
     } // setProformaInvoiceLineId()
 
     /**
+     * Set the value of [net_weight] column.
+     *
+     * @param double $v new value
+     * @return $this|\PackingListLine The current object (for fluent API support)
+     */
+    public function setNetWeight($v)
+    {
+        if ($v !== null) {
+            $v = (double) $v;
+        }
+
+        if ($this->net_weight !== $v) {
+            $this->net_weight = $v;
+            $this->modifiedColumns[PackingListLineTableMap::COL_NET_WEIGHT] = true;
+        }
+
+        return $this;
+    } // setNetWeight()
+
+    /**
+     * Set the value of [gross_weight] column.
+     *
+     * @param double $v new value
+     * @return $this|\PackingListLine The current object (for fluent API support)
+     */
+    public function setGrossWeight($v)
+    {
+        if ($v !== null) {
+            $v = (double) $v;
+        }
+
+        if ($this->gross_weight !== $v) {
+            $this->gross_weight = $v;
+            $this->modifiedColumns[PackingListLineTableMap::COL_GROSS_WEIGHT] = true;
+        }
+
+        return $this;
+    } // setGrossWeight()
+
+    /**
      * Set the value of [qty] column.
      *
      * @param int $v new value
@@ -617,16 +691,22 @@ abstract class PackingListLine implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : PackingListLineTableMap::translateFieldName('ProformaInvoiceLineId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->proforma_invoice_line_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : PackingListLineTableMap::translateFieldName('Qty', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : PackingListLineTableMap::translateFieldName('NetWeight', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->net_weight = (null !== $col) ? (double) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : PackingListLineTableMap::translateFieldName('GrossWeight', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->gross_weight = (null !== $col) ? (double) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : PackingListLineTableMap::translateFieldName('Qty', TableMap::TYPE_PHPNAME, $indexType)];
             $this->qty = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : PackingListLineTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PackingListLineTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : PackingListLineTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PackingListLineTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -639,7 +719,7 @@ abstract class PackingListLine implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 6; // 6 = PackingListLineTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = PackingListLineTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\PackingListLine'), 0, $e);
@@ -876,6 +956,12 @@ abstract class PackingListLine implements ActiveRecordInterface
         if ($this->isColumnModified(PackingListLineTableMap::COL_PROFORMA_INVOICE_LINE_ID)) {
             $modifiedColumns[':p' . $index++]  = 'proforma_invoice_line_id';
         }
+        if ($this->isColumnModified(PackingListLineTableMap::COL_NET_WEIGHT)) {
+            $modifiedColumns[':p' . $index++]  = 'net_weight';
+        }
+        if ($this->isColumnModified(PackingListLineTableMap::COL_GROSS_WEIGHT)) {
+            $modifiedColumns[':p' . $index++]  = 'gross_weight';
+        }
         if ($this->isColumnModified(PackingListLineTableMap::COL_QTY)) {
             $modifiedColumns[':p' . $index++]  = 'qty';
         }
@@ -904,6 +990,12 @@ abstract class PackingListLine implements ActiveRecordInterface
                         break;
                     case 'proforma_invoice_line_id':
                         $stmt->bindValue($identifier, $this->proforma_invoice_line_id, PDO::PARAM_INT);
+                        break;
+                    case 'net_weight':
+                        $stmt->bindValue($identifier, $this->net_weight, PDO::PARAM_STR);
+                        break;
+                    case 'gross_weight':
+                        $stmt->bindValue($identifier, $this->gross_weight, PDO::PARAM_STR);
                         break;
                     case 'qty':
                         $stmt->bindValue($identifier, $this->qty, PDO::PARAM_INT);
@@ -986,12 +1078,18 @@ abstract class PackingListLine implements ActiveRecordInterface
                 return $this->getProformaInvoiceLineId();
                 break;
             case 3:
-                return $this->getQty();
+                return $this->getNetWeight();
                 break;
             case 4:
-                return $this->getCreatedAt();
+                return $this->getGrossWeight();
                 break;
             case 5:
+                return $this->getQty();
+                break;
+            case 6:
+                return $this->getCreatedAt();
+                break;
+            case 7:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1027,16 +1125,18 @@ abstract class PackingListLine implements ActiveRecordInterface
             $keys[0] => $this->getId(),
             $keys[1] => $this->getPackingListId(),
             $keys[2] => $this->getProformaInvoiceLineId(),
-            $keys[3] => $this->getQty(),
-            $keys[4] => $this->getCreatedAt(),
-            $keys[5] => $this->getUpdatedAt(),
+            $keys[3] => $this->getNetWeight(),
+            $keys[4] => $this->getGrossWeight(),
+            $keys[5] => $this->getQty(),
+            $keys[6] => $this->getCreatedAt(),
+            $keys[7] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[4]] instanceof \DateTimeInterface) {
-            $result[$keys[4]] = $result[$keys[4]]->format('c');
+        if ($result[$keys[6]] instanceof \DateTimeInterface) {
+            $result[$keys[6]] = $result[$keys[6]]->format('c');
         }
 
-        if ($result[$keys[5]] instanceof \DateTimeInterface) {
-            $result[$keys[5]] = $result[$keys[5]]->format('c');
+        if ($result[$keys[7]] instanceof \DateTimeInterface) {
+            $result[$keys[7]] = $result[$keys[7]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1119,12 +1219,18 @@ abstract class PackingListLine implements ActiveRecordInterface
                 $this->setProformaInvoiceLineId($value);
                 break;
             case 3:
-                $this->setQty($value);
+                $this->setNetWeight($value);
                 break;
             case 4:
-                $this->setCreatedAt($value);
+                $this->setGrossWeight($value);
                 break;
             case 5:
+                $this->setQty($value);
+                break;
+            case 6:
+                $this->setCreatedAt($value);
+                break;
+            case 7:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1163,13 +1269,19 @@ abstract class PackingListLine implements ActiveRecordInterface
             $this->setProformaInvoiceLineId($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setQty($arr[$keys[3]]);
+            $this->setNetWeight($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setCreatedAt($arr[$keys[4]]);
+            $this->setGrossWeight($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setUpdatedAt($arr[$keys[5]]);
+            $this->setQty($arr[$keys[5]]);
+        }
+        if (array_key_exists($keys[6], $arr)) {
+            $this->setCreatedAt($arr[$keys[6]]);
+        }
+        if (array_key_exists($keys[7], $arr)) {
+            $this->setUpdatedAt($arr[$keys[7]]);
         }
     }
 
@@ -1220,6 +1332,12 @@ abstract class PackingListLine implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PackingListLineTableMap::COL_PROFORMA_INVOICE_LINE_ID)) {
             $criteria->add(PackingListLineTableMap::COL_PROFORMA_INVOICE_LINE_ID, $this->proforma_invoice_line_id);
+        }
+        if ($this->isColumnModified(PackingListLineTableMap::COL_NET_WEIGHT)) {
+            $criteria->add(PackingListLineTableMap::COL_NET_WEIGHT, $this->net_weight);
+        }
+        if ($this->isColumnModified(PackingListLineTableMap::COL_GROSS_WEIGHT)) {
+            $criteria->add(PackingListLineTableMap::COL_GROSS_WEIGHT, $this->gross_weight);
         }
         if ($this->isColumnModified(PackingListLineTableMap::COL_QTY)) {
             $criteria->add(PackingListLineTableMap::COL_QTY, $this->qty);
@@ -1318,6 +1436,8 @@ abstract class PackingListLine implements ActiveRecordInterface
     {
         $copyObj->setPackingListId($this->getPackingListId());
         $copyObj->setProformaInvoiceLineId($this->getProformaInvoiceLineId());
+        $copyObj->setNetWeight($this->getNetWeight());
+        $copyObj->setGrossWeight($this->getGrossWeight());
         $copyObj->setQty($this->getQty());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
@@ -1467,6 +1587,8 @@ abstract class PackingListLine implements ActiveRecordInterface
         $this->id = null;
         $this->packing_list_id = null;
         $this->proforma_invoice_line_id = null;
+        $this->net_weight = null;
+        $this->gross_weight = null;
         $this->qty = null;
         $this->created_at = null;
         $this->updated_at = null;

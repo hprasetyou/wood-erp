@@ -23,6 +23,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingListLineQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildPackingListLineQuery orderByPackingListId($order = Criteria::ASC) Order by the packing_list_id column
  * @method     ChildPackingListLineQuery orderByProformaInvoiceLineId($order = Criteria::ASC) Order by the proforma_invoice_line_id column
+ * @method     ChildPackingListLineQuery orderByNetWeight($order = Criteria::ASC) Order by the net_weight column
+ * @method     ChildPackingListLineQuery orderByGrossWeight($order = Criteria::ASC) Order by the gross_weight column
  * @method     ChildPackingListLineQuery orderByQty($order = Criteria::ASC) Order by the qty column
  * @method     ChildPackingListLineQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildPackingListLineQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
@@ -30,6 +32,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingListLineQuery groupById() Group by the id column
  * @method     ChildPackingListLineQuery groupByPackingListId() Group by the packing_list_id column
  * @method     ChildPackingListLineQuery groupByProformaInvoiceLineId() Group by the proforma_invoice_line_id column
+ * @method     ChildPackingListLineQuery groupByNetWeight() Group by the net_weight column
+ * @method     ChildPackingListLineQuery groupByGrossWeight() Group by the gross_weight column
  * @method     ChildPackingListLineQuery groupByQty() Group by the qty column
  * @method     ChildPackingListLineQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildPackingListLineQuery groupByUpdatedAt() Group by the updated_at column
@@ -70,6 +74,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingListLine findOneById(int $id) Return the first ChildPackingListLine filtered by the id column
  * @method     ChildPackingListLine findOneByPackingListId(int $packing_list_id) Return the first ChildPackingListLine filtered by the packing_list_id column
  * @method     ChildPackingListLine findOneByProformaInvoiceLineId(int $proforma_invoice_line_id) Return the first ChildPackingListLine filtered by the proforma_invoice_line_id column
+ * @method     ChildPackingListLine findOneByNetWeight(double $net_weight) Return the first ChildPackingListLine filtered by the net_weight column
+ * @method     ChildPackingListLine findOneByGrossWeight(double $gross_weight) Return the first ChildPackingListLine filtered by the gross_weight column
  * @method     ChildPackingListLine findOneByQty(int $qty) Return the first ChildPackingListLine filtered by the qty column
  * @method     ChildPackingListLine findOneByCreatedAt(string $created_at) Return the first ChildPackingListLine filtered by the created_at column
  * @method     ChildPackingListLine findOneByUpdatedAt(string $updated_at) Return the first ChildPackingListLine filtered by the updated_at column *
@@ -80,6 +86,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingListLine requireOneById(int $id) Return the first ChildPackingListLine filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingListLine requireOneByPackingListId(int $packing_list_id) Return the first ChildPackingListLine filtered by the packing_list_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingListLine requireOneByProformaInvoiceLineId(int $proforma_invoice_line_id) Return the first ChildPackingListLine filtered by the proforma_invoice_line_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPackingListLine requireOneByNetWeight(double $net_weight) Return the first ChildPackingListLine filtered by the net_weight column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPackingListLine requireOneByGrossWeight(double $gross_weight) Return the first ChildPackingListLine filtered by the gross_weight column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingListLine requireOneByQty(int $qty) Return the first ChildPackingListLine filtered by the qty column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingListLine requireOneByCreatedAt(string $created_at) Return the first ChildPackingListLine filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingListLine requireOneByUpdatedAt(string $updated_at) Return the first ChildPackingListLine filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -88,6 +96,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingListLine[]|ObjectCollection findById(int $id) Return ChildPackingListLine objects filtered by the id column
  * @method     ChildPackingListLine[]|ObjectCollection findByPackingListId(int $packing_list_id) Return ChildPackingListLine objects filtered by the packing_list_id column
  * @method     ChildPackingListLine[]|ObjectCollection findByProformaInvoiceLineId(int $proforma_invoice_line_id) Return ChildPackingListLine objects filtered by the proforma_invoice_line_id column
+ * @method     ChildPackingListLine[]|ObjectCollection findByNetWeight(double $net_weight) Return ChildPackingListLine objects filtered by the net_weight column
+ * @method     ChildPackingListLine[]|ObjectCollection findByGrossWeight(double $gross_weight) Return ChildPackingListLine objects filtered by the gross_weight column
  * @method     ChildPackingListLine[]|ObjectCollection findByQty(int $qty) Return ChildPackingListLine objects filtered by the qty column
  * @method     ChildPackingListLine[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildPackingListLine objects filtered by the created_at column
  * @method     ChildPackingListLine[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildPackingListLine objects filtered by the updated_at column
@@ -189,7 +199,7 @@ abstract class PackingListLineQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, packing_list_id, proforma_invoice_line_id, qty, created_at, updated_at FROM packing_list_line WHERE id = :p0';
+        $sql = 'SELECT id, packing_list_id, proforma_invoice_line_id, net_weight, gross_weight, qty, created_at, updated_at FROM packing_list_line WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -404,6 +414,88 @@ abstract class PackingListLineQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PackingListLineTableMap::COL_PROFORMA_INVOICE_LINE_ID, $proformaInvoiceLineId, $comparison);
+    }
+
+    /**
+     * Filter the query on the net_weight column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByNetWeight(1234); // WHERE net_weight = 1234
+     * $query->filterByNetWeight(array(12, 34)); // WHERE net_weight IN (12, 34)
+     * $query->filterByNetWeight(array('min' => 12)); // WHERE net_weight > 12
+     * </code>
+     *
+     * @param     mixed $netWeight The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPackingListLineQuery The current query, for fluid interface
+     */
+    public function filterByNetWeight($netWeight = null, $comparison = null)
+    {
+        if (is_array($netWeight)) {
+            $useMinMax = false;
+            if (isset($netWeight['min'])) {
+                $this->addUsingAlias(PackingListLineTableMap::COL_NET_WEIGHT, $netWeight['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($netWeight['max'])) {
+                $this->addUsingAlias(PackingListLineTableMap::COL_NET_WEIGHT, $netWeight['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PackingListLineTableMap::COL_NET_WEIGHT, $netWeight, $comparison);
+    }
+
+    /**
+     * Filter the query on the gross_weight column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByGrossWeight(1234); // WHERE gross_weight = 1234
+     * $query->filterByGrossWeight(array(12, 34)); // WHERE gross_weight IN (12, 34)
+     * $query->filterByGrossWeight(array('min' => 12)); // WHERE gross_weight > 12
+     * </code>
+     *
+     * @param     mixed $grossWeight The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPackingListLineQuery The current query, for fluid interface
+     */
+    public function filterByGrossWeight($grossWeight = null, $comparison = null)
+    {
+        if (is_array($grossWeight)) {
+            $useMinMax = false;
+            if (isset($grossWeight['min'])) {
+                $this->addUsingAlias(PackingListLineTableMap::COL_GROSS_WEIGHT, $grossWeight['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($grossWeight['max'])) {
+                $this->addUsingAlias(PackingListLineTableMap::COL_GROSS_WEIGHT, $grossWeight['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PackingListLineTableMap::COL_GROSS_WEIGHT, $grossWeight, $comparison);
     }
 
     /**

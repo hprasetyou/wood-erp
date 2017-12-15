@@ -59,7 +59,7 @@ class PackingListLineTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 6;
+    const NUM_COLUMNS = 8;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class PackingListLineTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 6;
+    const NUM_HYDRATE_COLUMNS = 8;
 
     /**
      * the column name for the id field
@@ -85,6 +85,16 @@ class PackingListLineTableMap extends TableMap
      * the column name for the proforma_invoice_line_id field
      */
     const COL_PROFORMA_INVOICE_LINE_ID = 'packing_list_line.proforma_invoice_line_id';
+
+    /**
+     * the column name for the net_weight field
+     */
+    const COL_NET_WEIGHT = 'packing_list_line.net_weight';
+
+    /**
+     * the column name for the gross_weight field
+     */
+    const COL_GROSS_WEIGHT = 'packing_list_line.gross_weight';
 
     /**
      * the column name for the qty field
@@ -113,11 +123,11 @@ class PackingListLineTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'PackingListId', 'ProformaInvoiceLineId', 'Qty', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'packingListId', 'proformaInvoiceLineId', 'qty', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(PackingListLineTableMap::COL_ID, PackingListLineTableMap::COL_PACKING_LIST_ID, PackingListLineTableMap::COL_PROFORMA_INVOICE_LINE_ID, PackingListLineTableMap::COL_QTY, PackingListLineTableMap::COL_CREATED_AT, PackingListLineTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'packing_list_id', 'proforma_invoice_line_id', 'qty', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Id', 'PackingListId', 'ProformaInvoiceLineId', 'NetWeight', 'GrossWeight', 'Qty', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'packingListId', 'proformaInvoiceLineId', 'netWeight', 'grossWeight', 'qty', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(PackingListLineTableMap::COL_ID, PackingListLineTableMap::COL_PACKING_LIST_ID, PackingListLineTableMap::COL_PROFORMA_INVOICE_LINE_ID, PackingListLineTableMap::COL_NET_WEIGHT, PackingListLineTableMap::COL_GROSS_WEIGHT, PackingListLineTableMap::COL_QTY, PackingListLineTableMap::COL_CREATED_AT, PackingListLineTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'packing_list_id', 'proforma_invoice_line_id', 'net_weight', 'gross_weight', 'qty', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -127,11 +137,11 @@ class PackingListLineTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'PackingListId' => 1, 'ProformaInvoiceLineId' => 2, 'Qty' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'packingListId' => 1, 'proformaInvoiceLineId' => 2, 'qty' => 3, 'createdAt' => 4, 'updatedAt' => 5, ),
-        self::TYPE_COLNAME       => array(PackingListLineTableMap::COL_ID => 0, PackingListLineTableMap::COL_PACKING_LIST_ID => 1, PackingListLineTableMap::COL_PROFORMA_INVOICE_LINE_ID => 2, PackingListLineTableMap::COL_QTY => 3, PackingListLineTableMap::COL_CREATED_AT => 4, PackingListLineTableMap::COL_UPDATED_AT => 5, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'packing_list_id' => 1, 'proforma_invoice_line_id' => 2, 'qty' => 3, 'created_at' => 4, 'updated_at' => 5, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'PackingListId' => 1, 'ProformaInvoiceLineId' => 2, 'NetWeight' => 3, 'GrossWeight' => 4, 'Qty' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'packingListId' => 1, 'proformaInvoiceLineId' => 2, 'netWeight' => 3, 'grossWeight' => 4, 'qty' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
+        self::TYPE_COLNAME       => array(PackingListLineTableMap::COL_ID => 0, PackingListLineTableMap::COL_PACKING_LIST_ID => 1, PackingListLineTableMap::COL_PROFORMA_INVOICE_LINE_ID => 2, PackingListLineTableMap::COL_NET_WEIGHT => 3, PackingListLineTableMap::COL_GROSS_WEIGHT => 4, PackingListLineTableMap::COL_QTY => 5, PackingListLineTableMap::COL_CREATED_AT => 6, PackingListLineTableMap::COL_UPDATED_AT => 7, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'packing_list_id' => 1, 'proforma_invoice_line_id' => 2, 'net_weight' => 3, 'gross_weight' => 4, 'qty' => 5, 'created_at' => 6, 'updated_at' => 7, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -154,6 +164,8 @@ class PackingListLineTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addForeignKey('packing_list_id', 'PackingListId', 'INTEGER', 'packing_list', 'id', true, null, null);
         $this->addForeignKey('proforma_invoice_line_id', 'ProformaInvoiceLineId', 'INTEGER', 'proforma_invoice_line', 'id', true, null, null);
+        $this->addColumn('net_weight', 'NetWeight', 'FLOAT', false, null, null);
+        $this->addColumn('gross_weight', 'GrossWeight', 'FLOAT', false, null, null);
         $this->addColumn('qty', 'Qty', 'INTEGER', false, null, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
@@ -324,6 +336,8 @@ class PackingListLineTableMap extends TableMap
             $criteria->addSelectColumn(PackingListLineTableMap::COL_ID);
             $criteria->addSelectColumn(PackingListLineTableMap::COL_PACKING_LIST_ID);
             $criteria->addSelectColumn(PackingListLineTableMap::COL_PROFORMA_INVOICE_LINE_ID);
+            $criteria->addSelectColumn(PackingListLineTableMap::COL_NET_WEIGHT);
+            $criteria->addSelectColumn(PackingListLineTableMap::COL_GROSS_WEIGHT);
             $criteria->addSelectColumn(PackingListLineTableMap::COL_QTY);
             $criteria->addSelectColumn(PackingListLineTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(PackingListLineTableMap::COL_UPDATED_AT);
@@ -331,6 +345,8 @@ class PackingListLineTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.packing_list_id');
             $criteria->addSelectColumn($alias . '.proforma_invoice_line_id');
+            $criteria->addSelectColumn($alias . '.net_weight');
+            $criteria->addSelectColumn($alias . '.gross_weight');
             $criteria->addSelectColumn($alias . '.qty');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');

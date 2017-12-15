@@ -29,8 +29,6 @@ class Manage_packinglistlines extends MY_Controller{
     ->withColumn('Product.IsFlegt')
     ->withColumn('ProformaInvoice.Name')
     ->withColumn('ProformaInvoiceLine.CubicDimension')
-    ->withColumn('ProformaInvoiceLine.TotalCubicDimension')
-    ->withColumn('ProformaInvoiceLine.Qty')
     ->withColumn('ProformaInvoiceLine.QtyPerPack')
     ->withColumn('ProformaInvoiceLine.Description')
     ->filterByPackingListId($this->input->get('packing_list'));
@@ -82,6 +80,8 @@ class Manage_packinglistlines extends MY_Controller{
       $qty = $this->input->post('PiLineQty') ;
       foreach ($this->input->post('PiLineId') as $key => $value) {
         # code...
+        $piline = ProformaInvoiceLineQuery::create()
+        ->findPk($value);
         $this->form = array(
          'PackingListId' => array(
            'value' =>  $this->input->get('packing_list')
@@ -91,6 +91,12 @@ class Manage_packinglistlines extends MY_Controller{
          ),
          'Qty' => array(
            'value'=> $qty[$key]
+         ),
+         'NetWeight' => array(
+           'value'=> $piline->getProduct()->getNetWeight()
+         ),
+         'GrossWeight' => array(
+           'value'=> $piline->getProduct()->getGrossWeight()
          ),
         );
         $plline = PackingListLineQuery::create()

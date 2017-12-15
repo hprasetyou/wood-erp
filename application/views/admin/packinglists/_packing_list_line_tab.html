@@ -48,9 +48,12 @@
   <table data-controller="manage_packinglistlines" data-domain='{"packing_list":"{{packinglists.Id}}"}' class="table table-striped table-hover " id="table_PackingListLine">
       <thead>
         <tr>
+          <th data-fieldname="id">#</th>
           <th data-fieldname="pi_name">{{res.string.proforma_invoice}}</th>
           <th data-fieldname="product_name">{{res.string.cust_art_nbr}}</th>
           <th data-fieldname="description">{{res.string.description}}</th>
+          <th data-fieldname="net_weight">{{res.string.net_weight}}</th>
+          <th data-fieldname="gross_weight">{{res.string.gross_weight}}</th>
           <th data-fieldname="qty">{{res.string.qty}}</th>
           <th data-fieldname="pack">{{res.string.qty_of_pack}}</th>
           <th data-fieldtype="cbm" data-fieldname="cubic_dimension">{{res.string.cbm_per_piece}}</th>
