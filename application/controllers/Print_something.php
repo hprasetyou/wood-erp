@@ -11,6 +11,11 @@ class Print_something extends CI_Controller
     $this->load->view('upload_form', array('error' => ' ' ));
   }
 
+  function test_email(){
+    $this->load->library('Mailer');
+    $this->mailer->send_email();
+  }
+
   public function do_upload()
   {
           $config['upload_path']          = 'public/upload/images';
