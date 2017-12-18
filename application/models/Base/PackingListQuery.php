@@ -26,12 +26,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingListQuery orderByLoadingDate($order = Criteria::ASC) Order by the loading_date column
  * @method     ChildPackingListQuery orderByCustomerId($order = Criteria::ASC) Order by the customer_id column
  * @method     ChildPackingListQuery orderByOceanVessel($order = Criteria::ASC) Order by the ocean_vessel column
- * @method     ChildPackingListQuery orderBySrcLoc($order = Criteria::ASC) Order by the src_loc column
  * @method     ChildPackingListQuery orderByBlNo($order = Criteria::ASC) Order by the bl_no column
  * @method     ChildPackingListQuery orderByGoodsDescription($order = Criteria::ASC) Order by the goods_description column
  * @method     ChildPackingListQuery orderByCntrNo($order = Criteria::ASC) Order by the cntr_no column
  * @method     ChildPackingListQuery orderBySealNo($order = Criteria::ASC) Order by the seal_no column
  * @method     ChildPackingListQuery orderByPod($order = Criteria::ASC) Order by the pod column
+ * @method     ChildPackingListQuery orderByShipping($order = Criteria::ASC) Order by the shipping column
+ * @method     ChildPackingListQuery orderByPol($order = Criteria::ASC) Order by the pol column
  * @method     ChildPackingListQuery orderByEtdSrg($order = Criteria::ASC) Order by the etd_srg column
  * @method     ChildPackingListQuery orderByRefDoc($order = Criteria::ASC) Order by the ref_doc column
  * @method     ChildPackingListQuery orderByState($order = Criteria::ASC) Order by the state column
@@ -47,12 +48,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingListQuery groupByLoadingDate() Group by the loading_date column
  * @method     ChildPackingListQuery groupByCustomerId() Group by the customer_id column
  * @method     ChildPackingListQuery groupByOceanVessel() Group by the ocean_vessel column
- * @method     ChildPackingListQuery groupBySrcLoc() Group by the src_loc column
  * @method     ChildPackingListQuery groupByBlNo() Group by the bl_no column
  * @method     ChildPackingListQuery groupByGoodsDescription() Group by the goods_description column
  * @method     ChildPackingListQuery groupByCntrNo() Group by the cntr_no column
  * @method     ChildPackingListQuery groupBySealNo() Group by the seal_no column
  * @method     ChildPackingListQuery groupByPod() Group by the pod column
+ * @method     ChildPackingListQuery groupByShipping() Group by the shipping column
+ * @method     ChildPackingListQuery groupByPol() Group by the pol column
  * @method     ChildPackingListQuery groupByEtdSrg() Group by the etd_srg column
  * @method     ChildPackingListQuery groupByRefDoc() Group by the ref_doc column
  * @method     ChildPackingListQuery groupByState() Group by the state column
@@ -101,12 +103,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingList findOneByLoadingDate(string $loading_date) Return the first ChildPackingList filtered by the loading_date column
  * @method     ChildPackingList findOneByCustomerId(int $customer_id) Return the first ChildPackingList filtered by the customer_id column
  * @method     ChildPackingList findOneByOceanVessel(string $ocean_vessel) Return the first ChildPackingList filtered by the ocean_vessel column
- * @method     ChildPackingList findOneBySrcLoc(string $src_loc) Return the first ChildPackingList filtered by the src_loc column
  * @method     ChildPackingList findOneByBlNo(string $bl_no) Return the first ChildPackingList filtered by the bl_no column
  * @method     ChildPackingList findOneByGoodsDescription(string $goods_description) Return the first ChildPackingList filtered by the goods_description column
  * @method     ChildPackingList findOneByCntrNo(string $cntr_no) Return the first ChildPackingList filtered by the cntr_no column
  * @method     ChildPackingList findOneBySealNo(string $seal_no) Return the first ChildPackingList filtered by the seal_no column
  * @method     ChildPackingList findOneByPod(string $pod) Return the first ChildPackingList filtered by the pod column
+ * @method     ChildPackingList findOneByShipping(string $shipping) Return the first ChildPackingList filtered by the shipping column
+ * @method     ChildPackingList findOneByPol(string $pol) Return the first ChildPackingList filtered by the pol column
  * @method     ChildPackingList findOneByEtdSrg(string $etd_srg) Return the first ChildPackingList filtered by the etd_srg column
  * @method     ChildPackingList findOneByRefDoc(string $ref_doc) Return the first ChildPackingList filtered by the ref_doc column
  * @method     ChildPackingList findOneByState(string $state) Return the first ChildPackingList filtered by the state column
@@ -125,12 +128,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingList requireOneByLoadingDate(string $loading_date) Return the first ChildPackingList filtered by the loading_date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingList requireOneByCustomerId(int $customer_id) Return the first ChildPackingList filtered by the customer_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingList requireOneByOceanVessel(string $ocean_vessel) Return the first ChildPackingList filtered by the ocean_vessel column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPackingList requireOneBySrcLoc(string $src_loc) Return the first ChildPackingList filtered by the src_loc column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingList requireOneByBlNo(string $bl_no) Return the first ChildPackingList filtered by the bl_no column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingList requireOneByGoodsDescription(string $goods_description) Return the first ChildPackingList filtered by the goods_description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingList requireOneByCntrNo(string $cntr_no) Return the first ChildPackingList filtered by the cntr_no column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingList requireOneBySealNo(string $seal_no) Return the first ChildPackingList filtered by the seal_no column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingList requireOneByPod(string $pod) Return the first ChildPackingList filtered by the pod column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPackingList requireOneByShipping(string $shipping) Return the first ChildPackingList filtered by the shipping column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPackingList requireOneByPol(string $pol) Return the first ChildPackingList filtered by the pol column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingList requireOneByEtdSrg(string $etd_srg) Return the first ChildPackingList filtered by the etd_srg column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingList requireOneByRefDoc(string $ref_doc) Return the first ChildPackingList filtered by the ref_doc column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingList requireOneByState(string $state) Return the first ChildPackingList filtered by the state column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -147,12 +151,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingList[]|ObjectCollection findByLoadingDate(string $loading_date) Return ChildPackingList objects filtered by the loading_date column
  * @method     ChildPackingList[]|ObjectCollection findByCustomerId(int $customer_id) Return ChildPackingList objects filtered by the customer_id column
  * @method     ChildPackingList[]|ObjectCollection findByOceanVessel(string $ocean_vessel) Return ChildPackingList objects filtered by the ocean_vessel column
- * @method     ChildPackingList[]|ObjectCollection findBySrcLoc(string $src_loc) Return ChildPackingList objects filtered by the src_loc column
  * @method     ChildPackingList[]|ObjectCollection findByBlNo(string $bl_no) Return ChildPackingList objects filtered by the bl_no column
  * @method     ChildPackingList[]|ObjectCollection findByGoodsDescription(string $goods_description) Return ChildPackingList objects filtered by the goods_description column
  * @method     ChildPackingList[]|ObjectCollection findByCntrNo(string $cntr_no) Return ChildPackingList objects filtered by the cntr_no column
  * @method     ChildPackingList[]|ObjectCollection findBySealNo(string $seal_no) Return ChildPackingList objects filtered by the seal_no column
  * @method     ChildPackingList[]|ObjectCollection findByPod(string $pod) Return ChildPackingList objects filtered by the pod column
+ * @method     ChildPackingList[]|ObjectCollection findByShipping(string $shipping) Return ChildPackingList objects filtered by the shipping column
+ * @method     ChildPackingList[]|ObjectCollection findByPol(string $pol) Return ChildPackingList objects filtered by the pol column
  * @method     ChildPackingList[]|ObjectCollection findByEtdSrg(string $etd_srg) Return ChildPackingList objects filtered by the etd_srg column
  * @method     ChildPackingList[]|ObjectCollection findByRefDoc(string $ref_doc) Return ChildPackingList objects filtered by the ref_doc column
  * @method     ChildPackingList[]|ObjectCollection findByState(string $state) Return ChildPackingList objects filtered by the state column
@@ -259,7 +264,7 @@ abstract class PackingListQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, date, loading_date, customer_id, ocean_vessel, src_loc, bl_no, goods_description, cntr_no, seal_no, pod, etd_srg, ref_doc, state, total_qty, total_qty_of_pack, total_cubic_dimension, created_at, updated_at FROM packing_list WHERE id = :p0';
+        $sql = 'SELECT id, name, date, loading_date, customer_id, ocean_vessel, bl_no, goods_description, cntr_no, seal_no, pod, shipping, pol, etd_srg, ref_doc, state, total_qty, total_qty_of_pack, total_cubic_dimension, created_at, updated_at FROM packing_list WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -570,31 +575,6 @@ abstract class PackingListQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the src_loc column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterBySrcLoc('fooValue');   // WHERE src_loc = 'fooValue'
-     * $query->filterBySrcLoc('%fooValue%', Criteria::LIKE); // WHERE src_loc LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $srcLoc The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildPackingListQuery The current query, for fluid interface
-     */
-    public function filterBySrcLoc($srcLoc = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($srcLoc)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(PackingListTableMap::COL_SRC_LOC, $srcLoc, $comparison);
-    }
-
-    /**
      * Filter the query on the bl_no column
      *
      * Example usage:
@@ -717,6 +697,56 @@ abstract class PackingListQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PackingListTableMap::COL_POD, $pod, $comparison);
+    }
+
+    /**
+     * Filter the query on the shipping column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByShipping('fooValue');   // WHERE shipping = 'fooValue'
+     * $query->filterByShipping('%fooValue%', Criteria::LIKE); // WHERE shipping LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $shipping The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPackingListQuery The current query, for fluid interface
+     */
+    public function filterByShipping($shipping = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($shipping)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PackingListTableMap::COL_SHIPPING, $shipping, $comparison);
+    }
+
+    /**
+     * Filter the query on the pol column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByPol('fooValue');   // WHERE pol = 'fooValue'
+     * $query->filterByPol('%fooValue%', Criteria::LIKE); // WHERE pol LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $pol The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPackingListQuery The current query, for fluid interface
+     */
+    public function filterByPol($pol = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($pol)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PackingListTableMap::COL_POL, $pol, $comparison);
     }
 
     /**

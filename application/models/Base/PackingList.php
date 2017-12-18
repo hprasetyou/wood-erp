@@ -111,13 +111,6 @@ abstract class PackingList implements ActiveRecordInterface
     protected $ocean_vessel;
 
     /**
-     * The value for the src_loc field.
-     *
-     * @var        string
-     */
-    protected $src_loc;
-
-    /**
      * The value for the bl_no field.
      *
      * @var        string
@@ -151,6 +144,20 @@ abstract class PackingList implements ActiveRecordInterface
      * @var        string
      */
     protected $pod;
+
+    /**
+     * The value for the shipping field.
+     *
+     * @var        string
+     */
+    protected $shipping;
+
+    /**
+     * The value for the pol field.
+     *
+     * @var        string
+     */
+    protected $pol;
 
     /**
      * The value for the etd_srg field.
@@ -555,16 +562,6 @@ abstract class PackingList implements ActiveRecordInterface
     }
 
     /**
-     * Get the [src_loc] column value.
-     *
-     * @return string
-     */
-    public function getSrcLoc()
-    {
-        return $this->src_loc;
-    }
-
-    /**
      * Get the [bl_no] column value.
      *
      * @return string
@@ -612,6 +609,26 @@ abstract class PackingList implements ActiveRecordInterface
     public function getPod()
     {
         return $this->pod;
+    }
+
+    /**
+     * Get the [shipping] column value.
+     *
+     * @return string
+     */
+    public function getShipping()
+    {
+        return $this->shipping;
+    }
+
+    /**
+     * Get the [pol] column value.
+     *
+     * @return string
+     */
+    public function getPol()
+    {
+        return $this->pol;
     }
 
     /**
@@ -839,26 +856,6 @@ abstract class PackingList implements ActiveRecordInterface
     } // setOceanVessel()
 
     /**
-     * Set the value of [src_loc] column.
-     *
-     * @param string $v new value
-     * @return $this|\PackingList The current object (for fluent API support)
-     */
-    public function setSrcLoc($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->src_loc !== $v) {
-            $this->src_loc = $v;
-            $this->modifiedColumns[PackingListTableMap::COL_SRC_LOC] = true;
-        }
-
-        return $this;
-    } // setSrcLoc()
-
-    /**
      * Set the value of [bl_no] column.
      *
      * @param string $v new value
@@ -957,6 +954,46 @@ abstract class PackingList implements ActiveRecordInterface
 
         return $this;
     } // setPod()
+
+    /**
+     * Set the value of [shipping] column.
+     *
+     * @param string $v new value
+     * @return $this|\PackingList The current object (for fluent API support)
+     */
+    public function setShipping($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->shipping !== $v) {
+            $this->shipping = $v;
+            $this->modifiedColumns[PackingListTableMap::COL_SHIPPING] = true;
+        }
+
+        return $this;
+    } // setShipping()
+
+    /**
+     * Set the value of [pol] column.
+     *
+     * @param string $v new value
+     * @return $this|\PackingList The current object (for fluent API support)
+     */
+    public function setPol($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->pol !== $v) {
+            $this->pol = $v;
+            $this->modifiedColumns[PackingListTableMap::COL_POL] = true;
+        }
+
+        return $this;
+    } // setPol()
 
     /**
      * Set the value of [etd_srg] column.
@@ -1182,49 +1219,52 @@ abstract class PackingList implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : PackingListTableMap::translateFieldName('OceanVessel', TableMap::TYPE_PHPNAME, $indexType)];
             $this->ocean_vessel = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PackingListTableMap::translateFieldName('SrcLoc', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->src_loc = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PackingListTableMap::translateFieldName('BlNo', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PackingListTableMap::translateFieldName('BlNo', TableMap::TYPE_PHPNAME, $indexType)];
             $this->bl_no = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PackingListTableMap::translateFieldName('GoodsDescription', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PackingListTableMap::translateFieldName('GoodsDescription', TableMap::TYPE_PHPNAME, $indexType)];
             $this->goods_description = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PackingListTableMap::translateFieldName('CntrNo', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PackingListTableMap::translateFieldName('CntrNo', TableMap::TYPE_PHPNAME, $indexType)];
             $this->cntr_no = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PackingListTableMap::translateFieldName('SealNo', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PackingListTableMap::translateFieldName('SealNo', TableMap::TYPE_PHPNAME, $indexType)];
             $this->seal_no = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : PackingListTableMap::translateFieldName('Pod', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PackingListTableMap::translateFieldName('Pod', TableMap::TYPE_PHPNAME, $indexType)];
             $this->pod = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : PackingListTableMap::translateFieldName('EtdSrg', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : PackingListTableMap::translateFieldName('Shipping', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->shipping = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : PackingListTableMap::translateFieldName('Pol', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->pol = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : PackingListTableMap::translateFieldName('EtdSrg', TableMap::TYPE_PHPNAME, $indexType)];
             $this->etd_srg = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : PackingListTableMap::translateFieldName('RefDoc', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : PackingListTableMap::translateFieldName('RefDoc', TableMap::TYPE_PHPNAME, $indexType)];
             $this->ref_doc = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : PackingListTableMap::translateFieldName('State', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : PackingListTableMap::translateFieldName('State', TableMap::TYPE_PHPNAME, $indexType)];
             $this->state = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : PackingListTableMap::translateFieldName('TotalQty', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : PackingListTableMap::translateFieldName('TotalQty', TableMap::TYPE_PHPNAME, $indexType)];
             $this->total_qty = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : PackingListTableMap::translateFieldName('TotalQtyOfPack', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : PackingListTableMap::translateFieldName('TotalQtyOfPack', TableMap::TYPE_PHPNAME, $indexType)];
             $this->total_qty_of_pack = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : PackingListTableMap::translateFieldName('TotalCubicDimension', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 18 + $startcol : PackingListTableMap::translateFieldName('TotalCubicDimension', TableMap::TYPE_PHPNAME, $indexType)];
             $this->total_cubic_dimension = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 18 + $startcol : PackingListTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 19 + $startcol : PackingListTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 19 + $startcol : PackingListTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 20 + $startcol : PackingListTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -1237,7 +1277,7 @@ abstract class PackingList implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 20; // 20 = PackingListTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 21; // 21 = PackingListTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\PackingList'), 0, $e);
@@ -1491,9 +1531,6 @@ abstract class PackingList implements ActiveRecordInterface
         if ($this->isColumnModified(PackingListTableMap::COL_OCEAN_VESSEL)) {
             $modifiedColumns[':p' . $index++]  = 'ocean_vessel';
         }
-        if ($this->isColumnModified(PackingListTableMap::COL_SRC_LOC)) {
-            $modifiedColumns[':p' . $index++]  = 'src_loc';
-        }
         if ($this->isColumnModified(PackingListTableMap::COL_BL_NO)) {
             $modifiedColumns[':p' . $index++]  = 'bl_no';
         }
@@ -1508,6 +1545,12 @@ abstract class PackingList implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PackingListTableMap::COL_POD)) {
             $modifiedColumns[':p' . $index++]  = 'pod';
+        }
+        if ($this->isColumnModified(PackingListTableMap::COL_SHIPPING)) {
+            $modifiedColumns[':p' . $index++]  = 'shipping';
+        }
+        if ($this->isColumnModified(PackingListTableMap::COL_POL)) {
+            $modifiedColumns[':p' . $index++]  = 'pol';
         }
         if ($this->isColumnModified(PackingListTableMap::COL_ETD_SRG)) {
             $modifiedColumns[':p' . $index++]  = 'etd_srg';
@@ -1562,9 +1605,6 @@ abstract class PackingList implements ActiveRecordInterface
                     case 'ocean_vessel':
                         $stmt->bindValue($identifier, $this->ocean_vessel, PDO::PARAM_STR);
                         break;
-                    case 'src_loc':
-                        $stmt->bindValue($identifier, $this->src_loc, PDO::PARAM_STR);
-                        break;
                     case 'bl_no':
                         $stmt->bindValue($identifier, $this->bl_no, PDO::PARAM_STR);
                         break;
@@ -1579,6 +1619,12 @@ abstract class PackingList implements ActiveRecordInterface
                         break;
                     case 'pod':
                         $stmt->bindValue($identifier, $this->pod, PDO::PARAM_STR);
+                        break;
+                    case 'shipping':
+                        $stmt->bindValue($identifier, $this->shipping, PDO::PARAM_STR);
+                        break;
+                    case 'pol':
+                        $stmt->bindValue($identifier, $this->pol, PDO::PARAM_STR);
                         break;
                     case 'etd_srg':
                         $stmt->bindValue($identifier, $this->etd_srg, PDO::PARAM_STR);
@@ -1685,45 +1731,48 @@ abstract class PackingList implements ActiveRecordInterface
                 return $this->getOceanVessel();
                 break;
             case 6:
-                return $this->getSrcLoc();
-                break;
-            case 7:
                 return $this->getBlNo();
                 break;
-            case 8:
+            case 7:
                 return $this->getGoodsDescription();
                 break;
-            case 9:
+            case 8:
                 return $this->getCntrNo();
                 break;
-            case 10:
+            case 9:
                 return $this->getSealNo();
                 break;
-            case 11:
+            case 10:
                 return $this->getPod();
                 break;
+            case 11:
+                return $this->getShipping();
+                break;
             case 12:
-                return $this->getEtdSrg();
+                return $this->getPol();
                 break;
             case 13:
-                return $this->getRefDoc();
+                return $this->getEtdSrg();
                 break;
             case 14:
-                return $this->getState();
+                return $this->getRefDoc();
                 break;
             case 15:
-                return $this->getTotalQty();
+                return $this->getState();
                 break;
             case 16:
-                return $this->getTotalQtyOfPack();
+                return $this->getTotalQty();
                 break;
             case 17:
-                return $this->getTotalCubicDimension();
+                return $this->getTotalQtyOfPack();
                 break;
             case 18:
-                return $this->getCreatedAt();
+                return $this->getTotalCubicDimension();
                 break;
             case 19:
+                return $this->getCreatedAt();
+                break;
+            case 20:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1762,20 +1811,21 @@ abstract class PackingList implements ActiveRecordInterface
             $keys[3] => $this->getLoadingDate(),
             $keys[4] => $this->getCustomerId(),
             $keys[5] => $this->getOceanVessel(),
-            $keys[6] => $this->getSrcLoc(),
-            $keys[7] => $this->getBlNo(),
-            $keys[8] => $this->getGoodsDescription(),
-            $keys[9] => $this->getCntrNo(),
-            $keys[10] => $this->getSealNo(),
-            $keys[11] => $this->getPod(),
-            $keys[12] => $this->getEtdSrg(),
-            $keys[13] => $this->getRefDoc(),
-            $keys[14] => $this->getState(),
-            $keys[15] => $this->getTotalQty(),
-            $keys[16] => $this->getTotalQtyOfPack(),
-            $keys[17] => $this->getTotalCubicDimension(),
-            $keys[18] => $this->getCreatedAt(),
-            $keys[19] => $this->getUpdatedAt(),
+            $keys[6] => $this->getBlNo(),
+            $keys[7] => $this->getGoodsDescription(),
+            $keys[8] => $this->getCntrNo(),
+            $keys[9] => $this->getSealNo(),
+            $keys[10] => $this->getPod(),
+            $keys[11] => $this->getShipping(),
+            $keys[12] => $this->getPol(),
+            $keys[13] => $this->getEtdSrg(),
+            $keys[14] => $this->getRefDoc(),
+            $keys[15] => $this->getState(),
+            $keys[16] => $this->getTotalQty(),
+            $keys[17] => $this->getTotalQtyOfPack(),
+            $keys[18] => $this->getTotalCubicDimension(),
+            $keys[19] => $this->getCreatedAt(),
+            $keys[20] => $this->getUpdatedAt(),
         );
         if ($result[$keys[2]] instanceof \DateTimeInterface) {
             $result[$keys[2]] = $result[$keys[2]]->format('c');
@@ -1785,12 +1835,12 @@ abstract class PackingList implements ActiveRecordInterface
             $result[$keys[3]] = $result[$keys[3]]->format('c');
         }
 
-        if ($result[$keys[18]] instanceof \DateTimeInterface) {
-            $result[$keys[18]] = $result[$keys[18]]->format('c');
-        }
-
         if ($result[$keys[19]] instanceof \DateTimeInterface) {
             $result[$keys[19]] = $result[$keys[19]]->format('c');
+        }
+
+        if ($result[$keys[20]] instanceof \DateTimeInterface) {
+            $result[$keys[20]] = $result[$keys[20]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1882,45 +1932,48 @@ abstract class PackingList implements ActiveRecordInterface
                 $this->setOceanVessel($value);
                 break;
             case 6:
-                $this->setSrcLoc($value);
-                break;
-            case 7:
                 $this->setBlNo($value);
                 break;
-            case 8:
+            case 7:
                 $this->setGoodsDescription($value);
                 break;
-            case 9:
+            case 8:
                 $this->setCntrNo($value);
                 break;
-            case 10:
+            case 9:
                 $this->setSealNo($value);
                 break;
-            case 11:
+            case 10:
                 $this->setPod($value);
                 break;
+            case 11:
+                $this->setShipping($value);
+                break;
             case 12:
-                $this->setEtdSrg($value);
+                $this->setPol($value);
                 break;
             case 13:
-                $this->setRefDoc($value);
+                $this->setEtdSrg($value);
                 break;
             case 14:
-                $this->setState($value);
+                $this->setRefDoc($value);
                 break;
             case 15:
-                $this->setTotalQty($value);
+                $this->setState($value);
                 break;
             case 16:
-                $this->setTotalQtyOfPack($value);
+                $this->setTotalQty($value);
                 break;
             case 17:
-                $this->setTotalCubicDimension($value);
+                $this->setTotalQtyOfPack($value);
                 break;
             case 18:
-                $this->setCreatedAt($value);
+                $this->setTotalCubicDimension($value);
                 break;
             case 19:
+                $this->setCreatedAt($value);
+                break;
+            case 20:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1968,46 +2021,49 @@ abstract class PackingList implements ActiveRecordInterface
             $this->setOceanVessel($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setSrcLoc($arr[$keys[6]]);
+            $this->setBlNo($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setBlNo($arr[$keys[7]]);
+            $this->setGoodsDescription($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setGoodsDescription($arr[$keys[8]]);
+            $this->setCntrNo($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setCntrNo($arr[$keys[9]]);
+            $this->setSealNo($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setSealNo($arr[$keys[10]]);
+            $this->setPod($arr[$keys[10]]);
         }
         if (array_key_exists($keys[11], $arr)) {
-            $this->setPod($arr[$keys[11]]);
+            $this->setShipping($arr[$keys[11]]);
         }
         if (array_key_exists($keys[12], $arr)) {
-            $this->setEtdSrg($arr[$keys[12]]);
+            $this->setPol($arr[$keys[12]]);
         }
         if (array_key_exists($keys[13], $arr)) {
-            $this->setRefDoc($arr[$keys[13]]);
+            $this->setEtdSrg($arr[$keys[13]]);
         }
         if (array_key_exists($keys[14], $arr)) {
-            $this->setState($arr[$keys[14]]);
+            $this->setRefDoc($arr[$keys[14]]);
         }
         if (array_key_exists($keys[15], $arr)) {
-            $this->setTotalQty($arr[$keys[15]]);
+            $this->setState($arr[$keys[15]]);
         }
         if (array_key_exists($keys[16], $arr)) {
-            $this->setTotalQtyOfPack($arr[$keys[16]]);
+            $this->setTotalQty($arr[$keys[16]]);
         }
         if (array_key_exists($keys[17], $arr)) {
-            $this->setTotalCubicDimension($arr[$keys[17]]);
+            $this->setTotalQtyOfPack($arr[$keys[17]]);
         }
         if (array_key_exists($keys[18], $arr)) {
-            $this->setCreatedAt($arr[$keys[18]]);
+            $this->setTotalCubicDimension($arr[$keys[18]]);
         }
         if (array_key_exists($keys[19], $arr)) {
-            $this->setUpdatedAt($arr[$keys[19]]);
+            $this->setCreatedAt($arr[$keys[19]]);
+        }
+        if (array_key_exists($keys[20], $arr)) {
+            $this->setUpdatedAt($arr[$keys[20]]);
         }
     }
 
@@ -2068,9 +2124,6 @@ abstract class PackingList implements ActiveRecordInterface
         if ($this->isColumnModified(PackingListTableMap::COL_OCEAN_VESSEL)) {
             $criteria->add(PackingListTableMap::COL_OCEAN_VESSEL, $this->ocean_vessel);
         }
-        if ($this->isColumnModified(PackingListTableMap::COL_SRC_LOC)) {
-            $criteria->add(PackingListTableMap::COL_SRC_LOC, $this->src_loc);
-        }
         if ($this->isColumnModified(PackingListTableMap::COL_BL_NO)) {
             $criteria->add(PackingListTableMap::COL_BL_NO, $this->bl_no);
         }
@@ -2085,6 +2138,12 @@ abstract class PackingList implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PackingListTableMap::COL_POD)) {
             $criteria->add(PackingListTableMap::COL_POD, $this->pod);
+        }
+        if ($this->isColumnModified(PackingListTableMap::COL_SHIPPING)) {
+            $criteria->add(PackingListTableMap::COL_SHIPPING, $this->shipping);
+        }
+        if ($this->isColumnModified(PackingListTableMap::COL_POL)) {
+            $criteria->add(PackingListTableMap::COL_POL, $this->pol);
         }
         if ($this->isColumnModified(PackingListTableMap::COL_ETD_SRG)) {
             $criteria->add(PackingListTableMap::COL_ETD_SRG, $this->etd_srg);
@@ -2201,12 +2260,13 @@ abstract class PackingList implements ActiveRecordInterface
         $copyObj->setLoadingDate($this->getLoadingDate());
         $copyObj->setCustomerId($this->getCustomerId());
         $copyObj->setOceanVessel($this->getOceanVessel());
-        $copyObj->setSrcLoc($this->getSrcLoc());
         $copyObj->setBlNo($this->getBlNo());
         $copyObj->setGoodsDescription($this->getGoodsDescription());
         $copyObj->setCntrNo($this->getCntrNo());
         $copyObj->setSealNo($this->getSealNo());
         $copyObj->setPod($this->getPod());
+        $copyObj->setShipping($this->getShipping());
+        $copyObj->setPol($this->getPol());
         $copyObj->setEtdSrg($this->getEtdSrg());
         $copyObj->setRefDoc($this->getRefDoc());
         $copyObj->setState($this->getState());
@@ -2591,12 +2651,13 @@ abstract class PackingList implements ActiveRecordInterface
         $this->loading_date = null;
         $this->customer_id = null;
         $this->ocean_vessel = null;
-        $this->src_loc = null;
         $this->bl_no = null;
         $this->goods_description = null;
         $this->cntr_no = null;
         $this->seal_no = null;
         $this->pod = null;
+        $this->shipping = null;
+        $this->pol = null;
         $this->etd_srg = null;
         $this->ref_doc = null;
         $this->state = null;
