@@ -151,7 +151,7 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
 								</div>
 							</div>
 
-							<div class="form-group">
+              <div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="RefDoc">{{res.string.ref_doc}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
 									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
@@ -162,6 +162,34 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
 									{% endif %}
 								</div>
 							</div>
+              <div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="RefDoc">{{res.string.pol}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
+										<input type="text" placeholder="{{ res.string.pol }}" id="Pol" value="{{ packinglists.Pol }}" name="Pol" class="form-control  col-md-7 col-xs-12">
+									</div>
+									{% if packinglists %}
+									<p class="control-value">{{ packinglists.Pol }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Shipping">{{res.string.shipping_type}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if packinglists %}style="display:none" {% endif %} class="input-wrap">
+                    {% set shipping_types = ['sea_20','sea_40','sea_40_h','lcl','air'] %}
+                    <select class="form-select" name="Shipping" id="Shipping">
+                      {% for shipping_type in shipping_types %}
+                      <option {{packinglist.Shipping==shipping_type?'selected':''}} value="{{shipping_type}}">{{ attribute(res.string,shipping_type) }} </option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  {% if packinglists %}
+                  <p class="control-value">{{ attribute(res.string,packinglists.Shipping) }}</p>
+                  {% endif %}
+                </div>
+              </div>
 
 						</div>
 					</div>

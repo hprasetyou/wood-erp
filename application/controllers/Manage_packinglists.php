@@ -28,13 +28,7 @@ class Manage_packinglists extends MY_Controller{
     $this->objobj = PackingListQuery::create()
     ->filterByState('delete', '!=');
     $this->custom_column = array(
-      'total_cubic_dimension' =>"function() use(_{PackingListLines}_){
-        \$tot = 0;
-          foreach(_{PackingListLines}_ as \$line){
-            \$tot += \$line->getProformaInvoiceLine()->getCubicDimension()*\$line->getQty();
-          }
-          return \$tot;
-        }"
+      'shipping' =>"string(_{Shipping}_)"
     );
     parent::get_json();
   }
