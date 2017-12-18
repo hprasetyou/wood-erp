@@ -8,6 +8,9 @@ class Mailer
   // Create the Transport
   private $transport;
 
+  private $body;
+  private $recipient;
+  private $recipient_name;
   // Create the Mailer using your created Transport
   private $mailer;
   private $CI;
@@ -26,11 +29,25 @@ class Mailer
 
   }
 
+  function set_body($body){
+    $this->body = $body;
+    return $this;
+  }
+
+  function set_recipient($recipient){
+    $this->recipient = $recipient;
+    return $this;
+  }
+
+  function set_recipient_name($recipient){
+    $this->recipient_name = $recipient;
+    return $this;
+  }
   function send_email(){
     $message = (new Swift_Message('Test'))
-      ->setFrom(['john@doe.com' => 'John Doe'])
-      ->setTo(['hprasetyou@gmail.com'=> 'A name'])
-      ->setBody($this->CI->template->render('common/email_test',[],false), 'text/html');
+      ->setFrom([$conf['username'] => $conf['sender_name']])
+      ->setTo([$this->recipient=> $this->recipient_name])
+      ->setBody($this->body, 'text/html');
     $result = $this->mailer->send($message);
   }
 
