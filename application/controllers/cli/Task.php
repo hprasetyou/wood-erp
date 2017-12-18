@@ -6,6 +6,15 @@ class Task extends CI_Controller
 {
   function run(){
     $tasks = SysTaskQuery::create();
+    foreach ($this->get_one_time_task() as $key => $value) {
+      # code...
+      $task_name = $value->getName();
+      task_run_logger("executing task $task_name . . . .");
+      $this->execute($value->getType(),$value->getContent());
+      $value->setLastExecution(date("Y-m-d h:i:s"))
+      ->setIsExecuted(true)
+      ->save();
+    }
     //find task by Scheduled Execution
     foreach ($this->get_day_repeat_task() as $key => $value) {
       # code...
@@ -13,6 +22,7 @@ class Task extends CI_Controller
       task_run_logger("executing task $task_name . . . .");
       $this->execute($value->getType(),$value->getContent());
       $value->setLastExecution(date("Y-m-d h:i:s"))
+      ->setIsExecuted(true)
       ->save();
     }
   }
@@ -21,6 +31,8 @@ class Task extends CI_Controller
   function execute($type,$content){
     switch ($type) {
       case 'email':
+        $this->load->library('mailer');
+        $this->mailer->send_email();
         # code...
         break;
       case 'call_func':
@@ -55,6 +67,6 @@ class Task extends CI_Controller
       array('max'=>date('Y-m-d h:i:s')))
     ->filterByIsExecuted(false)
     ->find();
-    echo $tasks;
+    return $tasks;
   }
 }
