@@ -312,6 +312,7 @@
     <column name="cntr_no" phpName="CntrNo" type="VARCHAR" size="255"/>
     <column name="seal_no" phpName="SealNo" type="VARCHAR" size="255"/>
     <column name="pod" phpName="Pod" type="VARCHAR" size="255"/>
+    <column name="shipping" phpName="Shipping" type="CHAR" sqlType="ENUM('sea_20','sea_40','sea_40_h','lcl','air')" size="255"/>
     <column name="etd_srg" phpName="EtdSrg" type="VARCHAR" size="255"/>
     <column name="ref_doc" phpName="RefDoc" type="VARCHAR" size="255"/>
     <column name="state" phpName="State" type="CHAR" sqlType="ENUM('draft','confirm','done','delete')" defaultValue="draft"/>
