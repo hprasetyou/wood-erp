@@ -98,7 +98,7 @@ class Template {
   }
 
   private $twig;
-  function render($tpl,$data=array(),$ext="html"){
+  function render($tpl,$data=array(),$render = true){
 
         $this->CI->load->helper('url');
         $session = [];
@@ -136,8 +136,11 @@ class Template {
             )
         );
         $out = array_merge($pdata,$data);
-
-        echo $this->twig->render($tpl.'.html',$out);
+        if(!$render){
+          return $this->twig->render($tpl.'.html',$out);
+        }else{
+          echo $this->twig->render($tpl.'.html',$out);
+        }
     }
 
 
