@@ -424,10 +424,12 @@
   <table name="partner_location" phpName="PartnerLocation">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="name" phpName="Name" required="true" type="VARCHAR" size="255"/>
+    <column name="description" phpName="Description" type="LONGVARCHAR" />
     <column name="partner_id" phpName="PartnerId" type="INTEGER" required="true"/>
     <column name="country_id" phpName="CountryId" type="INTEGER" required="true"/>
     <column name="postal" phpName="Postal" type="VARCHAR" size="7"/>
     <column name="city" phpName="City" type="VARCHAR" size="255"/>
+    <column name="usage" phpName="Usage" type="CHAR" sqlType="ENUM('warehouse','supplier','transit')"/>
     <column name="address" phpName="Adress" required="true" type="LONGVARCHAR" />
     <foreign-key foreignTable="country" name="partner_location_ibfk_2">
       <reference local="country_id" foreign="id"/>
