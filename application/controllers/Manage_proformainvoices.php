@@ -67,12 +67,13 @@ class Manage_proformainvoices extends MY_Controller{
 		$partners = PartnerQuery::create()->find();
 
 		$proformainvoice = ProformaInvoiceQuery::create()->findPK($id);
+    $o = array('proformainvoices'=>$proformainvoice,
+    'partners'=> $partners,
+    );
     if($render=="pdf"){
-      $this->template->render_pdf("admin/proformainvoices/pdf/report");
+      $this->template->render_pdf("admin/proformainvoices/pdf/report",$o);
     }else{
-      $this->template->render('admin/proformainvoices/form',array('proformainvoices'=>$proformainvoice,
-      'partners'=> $partners,
-        ));
+      $this->template->render('admin/proformainvoices/form',$o);
     }
 
   }

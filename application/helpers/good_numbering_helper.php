@@ -22,6 +22,7 @@ function create_number($setting = array('separator'=>'-','number_len'=>3)){
   $code_len_before_num = 0;
   $code_len = 0;
   $whereclause= " where ";
+  $acode = [];
   foreach ($ftpls as $key => $value) {
     # code...
     switch ($value) {
@@ -52,16 +53,20 @@ function create_number($setting = array('separator'=>'-','number_len'=>3)){
       break;
       default:
         # code...
+        array_push($acode,$value);
         $o .= $value;
         $code_len += strlen($value);
         break;
     }
     if($key+1<count($ftpls)){
-      $o .= "-";
+      $o .= $separator;
       $code_len += 1;
     }
 
   }
+  $tcode = implode($separator,$acode);
+  $tcodelen = strlen($tcode);
+  $whereclause .= "substring(`$tb_field`,1,$tcodelen)='$tcode' and ";
   $whereclause .= "1";
 
   $code_len_before_num = $code_len_before_num+1;

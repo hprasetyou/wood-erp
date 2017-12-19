@@ -148,8 +148,9 @@ class Template {
     {
         $dompdf = new Dompdf();
         $out = $data;
-        $out['header'] = 'nota';
-        $dompdf->loadHtml($this->twig->render($tpl.'.html', $out));
+        // $out['header'] = 'nota';
+
+        $dompdf->loadHtml($this->render($tpl, $out,false));
         // (Optional) Setup the paper size and orientation
         $dompdf->setPaper('A4', 'portrait');
         // Render the HTML as PDF

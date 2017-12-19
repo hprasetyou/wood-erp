@@ -165,6 +165,14 @@ abstract class PurchaseOrder implements ActiveRecordInterface
     protected $total_price;
 
     /**
+     * The value for the state field.
+     *
+     * Note: this column has a database default value of: 'draft'
+     * @var        string
+     */
+    protected $state;
+
+    /**
      * The value for the created_at field.
      *
      * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
@@ -224,6 +232,7 @@ abstract class PurchaseOrder implements ActiveRecordInterface
     public function applyDefaultValues()
     {
         $this->currency_id = 1;
+        $this->state = 'draft';
     }
 
     /**
@@ -604,6 +613,16 @@ abstract class PurchaseOrder implements ActiveRecordInterface
     }
 
     /**
+     * Get the [state] column value.
+     *
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
      * Get the [optionally formatted] temporal [created_at] column value.
      *
      *
@@ -916,6 +935,26 @@ abstract class PurchaseOrder implements ActiveRecordInterface
     } // setTotalPrice()
 
     /**
+     * Set the value of [state] column.
+     *
+     * @param string $v new value
+     * @return $this|\PurchaseOrder The current object (for fluent API support)
+     */
+    public function setState($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->state !== $v) {
+            $this->state = $v;
+            $this->modifiedColumns[PurchaseOrderTableMap::COL_STATE] = true;
+        }
+
+        return $this;
+    } // setState()
+
+    /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
@@ -966,6 +1005,10 @@ abstract class PurchaseOrder implements ActiveRecordInterface
     public function hasOnlyDefaultValues()
     {
             if ($this->currency_id !== 1) {
+                return false;
+            }
+
+            if ($this->state !== 'draft') {
                 return false;
             }
 
@@ -1040,13 +1083,16 @@ abstract class PurchaseOrder implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : PurchaseOrderTableMap::translateFieldName('TotalPrice', TableMap::TYPE_PHPNAME, $indexType)];
             $this->total_price = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : PurchaseOrderTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : PurchaseOrderTableMap::translateFieldName('State', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->state = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : PurchaseOrderTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : PurchaseOrderTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : PurchaseOrderTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -1059,7 +1105,7 @@ abstract class PurchaseOrder implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 15; // 15 = PurchaseOrderTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 16; // 16 = PurchaseOrderTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\PurchaseOrder'), 0, $e);
@@ -1356,6 +1402,9 @@ abstract class PurchaseOrder implements ActiveRecordInterface
         if ($this->isColumnModified(PurchaseOrderTableMap::COL_TOTAL_PRICE)) {
             $modifiedColumns[':p' . $index++]  = 'total_price';
         }
+        if ($this->isColumnModified(PurchaseOrderTableMap::COL_STATE)) {
+            $modifiedColumns[':p' . $index++]  = 'state';
+        }
         if ($this->isColumnModified(PurchaseOrderTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
@@ -1411,6 +1460,9 @@ abstract class PurchaseOrder implements ActiveRecordInterface
                         break;
                     case 'total_price':
                         $stmt->bindValue($identifier, $this->total_price, PDO::PARAM_STR);
+                        break;
+                    case 'state':
+                        $stmt->bindValue($identifier, $this->state, PDO::PARAM_STR);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -1520,9 +1572,12 @@ abstract class PurchaseOrder implements ActiveRecordInterface
                 return $this->getTotalPrice();
                 break;
             case 13:
-                return $this->getCreatedAt();
+                return $this->getState();
                 break;
             case 14:
+                return $this->getCreatedAt();
+                break;
+            case 15:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1568,8 +1623,9 @@ abstract class PurchaseOrder implements ActiveRecordInterface
             $keys[10] => $this->getDownPayment(),
             $keys[11] => $this->getDownPaymentDeadline(),
             $keys[12] => $this->getTotalPrice(),
-            $keys[13] => $this->getCreatedAt(),
-            $keys[14] => $this->getUpdatedAt(),
+            $keys[13] => $this->getState(),
+            $keys[14] => $this->getCreatedAt(),
+            $keys[15] => $this->getUpdatedAt(),
         );
         if ($result[$keys[6]] instanceof \DateTimeInterface) {
             $result[$keys[6]] = $result[$keys[6]]->format('c');
@@ -1579,12 +1635,12 @@ abstract class PurchaseOrder implements ActiveRecordInterface
             $result[$keys[11]] = $result[$keys[11]]->format('c');
         }
 
-        if ($result[$keys[13]] instanceof \DateTimeInterface) {
-            $result[$keys[13]] = $result[$keys[13]]->format('c');
-        }
-
         if ($result[$keys[14]] instanceof \DateTimeInterface) {
             $result[$keys[14]] = $result[$keys[14]]->format('c');
+        }
+
+        if ($result[$keys[15]] instanceof \DateTimeInterface) {
+            $result[$keys[15]] = $result[$keys[15]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1727,9 +1783,12 @@ abstract class PurchaseOrder implements ActiveRecordInterface
                 $this->setTotalPrice($value);
                 break;
             case 13:
-                $this->setCreatedAt($value);
+                $this->setState($value);
                 break;
             case 14:
+                $this->setCreatedAt($value);
+                break;
+            case 15:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1798,10 +1857,13 @@ abstract class PurchaseOrder implements ActiveRecordInterface
             $this->setTotalPrice($arr[$keys[12]]);
         }
         if (array_key_exists($keys[13], $arr)) {
-            $this->setCreatedAt($arr[$keys[13]]);
+            $this->setState($arr[$keys[13]]);
         }
         if (array_key_exists($keys[14], $arr)) {
-            $this->setUpdatedAt($arr[$keys[14]]);
+            $this->setCreatedAt($arr[$keys[14]]);
+        }
+        if (array_key_exists($keys[15], $arr)) {
+            $this->setUpdatedAt($arr[$keys[15]]);
         }
     }
 
@@ -1882,6 +1944,9 @@ abstract class PurchaseOrder implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PurchaseOrderTableMap::COL_TOTAL_PRICE)) {
             $criteria->add(PurchaseOrderTableMap::COL_TOTAL_PRICE, $this->total_price);
+        }
+        if ($this->isColumnModified(PurchaseOrderTableMap::COL_STATE)) {
+            $criteria->add(PurchaseOrderTableMap::COL_STATE, $this->state);
         }
         if ($this->isColumnModified(PurchaseOrderTableMap::COL_CREATED_AT)) {
             $criteria->add(PurchaseOrderTableMap::COL_CREATED_AT, $this->created_at);
@@ -1987,6 +2052,7 @@ abstract class PurchaseOrder implements ActiveRecordInterface
         $copyObj->setDownPayment($this->getDownPayment());
         $copyObj->setDownPaymentDeadline($this->getDownPaymentDeadline());
         $copyObj->setTotalPrice($this->getTotalPrice());
+        $copyObj->setState($this->getState());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
 
@@ -2505,6 +2571,7 @@ abstract class PurchaseOrder implements ActiveRecordInterface
         $this->down_payment = null;
         $this->down_payment_deadline = null;
         $this->total_price = null;
+        $this->state = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;

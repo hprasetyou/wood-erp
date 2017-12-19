@@ -1,1 +1,73 @@
-<h1>test</h1>
+{% extends "report_layout/default.html" %}
+{% block style %}
+table,.label{
+  font-size:8px;
+}
+{% endblock %}
+{% block content %}
+<div class="row">
+
+</div>
+<div class="row">
+  <div class="col-xs-6"></div>
+  <div class="col-xs-6"></div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>{{res.string.image}}</th>
+          <th>{{res.string.cust_art_nbr}}</th>
+          <th>{{res.string.description}}</th>
+          <th>{{res.string.material}}</th>
+          <th>{{ res.string.finishing}}</th>
+          <th>{{res.string.qty}}</th>
+          <th>{{res.string.qty_of_pack}}</th>
+          <th>{{res.string.cbm_per_piece}}</th>
+          <th>{{res.string.total_cubic}}</th>
+          <th>{{res.string.discount}}</th>
+          <th>{{res.string.price}}</th>
+          <th>{{res.string.total_price}}</th>
+          <th>{{res.string.remark}}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set i = 1 %}
+        {% for line in proformainvoices.ProformaInvoiceLines %}
+        <tr>
+          <td>{{ i }}</td>
+          <td><img src=".{{ line.Product.ProductImages[0].Url | replace({'original':'120x120'})}}"
+            style="width:50px" alt=""></td>
+          <td>{{ line.Name }}</td>
+          <td>{{ line.Description }}</td>
+          <td>
+            <span class="label label-primary">{{line.Product.Material.Name}}</span>
+            {% for component in line.Product.ListComponents %}
+              {% if component.Component.Type == 'component' %}
+                <br>
+                <span class="label label-primary">{{component.Component.Material.Name}}</span>
+              {% endif %}
+             {%endfor%}</td>
+          <td>{{ line.ProductFinishing }}</td>
+          <td>{{ line.Qty }}</td>
+          <td>{{ (line.Qty/line.QtyPerPack)|round(1, 'ceil') }}</td>
+          <td>{{ line.CubicDimension }}</td>
+          <td>{{ line.TotalCubicDimension }}</td>
+          <td>{{ line.Product.ListPrice }}</td>
+          <td>{{ line.Product.ListPrice }}</td>
+          <td>{{ line.TotalPrice }}</td>
+          <td>
+            {{ line.IsSample?'<span class="label label-primary">sample</span>' }}
+            {{ line.IsNeedBox?'<span class="label label-primary">With carton box</span>' }}
+          </td>
+        </tr>
+          {% set i = i+1 %}
+        {% endfor%}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock%}

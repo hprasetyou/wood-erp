@@ -292,7 +292,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
       return $.ajax({
         url:$('#formAddPOLine').prop('action')+'?purchase_order='+po_id,
         method:'POST',
-        data:$('#formAddPOLine').serialize()+'&PartnerId={{purchaseorders.Id}}',
+        data:$('#formAddPOLine').serialize()+'&PartnerId='+ $('#SupplierId').val(),
         dataType:'JSON'
       })
     }
