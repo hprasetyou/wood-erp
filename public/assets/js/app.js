@@ -110,7 +110,7 @@ jQuery.fn.loadTableData = function(
         case 'underneath_comma':
           ordr = true;
           render_data = new Function("data", "type","row","meta",
-           "return data.replace(\", \",\"<br>\")")
+           "return data?data.replace(\", \",\"<br>\"):''")
           break;
         case 'currency':
         var curdata = $(this).data('currency');

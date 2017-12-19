@@ -2,7 +2,7 @@
 
 namespace Map;
 
-use \Partner;
+
 use \PartnerQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
