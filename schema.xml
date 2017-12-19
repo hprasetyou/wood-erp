@@ -32,7 +32,7 @@
     <column name="supplier_type_id" phpName="SupplierTypeId" type="INTEGER"/>
     <column name="class_key" type="INTEGER" inheritance="single">
       <inheritance key="1" class="Partner"/>
-      <inheritance key="2" class="Employee" extends="Partner"/>
+      <inheritance key="2" class="Internal" extends="Partner"/>
       <inheritance key="3" class="Customer" extends="Partner"/>
       <inheritance key="4" class="Supplier" extends="Partner"/>
     </column>

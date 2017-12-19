@@ -1,9 +1,10 @@
 <?php
 
-use Base\ComponentQuery as BaseComponentQuery;
+use Base\InternalQuery as BaseInternalQuery;
+
 
 /**
- * Skeleton subclass for performing query and update operations on the 'component' table.
+ * Skeleton subclass for representing a query for one of the subclasses of the 'partner' table.
  *
  *
  *
@@ -12,7 +13,7 @@ use Base\ComponentQuery as BaseComponentQuery;
  * long as it does not already exist in the output directory.
  *
  */
-class ComponentQuery extends BaseComponentQuery
+class InternalQuery extends BaseInternalQuery
 {
 
-}
+} // InternalQuery

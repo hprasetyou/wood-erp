@@ -3,7 +3,7 @@
 use Base\GroupQuery as BaseGroupQuery;
 
 /**
- * Skeleton subclass for performing query and update operations on the 'group' table.
+ * Skeleton subclass for performing query and update operations on the 'ugroup' table.
  *
  *
  *

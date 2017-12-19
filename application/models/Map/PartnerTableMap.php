@@ -159,10 +159,10 @@ class PartnerTableMap extends TableMap
     const CLASSKEY_2 = '2';
 
     /** A key representing a particular subclass */
-    const CLASSKEY_EMPLOYEE = '\\Employee';
+    const CLASSKEY_INTERNAL = '\\Internal';
 
     /** A class that can be returned by this tableMap. */
-    const CLASSNAME_2 = '\\Employee';
+    const CLASSNAME_2 = '\\Internal';
 
     /** A key representing a particular subclass */
     const CLASSKEY_3 = '3';

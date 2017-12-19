@@ -16,23 +16,23 @@ use Propel\Runtime\Connection\ConnectionInterface;
  * long as it does not already exist in the output directory.
  *
  */
-class EmployeeQuery extends PartnerQuery
+class InternalQuery extends PartnerQuery
 {
 
     /**
-     * Returns a new \EmployeeQuery object.
+     * Returns a new \InternalQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
      * @param     Criteria $criteria Optional Criteria to build the query from
      *
-     * @return \EmployeeQuery
+     * @return \InternalQuery
      */
     public static function create($modelAlias = null, Criteria $criteria = null)
     {
-        if ($criteria instanceof \EmployeeQuery) {
+        if ($criteria instanceof \InternalQuery) {
             return $criteria;
         }
-        $query = new \EmployeeQuery();
+        $query = new \InternalQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -44,7 +44,7 @@ class EmployeeQuery extends PartnerQuery
     }
 
     /**
-     * Filters the query to target only Employee objects.
+     * Filters the query to target only Internal objects.
      */
     public function preSelect(ConnectionInterface $con)
     {
@@ -52,7 +52,7 @@ class EmployeeQuery extends PartnerQuery
     }
 
     /**
-     * Filters the query to target only Employee objects.
+     * Filters the query to target only Internal objects.
      */
     public function preUpdate(&$values, ConnectionInterface $con, $forceIndividualSaves = false)
     {
@@ -60,7 +60,7 @@ class EmployeeQuery extends PartnerQuery
     }
 
     /**
-     * Filters the query to target only Employee objects.
+     * Filters the query to target only Internal objects.
      */
     public function preDelete(ConnectionInterface $con)
     {
@@ -69,7 +69,7 @@ class EmployeeQuery extends PartnerQuery
 
     /**
      * Issue a DELETE query based on the current ModelCriteria deleting all rows in the table
-     * Having the Employee class.
+     * Having the Internal class.
      * This method is called by ModelCriteria::deleteAll() inside a transaction
      *
      * @param ConnectionInterface $con a connection object
@@ -82,4 +82,4 @@ class EmployeeQuery extends PartnerQuery
         return parent::delete($con);
     }
 
-} // EmployeeQuery
+} // InternalQuery

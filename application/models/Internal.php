@@ -14,11 +14,11 @@ use Map\PartnerTableMap;
  * long as it does not already exist in the output directory.
  *
  */
-class Employee extends Partner
+class Internal extends Partner
 {
 
     /**
-     * Constructs a new Employee class, setting the class_key column to PartnerTableMap::CLASSKEY_2.
+     * Constructs a new Internal class, setting the class_key column to PartnerTableMap::CLASSKEY_2.
      */
     public function __construct()
     {
@@ -26,4 +26,4 @@ class Employee extends Partner
         $this->setClassKey(PartnerTableMap::CLASSKEY_2);
     }
 
-} // Employee
+} // Internal

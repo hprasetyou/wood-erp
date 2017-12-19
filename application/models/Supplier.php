@@ -1,5 +1,6 @@
 <?php
 
+use \Partner;
 use Map\PartnerTableMap;
 
 
