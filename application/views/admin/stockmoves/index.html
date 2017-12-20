@@ -1,0 +1,47 @@
+
+{% extends "dashboard.html" %}
+{% set title=" Stock Move " %}
+
+{% set breadcrumbs = [
+	{'link':'#','text':res.string.stockmove  }]
+%}
+{% block content %}
+	<div class="">
+		<div class="clearfix"></div>
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="box">
+					<div class="box-header">
+						<h3 class="box-title">{{res.string.stockmoves}}</h3>
+						<a href="{{base_url}}index.php/manage_stockmoves/create" class="btn btn-primary pull-right">{{res.string.new_data}}</a>
+						<div class="clearfix"></div>
+					</div>
+					<div class="box-body">
+						<p class="text-muted font-13 m-b-30"></p>
+							<table data-controller="manage_stockmoves" class="table table-striped table-hover " id="table_StockMove">
+		<thead>
+			<tr>
+				<th data-fieldname="name">{{res.string.name}}</th>
+				<th data-fieldname="src_id">{{res.string.src_id}}</th>
+				<th data-fieldname="dest_id">{{res.string.dest_id}}</th>
+				<th data-fieldname="operation">{{res.string.operation}}</th>
+				<th data-fieldname="state">{{res.string.state}}</th>
+				<th></th>
+			</tr>
+		</thead>
+</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+{% block bottom %}
+<script>
+
+$(document).ready(function(){
+    $('#table_StockMove').loadTableData()
+  })
+</script>
+{% endblock %}

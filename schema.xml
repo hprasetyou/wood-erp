@@ -483,7 +483,9 @@
     <column name="name" phpName="Name" type="VARCHAR" size="8" />
     <column name="src_id" phpName="SrcId" type="INTEGER" required="true"/>
     <column name="dest_id" phpName="DestId" type="INTEGER" required="true"/>
-    <column name="state" phpName="State" type="CHAR" sqlType="ENUM('draft','confirm','done','delete')" defaultValue="draft"/>
+    <!-- WHS 2 WHS is internal,  -->
+    <column name="operation" phpName="Operation" type="CHAR" sqlType="enum('internal','receipt','delivery_order','returning_receipt')" required="true"/>
+    <column name="state" phpName="State" type="CHAR" sqlType="enum('draft','confirm','done','delete')" defaultValue="draft"/>
     <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
     <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" />
     <foreign-key foreignTable="partner_location" phpName="Src" name="stock_move_ibfk_1">

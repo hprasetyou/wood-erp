@@ -24,6 +24,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildStockMoveQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method     ChildStockMoveQuery orderBySrcId($order = Criteria::ASC) Order by the src_id column
  * @method     ChildStockMoveQuery orderByDestId($order = Criteria::ASC) Order by the dest_id column
+ * @method     ChildStockMoveQuery orderByOperation($order = Criteria::ASC) Order by the operation column
  * @method     ChildStockMoveQuery orderByState($order = Criteria::ASC) Order by the state column
  * @method     ChildStockMoveQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildStockMoveQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
@@ -32,6 +33,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildStockMoveQuery groupByName() Group by the name column
  * @method     ChildStockMoveQuery groupBySrcId() Group by the src_id column
  * @method     ChildStockMoveQuery groupByDestId() Group by the dest_id column
+ * @method     ChildStockMoveQuery groupByOperation() Group by the operation column
  * @method     ChildStockMoveQuery groupByState() Group by the state column
  * @method     ChildStockMoveQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildStockMoveQuery groupByUpdatedAt() Group by the updated_at column
@@ -83,6 +85,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildStockMove findOneByName(string $name) Return the first ChildStockMove filtered by the name column
  * @method     ChildStockMove findOneBySrcId(int $src_id) Return the first ChildStockMove filtered by the src_id column
  * @method     ChildStockMove findOneByDestId(int $dest_id) Return the first ChildStockMove filtered by the dest_id column
+ * @method     ChildStockMove findOneByOperation(string $operation) Return the first ChildStockMove filtered by the operation column
  * @method     ChildStockMove findOneByState(string $state) Return the first ChildStockMove filtered by the state column
  * @method     ChildStockMove findOneByCreatedAt(string $created_at) Return the first ChildStockMove filtered by the created_at column
  * @method     ChildStockMove findOneByUpdatedAt(string $updated_at) Return the first ChildStockMove filtered by the updated_at column *
@@ -94,6 +97,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildStockMove requireOneByName(string $name) Return the first ChildStockMove filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildStockMove requireOneBySrcId(int $src_id) Return the first ChildStockMove filtered by the src_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildStockMove requireOneByDestId(int $dest_id) Return the first ChildStockMove filtered by the dest_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildStockMove requireOneByOperation(string $operation) Return the first ChildStockMove filtered by the operation column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildStockMove requireOneByState(string $state) Return the first ChildStockMove filtered by the state column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildStockMove requireOneByCreatedAt(string $created_at) Return the first ChildStockMove filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildStockMove requireOneByUpdatedAt(string $updated_at) Return the first ChildStockMove filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -103,6 +107,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildStockMove[]|ObjectCollection findByName(string $name) Return ChildStockMove objects filtered by the name column
  * @method     ChildStockMove[]|ObjectCollection findBySrcId(int $src_id) Return ChildStockMove objects filtered by the src_id column
  * @method     ChildStockMove[]|ObjectCollection findByDestId(int $dest_id) Return ChildStockMove objects filtered by the dest_id column
+ * @method     ChildStockMove[]|ObjectCollection findByOperation(string $operation) Return ChildStockMove objects filtered by the operation column
  * @method     ChildStockMove[]|ObjectCollection findByState(string $state) Return ChildStockMove objects filtered by the state column
  * @method     ChildStockMove[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildStockMove objects filtered by the created_at column
  * @method     ChildStockMove[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildStockMove objects filtered by the updated_at column
@@ -204,7 +209,7 @@ abstract class StockMoveQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, src_id, dest_id, state, created_at, updated_at FROM stock_move WHERE id = :p0';
+        $sql = 'SELECT id, name, src_id, dest_id, operation, state, created_at, updated_at FROM stock_move WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -444,6 +449,31 @@ abstract class StockMoveQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(StockMoveTableMap::COL_DEST_ID, $destId, $comparison);
+    }
+
+    /**
+     * Filter the query on the operation column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByOperation('fooValue');   // WHERE operation = 'fooValue'
+     * $query->filterByOperation('%fooValue%', Criteria::LIKE); // WHERE operation LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $operation The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildStockMoveQuery The current query, for fluid interface
+     */
+    public function filterByOperation($operation = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($operation)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(StockMoveTableMap::COL_OPERATION, $operation, $comparison);
     }
 
     /**

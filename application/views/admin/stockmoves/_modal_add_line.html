@@ -1,0 +1,49 @@
+<!-- Modal -->
+<div id="modalAddPOLine" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <form id="formAddMoveLine" action="/index.php/manage_stockmovelines/write/" class="form-horizontal form-label-left">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">{{res.string.add_pi_to_po}}</h4>
+        </div>
+        <input type="hidden" name="MoveId" id="MoveId" value="{{stockmoves.Id}}">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProductId">{{res.string.product_id}}</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <div {% if stockmovelines %}style="display:none" {% endif %} class="input-wrap input-group">
+                <input type="hidden" type="text" id="ProductId" value="{{ stockmovelines.ProductId }}" name="ProductId">
+                <input type="text" required="required" name="displayProductId" id="displayProductId" placeholder="{{ res.string.product_id }}" value="{{ stockmovelines.Product }}" class="form-control" />
+                <span class="input-group-btn">
+								<button class="btn btnModal btn-default" id="btnProductId"  data-target="ModalProduct" type="button">{{res.string.search}}</button>
+							</span>
+              </div>
+              {% if stockmovelines %}
+              <p class="control-value">{{ stockmovelines.Product.Name }}</p>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Qty">{{res.string.qty}}</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <div {% if stockmovelines %}style="display:none" {% endif %} class="input-wrap">
+                <input type="number" placeholder="{{ res.string.qty }}" id="Qty" value="{{ stockmovelines.Qty }}" name="Qty" required="required" class="form-control  col-md-7 col-xs-12">
+              </div>
+              {% if stockmovelines %}
+              <p class="control-value">{{ stockmovelines.Qty }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">{{res.string.add}}</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">{{res.string.close}}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -234,7 +234,6 @@ jQuery.fn.simpleValidation =  function(){
     d.find('input').each(function(){
       if($(this).data('required')){
         if(!$(this).val()){
-          console.log($(this).attr('id'));
           valid = false
         }
       }
@@ -249,8 +248,6 @@ jQuery.fn.simpleValidation =  function(){
 }
 
 function init_modal_selection(){
-  console.log(base_url);
-
   $('.btnModal').click(function(e){
     e.preventDefault()
     var target = $(this).data('target')
@@ -259,10 +256,8 @@ function init_modal_selection(){
 
     var thide = $(this).parents('.input-wrap').find('input[type="hidden"]').prop('id')
     var ttext = $(this).parents('.input-wrap').find('input[type="text"]').prop('id')
-    console.log(thide);
-    console.log(ttext);
-    $('#'+target).find('table').attr('data-thide',thide)
-    $('#'+target).find('table').attr('data-ttext',ttext)
+    $('#'+target).find('table').data('thide',thide)
+    $('#'+target).find('table').data('ttext',ttext)
     var c = $('#'+target).data('controller')
     bdm = $.extend(bdm,$('#'+target).data('domain'))
     var fl = [{
@@ -383,8 +378,9 @@ function init_modal_selection(){
         so += $(this).parents('tr').children('td:eq('+didx[i]+')').text()
       }
       $('#'+$(this).parents('table').data('ttext')).val(so)
+      console.log($(this).parents('table').data('ttext'));
       $(this).parents('.modal').modal('hide')
-      $('#'+$(this).parents('table').data('thide')).trigger('change')
+      $('#'+$(this).parents('table').prop('thide')).trigger('change')
   })
 }
 $(document).ready(function(){
@@ -447,14 +443,10 @@ function(start, end, label) {
 //navbar focus
 
 $('.treeview-menu').each(function(i){
-console.log(i);
 $(this).children().each(function(){
   var li = $(this)
   var href = li.children().attr('href')
-  console.log(href);
-  console.log(window.location.pathname);
   if(href == window.location.pathname){
-    console.log('sama');
     $(this).addClass("active");
   }
 })

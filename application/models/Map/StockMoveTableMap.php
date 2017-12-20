@@ -59,7 +59,7 @@ class StockMoveTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 8;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class StockMoveTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 8;
 
     /**
      * the column name for the id field
@@ -90,6 +90,11 @@ class StockMoveTableMap extends TableMap
      * the column name for the dest_id field
      */
     const COL_DEST_ID = 'stock_move.dest_id';
+
+    /**
+     * the column name for the operation field
+     */
+    const COL_OPERATION = 'stock_move.operation';
 
     /**
      * the column name for the state field
@@ -118,11 +123,11 @@ class StockMoveTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'SrcId', 'DestId', 'State', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'srcId', 'destId', 'state', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(StockMoveTableMap::COL_ID, StockMoveTableMap::COL_NAME, StockMoveTableMap::COL_SRC_ID, StockMoveTableMap::COL_DEST_ID, StockMoveTableMap::COL_STATE, StockMoveTableMap::COL_CREATED_AT, StockMoveTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'src_id', 'dest_id', 'state', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'SrcId', 'DestId', 'Operation', 'State', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'srcId', 'destId', 'operation', 'state', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(StockMoveTableMap::COL_ID, StockMoveTableMap::COL_NAME, StockMoveTableMap::COL_SRC_ID, StockMoveTableMap::COL_DEST_ID, StockMoveTableMap::COL_OPERATION, StockMoveTableMap::COL_STATE, StockMoveTableMap::COL_CREATED_AT, StockMoveTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'src_id', 'dest_id', 'operation', 'state', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -132,11 +137,11 @@ class StockMoveTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'SrcId' => 2, 'DestId' => 3, 'State' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'srcId' => 2, 'destId' => 3, 'state' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
-        self::TYPE_COLNAME       => array(StockMoveTableMap::COL_ID => 0, StockMoveTableMap::COL_NAME => 1, StockMoveTableMap::COL_SRC_ID => 2, StockMoveTableMap::COL_DEST_ID => 3, StockMoveTableMap::COL_STATE => 4, StockMoveTableMap::COL_CREATED_AT => 5, StockMoveTableMap::COL_UPDATED_AT => 6, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'src_id' => 2, 'dest_id' => 3, 'state' => 4, 'created_at' => 5, 'updated_at' => 6, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'SrcId' => 2, 'DestId' => 3, 'Operation' => 4, 'State' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'srcId' => 2, 'destId' => 3, 'operation' => 4, 'state' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
+        self::TYPE_COLNAME       => array(StockMoveTableMap::COL_ID => 0, StockMoveTableMap::COL_NAME => 1, StockMoveTableMap::COL_SRC_ID => 2, StockMoveTableMap::COL_DEST_ID => 3, StockMoveTableMap::COL_OPERATION => 4, StockMoveTableMap::COL_STATE => 5, StockMoveTableMap::COL_CREATED_AT => 6, StockMoveTableMap::COL_UPDATED_AT => 7, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'src_id' => 2, 'dest_id' => 3, 'operation' => 4, 'state' => 5, 'created_at' => 6, 'updated_at' => 7, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -160,6 +165,7 @@ class StockMoveTableMap extends TableMap
         $this->addColumn('name', 'Name', 'VARCHAR', false, 8, null);
         $this->addForeignKey('src_id', 'SrcId', 'INTEGER', 'partner_location', 'id', true, null, null);
         $this->addForeignKey('dest_id', 'DestId', 'INTEGER', 'partner_location', 'id', true, null, null);
+        $this->addColumn('operation', 'Operation', 'CHAR', true, null, null);
         $this->addColumn('state', 'State', 'CHAR', false, null, 'draft');
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
@@ -338,6 +344,7 @@ class StockMoveTableMap extends TableMap
             $criteria->addSelectColumn(StockMoveTableMap::COL_NAME);
             $criteria->addSelectColumn(StockMoveTableMap::COL_SRC_ID);
             $criteria->addSelectColumn(StockMoveTableMap::COL_DEST_ID);
+            $criteria->addSelectColumn(StockMoveTableMap::COL_OPERATION);
             $criteria->addSelectColumn(StockMoveTableMap::COL_STATE);
             $criteria->addSelectColumn(StockMoveTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(StockMoveTableMap::COL_UPDATED_AT);
@@ -346,6 +353,7 @@ class StockMoveTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.name');
             $criteria->addSelectColumn($alias . '.src_id');
             $criteria->addSelectColumn($alias . '.dest_id');
+            $criteria->addSelectColumn($alias . '.operation');
             $criteria->addSelectColumn($alias . '.state');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');

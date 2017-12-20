@@ -10,8 +10,10 @@ class Manage_partnerlocations extends MY_Controller{
   }
 
   function get_json(){
-    $this->objobj = PartnerLocationQuery::create()
-    ->filterByPartnerId($this->input->get('partner_id'));
+    if($this->input->get('partner_id')){
+      $this->objobj = PartnerLocationQuery::create()
+      ->filterByPartnerId($this->input->get('partner_id'));
+    }
     parent::get_json();
   }
 

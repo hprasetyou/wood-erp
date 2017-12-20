@@ -97,6 +97,13 @@ abstract class StockMove implements ActiveRecordInterface
     protected $dest_id;
 
     /**
+     * The value for the operation field.
+     *
+     * @var        string
+     */
+    protected $operation;
+
+    /**
      * The value for the state field.
      *
      * Note: this column has a database default value of: 'draft'
@@ -429,6 +436,16 @@ abstract class StockMove implements ActiveRecordInterface
     }
 
     /**
+     * Get the [operation] column value.
+     *
+     * @return string
+     */
+    public function getOperation()
+    {
+        return $this->operation;
+    }
+
+    /**
      * Get the [state] column value.
      *
      * @return string
@@ -567,6 +584,26 @@ abstract class StockMove implements ActiveRecordInterface
     } // setDestId()
 
     /**
+     * Set the value of [operation] column.
+     *
+     * @param string $v new value
+     * @return $this|\StockMove The current object (for fluent API support)
+     */
+    public function setOperation($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->operation !== $v) {
+            $this->operation = $v;
+            $this->modifiedColumns[StockMoveTableMap::COL_OPERATION] = true;
+        }
+
+        return $this;
+    } // setOperation()
+
+    /**
      * Set the value of [state] column.
      *
      * @param string $v new value
@@ -678,16 +715,19 @@ abstract class StockMove implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : StockMoveTableMap::translateFieldName('DestId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->dest_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : StockMoveTableMap::translateFieldName('State', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : StockMoveTableMap::translateFieldName('Operation', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->operation = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : StockMoveTableMap::translateFieldName('State', TableMap::TYPE_PHPNAME, $indexType)];
             $this->state = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : StockMoveTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : StockMoveTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : StockMoveTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : StockMoveTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -700,7 +740,7 @@ abstract class StockMove implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 7; // 7 = StockMoveTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = StockMoveTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\StockMove'), 0, $e);
@@ -959,6 +999,9 @@ abstract class StockMove implements ActiveRecordInterface
         if ($this->isColumnModified(StockMoveTableMap::COL_DEST_ID)) {
             $modifiedColumns[':p' . $index++]  = 'dest_id';
         }
+        if ($this->isColumnModified(StockMoveTableMap::COL_OPERATION)) {
+            $modifiedColumns[':p' . $index++]  = 'operation';
+        }
         if ($this->isColumnModified(StockMoveTableMap::COL_STATE)) {
             $modifiedColumns[':p' . $index++]  = 'state';
         }
@@ -990,6 +1033,9 @@ abstract class StockMove implements ActiveRecordInterface
                         break;
                     case 'dest_id':
                         $stmt->bindValue($identifier, $this->dest_id, PDO::PARAM_INT);
+                        break;
+                    case 'operation':
+                        $stmt->bindValue($identifier, $this->operation, PDO::PARAM_STR);
                         break;
                     case 'state':
                         $stmt->bindValue($identifier, $this->state, PDO::PARAM_STR);
@@ -1075,12 +1121,15 @@ abstract class StockMove implements ActiveRecordInterface
                 return $this->getDestId();
                 break;
             case 4:
-                return $this->getState();
+                return $this->getOperation();
                 break;
             case 5:
-                return $this->getCreatedAt();
+                return $this->getState();
                 break;
             case 6:
+                return $this->getCreatedAt();
+                break;
+            case 7:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1117,16 +1166,17 @@ abstract class StockMove implements ActiveRecordInterface
             $keys[1] => $this->getName(),
             $keys[2] => $this->getSrcId(),
             $keys[3] => $this->getDestId(),
-            $keys[4] => $this->getState(),
-            $keys[5] => $this->getCreatedAt(),
-            $keys[6] => $this->getUpdatedAt(),
+            $keys[4] => $this->getOperation(),
+            $keys[5] => $this->getState(),
+            $keys[6] => $this->getCreatedAt(),
+            $keys[7] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[5]] instanceof \DateTimeInterface) {
-            $result[$keys[5]] = $result[$keys[5]]->format('c');
-        }
-
         if ($result[$keys[6]] instanceof \DateTimeInterface) {
             $result[$keys[6]] = $result[$keys[6]]->format('c');
+        }
+
+        if ($result[$keys[7]] instanceof \DateTimeInterface) {
+            $result[$keys[7]] = $result[$keys[7]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1227,12 +1277,15 @@ abstract class StockMove implements ActiveRecordInterface
                 $this->setDestId($value);
                 break;
             case 4:
-                $this->setState($value);
+                $this->setOperation($value);
                 break;
             case 5:
-                $this->setCreatedAt($value);
+                $this->setState($value);
                 break;
             case 6:
+                $this->setCreatedAt($value);
+                break;
+            case 7:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1274,13 +1327,16 @@ abstract class StockMove implements ActiveRecordInterface
             $this->setDestId($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setState($arr[$keys[4]]);
+            $this->setOperation($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setCreatedAt($arr[$keys[5]]);
+            $this->setState($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setUpdatedAt($arr[$keys[6]]);
+            $this->setCreatedAt($arr[$keys[6]]);
+        }
+        if (array_key_exists($keys[7], $arr)) {
+            $this->setUpdatedAt($arr[$keys[7]]);
         }
     }
 
@@ -1334,6 +1390,9 @@ abstract class StockMove implements ActiveRecordInterface
         }
         if ($this->isColumnModified(StockMoveTableMap::COL_DEST_ID)) {
             $criteria->add(StockMoveTableMap::COL_DEST_ID, $this->dest_id);
+        }
+        if ($this->isColumnModified(StockMoveTableMap::COL_OPERATION)) {
+            $criteria->add(StockMoveTableMap::COL_OPERATION, $this->operation);
         }
         if ($this->isColumnModified(StockMoveTableMap::COL_STATE)) {
             $criteria->add(StockMoveTableMap::COL_STATE, $this->state);
@@ -1433,6 +1492,7 @@ abstract class StockMove implements ActiveRecordInterface
         $copyObj->setName($this->getName());
         $copyObj->setSrcId($this->getSrcId());
         $copyObj->setDestId($this->getDestId());
+        $copyObj->setOperation($this->getOperation());
         $copyObj->setState($this->getState());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
@@ -1864,6 +1924,7 @@ abstract class StockMove implements ActiveRecordInterface
         $this->name = null;
         $this->src_id = null;
         $this->dest_id = null;
+        $this->operation = null;
         $this->state = null;
         $this->created_at = null;
         $this->updated_at = null;

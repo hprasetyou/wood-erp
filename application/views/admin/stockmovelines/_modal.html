@@ -1,0 +1,26 @@
+
+	<div class="modal fade" id="ModalStockMoveLine" data-init="0" data-controller="manage_stockmovelines" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">StockMoveLine</h4>
+				</div>
+				<div class="modal-body">
+					<table data-display="2" data-controller="manage_stockmovelines" class="table table-striped table-hover " id="table_StockMoveLine">
+		<thead>
+			<tr>
+				<th></th>
+				<th data-fieldname="name">{{res.string.name }}</th>
+				<th data-fieldname="product_id">{{res.string.product_id }}</th>
+				<th data-fieldname="stock_move_id">{{res.string.stock_move_id }}</th>
+				<th data-fieldname="qty">{{res.string.qty }}</th>
+			</tr>
+		</thead>
+	</table>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	
