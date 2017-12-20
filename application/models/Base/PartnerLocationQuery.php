@@ -27,8 +27,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerLocationQuery orderByCountryId($order = Criteria::ASC) Order by the country_id column
  * @method     ChildPartnerLocationQuery orderByPostal($order = Criteria::ASC) Order by the postal column
  * @method     ChildPartnerLocationQuery orderByCity($order = Criteria::ASC) Order by the city column
- * @method     ChildPartnerLocationQuery orderByUsage($order = Criteria::ASC) Order by the usage column
- * @method     ChildPartnerLocationQuery orderByAdress($order = Criteria::ASC) Order by the address column
+ * @method     ChildPartnerLocationQuery orderByType($order = Criteria::ASC) Order by the type column
+ * @method     ChildPartnerLocationQuery orderByAddress($order = Criteria::ASC) Order by the address column
  *
  * @method     ChildPartnerLocationQuery groupById() Group by the id column
  * @method     ChildPartnerLocationQuery groupByName() Group by the name column
@@ -37,8 +37,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerLocationQuery groupByCountryId() Group by the country_id column
  * @method     ChildPartnerLocationQuery groupByPostal() Group by the postal column
  * @method     ChildPartnerLocationQuery groupByCity() Group by the city column
- * @method     ChildPartnerLocationQuery groupByUsage() Group by the usage column
- * @method     ChildPartnerLocationQuery groupByAdress() Group by the address column
+ * @method     ChildPartnerLocationQuery groupByType() Group by the type column
+ * @method     ChildPartnerLocationQuery groupByAddress() Group by the address column
  *
  * @method     ChildPartnerLocationQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildPartnerLocationQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -68,7 +68,37 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerLocationQuery rightJoinWithPartner() Adds a RIGHT JOIN clause and with to the query using the Partner relation
  * @method     ChildPartnerLocationQuery innerJoinWithPartner() Adds a INNER JOIN clause and with to the query using the Partner relation
  *
- * @method     \CountryQuery|\PartnerQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildPartnerLocationQuery leftJoinProductStock($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProductStock relation
+ * @method     ChildPartnerLocationQuery rightJoinProductStock($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProductStock relation
+ * @method     ChildPartnerLocationQuery innerJoinProductStock($relationAlias = null) Adds a INNER JOIN clause to the query using the ProductStock relation
+ *
+ * @method     ChildPartnerLocationQuery joinWithProductStock($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ProductStock relation
+ *
+ * @method     ChildPartnerLocationQuery leftJoinWithProductStock() Adds a LEFT JOIN clause and with to the query using the ProductStock relation
+ * @method     ChildPartnerLocationQuery rightJoinWithProductStock() Adds a RIGHT JOIN clause and with to the query using the ProductStock relation
+ * @method     ChildPartnerLocationQuery innerJoinWithProductStock() Adds a INNER JOIN clause and with to the query using the ProductStock relation
+ *
+ * @method     ChildPartnerLocationQuery leftJoinStockMoveRelatedBySrcId($relationAlias = null) Adds a LEFT JOIN clause to the query using the StockMoveRelatedBySrcId relation
+ * @method     ChildPartnerLocationQuery rightJoinStockMoveRelatedBySrcId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the StockMoveRelatedBySrcId relation
+ * @method     ChildPartnerLocationQuery innerJoinStockMoveRelatedBySrcId($relationAlias = null) Adds a INNER JOIN clause to the query using the StockMoveRelatedBySrcId relation
+ *
+ * @method     ChildPartnerLocationQuery joinWithStockMoveRelatedBySrcId($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the StockMoveRelatedBySrcId relation
+ *
+ * @method     ChildPartnerLocationQuery leftJoinWithStockMoveRelatedBySrcId() Adds a LEFT JOIN clause and with to the query using the StockMoveRelatedBySrcId relation
+ * @method     ChildPartnerLocationQuery rightJoinWithStockMoveRelatedBySrcId() Adds a RIGHT JOIN clause and with to the query using the StockMoveRelatedBySrcId relation
+ * @method     ChildPartnerLocationQuery innerJoinWithStockMoveRelatedBySrcId() Adds a INNER JOIN clause and with to the query using the StockMoveRelatedBySrcId relation
+ *
+ * @method     ChildPartnerLocationQuery leftJoinStockMoveRelatedByDestId($relationAlias = null) Adds a LEFT JOIN clause to the query using the StockMoveRelatedByDestId relation
+ * @method     ChildPartnerLocationQuery rightJoinStockMoveRelatedByDestId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the StockMoveRelatedByDestId relation
+ * @method     ChildPartnerLocationQuery innerJoinStockMoveRelatedByDestId($relationAlias = null) Adds a INNER JOIN clause to the query using the StockMoveRelatedByDestId relation
+ *
+ * @method     ChildPartnerLocationQuery joinWithStockMoveRelatedByDestId($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the StockMoveRelatedByDestId relation
+ *
+ * @method     ChildPartnerLocationQuery leftJoinWithStockMoveRelatedByDestId() Adds a LEFT JOIN clause and with to the query using the StockMoveRelatedByDestId relation
+ * @method     ChildPartnerLocationQuery rightJoinWithStockMoveRelatedByDestId() Adds a RIGHT JOIN clause and with to the query using the StockMoveRelatedByDestId relation
+ * @method     ChildPartnerLocationQuery innerJoinWithStockMoveRelatedByDestId() Adds a INNER JOIN clause and with to the query using the StockMoveRelatedByDestId relation
+ *
+ * @method     \CountryQuery|\PartnerQuery|\ProductStockQuery|\StockMoveQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildPartnerLocation findOne(ConnectionInterface $con = null) Return the first ChildPartnerLocation matching the query
  * @method     ChildPartnerLocation findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPartnerLocation matching the query, or a new ChildPartnerLocation object populated from the query conditions when no match is found
@@ -80,8 +110,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerLocation findOneByCountryId(int $country_id) Return the first ChildPartnerLocation filtered by the country_id column
  * @method     ChildPartnerLocation findOneByPostal(string $postal) Return the first ChildPartnerLocation filtered by the postal column
  * @method     ChildPartnerLocation findOneByCity(string $city) Return the first ChildPartnerLocation filtered by the city column
- * @method     ChildPartnerLocation findOneByUsage(string $usage) Return the first ChildPartnerLocation filtered by the usage column
- * @method     ChildPartnerLocation findOneByAdress(string $address) Return the first ChildPartnerLocation filtered by the address column *
+ * @method     ChildPartnerLocation findOneByType(string $type) Return the first ChildPartnerLocation filtered by the type column
+ * @method     ChildPartnerLocation findOneByAddress(string $address) Return the first ChildPartnerLocation filtered by the address column *
 
  * @method     ChildPartnerLocation requirePk($key, ConnectionInterface $con = null) Return the ChildPartnerLocation by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartnerLocation requireOne(ConnectionInterface $con = null) Return the first ChildPartnerLocation matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -93,8 +123,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerLocation requireOneByCountryId(int $country_id) Return the first ChildPartnerLocation filtered by the country_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartnerLocation requireOneByPostal(string $postal) Return the first ChildPartnerLocation filtered by the postal column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartnerLocation requireOneByCity(string $city) Return the first ChildPartnerLocation filtered by the city column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPartnerLocation requireOneByUsage(string $usage) Return the first ChildPartnerLocation filtered by the usage column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPartnerLocation requireOneByAdress(string $address) Return the first ChildPartnerLocation filtered by the address column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPartnerLocation requireOneByType(string $type) Return the first ChildPartnerLocation filtered by the type column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPartnerLocation requireOneByAddress(string $address) Return the first ChildPartnerLocation filtered by the address column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildPartnerLocation[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildPartnerLocation objects based on current ModelCriteria
  * @method     ChildPartnerLocation[]|ObjectCollection findById(int $id) Return ChildPartnerLocation objects filtered by the id column
@@ -104,8 +134,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerLocation[]|ObjectCollection findByCountryId(int $country_id) Return ChildPartnerLocation objects filtered by the country_id column
  * @method     ChildPartnerLocation[]|ObjectCollection findByPostal(string $postal) Return ChildPartnerLocation objects filtered by the postal column
  * @method     ChildPartnerLocation[]|ObjectCollection findByCity(string $city) Return ChildPartnerLocation objects filtered by the city column
- * @method     ChildPartnerLocation[]|ObjectCollection findByUsage(string $usage) Return ChildPartnerLocation objects filtered by the usage column
- * @method     ChildPartnerLocation[]|ObjectCollection findByAdress(string $address) Return ChildPartnerLocation objects filtered by the address column
+ * @method     ChildPartnerLocation[]|ObjectCollection findByType(string $type) Return ChildPartnerLocation objects filtered by the type column
+ * @method     ChildPartnerLocation[]|ObjectCollection findByAddress(string $address) Return ChildPartnerLocation objects filtered by the address column
  * @method     ChildPartnerLocation[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -204,7 +234,7 @@ abstract class PartnerLocationQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, description, partner_id, country_id, postal, city, usage, address FROM partner_location WHERE id = :p0';
+        $sql = 'SELECT id, name, description, partner_id, country_id, postal, city, type, address FROM partner_location WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -522,28 +552,28 @@ abstract class PartnerLocationQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the usage column
+     * Filter the query on the type column
      *
      * Example usage:
      * <code>
-     * $query->filterByUsage('fooValue');   // WHERE usage = 'fooValue'
-     * $query->filterByUsage('%fooValue%', Criteria::LIKE); // WHERE usage LIKE '%fooValue%'
+     * $query->filterByType('fooValue');   // WHERE type = 'fooValue'
+     * $query->filterByType('%fooValue%', Criteria::LIKE); // WHERE type LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $usage The value to use as filter.
+     * @param     string $type The value to use as filter.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildPartnerLocationQuery The current query, for fluid interface
      */
-    public function filterByUsage($usage = null, $comparison = null)
+    public function filterByType($type = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($usage)) {
+            if (is_array($type)) {
                 $comparison = Criteria::IN;
             }
         }
 
-        return $this->addUsingAlias(PartnerLocationTableMap::COL_USAGE, $usage, $comparison);
+        return $this->addUsingAlias(PartnerLocationTableMap::COL_TYPE, $type, $comparison);
     }
 
     /**
@@ -551,24 +581,24 @@ abstract class PartnerLocationQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByAdress('fooValue');   // WHERE address = 'fooValue'
-     * $query->filterByAdress('%fooValue%', Criteria::LIKE); // WHERE address LIKE '%fooValue%'
+     * $query->filterByAddress('fooValue');   // WHERE address = 'fooValue'
+     * $query->filterByAddress('%fooValue%', Criteria::LIKE); // WHERE address LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $adress The value to use as filter.
+     * @param     string $address The value to use as filter.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildPartnerLocationQuery The current query, for fluid interface
      */
-    public function filterByAdress($adress = null, $comparison = null)
+    public function filterByAddress($address = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($adress)) {
+            if (is_array($address)) {
                 $comparison = Criteria::IN;
             }
         }
 
-        return $this->addUsingAlias(PartnerLocationTableMap::COL_ADDRESS, $adress, $comparison);
+        return $this->addUsingAlias(PartnerLocationTableMap::COL_ADDRESS, $address, $comparison);
     }
 
     /**
@@ -723,6 +753,225 @@ abstract class PartnerLocationQuery extends ModelCriteria
         return $this
             ->joinPartner($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Partner', '\PartnerQuery');
+    }
+
+    /**
+     * Filter the query by a related \ProductStock object
+     *
+     * @param \ProductStock|ObjectCollection $productStock the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildPartnerLocationQuery The current query, for fluid interface
+     */
+    public function filterByProductStock($productStock, $comparison = null)
+    {
+        if ($productStock instanceof \ProductStock) {
+            return $this
+                ->addUsingAlias(PartnerLocationTableMap::COL_ID, $productStock->getPartnerLocationId(), $comparison);
+        } elseif ($productStock instanceof ObjectCollection) {
+            return $this
+                ->useProductStockQuery()
+                ->filterByPrimaryKeys($productStock->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByProductStock() only accepts arguments of type \ProductStock or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ProductStock relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildPartnerLocationQuery The current query, for fluid interface
+     */
+    public function joinProductStock($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ProductStock');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ProductStock');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ProductStock relation ProductStock object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \ProductStockQuery A secondary query class using the current class as primary query
+     */
+    public function useProductStockQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinProductStock($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ProductStock', '\ProductStockQuery');
+    }
+
+    /**
+     * Filter the query by a related \StockMove object
+     *
+     * @param \StockMove|ObjectCollection $stockMove the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildPartnerLocationQuery The current query, for fluid interface
+     */
+    public function filterByStockMoveRelatedBySrcId($stockMove, $comparison = null)
+    {
+        if ($stockMove instanceof \StockMove) {
+            return $this
+                ->addUsingAlias(PartnerLocationTableMap::COL_ID, $stockMove->getSrcId(), $comparison);
+        } elseif ($stockMove instanceof ObjectCollection) {
+            return $this
+                ->useStockMoveRelatedBySrcIdQuery()
+                ->filterByPrimaryKeys($stockMove->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByStockMoveRelatedBySrcId() only accepts arguments of type \StockMove or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the StockMoveRelatedBySrcId relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildPartnerLocationQuery The current query, for fluid interface
+     */
+    public function joinStockMoveRelatedBySrcId($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('StockMoveRelatedBySrcId');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'StockMoveRelatedBySrcId');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the StockMoveRelatedBySrcId relation StockMove object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \StockMoveQuery A secondary query class using the current class as primary query
+     */
+    public function useStockMoveRelatedBySrcIdQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinStockMoveRelatedBySrcId($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'StockMoveRelatedBySrcId', '\StockMoveQuery');
+    }
+
+    /**
+     * Filter the query by a related \StockMove object
+     *
+     * @param \StockMove|ObjectCollection $stockMove the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildPartnerLocationQuery The current query, for fluid interface
+     */
+    public function filterByStockMoveRelatedByDestId($stockMove, $comparison = null)
+    {
+        if ($stockMove instanceof \StockMove) {
+            return $this
+                ->addUsingAlias(PartnerLocationTableMap::COL_ID, $stockMove->getDestId(), $comparison);
+        } elseif ($stockMove instanceof ObjectCollection) {
+            return $this
+                ->useStockMoveRelatedByDestIdQuery()
+                ->filterByPrimaryKeys($stockMove->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByStockMoveRelatedByDestId() only accepts arguments of type \StockMove or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the StockMoveRelatedByDestId relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildPartnerLocationQuery The current query, for fluid interface
+     */
+    public function joinStockMoveRelatedByDestId($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('StockMoveRelatedByDestId');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'StockMoveRelatedByDestId');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the StockMoveRelatedByDestId relation StockMove object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \StockMoveQuery A secondary query class using the current class as primary query
+     */
+    public function useStockMoveRelatedByDestIdQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinStockMoveRelatedByDestId($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'StockMoveRelatedByDestId', '\StockMoveQuery');
     }
 
     /**

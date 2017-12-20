@@ -16,10 +16,14 @@ use \ProductImageQuery as ChildProductImageQuery;
 use \ProductPartner as ChildProductPartner;
 use \ProductPartnerQuery as ChildProductPartnerQuery;
 use \ProductQuery as ChildProductQuery;
+use \ProductStock as ChildProductStock;
+use \ProductStockQuery as ChildProductStockQuery;
 use \ProformaInvoiceLine as ChildProformaInvoiceLine;
 use \ProformaInvoiceLineQuery as ChildProformaInvoiceLineQuery;
 use \PurchaseOrderLine as ChildPurchaseOrderLine;
 use \PurchaseOrderLineQuery as ChildPurchaseOrderLineQuery;
+use \StockMoveLine as ChildStockMoveLine;
+use \StockMoveLineQuery as ChildStockMoveLineQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
@@ -27,9 +31,11 @@ use Map\ComponentProductTableMap;
 use Map\ProductFinishingTableMap;
 use Map\ProductImageTableMap;
 use Map\ProductPartnerTableMap;
+use Map\ProductStockTableMap;
 use Map\ProductTableMap;
 use Map\ProformaInvoiceLineTableMap;
 use Map\PurchaseOrderLineTableMap;
+use Map\StockMoveLineTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -316,6 +322,18 @@ abstract class Product implements ActiveRecordInterface
     protected $collPurchaseOrderLinesPartial;
 
     /**
+     * @var        ObjectCollection|ChildProductStock[] Collection to store aggregation of ChildProductStock objects.
+     */
+    protected $collProductStocks;
+    protected $collProductStocksPartial;
+
+    /**
+     * @var        ObjectCollection|ChildStockMoveLine[] Collection to store aggregation of ChildStockMoveLine objects.
+     */
+    protected $collStockMoveLines;
+    protected $collStockMoveLinesPartial;
+
+    /**
      * @var        ObjectCollection|ChildFinishing[] Cross Collection to store aggregation of ChildFinishing objects.
      */
     protected $collFinishings;
@@ -380,6 +398,18 @@ abstract class Product implements ActiveRecordInterface
      * @var ObjectCollection|ChildPurchaseOrderLine[]
      */
     protected $purchaseOrderLinesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildProductStock[]
+     */
+    protected $productStocksScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildStockMoveLine[]
+     */
+    protected $stockMoveLinesScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -1697,6 +1727,10 @@ abstract class Product implements ActiveRecordInterface
 
             $this->collPurchaseOrderLines = null;
 
+            $this->collProductStocks = null;
+
+            $this->collStockMoveLines = null;
+
             $this->collFinishings = null;
         } // if (deep)
     }
@@ -1967,6 +2001,40 @@ abstract class Product implements ActiveRecordInterface
 
             if ($this->collPurchaseOrderLines !== null) {
                 foreach ($this->collPurchaseOrderLines as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->productStocksScheduledForDeletion !== null) {
+                if (!$this->productStocksScheduledForDeletion->isEmpty()) {
+                    \ProductStockQuery::create()
+                        ->filterByPrimaryKeys($this->productStocksScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->productStocksScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collProductStocks !== null) {
+                foreach ($this->collProductStocks as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->stockMoveLinesScheduledForDeletion !== null) {
+                if (!$this->stockMoveLinesScheduledForDeletion->isEmpty()) {
+                    \StockMoveLineQuery::create()
+                        ->filterByPrimaryKeys($this->stockMoveLinesScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->stockMoveLinesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collStockMoveLines !== null) {
+                foreach ($this->collStockMoveLines as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -2487,6 +2555,36 @@ abstract class Product implements ActiveRecordInterface
 
                 $result[$key] = $this->collPurchaseOrderLines->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
+            if (null !== $this->collProductStocks) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'productStocks';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'product_stocks';
+                        break;
+                    default:
+                        $key = 'ProductStocks';
+                }
+
+                $result[$key] = $this->collProductStocks->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collStockMoveLines) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'stockMoveLines';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'stock_move_lines';
+                        break;
+                    default:
+                        $key = 'StockMoveLines';
+                }
+
+                $result[$key] = $this->collStockMoveLines->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
         }
 
         return $result;
@@ -2971,6 +3069,18 @@ abstract class Product implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getProductStocks() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addProductStock($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getStockMoveLines() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addStockMoveLine($relObj->copy($deepCopy));
+                }
+            }
+
         } // if ($deepCopy)
 
         if ($makeNew) {
@@ -3089,6 +3199,14 @@ abstract class Product implements ActiveRecordInterface
         }
         if ('PurchaseOrderLine' == $relationName) {
             $this->initPurchaseOrderLines();
+            return;
+        }
+        if ('ProductStock' == $relationName) {
+            $this->initProductStocks();
+            return;
+        }
+        if ('StockMoveLine' == $relationName) {
+            $this->initStockMoveLines();
             return;
         }
     }
@@ -4797,6 +4915,506 @@ abstract class Product implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collProductStocks collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addProductStocks()
+     */
+    public function clearProductStocks()
+    {
+        $this->collProductStocks = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collProductStocks collection loaded partially.
+     */
+    public function resetPartialProductStocks($v = true)
+    {
+        $this->collProductStocksPartial = $v;
+    }
+
+    /**
+     * Initializes the collProductStocks collection.
+     *
+     * By default this just sets the collProductStocks collection to an empty array (like clearcollProductStocks());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initProductStocks($overrideExisting = true)
+    {
+        if (null !== $this->collProductStocks && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = ProductStockTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collProductStocks = new $collectionClassName;
+        $this->collProductStocks->setModel('\ProductStock');
+    }
+
+    /**
+     * Gets an array of ChildProductStock objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildProduct is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildProductStock[] List of ChildProductStock objects
+     * @throws PropelException
+     */
+    public function getProductStocks(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collProductStocksPartial && !$this->isNew();
+        if (null === $this->collProductStocks || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collProductStocks) {
+                // return empty collection
+                $this->initProductStocks();
+            } else {
+                $collProductStocks = ChildProductStockQuery::create(null, $criteria)
+                    ->filterByProduct($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collProductStocksPartial && count($collProductStocks)) {
+                        $this->initProductStocks(false);
+
+                        foreach ($collProductStocks as $obj) {
+                            if (false == $this->collProductStocks->contains($obj)) {
+                                $this->collProductStocks->append($obj);
+                            }
+                        }
+
+                        $this->collProductStocksPartial = true;
+                    }
+
+                    return $collProductStocks;
+                }
+
+                if ($partial && $this->collProductStocks) {
+                    foreach ($this->collProductStocks as $obj) {
+                        if ($obj->isNew()) {
+                            $collProductStocks[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collProductStocks = $collProductStocks;
+                $this->collProductStocksPartial = false;
+            }
+        }
+
+        return $this->collProductStocks;
+    }
+
+    /**
+     * Sets a collection of ChildProductStock objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $productStocks A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildProduct The current object (for fluent API support)
+     */
+    public function setProductStocks(Collection $productStocks, ConnectionInterface $con = null)
+    {
+        /** @var ChildProductStock[] $productStocksToDelete */
+        $productStocksToDelete = $this->getProductStocks(new Criteria(), $con)->diff($productStocks);
+
+
+        $this->productStocksScheduledForDeletion = $productStocksToDelete;
+
+        foreach ($productStocksToDelete as $productStockRemoved) {
+            $productStockRemoved->setProduct(null);
+        }
+
+        $this->collProductStocks = null;
+        foreach ($productStocks as $productStock) {
+            $this->addProductStock($productStock);
+        }
+
+        $this->collProductStocks = $productStocks;
+        $this->collProductStocksPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related ProductStock objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related ProductStock objects.
+     * @throws PropelException
+     */
+    public function countProductStocks(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collProductStocksPartial && !$this->isNew();
+        if (null === $this->collProductStocks || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collProductStocks) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getProductStocks());
+            }
+
+            $query = ChildProductStockQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByProduct($this)
+                ->count($con);
+        }
+
+        return count($this->collProductStocks);
+    }
+
+    /**
+     * Method called to associate a ChildProductStock object to this object
+     * through the ChildProductStock foreign key attribute.
+     *
+     * @param  ChildProductStock $l ChildProductStock
+     * @return $this|\Product The current object (for fluent API support)
+     */
+    public function addProductStock(ChildProductStock $l)
+    {
+        if ($this->collProductStocks === null) {
+            $this->initProductStocks();
+            $this->collProductStocksPartial = true;
+        }
+
+        if (!$this->collProductStocks->contains($l)) {
+            $this->doAddProductStock($l);
+
+            if ($this->productStocksScheduledForDeletion and $this->productStocksScheduledForDeletion->contains($l)) {
+                $this->productStocksScheduledForDeletion->remove($this->productStocksScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildProductStock $productStock The ChildProductStock object to add.
+     */
+    protected function doAddProductStock(ChildProductStock $productStock)
+    {
+        $this->collProductStocks[]= $productStock;
+        $productStock->setProduct($this);
+    }
+
+    /**
+     * @param  ChildProductStock $productStock The ChildProductStock object to remove.
+     * @return $this|ChildProduct The current object (for fluent API support)
+     */
+    public function removeProductStock(ChildProductStock $productStock)
+    {
+        if ($this->getProductStocks()->contains($productStock)) {
+            $pos = $this->collProductStocks->search($productStock);
+            $this->collProductStocks->remove($pos);
+            if (null === $this->productStocksScheduledForDeletion) {
+                $this->productStocksScheduledForDeletion = clone $this->collProductStocks;
+                $this->productStocksScheduledForDeletion->clear();
+            }
+            $this->productStocksScheduledForDeletion[]= clone $productStock;
+            $productStock->setProduct(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Product is new, it will return
+     * an empty collection; or if this Product has previously
+     * been saved, it will retrieve related ProductStocks from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Product.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildProductStock[] List of ChildProductStock objects
+     */
+    public function getProductStocksJoinPartnerLocation(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildProductStockQuery::create(null, $criteria);
+        $query->joinWith('PartnerLocation', $joinBehavior);
+
+        return $this->getProductStocks($query, $con);
+    }
+
+    /**
+     * Clears out the collStockMoveLines collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addStockMoveLines()
+     */
+    public function clearStockMoveLines()
+    {
+        $this->collStockMoveLines = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collStockMoveLines collection loaded partially.
+     */
+    public function resetPartialStockMoveLines($v = true)
+    {
+        $this->collStockMoveLinesPartial = $v;
+    }
+
+    /**
+     * Initializes the collStockMoveLines collection.
+     *
+     * By default this just sets the collStockMoveLines collection to an empty array (like clearcollStockMoveLines());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initStockMoveLines($overrideExisting = true)
+    {
+        if (null !== $this->collStockMoveLines && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = StockMoveLineTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collStockMoveLines = new $collectionClassName;
+        $this->collStockMoveLines->setModel('\StockMoveLine');
+    }
+
+    /**
+     * Gets an array of ChildStockMoveLine objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildProduct is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildStockMoveLine[] List of ChildStockMoveLine objects
+     * @throws PropelException
+     */
+    public function getStockMoveLines(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collStockMoveLinesPartial && !$this->isNew();
+        if (null === $this->collStockMoveLines || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collStockMoveLines) {
+                // return empty collection
+                $this->initStockMoveLines();
+            } else {
+                $collStockMoveLines = ChildStockMoveLineQuery::create(null, $criteria)
+                    ->filterByProduct($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collStockMoveLinesPartial && count($collStockMoveLines)) {
+                        $this->initStockMoveLines(false);
+
+                        foreach ($collStockMoveLines as $obj) {
+                            if (false == $this->collStockMoveLines->contains($obj)) {
+                                $this->collStockMoveLines->append($obj);
+                            }
+                        }
+
+                        $this->collStockMoveLinesPartial = true;
+                    }
+
+                    return $collStockMoveLines;
+                }
+
+                if ($partial && $this->collStockMoveLines) {
+                    foreach ($this->collStockMoveLines as $obj) {
+                        if ($obj->isNew()) {
+                            $collStockMoveLines[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collStockMoveLines = $collStockMoveLines;
+                $this->collStockMoveLinesPartial = false;
+            }
+        }
+
+        return $this->collStockMoveLines;
+    }
+
+    /**
+     * Sets a collection of ChildStockMoveLine objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $stockMoveLines A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildProduct The current object (for fluent API support)
+     */
+    public function setStockMoveLines(Collection $stockMoveLines, ConnectionInterface $con = null)
+    {
+        /** @var ChildStockMoveLine[] $stockMoveLinesToDelete */
+        $stockMoveLinesToDelete = $this->getStockMoveLines(new Criteria(), $con)->diff($stockMoveLines);
+
+
+        $this->stockMoveLinesScheduledForDeletion = $stockMoveLinesToDelete;
+
+        foreach ($stockMoveLinesToDelete as $stockMoveLineRemoved) {
+            $stockMoveLineRemoved->setProduct(null);
+        }
+
+        $this->collStockMoveLines = null;
+        foreach ($stockMoveLines as $stockMoveLine) {
+            $this->addStockMoveLine($stockMoveLine);
+        }
+
+        $this->collStockMoveLines = $stockMoveLines;
+        $this->collStockMoveLinesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related StockMoveLine objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related StockMoveLine objects.
+     * @throws PropelException
+     */
+    public function countStockMoveLines(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collStockMoveLinesPartial && !$this->isNew();
+        if (null === $this->collStockMoveLines || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collStockMoveLines) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getStockMoveLines());
+            }
+
+            $query = ChildStockMoveLineQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByProduct($this)
+                ->count($con);
+        }
+
+        return count($this->collStockMoveLines);
+    }
+
+    /**
+     * Method called to associate a ChildStockMoveLine object to this object
+     * through the ChildStockMoveLine foreign key attribute.
+     *
+     * @param  ChildStockMoveLine $l ChildStockMoveLine
+     * @return $this|\Product The current object (for fluent API support)
+     */
+    public function addStockMoveLine(ChildStockMoveLine $l)
+    {
+        if ($this->collStockMoveLines === null) {
+            $this->initStockMoveLines();
+            $this->collStockMoveLinesPartial = true;
+        }
+
+        if (!$this->collStockMoveLines->contains($l)) {
+            $this->doAddStockMoveLine($l);
+
+            if ($this->stockMoveLinesScheduledForDeletion and $this->stockMoveLinesScheduledForDeletion->contains($l)) {
+                $this->stockMoveLinesScheduledForDeletion->remove($this->stockMoveLinesScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildStockMoveLine $stockMoveLine The ChildStockMoveLine object to add.
+     */
+    protected function doAddStockMoveLine(ChildStockMoveLine $stockMoveLine)
+    {
+        $this->collStockMoveLines[]= $stockMoveLine;
+        $stockMoveLine->setProduct($this);
+    }
+
+    /**
+     * @param  ChildStockMoveLine $stockMoveLine The ChildStockMoveLine object to remove.
+     * @return $this|ChildProduct The current object (for fluent API support)
+     */
+    public function removeStockMoveLine(ChildStockMoveLine $stockMoveLine)
+    {
+        if ($this->getStockMoveLines()->contains($stockMoveLine)) {
+            $pos = $this->collStockMoveLines->search($stockMoveLine);
+            $this->collStockMoveLines->remove($pos);
+            if (null === $this->stockMoveLinesScheduledForDeletion) {
+                $this->stockMoveLinesScheduledForDeletion = clone $this->collStockMoveLines;
+                $this->stockMoveLinesScheduledForDeletion->clear();
+            }
+            $this->stockMoveLinesScheduledForDeletion[]= clone $stockMoveLine;
+            $stockMoveLine->setProduct(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Product is new, it will return
+     * an empty collection; or if this Product has previously
+     * been saved, it will retrieve related StockMoveLines from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Product.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildStockMoveLine[] List of ChildStockMoveLine objects
+     */
+    public function getStockMoveLinesJoinStockMove(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildStockMoveLineQuery::create(null, $criteria);
+        $query->joinWith('StockMove', $joinBehavior);
+
+        return $this->getStockMoveLines($query, $con);
+    }
+
+    /**
      * Clears out the collFinishings collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
@@ -5128,6 +5746,16 @@ abstract class Product implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collProductStocks) {
+                foreach ($this->collProductStocks as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collStockMoveLines) {
+                foreach ($this->collStockMoveLines as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collFinishings) {
                 foreach ($this->collFinishings as $o) {
                     $o->clearAllReferences($deep);
@@ -5142,6 +5770,8 @@ abstract class Product implements ActiveRecordInterface
         $this->collProductImages = null;
         $this->collProformaInvoiceLines = null;
         $this->collPurchaseOrderLines = null;
+        $this->collProductStocks = null;
+        $this->collStockMoveLines = null;
         $this->collFinishings = null;
         $this->aMaterial = null;
     }

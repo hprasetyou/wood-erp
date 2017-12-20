@@ -429,8 +429,8 @@
     <column name="country_id" phpName="CountryId" type="INTEGER" required="true"/>
     <column name="postal" phpName="Postal" type="VARCHAR" size="7"/>
     <column name="city" phpName="City" type="VARCHAR" size="255"/>
-    <column name="usage" phpName="Usage" type="CHAR" sqlType="ENUM('warehouse','supplier','transit')"/>
-    <column name="address" phpName="Adress" required="true" type="LONGVARCHAR" />
+    <column name="type" phpName="Type" type="CHAR" sqlType="ENUM('warehouse','supplier','transit')" defaultValue="warehouse"/>
+    <column name="address" phpName="Address" type="LONGVARCHAR" />
     <foreign-key foreignTable="country" name="partner_location_ibfk_2">
       <reference local="country_id" foreign="id"/>
     </foreign-key>
@@ -463,6 +463,53 @@
     <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
     <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" />
   </table>
+  <table name="product_stock" phpName="ProductStock">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="name" phpName="Name" type="VARCHAR" size="8" />
+    <column name="partner_location_id" phpName="PartnerLocationId" type="INTEGER" required="true"/>
+    <column name="product_id" phpName="ProductId" type="INTEGER" required="true"/>
+    <column name="qty" phpName="Qty" type="INTEGER" required="true"/>
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" />
+    <foreign-key foreignTable="partner_location" name="product_stock_ibfk_1">
+      <reference local="partner_location_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="product" name="product_stock_ibfk_2">
+      <reference local="product_id" foreign="id"/>
+    </foreign-key>
+  </table>
+  <table name="stock_move" phpName="StockMove">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="name" phpName="Name" type="VARCHAR" size="8" />
+    <column name="src_id" phpName="SrcId" type="INTEGER" required="true"/>
+    <column name="dest_id" phpName="DestId" type="INTEGER" required="true"/>
+    <column name="state" phpName="State" type="CHAR" sqlType="ENUM('draft','confirm','done','delete')" defaultValue="draft"/>
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" />
+    <foreign-key foreignTable="partner_location" phpName="Src" name="stock_move_ibfk_1">
+      <reference local="src_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="partner_location" phpName="Dest" name="stock_move_ibfk_2">
+      <reference local="dest_id" foreign="id"/>
+    </foreign-key>
+  </table>
+
+  <table name="stock_move_line" phpName="StockMoveLine">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="name" phpName="Name" type="VARCHAR" size="8" />
+    <column name="product_id" phpName="ProductId" type="INTEGER" required="true"/>
+    <column name="stock_move_id" phpName="StockMoveId" type="INTEGER" required="true"/>
+    <column name="qty" phpName="Qty" type="INTEGER" required="true"/>
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" />
+    <foreign-key foreignTable="stock_move">
+      <reference local="stock_move_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="product">
+      <reference local="product_id" foreign="id"/>
+    </foreign-key>
+  </table>
+
   <table name="currency" phpName="Currency">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="name" phpName="Name" type="VARCHAR" size="18" />

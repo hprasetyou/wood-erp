@@ -2,8 +2,8 @@
 
 namespace Map;
 
-use \PartnerLocation;
-use \PartnerLocationQuery;
+use \StockMoveLine;
+use \StockMoveLineQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'partner_location' table.
+ * This class defines the structure of the 'stock_move_line' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class PartnerLocationTableMap extends TableMap
+class StockMoveLineTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class PartnerLocationTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.PartnerLocationTableMap';
+    const CLASS_NAME = '.Map.StockMoveLineTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class PartnerLocationTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'partner_location';
+    const TABLE_NAME = 'stock_move_line';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\PartnerLocation';
+    const OM_CLASS = '\\StockMoveLine';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'PartnerLocation';
+    const CLASS_DEFAULT = 'StockMoveLine';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 9;
+    const NUM_COLUMNS = 7;
 
     /**
      * The number of lazy-loaded columns
@@ -69,52 +69,42 @@ class PartnerLocationTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 9;
+    const NUM_HYDRATE_COLUMNS = 7;
 
     /**
      * the column name for the id field
      */
-    const COL_ID = 'partner_location.id';
+    const COL_ID = 'stock_move_line.id';
 
     /**
      * the column name for the name field
      */
-    const COL_NAME = 'partner_location.name';
+    const COL_NAME = 'stock_move_line.name';
 
     /**
-     * the column name for the description field
+     * the column name for the product_id field
      */
-    const COL_DESCRIPTION = 'partner_location.description';
+    const COL_PRODUCT_ID = 'stock_move_line.product_id';
 
     /**
-     * the column name for the partner_id field
+     * the column name for the stock_move_id field
      */
-    const COL_PARTNER_ID = 'partner_location.partner_id';
+    const COL_STOCK_MOVE_ID = 'stock_move_line.stock_move_id';
 
     /**
-     * the column name for the country_id field
+     * the column name for the qty field
      */
-    const COL_COUNTRY_ID = 'partner_location.country_id';
+    const COL_QTY = 'stock_move_line.qty';
 
     /**
-     * the column name for the postal field
+     * the column name for the created_at field
      */
-    const COL_POSTAL = 'partner_location.postal';
+    const COL_CREATED_AT = 'stock_move_line.created_at';
 
     /**
-     * the column name for the city field
+     * the column name for the updated_at field
      */
-    const COL_CITY = 'partner_location.city';
-
-    /**
-     * the column name for the type field
-     */
-    const COL_TYPE = 'partner_location.type';
-
-    /**
-     * the column name for the address field
-     */
-    const COL_ADDRESS = 'partner_location.address';
+    const COL_UPDATED_AT = 'stock_move_line.updated_at';
 
     /**
      * The default string format for model objects of the related table
@@ -128,11 +118,11 @@ class PartnerLocationTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Description', 'PartnerId', 'CountryId', 'Postal', 'City', 'Type', 'Address', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'description', 'partnerId', 'countryId', 'postal', 'city', 'type', 'address', ),
-        self::TYPE_COLNAME       => array(PartnerLocationTableMap::COL_ID, PartnerLocationTableMap::COL_NAME, PartnerLocationTableMap::COL_DESCRIPTION, PartnerLocationTableMap::COL_PARTNER_ID, PartnerLocationTableMap::COL_COUNTRY_ID, PartnerLocationTableMap::COL_POSTAL, PartnerLocationTableMap::COL_CITY, PartnerLocationTableMap::COL_TYPE, PartnerLocationTableMap::COL_ADDRESS, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'description', 'partner_id', 'country_id', 'postal', 'city', 'type', 'address', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'ProductId', 'StockMoveId', 'Qty', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'productId', 'stockMoveId', 'qty', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(StockMoveLineTableMap::COL_ID, StockMoveLineTableMap::COL_NAME, StockMoveLineTableMap::COL_PRODUCT_ID, StockMoveLineTableMap::COL_STOCK_MOVE_ID, StockMoveLineTableMap::COL_QTY, StockMoveLineTableMap::COL_CREATED_AT, StockMoveLineTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'product_id', 'stock_move_id', 'qty', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -142,11 +132,11 @@ class PartnerLocationTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Description' => 2, 'PartnerId' => 3, 'CountryId' => 4, 'Postal' => 5, 'City' => 6, 'Type' => 7, 'Address' => 8, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'partnerId' => 3, 'countryId' => 4, 'postal' => 5, 'city' => 6, 'type' => 7, 'address' => 8, ),
-        self::TYPE_COLNAME       => array(PartnerLocationTableMap::COL_ID => 0, PartnerLocationTableMap::COL_NAME => 1, PartnerLocationTableMap::COL_DESCRIPTION => 2, PartnerLocationTableMap::COL_PARTNER_ID => 3, PartnerLocationTableMap::COL_COUNTRY_ID => 4, PartnerLocationTableMap::COL_POSTAL => 5, PartnerLocationTableMap::COL_CITY => 6, PartnerLocationTableMap::COL_TYPE => 7, PartnerLocationTableMap::COL_ADDRESS => 8, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'partner_id' => 3, 'country_id' => 4, 'postal' => 5, 'city' => 6, 'type' => 7, 'address' => 8, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'ProductId' => 2, 'StockMoveId' => 3, 'Qty' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'productId' => 2, 'stockMoveId' => 3, 'qty' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
+        self::TYPE_COLNAME       => array(StockMoveLineTableMap::COL_ID => 0, StockMoveLineTableMap::COL_NAME => 1, StockMoveLineTableMap::COL_PRODUCT_ID => 2, StockMoveLineTableMap::COL_STOCK_MOVE_ID => 3, StockMoveLineTableMap::COL_QTY => 4, StockMoveLineTableMap::COL_CREATED_AT => 5, StockMoveLineTableMap::COL_UPDATED_AT => 6, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'product_id' => 2, 'stock_move_id' => 3, 'qty' => 4, 'created_at' => 5, 'updated_at' => 6, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -159,22 +149,20 @@ class PartnerLocationTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('partner_location');
-        $this->setPhpName('PartnerLocation');
+        $this->setName('stock_move_line');
+        $this->setPhpName('StockMoveLine');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\PartnerLocation');
+        $this->setClassName('\\StockMoveLine');
         $this->setPackage('');
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('name', 'Name', 'VARCHAR', true, 255, null);
-        $this->addColumn('description', 'Description', 'LONGVARCHAR', false, null, null);
-        $this->addForeignKey('partner_id', 'PartnerId', 'INTEGER', 'partner', 'id', true, null, null);
-        $this->addForeignKey('country_id', 'CountryId', 'INTEGER', 'country', 'id', true, null, null);
-        $this->addColumn('postal', 'Postal', 'VARCHAR', false, 7, null);
-        $this->addColumn('city', 'City', 'VARCHAR', false, 255, null);
-        $this->addColumn('type', 'Type', 'CHAR', false, null, 'warehouse');
-        $this->addColumn('address', 'Address', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('name', 'Name', 'VARCHAR', false, 8, null);
+        $this->addForeignKey('product_id', 'ProductId', 'INTEGER', 'product', 'id', true, null, null);
+        $this->addForeignKey('stock_move_id', 'StockMoveId', 'INTEGER', 'stock_move', 'id', true, null, null);
+        $this->addColumn('qty', 'Qty', 'INTEGER', true, null, null);
+        $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
+        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
 
     /**
@@ -182,41 +170,20 @@ class PartnerLocationTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Country', '\\Country', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('StockMove', '\\StockMove', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':country_id',
+    0 => ':stock_move_id',
     1 => ':id',
   ),
 ), null, null, null, false);
-        $this->addRelation('Partner', '\\Partner', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('Product', '\\Product', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':partner_id',
+    0 => ':product_id',
     1 => ':id',
   ),
 ), null, null, null, false);
-        $this->addRelation('ProductStock', '\\ProductStock', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':partner_location_id',
-    1 => ':id',
-  ),
-), null, null, 'ProductStocks', false);
-        $this->addRelation('StockMoveRelatedBySrcId', '\\StockMove', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':src_id',
-    1 => ':id',
-  ),
-), null, null, 'StockmovesRelatedBySrcId', false);
-        $this->addRelation('StockMoveRelatedByDestId', '\\StockMove', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':dest_id',
-    1 => ':id',
-  ),
-), null, null, 'StockmovesRelatedByDestId', false);
     } // buildRelations()
 
     /**
@@ -276,7 +243,7 @@ class PartnerLocationTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? PartnerLocationTableMap::CLASS_DEFAULT : PartnerLocationTableMap::OM_CLASS;
+        return $withPrefix ? StockMoveLineTableMap::CLASS_DEFAULT : StockMoveLineTableMap::OM_CLASS;
     }
 
     /**
@@ -290,22 +257,22 @@ class PartnerLocationTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (PartnerLocation object, last column rank)
+     * @return array           (StockMoveLine object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = PartnerLocationTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = PartnerLocationTableMap::getInstanceFromPool($key))) {
+        $key = StockMoveLineTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = StockMoveLineTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + PartnerLocationTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + StockMoveLineTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = PartnerLocationTableMap::OM_CLASS;
-            /** @var PartnerLocation $obj */
+            $cls = StockMoveLineTableMap::OM_CLASS;
+            /** @var StockMoveLine $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            PartnerLocationTableMap::addInstanceToPool($obj, $key);
+            StockMoveLineTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -328,18 +295,18 @@ class PartnerLocationTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = PartnerLocationTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = PartnerLocationTableMap::getInstanceFromPool($key))) {
+            $key = StockMoveLineTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = StockMoveLineTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var PartnerLocation $obj */
+                /** @var StockMoveLine $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                PartnerLocationTableMap::addInstanceToPool($obj, $key);
+                StockMoveLineTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -360,25 +327,21 @@ class PartnerLocationTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(PartnerLocationTableMap::COL_ID);
-            $criteria->addSelectColumn(PartnerLocationTableMap::COL_NAME);
-            $criteria->addSelectColumn(PartnerLocationTableMap::COL_DESCRIPTION);
-            $criteria->addSelectColumn(PartnerLocationTableMap::COL_PARTNER_ID);
-            $criteria->addSelectColumn(PartnerLocationTableMap::COL_COUNTRY_ID);
-            $criteria->addSelectColumn(PartnerLocationTableMap::COL_POSTAL);
-            $criteria->addSelectColumn(PartnerLocationTableMap::COL_CITY);
-            $criteria->addSelectColumn(PartnerLocationTableMap::COL_TYPE);
-            $criteria->addSelectColumn(PartnerLocationTableMap::COL_ADDRESS);
+            $criteria->addSelectColumn(StockMoveLineTableMap::COL_ID);
+            $criteria->addSelectColumn(StockMoveLineTableMap::COL_NAME);
+            $criteria->addSelectColumn(StockMoveLineTableMap::COL_PRODUCT_ID);
+            $criteria->addSelectColumn(StockMoveLineTableMap::COL_STOCK_MOVE_ID);
+            $criteria->addSelectColumn(StockMoveLineTableMap::COL_QTY);
+            $criteria->addSelectColumn(StockMoveLineTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(StockMoveLineTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.name');
-            $criteria->addSelectColumn($alias . '.description');
-            $criteria->addSelectColumn($alias . '.partner_id');
-            $criteria->addSelectColumn($alias . '.country_id');
-            $criteria->addSelectColumn($alias . '.postal');
-            $criteria->addSelectColumn($alias . '.city');
-            $criteria->addSelectColumn($alias . '.type');
-            $criteria->addSelectColumn($alias . '.address');
+            $criteria->addSelectColumn($alias . '.product_id');
+            $criteria->addSelectColumn($alias . '.stock_move_id');
+            $criteria->addSelectColumn($alias . '.qty');
+            $criteria->addSelectColumn($alias . '.created_at');
+            $criteria->addSelectColumn($alias . '.updated_at');
         }
     }
 
@@ -391,7 +354,7 @@ class PartnerLocationTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(PartnerLocationTableMap::DATABASE_NAME)->getTable(PartnerLocationTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(StockMoveLineTableMap::DATABASE_NAME)->getTable(StockMoveLineTableMap::TABLE_NAME);
     }
 
     /**
@@ -399,16 +362,16 @@ class PartnerLocationTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(PartnerLocationTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(PartnerLocationTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new PartnerLocationTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(StockMoveLineTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(StockMoveLineTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new StockMoveLineTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a PartnerLocation or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a StockMoveLine or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or PartnerLocation object or primary key or array of primary keys
+     * @param mixed               $values Criteria or StockMoveLine object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -419,27 +382,27 @@ class PartnerLocationTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PartnerLocationTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(StockMoveLineTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \PartnerLocation) { // it's a model object
+        } elseif ($values instanceof \StockMoveLine) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(PartnerLocationTableMap::DATABASE_NAME);
-            $criteria->add(PartnerLocationTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(StockMoveLineTableMap::DATABASE_NAME);
+            $criteria->add(StockMoveLineTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
-        $query = PartnerLocationQuery::create()->mergeWith($criteria);
+        $query = StockMoveLineQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            PartnerLocationTableMap::clearInstancePool();
+            StockMoveLineTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                PartnerLocationTableMap::removeInstanceFromPool($singleval);
+                StockMoveLineTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -447,20 +410,20 @@ class PartnerLocationTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the partner_location table.
+     * Deletes all rows from the stock_move_line table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return PartnerLocationQuery::create()->doDeleteAll($con);
+        return StockMoveLineQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a PartnerLocation or Criteria object.
+     * Performs an INSERT on the database, given a StockMoveLine or Criteria object.
      *
-     * @param mixed               $criteria Criteria or PartnerLocation object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or StockMoveLine object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -469,22 +432,22 @@ class PartnerLocationTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PartnerLocationTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(StockMoveLineTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from PartnerLocation object
+            $criteria = $criteria->buildCriteria(); // build Criteria from StockMoveLine object
         }
 
-        if ($criteria->containsKey(PartnerLocationTableMap::COL_ID) && $criteria->keyContainsValue(PartnerLocationTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.PartnerLocationTableMap::COL_ID.')');
+        if ($criteria->containsKey(StockMoveLineTableMap::COL_ID) && $criteria->keyContainsValue(StockMoveLineTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.StockMoveLineTableMap::COL_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = PartnerLocationQuery::create()->mergeWith($criteria);
+        $query = StockMoveLineQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -493,7 +456,7 @@ class PartnerLocationTableMap extends TableMap
         });
     }
 
-} // PartnerLocationTableMap
+} // StockMoveLineTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-PartnerLocationTableMap::buildTableMap();
+StockMoveLineTableMap::buildTableMap();

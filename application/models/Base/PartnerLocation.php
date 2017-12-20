@@ -5,16 +5,24 @@ namespace Base;
 use \Country as ChildCountry;
 use \CountryQuery as ChildCountryQuery;
 use \Partner as ChildPartner;
+use \PartnerLocation as ChildPartnerLocation;
 use \PartnerLocationQuery as ChildPartnerLocationQuery;
 use \PartnerQuery as ChildPartnerQuery;
+use \ProductStock as ChildProductStock;
+use \ProductStockQuery as ChildProductStockQuery;
+use \StockMove as ChildStockMove;
+use \StockMoveQuery as ChildStockMoveQuery;
 use \Exception;
 use \PDO;
 use Map\PartnerLocationTableMap;
+use Map\ProductStockTableMap;
+use Map\StockMoveTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
+use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
@@ -113,11 +121,12 @@ abstract class PartnerLocation implements ActiveRecordInterface
     protected $city;
 
     /**
-     * The value for the usage field.
+     * The value for the type field.
      *
+     * Note: this column has a database default value of: 'warehouse'
      * @var        string
      */
-    protected $usage;
+    protected $type;
 
     /**
      * The value for the address field.
@@ -137,6 +146,24 @@ abstract class PartnerLocation implements ActiveRecordInterface
     protected $aPartner;
 
     /**
+     * @var        ObjectCollection|ChildProductStock[] Collection to store aggregation of ChildProductStock objects.
+     */
+    protected $collProductStocks;
+    protected $collProductStocksPartial;
+
+    /**
+     * @var        ObjectCollection|ChildStockMove[] Collection to store aggregation of ChildStockMove objects.
+     */
+    protected $collStockmovesRelatedBySrcId;
+    protected $collStockmovesRelatedBySrcIdPartial;
+
+    /**
+     * @var        ObjectCollection|ChildStockMove[] Collection to store aggregation of ChildStockMove objects.
+     */
+    protected $collStockmovesRelatedByDestId;
+    protected $collStockmovesRelatedByDestIdPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -145,10 +172,41 @@ abstract class PartnerLocation implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildProductStock[]
+     */
+    protected $productStocksScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildStockMove[]
+     */
+    protected $stockmovesRelatedBySrcIdScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildStockMove[]
+     */
+    protected $stockmovesRelatedByDestIdScheduledForDeletion = null;
+
+    /**
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see __construct()
+     */
+    public function applyDefaultValues()
+    {
+        $this->type = 'warehouse';
+    }
+
+    /**
      * Initializes internal state of Base\PartnerLocation object.
+     * @see applyDefaults()
      */
     public function __construct()
     {
+        $this->applyDefaultValues();
     }
 
     /**
@@ -440,13 +498,13 @@ abstract class PartnerLocation implements ActiveRecordInterface
     }
 
     /**
-     * Get the [usage] column value.
+     * Get the [type] column value.
      *
      * @return string
      */
-    public function getUsage()
+    public function getType()
     {
-        return $this->usage;
+        return $this->type;
     }
 
     /**
@@ -454,7 +512,7 @@ abstract class PartnerLocation implements ActiveRecordInterface
      *
      * @return string
      */
-    public function getAdress()
+    public function getAddress()
     {
         return $this->address;
     }
@@ -608,24 +666,24 @@ abstract class PartnerLocation implements ActiveRecordInterface
     } // setCity()
 
     /**
-     * Set the value of [usage] column.
+     * Set the value of [type] column.
      *
      * @param string $v new value
      * @return $this|\PartnerLocation The current object (for fluent API support)
      */
-    public function setUsage($v)
+    public function setType($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->usage !== $v) {
-            $this->usage = $v;
-            $this->modifiedColumns[PartnerLocationTableMap::COL_USAGE] = true;
+        if ($this->type !== $v) {
+            $this->type = $v;
+            $this->modifiedColumns[PartnerLocationTableMap::COL_TYPE] = true;
         }
 
         return $this;
-    } // setUsage()
+    } // setType()
 
     /**
      * Set the value of [address] column.
@@ -633,7 +691,7 @@ abstract class PartnerLocation implements ActiveRecordInterface
      * @param string $v new value
      * @return $this|\PartnerLocation The current object (for fluent API support)
      */
-    public function setAdress($v)
+    public function setAddress($v)
     {
         if ($v !== null) {
             $v = (string) $v;
@@ -645,7 +703,7 @@ abstract class PartnerLocation implements ActiveRecordInterface
         }
 
         return $this;
-    } // setAdress()
+    } // setAddress()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -657,6 +715,10 @@ abstract class PartnerLocation implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->type !== 'warehouse') {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -704,10 +766,10 @@ abstract class PartnerLocation implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PartnerLocationTableMap::translateFieldName('City', TableMap::TYPE_PHPNAME, $indexType)];
             $this->city = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PartnerLocationTableMap::translateFieldName('Usage', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->usage = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PartnerLocationTableMap::translateFieldName('Type', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->type = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PartnerLocationTableMap::translateFieldName('Adress', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PartnerLocationTableMap::translateFieldName('Address', TableMap::TYPE_PHPNAME, $indexType)];
             $this->address = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
@@ -786,6 +848,12 @@ abstract class PartnerLocation implements ActiveRecordInterface
 
             $this->aCountry = null;
             $this->aPartner = null;
+            $this->collProductStocks = null;
+
+            $this->collStockmovesRelatedBySrcId = null;
+
+            $this->collStockmovesRelatedByDestId = null;
+
         } // if (deep)
     }
 
@@ -919,6 +987,57 @@ abstract class PartnerLocation implements ActiveRecordInterface
                 $this->resetModified();
             }
 
+            if ($this->productStocksScheduledForDeletion !== null) {
+                if (!$this->productStocksScheduledForDeletion->isEmpty()) {
+                    \ProductStockQuery::create()
+                        ->filterByPrimaryKeys($this->productStocksScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->productStocksScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collProductStocks !== null) {
+                foreach ($this->collProductStocks as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->stockmovesRelatedBySrcIdScheduledForDeletion !== null) {
+                if (!$this->stockmovesRelatedBySrcIdScheduledForDeletion->isEmpty()) {
+                    \StockMoveQuery::create()
+                        ->filterByPrimaryKeys($this->stockmovesRelatedBySrcIdScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->stockmovesRelatedBySrcIdScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collStockmovesRelatedBySrcId !== null) {
+                foreach ($this->collStockmovesRelatedBySrcId as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->stockmovesRelatedByDestIdScheduledForDeletion !== null) {
+                if (!$this->stockmovesRelatedByDestIdScheduledForDeletion->isEmpty()) {
+                    \StockMoveQuery::create()
+                        ->filterByPrimaryKeys($this->stockmovesRelatedByDestIdScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->stockmovesRelatedByDestIdScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collStockmovesRelatedByDestId !== null) {
+                foreach ($this->collStockmovesRelatedByDestId as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -966,8 +1085,8 @@ abstract class PartnerLocation implements ActiveRecordInterface
         if ($this->isColumnModified(PartnerLocationTableMap::COL_CITY)) {
             $modifiedColumns[':p' . $index++]  = 'city';
         }
-        if ($this->isColumnModified(PartnerLocationTableMap::COL_USAGE)) {
-            $modifiedColumns[':p' . $index++]  = 'usage';
+        if ($this->isColumnModified(PartnerLocationTableMap::COL_TYPE)) {
+            $modifiedColumns[':p' . $index++]  = 'type';
         }
         if ($this->isColumnModified(PartnerLocationTableMap::COL_ADDRESS)) {
             $modifiedColumns[':p' . $index++]  = 'address';
@@ -1004,8 +1123,8 @@ abstract class PartnerLocation implements ActiveRecordInterface
                     case 'city':
                         $stmt->bindValue($identifier, $this->city, PDO::PARAM_STR);
                         break;
-                    case 'usage':
-                        $stmt->bindValue($identifier, $this->usage, PDO::PARAM_STR);
+                    case 'type':
+                        $stmt->bindValue($identifier, $this->type, PDO::PARAM_STR);
                         break;
                     case 'address':
                         $stmt->bindValue($identifier, $this->address, PDO::PARAM_STR);
@@ -1094,10 +1213,10 @@ abstract class PartnerLocation implements ActiveRecordInterface
                 return $this->getCity();
                 break;
             case 7:
-                return $this->getUsage();
+                return $this->getType();
                 break;
             case 8:
-                return $this->getAdress();
+                return $this->getAddress();
                 break;
             default:
                 return null;
@@ -1136,8 +1255,8 @@ abstract class PartnerLocation implements ActiveRecordInterface
             $keys[4] => $this->getCountryId(),
             $keys[5] => $this->getPostal(),
             $keys[6] => $this->getCity(),
-            $keys[7] => $this->getUsage(),
-            $keys[8] => $this->getAdress(),
+            $keys[7] => $this->getType(),
+            $keys[8] => $this->getAddress(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1174,6 +1293,51 @@ abstract class PartnerLocation implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aPartner->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collProductStocks) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'productStocks';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'product_stocks';
+                        break;
+                    default:
+                        $key = 'ProductStocks';
+                }
+
+                $result[$key] = $this->collProductStocks->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collStockmovesRelatedBySrcId) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'stockmoves';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'stock_moves';
+                        break;
+                    default:
+                        $key = 'Stockmoves';
+                }
+
+                $result[$key] = $this->collStockmovesRelatedBySrcId->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collStockmovesRelatedByDestId) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'stockmoves';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'stock_moves';
+                        break;
+                    default:
+                        $key = 'Stockmoves';
+                }
+
+                $result[$key] = $this->collStockmovesRelatedByDestId->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1231,10 +1395,10 @@ abstract class PartnerLocation implements ActiveRecordInterface
                 $this->setCity($value);
                 break;
             case 7:
-                $this->setUsage($value);
+                $this->setType($value);
                 break;
             case 8:
-                $this->setAdress($value);
+                $this->setAddress($value);
                 break;
         } // switch()
 
@@ -1284,10 +1448,10 @@ abstract class PartnerLocation implements ActiveRecordInterface
             $this->setCity($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setUsage($arr[$keys[7]]);
+            $this->setType($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setAdress($arr[$keys[8]]);
+            $this->setAddress($arr[$keys[8]]);
         }
     }
 
@@ -1351,8 +1515,8 @@ abstract class PartnerLocation implements ActiveRecordInterface
         if ($this->isColumnModified(PartnerLocationTableMap::COL_CITY)) {
             $criteria->add(PartnerLocationTableMap::COL_CITY, $this->city);
         }
-        if ($this->isColumnModified(PartnerLocationTableMap::COL_USAGE)) {
-            $criteria->add(PartnerLocationTableMap::COL_USAGE, $this->usage);
+        if ($this->isColumnModified(PartnerLocationTableMap::COL_TYPE)) {
+            $criteria->add(PartnerLocationTableMap::COL_TYPE, $this->type);
         }
         if ($this->isColumnModified(PartnerLocationTableMap::COL_ADDRESS)) {
             $criteria->add(PartnerLocationTableMap::COL_ADDRESS, $this->address);
@@ -1449,8 +1613,34 @@ abstract class PartnerLocation implements ActiveRecordInterface
         $copyObj->setCountryId($this->getCountryId());
         $copyObj->setPostal($this->getPostal());
         $copyObj->setCity($this->getCity());
-        $copyObj->setUsage($this->getUsage());
-        $copyObj->setAdress($this->getAdress());
+        $copyObj->setType($this->getType());
+        $copyObj->setAddress($this->getAddress());
+
+        if ($deepCopy) {
+            // important: temporarily setNew(false) because this affects the behavior of
+            // the getter/setter methods for fkey referrer objects.
+            $copyObj->setNew(false);
+
+            foreach ($this->getProductStocks() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addProductStock($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getStockmovesRelatedBySrcId() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addStockMoveRelatedBySrcId($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getStockmovesRelatedByDestId() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addStockMoveRelatedByDestId($relObj->copy($deepCopy));
+                }
+            }
+
+        } // if ($deepCopy)
+
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1581,6 +1771,731 @@ abstract class PartnerLocation implements ActiveRecordInterface
         return $this->aPartner;
     }
 
+
+    /**
+     * Initializes a collection based on the name of a relation.
+     * Avoids crafting an 'init[$relationName]s' method name
+     * that wouldn't work when StandardEnglishPluralizer is used.
+     *
+     * @param      string $relationName The name of the relation to initialize
+     * @return void
+     */
+    public function initRelation($relationName)
+    {
+        if ('ProductStock' == $relationName) {
+            $this->initProductStocks();
+            return;
+        }
+        if ('StockMoveRelatedBySrcId' == $relationName) {
+            $this->initStockmovesRelatedBySrcId();
+            return;
+        }
+        if ('StockMoveRelatedByDestId' == $relationName) {
+            $this->initStockmovesRelatedByDestId();
+            return;
+        }
+    }
+
+    /**
+     * Clears out the collProductStocks collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addProductStocks()
+     */
+    public function clearProductStocks()
+    {
+        $this->collProductStocks = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collProductStocks collection loaded partially.
+     */
+    public function resetPartialProductStocks($v = true)
+    {
+        $this->collProductStocksPartial = $v;
+    }
+
+    /**
+     * Initializes the collProductStocks collection.
+     *
+     * By default this just sets the collProductStocks collection to an empty array (like clearcollProductStocks());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initProductStocks($overrideExisting = true)
+    {
+        if (null !== $this->collProductStocks && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = ProductStockTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collProductStocks = new $collectionClassName;
+        $this->collProductStocks->setModel('\ProductStock');
+    }
+
+    /**
+     * Gets an array of ChildProductStock objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPartnerLocation is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildProductStock[] List of ChildProductStock objects
+     * @throws PropelException
+     */
+    public function getProductStocks(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collProductStocksPartial && !$this->isNew();
+        if (null === $this->collProductStocks || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collProductStocks) {
+                // return empty collection
+                $this->initProductStocks();
+            } else {
+                $collProductStocks = ChildProductStockQuery::create(null, $criteria)
+                    ->filterByPartnerLocation($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collProductStocksPartial && count($collProductStocks)) {
+                        $this->initProductStocks(false);
+
+                        foreach ($collProductStocks as $obj) {
+                            if (false == $this->collProductStocks->contains($obj)) {
+                                $this->collProductStocks->append($obj);
+                            }
+                        }
+
+                        $this->collProductStocksPartial = true;
+                    }
+
+                    return $collProductStocks;
+                }
+
+                if ($partial && $this->collProductStocks) {
+                    foreach ($this->collProductStocks as $obj) {
+                        if ($obj->isNew()) {
+                            $collProductStocks[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collProductStocks = $collProductStocks;
+                $this->collProductStocksPartial = false;
+            }
+        }
+
+        return $this->collProductStocks;
+    }
+
+    /**
+     * Sets a collection of ChildProductStock objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $productStocks A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildPartnerLocation The current object (for fluent API support)
+     */
+    public function setProductStocks(Collection $productStocks, ConnectionInterface $con = null)
+    {
+        /** @var ChildProductStock[] $productStocksToDelete */
+        $productStocksToDelete = $this->getProductStocks(new Criteria(), $con)->diff($productStocks);
+
+
+        $this->productStocksScheduledForDeletion = $productStocksToDelete;
+
+        foreach ($productStocksToDelete as $productStockRemoved) {
+            $productStockRemoved->setPartnerLocation(null);
+        }
+
+        $this->collProductStocks = null;
+        foreach ($productStocks as $productStock) {
+            $this->addProductStock($productStock);
+        }
+
+        $this->collProductStocks = $productStocks;
+        $this->collProductStocksPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related ProductStock objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related ProductStock objects.
+     * @throws PropelException
+     */
+    public function countProductStocks(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collProductStocksPartial && !$this->isNew();
+        if (null === $this->collProductStocks || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collProductStocks) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getProductStocks());
+            }
+
+            $query = ChildProductStockQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByPartnerLocation($this)
+                ->count($con);
+        }
+
+        return count($this->collProductStocks);
+    }
+
+    /**
+     * Method called to associate a ChildProductStock object to this object
+     * through the ChildProductStock foreign key attribute.
+     *
+     * @param  ChildProductStock $l ChildProductStock
+     * @return $this|\PartnerLocation The current object (for fluent API support)
+     */
+    public function addProductStock(ChildProductStock $l)
+    {
+        if ($this->collProductStocks === null) {
+            $this->initProductStocks();
+            $this->collProductStocksPartial = true;
+        }
+
+        if (!$this->collProductStocks->contains($l)) {
+            $this->doAddProductStock($l);
+
+            if ($this->productStocksScheduledForDeletion and $this->productStocksScheduledForDeletion->contains($l)) {
+                $this->productStocksScheduledForDeletion->remove($this->productStocksScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildProductStock $productStock The ChildProductStock object to add.
+     */
+    protected function doAddProductStock(ChildProductStock $productStock)
+    {
+        $this->collProductStocks[]= $productStock;
+        $productStock->setPartnerLocation($this);
+    }
+
+    /**
+     * @param  ChildProductStock $productStock The ChildProductStock object to remove.
+     * @return $this|ChildPartnerLocation The current object (for fluent API support)
+     */
+    public function removeProductStock(ChildProductStock $productStock)
+    {
+        if ($this->getProductStocks()->contains($productStock)) {
+            $pos = $this->collProductStocks->search($productStock);
+            $this->collProductStocks->remove($pos);
+            if (null === $this->productStocksScheduledForDeletion) {
+                $this->productStocksScheduledForDeletion = clone $this->collProductStocks;
+                $this->productStocksScheduledForDeletion->clear();
+            }
+            $this->productStocksScheduledForDeletion[]= clone $productStock;
+            $productStock->setPartnerLocation(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this PartnerLocation is new, it will return
+     * an empty collection; or if this PartnerLocation has previously
+     * been saved, it will retrieve related ProductStocks from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in PartnerLocation.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildProductStock[] List of ChildProductStock objects
+     */
+    public function getProductStocksJoinProduct(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildProductStockQuery::create(null, $criteria);
+        $query->joinWith('Product', $joinBehavior);
+
+        return $this->getProductStocks($query, $con);
+    }
+
+    /**
+     * Clears out the collStockmovesRelatedBySrcId collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addStockmovesRelatedBySrcId()
+     */
+    public function clearStockmovesRelatedBySrcId()
+    {
+        $this->collStockmovesRelatedBySrcId = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collStockmovesRelatedBySrcId collection loaded partially.
+     */
+    public function resetPartialStockmovesRelatedBySrcId($v = true)
+    {
+        $this->collStockmovesRelatedBySrcIdPartial = $v;
+    }
+
+    /**
+     * Initializes the collStockmovesRelatedBySrcId collection.
+     *
+     * By default this just sets the collStockmovesRelatedBySrcId collection to an empty array (like clearcollStockmovesRelatedBySrcId());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initStockmovesRelatedBySrcId($overrideExisting = true)
+    {
+        if (null !== $this->collStockmovesRelatedBySrcId && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = StockMoveTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collStockmovesRelatedBySrcId = new $collectionClassName;
+        $this->collStockmovesRelatedBySrcId->setModel('\StockMove');
+    }
+
+    /**
+     * Gets an array of ChildStockMove objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPartnerLocation is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildStockMove[] List of ChildStockMove objects
+     * @throws PropelException
+     */
+    public function getStockmovesRelatedBySrcId(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collStockmovesRelatedBySrcIdPartial && !$this->isNew();
+        if (null === $this->collStockmovesRelatedBySrcId || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collStockmovesRelatedBySrcId) {
+                // return empty collection
+                $this->initStockmovesRelatedBySrcId();
+            } else {
+                $collStockmovesRelatedBySrcId = ChildStockMoveQuery::create(null, $criteria)
+                    ->filterBySrc($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collStockmovesRelatedBySrcIdPartial && count($collStockmovesRelatedBySrcId)) {
+                        $this->initStockmovesRelatedBySrcId(false);
+
+                        foreach ($collStockmovesRelatedBySrcId as $obj) {
+                            if (false == $this->collStockmovesRelatedBySrcId->contains($obj)) {
+                                $this->collStockmovesRelatedBySrcId->append($obj);
+                            }
+                        }
+
+                        $this->collStockmovesRelatedBySrcIdPartial = true;
+                    }
+
+                    return $collStockmovesRelatedBySrcId;
+                }
+
+                if ($partial && $this->collStockmovesRelatedBySrcId) {
+                    foreach ($this->collStockmovesRelatedBySrcId as $obj) {
+                        if ($obj->isNew()) {
+                            $collStockmovesRelatedBySrcId[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collStockmovesRelatedBySrcId = $collStockmovesRelatedBySrcId;
+                $this->collStockmovesRelatedBySrcIdPartial = false;
+            }
+        }
+
+        return $this->collStockmovesRelatedBySrcId;
+    }
+
+    /**
+     * Sets a collection of ChildStockMove objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $stockmovesRelatedBySrcId A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildPartnerLocation The current object (for fluent API support)
+     */
+    public function setStockmovesRelatedBySrcId(Collection $stockmovesRelatedBySrcId, ConnectionInterface $con = null)
+    {
+        /** @var ChildStockMove[] $stockmovesRelatedBySrcIdToDelete */
+        $stockmovesRelatedBySrcIdToDelete = $this->getStockmovesRelatedBySrcId(new Criteria(), $con)->diff($stockmovesRelatedBySrcId);
+
+
+        $this->stockmovesRelatedBySrcIdScheduledForDeletion = $stockmovesRelatedBySrcIdToDelete;
+
+        foreach ($stockmovesRelatedBySrcIdToDelete as $stockMoveRelatedBySrcIdRemoved) {
+            $stockMoveRelatedBySrcIdRemoved->setSrc(null);
+        }
+
+        $this->collStockmovesRelatedBySrcId = null;
+        foreach ($stockmovesRelatedBySrcId as $stockMoveRelatedBySrcId) {
+            $this->addStockMoveRelatedBySrcId($stockMoveRelatedBySrcId);
+        }
+
+        $this->collStockmovesRelatedBySrcId = $stockmovesRelatedBySrcId;
+        $this->collStockmovesRelatedBySrcIdPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related StockMove objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related StockMove objects.
+     * @throws PropelException
+     */
+    public function countStockmovesRelatedBySrcId(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collStockmovesRelatedBySrcIdPartial && !$this->isNew();
+        if (null === $this->collStockmovesRelatedBySrcId || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collStockmovesRelatedBySrcId) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getStockmovesRelatedBySrcId());
+            }
+
+            $query = ChildStockMoveQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterBySrc($this)
+                ->count($con);
+        }
+
+        return count($this->collStockmovesRelatedBySrcId);
+    }
+
+    /**
+     * Method called to associate a ChildStockMove object to this object
+     * through the ChildStockMove foreign key attribute.
+     *
+     * @param  ChildStockMove $l ChildStockMove
+     * @return $this|\PartnerLocation The current object (for fluent API support)
+     */
+    public function addStockMoveRelatedBySrcId(ChildStockMove $l)
+    {
+        if ($this->collStockmovesRelatedBySrcId === null) {
+            $this->initStockmovesRelatedBySrcId();
+            $this->collStockmovesRelatedBySrcIdPartial = true;
+        }
+
+        if (!$this->collStockmovesRelatedBySrcId->contains($l)) {
+            $this->doAddStockMoveRelatedBySrcId($l);
+
+            if ($this->stockmovesRelatedBySrcIdScheduledForDeletion and $this->stockmovesRelatedBySrcIdScheduledForDeletion->contains($l)) {
+                $this->stockmovesRelatedBySrcIdScheduledForDeletion->remove($this->stockmovesRelatedBySrcIdScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildStockMove $stockMoveRelatedBySrcId The ChildStockMove object to add.
+     */
+    protected function doAddStockMoveRelatedBySrcId(ChildStockMove $stockMoveRelatedBySrcId)
+    {
+        $this->collStockmovesRelatedBySrcId[]= $stockMoveRelatedBySrcId;
+        $stockMoveRelatedBySrcId->setSrc($this);
+    }
+
+    /**
+     * @param  ChildStockMove $stockMoveRelatedBySrcId The ChildStockMove object to remove.
+     * @return $this|ChildPartnerLocation The current object (for fluent API support)
+     */
+    public function removeStockMoveRelatedBySrcId(ChildStockMove $stockMoveRelatedBySrcId)
+    {
+        if ($this->getStockmovesRelatedBySrcId()->contains($stockMoveRelatedBySrcId)) {
+            $pos = $this->collStockmovesRelatedBySrcId->search($stockMoveRelatedBySrcId);
+            $this->collStockmovesRelatedBySrcId->remove($pos);
+            if (null === $this->stockmovesRelatedBySrcIdScheduledForDeletion) {
+                $this->stockmovesRelatedBySrcIdScheduledForDeletion = clone $this->collStockmovesRelatedBySrcId;
+                $this->stockmovesRelatedBySrcIdScheduledForDeletion->clear();
+            }
+            $this->stockmovesRelatedBySrcIdScheduledForDeletion[]= clone $stockMoveRelatedBySrcId;
+            $stockMoveRelatedBySrcId->setSrc(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collStockmovesRelatedByDestId collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addStockmovesRelatedByDestId()
+     */
+    public function clearStockmovesRelatedByDestId()
+    {
+        $this->collStockmovesRelatedByDestId = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collStockmovesRelatedByDestId collection loaded partially.
+     */
+    public function resetPartialStockmovesRelatedByDestId($v = true)
+    {
+        $this->collStockmovesRelatedByDestIdPartial = $v;
+    }
+
+    /**
+     * Initializes the collStockmovesRelatedByDestId collection.
+     *
+     * By default this just sets the collStockmovesRelatedByDestId collection to an empty array (like clearcollStockmovesRelatedByDestId());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initStockmovesRelatedByDestId($overrideExisting = true)
+    {
+        if (null !== $this->collStockmovesRelatedByDestId && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = StockMoveTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collStockmovesRelatedByDestId = new $collectionClassName;
+        $this->collStockmovesRelatedByDestId->setModel('\StockMove');
+    }
+
+    /**
+     * Gets an array of ChildStockMove objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPartnerLocation is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildStockMove[] List of ChildStockMove objects
+     * @throws PropelException
+     */
+    public function getStockmovesRelatedByDestId(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collStockmovesRelatedByDestIdPartial && !$this->isNew();
+        if (null === $this->collStockmovesRelatedByDestId || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collStockmovesRelatedByDestId) {
+                // return empty collection
+                $this->initStockmovesRelatedByDestId();
+            } else {
+                $collStockmovesRelatedByDestId = ChildStockMoveQuery::create(null, $criteria)
+                    ->filterByDest($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collStockmovesRelatedByDestIdPartial && count($collStockmovesRelatedByDestId)) {
+                        $this->initStockmovesRelatedByDestId(false);
+
+                        foreach ($collStockmovesRelatedByDestId as $obj) {
+                            if (false == $this->collStockmovesRelatedByDestId->contains($obj)) {
+                                $this->collStockmovesRelatedByDestId->append($obj);
+                            }
+                        }
+
+                        $this->collStockmovesRelatedByDestIdPartial = true;
+                    }
+
+                    return $collStockmovesRelatedByDestId;
+                }
+
+                if ($partial && $this->collStockmovesRelatedByDestId) {
+                    foreach ($this->collStockmovesRelatedByDestId as $obj) {
+                        if ($obj->isNew()) {
+                            $collStockmovesRelatedByDestId[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collStockmovesRelatedByDestId = $collStockmovesRelatedByDestId;
+                $this->collStockmovesRelatedByDestIdPartial = false;
+            }
+        }
+
+        return $this->collStockmovesRelatedByDestId;
+    }
+
+    /**
+     * Sets a collection of ChildStockMove objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $stockmovesRelatedByDestId A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildPartnerLocation The current object (for fluent API support)
+     */
+    public function setStockmovesRelatedByDestId(Collection $stockmovesRelatedByDestId, ConnectionInterface $con = null)
+    {
+        /** @var ChildStockMove[] $stockmovesRelatedByDestIdToDelete */
+        $stockmovesRelatedByDestIdToDelete = $this->getStockmovesRelatedByDestId(new Criteria(), $con)->diff($stockmovesRelatedByDestId);
+
+
+        $this->stockmovesRelatedByDestIdScheduledForDeletion = $stockmovesRelatedByDestIdToDelete;
+
+        foreach ($stockmovesRelatedByDestIdToDelete as $stockMoveRelatedByDestIdRemoved) {
+            $stockMoveRelatedByDestIdRemoved->setDest(null);
+        }
+
+        $this->collStockmovesRelatedByDestId = null;
+        foreach ($stockmovesRelatedByDestId as $stockMoveRelatedByDestId) {
+            $this->addStockMoveRelatedByDestId($stockMoveRelatedByDestId);
+        }
+
+        $this->collStockmovesRelatedByDestId = $stockmovesRelatedByDestId;
+        $this->collStockmovesRelatedByDestIdPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related StockMove objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related StockMove objects.
+     * @throws PropelException
+     */
+    public function countStockmovesRelatedByDestId(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collStockmovesRelatedByDestIdPartial && !$this->isNew();
+        if (null === $this->collStockmovesRelatedByDestId || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collStockmovesRelatedByDestId) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getStockmovesRelatedByDestId());
+            }
+
+            $query = ChildStockMoveQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByDest($this)
+                ->count($con);
+        }
+
+        return count($this->collStockmovesRelatedByDestId);
+    }
+
+    /**
+     * Method called to associate a ChildStockMove object to this object
+     * through the ChildStockMove foreign key attribute.
+     *
+     * @param  ChildStockMove $l ChildStockMove
+     * @return $this|\PartnerLocation The current object (for fluent API support)
+     */
+    public function addStockMoveRelatedByDestId(ChildStockMove $l)
+    {
+        if ($this->collStockmovesRelatedByDestId === null) {
+            $this->initStockmovesRelatedByDestId();
+            $this->collStockmovesRelatedByDestIdPartial = true;
+        }
+
+        if (!$this->collStockmovesRelatedByDestId->contains($l)) {
+            $this->doAddStockMoveRelatedByDestId($l);
+
+            if ($this->stockmovesRelatedByDestIdScheduledForDeletion and $this->stockmovesRelatedByDestIdScheduledForDeletion->contains($l)) {
+                $this->stockmovesRelatedByDestIdScheduledForDeletion->remove($this->stockmovesRelatedByDestIdScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildStockMove $stockMoveRelatedByDestId The ChildStockMove object to add.
+     */
+    protected function doAddStockMoveRelatedByDestId(ChildStockMove $stockMoveRelatedByDestId)
+    {
+        $this->collStockmovesRelatedByDestId[]= $stockMoveRelatedByDestId;
+        $stockMoveRelatedByDestId->setDest($this);
+    }
+
+    /**
+     * @param  ChildStockMove $stockMoveRelatedByDestId The ChildStockMove object to remove.
+     * @return $this|ChildPartnerLocation The current object (for fluent API support)
+     */
+    public function removeStockMoveRelatedByDestId(ChildStockMove $stockMoveRelatedByDestId)
+    {
+        if ($this->getStockmovesRelatedByDestId()->contains($stockMoveRelatedByDestId)) {
+            $pos = $this->collStockmovesRelatedByDestId->search($stockMoveRelatedByDestId);
+            $this->collStockmovesRelatedByDestId->remove($pos);
+            if (null === $this->stockmovesRelatedByDestIdScheduledForDeletion) {
+                $this->stockmovesRelatedByDestIdScheduledForDeletion = clone $this->collStockmovesRelatedByDestId;
+                $this->stockmovesRelatedByDestIdScheduledForDeletion->clear();
+            }
+            $this->stockmovesRelatedByDestIdScheduledForDeletion[]= clone $stockMoveRelatedByDestId;
+            $stockMoveRelatedByDestId->setDest(null);
+        }
+
+        return $this;
+    }
+
     /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
@@ -1601,10 +2516,11 @@ abstract class PartnerLocation implements ActiveRecordInterface
         $this->country_id = null;
         $this->postal = null;
         $this->city = null;
-        $this->usage = null;
+        $this->type = null;
         $this->address = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
@@ -1621,8 +2537,26 @@ abstract class PartnerLocation implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collProductStocks) {
+                foreach ($this->collProductStocks as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collStockmovesRelatedBySrcId) {
+                foreach ($this->collStockmovesRelatedBySrcId as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collStockmovesRelatedByDestId) {
+                foreach ($this->collStockmovesRelatedByDestId as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        $this->collProductStocks = null;
+        $this->collStockmovesRelatedBySrcId = null;
+        $this->collStockmovesRelatedByDestId = null;
         $this->aCountry = null;
         $this->aPartner = null;
     }

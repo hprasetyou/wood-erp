@@ -39,7 +39,6 @@ class MY_Controller extends CI_Controller{
      }
 
    }
-   write_log(json_encode($this->form));
 
  }
 
@@ -183,7 +182,6 @@ class MY_Controller extends CI_Controller{
        }
      }
      $func = "set$key";
-     write_log($func);
      if($value=="Image"){
          if(file_exists('.'.$obj->getImage())){
            write_log('Delete file');
@@ -201,6 +199,8 @@ class MY_Controller extends CI_Controller{
          $obj->$func($value?true:false);
        }else{
          if($value){
+         write_log($func);
+         write_log($value);
            $obj->$func($value);
          }
        }

@@ -334,6 +334,20 @@ class ProductTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'PurchaseOrderLines', false);
+        $this->addRelation('ProductStock', '\\ProductStock', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':product_id',
+    1 => ':id',
+  ),
+), null, null, 'ProductStocks', false);
+        $this->addRelation('StockMoveLine', '\\StockMoveLine', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':product_id',
+    1 => ':id',
+  ),
+), null, null, 'StockMoveLines', false);
         $this->addRelation('Finishing', '\\Finishing', RelationMap::MANY_TO_MANY, array(), null, null, 'Finishings');
     } // buildRelations()
 

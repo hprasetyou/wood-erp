@@ -10,16 +10,17 @@
 	{'link': base_url~'index.php/manage_partnerlocations','text': res.string.partnerlocation },
 	{'link':'#','text':bc_text  }]
 %}
+{% set type = ['warehouse','supplier','transit'] %}
 {% block content %}
 <div class="row">
 	<div class="col-md-12 col-sm-12 col-xs-12">
-		<form id="form_PartnerLocation" method="post" action="{{base_url}}index.php/manage_partnerlocations/write/{{ partnerlocations.id }}" data-parsley-validate class="form-horizontal form-label-left">
+		<form id="form_PartnerLocation" method="post" action="{{base_url}}index.php/{{ uri_segment(1) }}/write/{{ partnerlocations.id }}" data-parsley-validate class="form-horizontal form-label-left">
 			<div class="box box-info">
 				<div class="box-header with-border">
 				{% include 'common/_form_header.html'
-				with {'back_url':'/index.php/manage_partnerlocations'~back_link,
+				with {'back_url':'/index.php/'~ uri_segment(1),
 				'title': res.string.partnerlocation,
-				'delete_url':'/index.php/manage_partnerlocations/delete/' ~ partnerlocations.Id,
+				'delete_url':'/index.php/'~res.uri~'/delete/' ~ partnerlocations.Id,
 				'object':partnerlocations} %}
 				</div>
 				<div class="box-body">
@@ -36,6 +37,18 @@
 								{% endif %}
 							</div>
 						</div>
+						<div class="form-group">
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Description">{{res.string.description}}</label>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+							<div {% if partnerlocations %}style="display:none"{% endif %} class="input-wrap">
+								<textarea placeholder="{{ res.string.description }}" id="Description"
+								name="Description" class="form-control  col-md-7 col-xs-12">{{ partnerlocations.Description }}</textarea>
+							</div>
+									{% if partnerlocations %}
+										<p class="control-value">{{ partnerlocations.Description  }}</p>
+									{% endif %}
+								</div>
+							</div>
 
 						<input type="hidden" value="{{ res.query_params.partner_id }}" name="PartnerId" >
 						<input type="hidden" value="{{ res.query_params.src }}" name="Src" >
@@ -44,7 +57,7 @@
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="CountryId">{{res.string.country}}</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 						<div {% if partnerlocations %}style="display:none"{% endif %} class="input-wrap">
-							{{selection_m2o('CountryId','Country',null,null) | raw}}
+							{{selection_m2o('CountryId','Country',null,partnerlocations.CountryId?partnerlocations.CountryId:101) | raw}}
 						</div>
 								{% if partnerlocations %}
 									<p class="control-value">{{ partnerlocations.CountryId  }}</p>
@@ -65,28 +78,28 @@
 							</div>
 						</div>
 
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Postal">{{res.string.postal}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if partnerlocations %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" placeholder="{{ res.string.postal }}" id="Postal" value="{{ partnerlocations.Postal }}"
-							name="Postal" required="required" class="form-control  col-md-7 col-xs-12">
-						</div>
-								{% if partnerlocations %}
-									<p class="control-value">{{ partnerlocations.Postal  }}</p>
-								{% endif %}
-							</div>
-						</div>
-
 						<div class="form-group">
-							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Adress">{{res.string.address}}</label>
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Postal">{{res.string.postal}}</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 							<div {% if partnerlocations %}style="display:none"{% endif %} class="input-wrap">
-								<input type="text" placeholder="{{ res.string.address }}" id="Adress" value="{{ partnerlocations.Adress }}"
-								name="Adress" required="required" class="form-control  col-md-7 col-xs-12">
+								<input type="text" placeholder="{{ res.string.postal }}" id="Postal" value="{{ partnerlocations.Postal }}"
+								name="Postal" class="form-control  col-md-7 col-xs-12">
 							</div>
 									{% if partnerlocations %}
-										<p class="control-value">{{ partnerlocations.Adress  }}</p>
+										<p class="control-value">{{ partnerlocations.Postal  }}</p>
+									{% endif %}
+								</div>
+							</div>
+
+						<div class="form-group">
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Address">{{res.string.address}}</label>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+							<div {% if partnerlocations %}style="display:none"{% endif %} class="input-wrap">
+								<textarea placeholder="{{ res.string.address }}" id="Address"
+								name="Address" class="form-control  col-md-7 col-xs-12">{{ partnerlocations.Address }}</textarea>
+							</div>
+									{% if partnerlocations %}
+										<p class="control-value">{{ partnerlocations.Address  }}</p>
 									{% endif %}
 								</div>
 							</div>
