@@ -304,7 +304,7 @@ function init_modal_selection(){
           case 'underneath_comma':
             ordr = true;
             render_data = new Function("data", "type","row","meta",
-             "return data.replace(\", \",\"<br>\")")
+            "return data?data.replace(\", \",\"<br>\"):''")
             break;
           case 'array':
             ordr = true;
@@ -380,7 +380,7 @@ function init_modal_selection(){
       $('#'+$(this).parents('table').data('ttext')).val(so)
       console.log($(this).parents('table').data('ttext'));
       $(this).parents('.modal').modal('hide')
-      $('#'+$(this).parents('table').prop('thide')).trigger('change')
+      $('#'+$(this).parents('table').data('thide')).trigger('change')
   })
 }
 $(document).ready(function(){

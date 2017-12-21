@@ -165,6 +165,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
       }
   })
 		$('#ProformaInvoiceId').change(function(e){
+      console.log("pi change");
       table_ProformaInvoiceLine.ajax.url('/index.php/manage_proformainvoicelines/get_pi_component/'+$(this).val()).load()
 			$.ajax({
 				url:"/index.php/manage_purchaseorders/get_number/"+$(this).siblings().val()
@@ -237,7 +238,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
           submitpo().done(function(o){
             console.log('po created . . . . . ');
             submitpoline(o.Id).done(function(o){
-              location.reload()
+              window.location = window.location.href.replace('create','detail')+o.Id
             })
           })
 
