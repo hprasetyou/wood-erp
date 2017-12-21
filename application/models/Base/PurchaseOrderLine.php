@@ -117,6 +117,13 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
     protected $price;
 
     /**
+     * The value for the total_price field.
+     *
+     * @var        double
+     */
+    protected $total_price;
+
+    /**
      * The value for the qty field.
      *
      * @var        double
@@ -470,6 +477,16 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
     }
 
     /**
+     * Get the [total_price] column value.
+     *
+     * @return double
+     */
+    public function getTotalPrice()
+    {
+        return $this->total_price;
+    }
+
+    /**
      * Get the [qty] column value.
      *
      * @return double
@@ -672,6 +689,26 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
     } // setPrice()
 
     /**
+     * Set the value of [total_price] column.
+     *
+     * @param double $v new value
+     * @return $this|\PurchaseOrderLine The current object (for fluent API support)
+     */
+    public function setTotalPrice($v)
+    {
+        if ($v !== null) {
+            $v = (double) $v;
+        }
+
+        if ($this->total_price !== $v) {
+            $this->total_price = $v;
+            $this->modifiedColumns[PurchaseOrderLineTableMap::COL_TOTAL_PRICE] = true;
+        }
+
+        return $this;
+    } // setTotalPrice()
+
+    /**
      * Set the value of [qty] column.
      *
      * @param double $v new value
@@ -788,16 +825,19 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PurchaseOrderLineTableMap::translateFieldName('Price', TableMap::TYPE_PHPNAME, $indexType)];
             $this->price = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PurchaseOrderLineTableMap::translateFieldName('Qty', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PurchaseOrderLineTableMap::translateFieldName('TotalPrice', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->total_price = (null !== $col) ? (double) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PurchaseOrderLineTableMap::translateFieldName('Qty', TableMap::TYPE_PHPNAME, $indexType)];
             $this->qty = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PurchaseOrderLineTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PurchaseOrderLineTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PurchaseOrderLineTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PurchaseOrderLineTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -810,7 +850,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 10; // 10 = PurchaseOrderLineTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 11; // 11 = PurchaseOrderLineTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\PurchaseOrderLine'), 0, $e);
@@ -1070,6 +1110,9 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
         if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_PRICE)) {
             $modifiedColumns[':p' . $index++]  = 'price';
         }
+        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_TOTAL_PRICE)) {
+            $modifiedColumns[':p' . $index++]  = 'total_price';
+        }
         if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_QTY)) {
             $modifiedColumns[':p' . $index++]  = 'qty';
         }
@@ -1110,6 +1153,9 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
                         break;
                     case 'price':
                         $stmt->bindValue($identifier, $this->price, PDO::PARAM_STR);
+                        break;
+                    case 'total_price':
+                        $stmt->bindValue($identifier, $this->total_price, PDO::PARAM_STR);
                         break;
                     case 'qty':
                         $stmt->bindValue($identifier, $this->qty, PDO::PARAM_STR);
@@ -1204,12 +1250,15 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
                 return $this->getPrice();
                 break;
             case 7:
-                return $this->getQty();
+                return $this->getTotalPrice();
                 break;
             case 8:
-                return $this->getCreatedAt();
+                return $this->getQty();
                 break;
             case 9:
+                return $this->getCreatedAt();
+                break;
+            case 10:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1249,16 +1298,17 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
             $keys[4] => $this->getProductId(),
             $keys[5] => $this->getNote(),
             $keys[6] => $this->getPrice(),
-            $keys[7] => $this->getQty(),
-            $keys[8] => $this->getCreatedAt(),
-            $keys[9] => $this->getUpdatedAt(),
+            $keys[7] => $this->getTotalPrice(),
+            $keys[8] => $this->getQty(),
+            $keys[9] => $this->getCreatedAt(),
+            $keys[10] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[8]] instanceof \DateTimeInterface) {
-            $result[$keys[8]] = $result[$keys[8]]->format('c');
-        }
-
         if ($result[$keys[9]] instanceof \DateTimeInterface) {
             $result[$keys[9]] = $result[$keys[9]]->format('c');
+        }
+
+        if ($result[$keys[10]] instanceof \DateTimeInterface) {
+            $result[$keys[10]] = $result[$keys[10]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1368,12 +1418,15 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
                 $this->setPrice($value);
                 break;
             case 7:
-                $this->setQty($value);
+                $this->setTotalPrice($value);
                 break;
             case 8:
-                $this->setCreatedAt($value);
+                $this->setQty($value);
                 break;
             case 9:
+                $this->setCreatedAt($value);
+                break;
+            case 10:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1424,13 +1477,16 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
             $this->setPrice($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setQty($arr[$keys[7]]);
+            $this->setTotalPrice($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setCreatedAt($arr[$keys[8]]);
+            $this->setQty($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setUpdatedAt($arr[$keys[9]]);
+            $this->setCreatedAt($arr[$keys[9]]);
+        }
+        if (array_key_exists($keys[10], $arr)) {
+            $this->setUpdatedAt($arr[$keys[10]]);
         }
     }
 
@@ -1493,6 +1549,9 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_PRICE)) {
             $criteria->add(PurchaseOrderLineTableMap::COL_PRICE, $this->price);
+        }
+        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_TOTAL_PRICE)) {
+            $criteria->add(PurchaseOrderLineTableMap::COL_TOTAL_PRICE, $this->total_price);
         }
         if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_QTY)) {
             $criteria->add(PurchaseOrderLineTableMap::COL_QTY, $this->qty);
@@ -1595,6 +1654,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
         $copyObj->setProductId($this->getProductId());
         $copyObj->setNote($this->getNote());
         $copyObj->setPrice($this->getPrice());
+        $copyObj->setTotalPrice($this->getTotalPrice());
         $copyObj->setQty($this->getQty());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
@@ -1802,6 +1862,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
         $this->product_id = null;
         $this->note = null;
         $this->price = null;
+        $this->total_price = null;
         $this->qty = null;
         $this->created_at = null;
         $this->updated_at = null;

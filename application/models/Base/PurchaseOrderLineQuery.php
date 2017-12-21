@@ -27,6 +27,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLineQuery orderByProductId($order = Criteria::ASC) Order by the product_id column
  * @method     ChildPurchaseOrderLineQuery orderByNote($order = Criteria::ASC) Order by the note column
  * @method     ChildPurchaseOrderLineQuery orderByPrice($order = Criteria::ASC) Order by the price column
+ * @method     ChildPurchaseOrderLineQuery orderByTotalPrice($order = Criteria::ASC) Order by the total_price column
  * @method     ChildPurchaseOrderLineQuery orderByQty($order = Criteria::ASC) Order by the qty column
  * @method     ChildPurchaseOrderLineQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildPurchaseOrderLineQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
@@ -38,6 +39,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLineQuery groupByProductId() Group by the product_id column
  * @method     ChildPurchaseOrderLineQuery groupByNote() Group by the note column
  * @method     ChildPurchaseOrderLineQuery groupByPrice() Group by the price column
+ * @method     ChildPurchaseOrderLineQuery groupByTotalPrice() Group by the total_price column
  * @method     ChildPurchaseOrderLineQuery groupByQty() Group by the qty column
  * @method     ChildPurchaseOrderLineQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildPurchaseOrderLineQuery groupByUpdatedAt() Group by the updated_at column
@@ -92,6 +94,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLine findOneByProductId(int $product_id) Return the first ChildPurchaseOrderLine filtered by the product_id column
  * @method     ChildPurchaseOrderLine findOneByNote(string $note) Return the first ChildPurchaseOrderLine filtered by the note column
  * @method     ChildPurchaseOrderLine findOneByPrice(double $price) Return the first ChildPurchaseOrderLine filtered by the price column
+ * @method     ChildPurchaseOrderLine findOneByTotalPrice(double $total_price) Return the first ChildPurchaseOrderLine filtered by the total_price column
  * @method     ChildPurchaseOrderLine findOneByQty(double $qty) Return the first ChildPurchaseOrderLine filtered by the qty column
  * @method     ChildPurchaseOrderLine findOneByCreatedAt(string $created_at) Return the first ChildPurchaseOrderLine filtered by the created_at column
  * @method     ChildPurchaseOrderLine findOneByUpdatedAt(string $updated_at) Return the first ChildPurchaseOrderLine filtered by the updated_at column *
@@ -106,6 +109,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLine requireOneByProductId(int $product_id) Return the first ChildPurchaseOrderLine filtered by the product_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrderLine requireOneByNote(string $note) Return the first ChildPurchaseOrderLine filtered by the note column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrderLine requireOneByPrice(double $price) Return the first ChildPurchaseOrderLine filtered by the price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPurchaseOrderLine requireOneByTotalPrice(double $total_price) Return the first ChildPurchaseOrderLine filtered by the total_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrderLine requireOneByQty(double $qty) Return the first ChildPurchaseOrderLine filtered by the qty column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrderLine requireOneByCreatedAt(string $created_at) Return the first ChildPurchaseOrderLine filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrderLine requireOneByUpdatedAt(string $updated_at) Return the first ChildPurchaseOrderLine filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -118,6 +122,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByProductId(int $product_id) Return ChildPurchaseOrderLine objects filtered by the product_id column
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByNote(string $note) Return ChildPurchaseOrderLine objects filtered by the note column
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByPrice(double $price) Return ChildPurchaseOrderLine objects filtered by the price column
+ * @method     ChildPurchaseOrderLine[]|ObjectCollection findByTotalPrice(double $total_price) Return ChildPurchaseOrderLine objects filtered by the total_price column
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByQty(double $qty) Return ChildPurchaseOrderLine objects filtered by the qty column
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildPurchaseOrderLine objects filtered by the created_at column
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildPurchaseOrderLine objects filtered by the updated_at column
@@ -219,7 +224,7 @@ abstract class PurchaseOrderLineQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, purchase_order_id, proforma_invoice_line_id, product_id, note, price, qty, created_at, updated_at FROM purchase_order_line WHERE id = :p0';
+        $sql = 'SELECT id, name, purchase_order_id, proforma_invoice_line_id, product_id, note, price, total_price, qty, created_at, updated_at FROM purchase_order_line WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -568,6 +573,47 @@ abstract class PurchaseOrderLineQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PurchaseOrderLineTableMap::COL_PRICE, $price, $comparison);
+    }
+
+    /**
+     * Filter the query on the total_price column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByTotalPrice(1234); // WHERE total_price = 1234
+     * $query->filterByTotalPrice(array(12, 34)); // WHERE total_price IN (12, 34)
+     * $query->filterByTotalPrice(array('min' => 12)); // WHERE total_price > 12
+     * </code>
+     *
+     * @param     mixed $totalPrice The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPurchaseOrderLineQuery The current query, for fluid interface
+     */
+    public function filterByTotalPrice($totalPrice = null, $comparison = null)
+    {
+        if (is_array($totalPrice)) {
+            $useMinMax = false;
+            if (isset($totalPrice['min'])) {
+                $this->addUsingAlias(PurchaseOrderLineTableMap::COL_TOTAL_PRICE, $totalPrice['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($totalPrice['max'])) {
+                $this->addUsingAlias(PurchaseOrderLineTableMap::COL_TOTAL_PRICE, $totalPrice['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PurchaseOrderLineTableMap::COL_TOTAL_PRICE, $totalPrice, $comparison);
     }
 
     /**

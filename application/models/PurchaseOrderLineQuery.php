@@ -14,5 +14,9 @@ use Base\PurchaseOrderLineQuery as BasePurchaseOrderLineQuery;
  */
 class PurchaseOrderLineQuery extends BasePurchaseOrderLineQuery
 {
-
+  function getTotalPricePerPO(){
+    return $this->select('PurchaseOrderId')
+    ->withColumn('SUM(PurchaseOrderLine.TotalPrice)','Total')
+    ->groupBy('PurchaseOrderId');
+  }
 }
