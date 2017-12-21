@@ -19,8 +19,9 @@ class Manage_purchaseorders extends MY_Controller{
 
   function get_number($pi){
     $this->load->helper('good_numbering');
+    $pi = str_replace("PI-","",$pi);
     echo create_number(
-        array('format'=>"PO $pi-i",
+        array('format'=>"PO-$pi-i",
         'tb_name'=>'purchase_order',
         'tb_field'=>'name'));
   }
