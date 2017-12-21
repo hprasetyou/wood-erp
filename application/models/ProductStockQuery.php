@@ -14,5 +14,9 @@ use Base\ProductStockQuery as BaseProductStockQuery;
  */
 class ProductStockQuery extends BaseProductStockQuery
 {
-
+  function countProductAllWh(){
+    return $this->select('ProductId')
+    ->withColumn('SUM(ProductStock.Qty)','StockQty')
+    ->groupBy('ProductId');
+  }
 }

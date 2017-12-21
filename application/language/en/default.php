@@ -1,4 +1,4 @@
-<?php 
+<?php
  return array(
 'access' => 'Access',
 'acount_no' => 'Acount No',
@@ -147,6 +147,9 @@
 'purchase_order_id' => 'Purchase Order Id',
 'purchase_order_line' => 'Purchase Order Line',
 'qty' => 'Qty',
+'qty_needed' => 'Qty Needed',
+'qty_ordered' => 'Qty Ordered',
+'qty_on_stock' => 'Qty on Stock',
 'qty_of_pack' => 'Qty of Packages',
 'qty_on_container' => 'Qty On Container',
 'qty_per_pack' => 'Qty Per Pack',

@@ -192,7 +192,8 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
       {"data":"article_number"},
       {"data":"description"},
       {"data":"has_component"},
-      {"data":"total_qty"} ],
+      {"data":"qty_needed"},
+      {"data":"qty_on_stock"} ],
     "initComplete" : function(settings, json) {
         $('#table_ProformaInvoiceLine').css('width','100%')
         $('#table_ProformaInvoiceLine_info').hide()

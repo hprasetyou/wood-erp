@@ -95,12 +95,20 @@ class Manage_proformainvoicelines extends MY_Controller{
           ->filterByProformaInvoiceLineId($line->getId())
           ->filterByProductId($prodcomponent->getComponentId())
           ->find();
-          $done = 0;
+          $ordered = 0;
+
+          $prodstock = ProductStockQuery::create()
+          ->filterByProduct($prodcomponent->getComponent())
+          ->countProductAllWh()
+          ->findOne();
+
           foreach ($polines as $poline) {
             # code...
-            $done += $poline->getQty();
+            $ordered += $poline->getQty();
           }
-          $o[$i]['total_qty'] = ($line->getQty() * $prodcomponent->getQty())-$done;
+          $o[$i]['qty_on_stock'] = $prodstock?$prodstock['StockQty']*1:0;
+          $o[$i]['qty_ordered'] = $ordered;
+          $o[$i]['qty_needed'] = ($line->getQty() * $prodcomponent->getQty())-$ordered;
 
           $i++;
         }
@@ -109,12 +117,20 @@ class Manage_proformainvoicelines extends MY_Controller{
         ->filterByProformaInvoiceLineId($line->getId())
         ->filterByProductId($prod->getId())
         ->find();
-        $done = 0;
+        $ordered = 0;
         foreach ($polines as $poline) {
           # code...
-          $done += $poline->getQty();
+          $ordered += $poline->getQty();
         }
-        $o[$i]['total_qty'] = $line->getQty() - $done;
+        $prodstock = ProductStockQuery::create()
+        ->filterByProduct($prodcomponent->getComponent())
+        ->countProductAllWh()
+        ->findOne();
+        
+        $o[$i]['qty_on_stock'] = $prodstock?$prodstock['StockQty']*1:0;
+
+        $o[$i]['qty_ordered'] = $ordered;
+        $o[$i]['qty_needed'] = $line->getQty() - $ordered;
 
         $i++;
       }
