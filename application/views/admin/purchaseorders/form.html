@@ -245,7 +245,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
     })
     $(document).ready(function(){
       $('#tbAddPO').on('change keyup','.PILineQty',function(e){
-        if($(this).val() > $(this).prop('max')){
+        if(($(this).val())*1 > ($(this).prop('max'))*1){
           $(this).val($(this).prop('max'))
         }
         })
