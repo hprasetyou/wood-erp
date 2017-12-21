@@ -5,20 +5,7 @@ class Manage_purchaseorders extends MY_Controller{
 
   function __construct(){
     parent::__construct();
-    $this->form = array(
-     'Name' => 'Name',
-     'ProformaInvoiceId' => 'ProformaInvoiceId',
-     'SupplierId' => 'SupplierId',
-     'Note' => 'Note',
-     'Date' => 'Date',
-     'PaymentTerm' => 'PaymentTerm',
-     'ShipmentTerm' => 'ShipmentTerm',
-     'PackingType' => 'PackingType',
-     'DownPayment' => 'DownPayment',
-     'DownPaymentDeadline' => 'DownPaymentDeadline',
-     'TotalPrice' => 'TotalPrice',
-    );
-		$this->objname = 'PurchaseOrder';
+		$this->set_objname('PurchaseOrder');
 		$this->tpl = 'purchaseorders';
 
     $this->authorization->check_authorization('manage_purchaseorders');
