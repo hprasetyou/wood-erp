@@ -130,20 +130,6 @@ abstract class PurchaseOrder implements ActiveRecordInterface
     protected $payment_term;
 
     /**
-     * The value for the shipment_term field.
-     *
-     * @var        string
-     */
-    protected $shipment_term;
-
-    /**
-     * The value for the packing_type field.
-     *
-     * @var        string
-     */
-    protected $packing_type;
-
-    /**
      * The value for the down_payment field.
      *
      * @var        double
@@ -553,26 +539,6 @@ abstract class PurchaseOrder implements ActiveRecordInterface
     }
 
     /**
-     * Get the [shipment_term] column value.
-     *
-     * @return string
-     */
-    public function getShipmentTerm()
-    {
-        return $this->shipment_term;
-    }
-
-    /**
-     * Get the [packing_type] column value.
-     *
-     * @return string
-     */
-    public function getPackingType()
-    {
-        return $this->packing_type;
-    }
-
-    /**
      * Get the [down_payment] column value.
      *
      * @return double
@@ -835,46 +801,6 @@ abstract class PurchaseOrder implements ActiveRecordInterface
     } // setPaymentTerm()
 
     /**
-     * Set the value of [shipment_term] column.
-     *
-     * @param string $v new value
-     * @return $this|\PurchaseOrder The current object (for fluent API support)
-     */
-    public function setShipmentTerm($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->shipment_term !== $v) {
-            $this->shipment_term = $v;
-            $this->modifiedColumns[PurchaseOrderTableMap::COL_SHIPMENT_TERM] = true;
-        }
-
-        return $this;
-    } // setShipmentTerm()
-
-    /**
-     * Set the value of [packing_type] column.
-     *
-     * @param string $v new value
-     * @return $this|\PurchaseOrder The current object (for fluent API support)
-     */
-    public function setPackingType($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->packing_type !== $v) {
-            $this->packing_type = $v;
-            $this->modifiedColumns[PurchaseOrderTableMap::COL_PACKING_TYPE] = true;
-        }
-
-        return $this;
-    } // setPackingType()
-
-    /**
      * Set the value of [down_payment] column.
      *
      * @param double $v new value
@@ -1065,34 +991,28 @@ abstract class PurchaseOrder implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PurchaseOrderTableMap::translateFieldName('PaymentTerm', TableMap::TYPE_PHPNAME, $indexType)];
             $this->payment_term = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PurchaseOrderTableMap::translateFieldName('ShipmentTerm', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->shipment_term = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PurchaseOrderTableMap::translateFieldName('PackingType', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->packing_type = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PurchaseOrderTableMap::translateFieldName('DownPayment', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PurchaseOrderTableMap::translateFieldName('DownPayment', TableMap::TYPE_PHPNAME, $indexType)];
             $this->down_payment = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : PurchaseOrderTableMap::translateFieldName('DownPaymentDeadline', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PurchaseOrderTableMap::translateFieldName('DownPaymentDeadline', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00') {
                 $col = null;
             }
             $this->down_payment_deadline = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : PurchaseOrderTableMap::translateFieldName('TotalPrice', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PurchaseOrderTableMap::translateFieldName('TotalPrice', TableMap::TYPE_PHPNAME, $indexType)];
             $this->total_price = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : PurchaseOrderTableMap::translateFieldName('State', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : PurchaseOrderTableMap::translateFieldName('State', TableMap::TYPE_PHPNAME, $indexType)];
             $this->state = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : PurchaseOrderTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : PurchaseOrderTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : PurchaseOrderTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : PurchaseOrderTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -1105,7 +1025,7 @@ abstract class PurchaseOrder implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 16; // 16 = PurchaseOrderTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 14; // 14 = PurchaseOrderTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\PurchaseOrder'), 0, $e);
@@ -1387,12 +1307,6 @@ abstract class PurchaseOrder implements ActiveRecordInterface
         if ($this->isColumnModified(PurchaseOrderTableMap::COL_PAYMENT_TERM)) {
             $modifiedColumns[':p' . $index++]  = 'payment_term';
         }
-        if ($this->isColumnModified(PurchaseOrderTableMap::COL_SHIPMENT_TERM)) {
-            $modifiedColumns[':p' . $index++]  = 'shipment_term';
-        }
-        if ($this->isColumnModified(PurchaseOrderTableMap::COL_PACKING_TYPE)) {
-            $modifiedColumns[':p' . $index++]  = 'packing_type';
-        }
         if ($this->isColumnModified(PurchaseOrderTableMap::COL_DOWN_PAYMENT)) {
             $modifiedColumns[':p' . $index++]  = 'down_payment';
         }
@@ -1445,12 +1359,6 @@ abstract class PurchaseOrder implements ActiveRecordInterface
                         break;
                     case 'payment_term':
                         $stmt->bindValue($identifier, $this->payment_term, PDO::PARAM_STR);
-                        break;
-                    case 'shipment_term':
-                        $stmt->bindValue($identifier, $this->shipment_term, PDO::PARAM_STR);
-                        break;
-                    case 'packing_type':
-                        $stmt->bindValue($identifier, $this->packing_type, PDO::PARAM_STR);
                         break;
                     case 'down_payment':
                         $stmt->bindValue($identifier, $this->down_payment, PDO::PARAM_STR);
@@ -1557,27 +1465,21 @@ abstract class PurchaseOrder implements ActiveRecordInterface
                 return $this->getPaymentTerm();
                 break;
             case 8:
-                return $this->getShipmentTerm();
-                break;
-            case 9:
-                return $this->getPackingType();
-                break;
-            case 10:
                 return $this->getDownPayment();
                 break;
-            case 11:
+            case 9:
                 return $this->getDownPaymentDeadline();
                 break;
-            case 12:
+            case 10:
                 return $this->getTotalPrice();
                 break;
-            case 13:
+            case 11:
                 return $this->getState();
                 break;
-            case 14:
+            case 12:
                 return $this->getCreatedAt();
                 break;
-            case 15:
+            case 13:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1618,29 +1520,27 @@ abstract class PurchaseOrder implements ActiveRecordInterface
             $keys[5] => $this->getNote(),
             $keys[6] => $this->getDate(),
             $keys[7] => $this->getPaymentTerm(),
-            $keys[8] => $this->getShipmentTerm(),
-            $keys[9] => $this->getPackingType(),
-            $keys[10] => $this->getDownPayment(),
-            $keys[11] => $this->getDownPaymentDeadline(),
-            $keys[12] => $this->getTotalPrice(),
-            $keys[13] => $this->getState(),
-            $keys[14] => $this->getCreatedAt(),
-            $keys[15] => $this->getUpdatedAt(),
+            $keys[8] => $this->getDownPayment(),
+            $keys[9] => $this->getDownPaymentDeadline(),
+            $keys[10] => $this->getTotalPrice(),
+            $keys[11] => $this->getState(),
+            $keys[12] => $this->getCreatedAt(),
+            $keys[13] => $this->getUpdatedAt(),
         );
         if ($result[$keys[6]] instanceof \DateTimeInterface) {
             $result[$keys[6]] = $result[$keys[6]]->format('c');
         }
 
-        if ($result[$keys[11]] instanceof \DateTimeInterface) {
-            $result[$keys[11]] = $result[$keys[11]]->format('c');
+        if ($result[$keys[9]] instanceof \DateTimeInterface) {
+            $result[$keys[9]] = $result[$keys[9]]->format('c');
         }
 
-        if ($result[$keys[14]] instanceof \DateTimeInterface) {
-            $result[$keys[14]] = $result[$keys[14]]->format('c');
+        if ($result[$keys[12]] instanceof \DateTimeInterface) {
+            $result[$keys[12]] = $result[$keys[12]]->format('c');
         }
 
-        if ($result[$keys[15]] instanceof \DateTimeInterface) {
-            $result[$keys[15]] = $result[$keys[15]]->format('c');
+        if ($result[$keys[13]] instanceof \DateTimeInterface) {
+            $result[$keys[13]] = $result[$keys[13]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1768,27 +1668,21 @@ abstract class PurchaseOrder implements ActiveRecordInterface
                 $this->setPaymentTerm($value);
                 break;
             case 8:
-                $this->setShipmentTerm($value);
-                break;
-            case 9:
-                $this->setPackingType($value);
-                break;
-            case 10:
                 $this->setDownPayment($value);
                 break;
-            case 11:
+            case 9:
                 $this->setDownPaymentDeadline($value);
                 break;
-            case 12:
+            case 10:
                 $this->setTotalPrice($value);
                 break;
-            case 13:
+            case 11:
                 $this->setState($value);
                 break;
-            case 14:
+            case 12:
                 $this->setCreatedAt($value);
                 break;
-            case 15:
+            case 13:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1842,28 +1736,22 @@ abstract class PurchaseOrder implements ActiveRecordInterface
             $this->setPaymentTerm($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setShipmentTerm($arr[$keys[8]]);
+            $this->setDownPayment($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setPackingType($arr[$keys[9]]);
+            $this->setDownPaymentDeadline($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setDownPayment($arr[$keys[10]]);
+            $this->setTotalPrice($arr[$keys[10]]);
         }
         if (array_key_exists($keys[11], $arr)) {
-            $this->setDownPaymentDeadline($arr[$keys[11]]);
+            $this->setState($arr[$keys[11]]);
         }
         if (array_key_exists($keys[12], $arr)) {
-            $this->setTotalPrice($arr[$keys[12]]);
+            $this->setCreatedAt($arr[$keys[12]]);
         }
         if (array_key_exists($keys[13], $arr)) {
-            $this->setState($arr[$keys[13]]);
-        }
-        if (array_key_exists($keys[14], $arr)) {
-            $this->setCreatedAt($arr[$keys[14]]);
-        }
-        if (array_key_exists($keys[15], $arr)) {
-            $this->setUpdatedAt($arr[$keys[15]]);
+            $this->setUpdatedAt($arr[$keys[13]]);
         }
     }
 
@@ -1929,12 +1817,6 @@ abstract class PurchaseOrder implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PurchaseOrderTableMap::COL_PAYMENT_TERM)) {
             $criteria->add(PurchaseOrderTableMap::COL_PAYMENT_TERM, $this->payment_term);
-        }
-        if ($this->isColumnModified(PurchaseOrderTableMap::COL_SHIPMENT_TERM)) {
-            $criteria->add(PurchaseOrderTableMap::COL_SHIPMENT_TERM, $this->shipment_term);
-        }
-        if ($this->isColumnModified(PurchaseOrderTableMap::COL_PACKING_TYPE)) {
-            $criteria->add(PurchaseOrderTableMap::COL_PACKING_TYPE, $this->packing_type);
         }
         if ($this->isColumnModified(PurchaseOrderTableMap::COL_DOWN_PAYMENT)) {
             $criteria->add(PurchaseOrderTableMap::COL_DOWN_PAYMENT, $this->down_payment);
@@ -2047,8 +1929,6 @@ abstract class PurchaseOrder implements ActiveRecordInterface
         $copyObj->setNote($this->getNote());
         $copyObj->setDate($this->getDate());
         $copyObj->setPaymentTerm($this->getPaymentTerm());
-        $copyObj->setShipmentTerm($this->getShipmentTerm());
-        $copyObj->setPackingType($this->getPackingType());
         $copyObj->setDownPayment($this->getDownPayment());
         $copyObj->setDownPaymentDeadline($this->getDownPaymentDeadline());
         $copyObj->setTotalPrice($this->getTotalPrice());
@@ -2566,8 +2446,6 @@ abstract class PurchaseOrder implements ActiveRecordInterface
         $this->note = null;
         $this->date = null;
         $this->payment_term = null;
-        $this->shipment_term = null;
-        $this->packing_type = null;
         $this->down_payment = null;
         $this->down_payment_deadline = null;
         $this->total_price = null;

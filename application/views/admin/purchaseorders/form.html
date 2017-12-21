@@ -95,30 +95,6 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
 							</div>
 
 							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ShipmentTerm">{{res.string.shipment_term}}</label>
-								<div class="col-md-6 col-sm-6 col-xs-12">
-									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
-										<input type="text" placeholder="{{ res.string.shipment_term }}" id="ShipmentTerm" value="{{ purchaseorders.ShipmentTerm }}" name="ShipmentTerm" class="form-control  col-md-7 col-xs-12">
-									</div>
-									{% if purchaseorders %}
-									<p class="control-value">{{ purchaseorders.ShipmentTerm }}</p>
-									{% endif %}
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="PackingType">{{res.string.packing_type}}</label>
-								<div class="col-md-6 col-sm-6 col-xs-12">
-									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
-										<input type="text" placeholder="{{ res.string.packing_type }}" id="PackingType" value="{{ purchaseorders.PackingType }}" name="PackingType" class="form-control  col-md-7 col-xs-12">
-									</div>
-									{% if purchaseorders %}
-									<p class="control-value">{{ purchaseorders.PackingType }}</p>
-									{% endif %}
-								</div>
-							</div>
-
-							<div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="DownPayment">{{res.string.down_payment}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
 									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">

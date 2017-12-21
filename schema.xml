@@ -354,8 +354,6 @@
     <column name="note" phpName="Note" type="LONGVARCHAR"/>
     <column name="date" phpName="Date" type="DATE"/>
     <column name="payment_term" phpName="PaymentTerm" type="VARCHAR" size="255"/>
-    <column name="shipment_term" phpName="ShipmentTerm" type="VARCHAR" size="255"/>
-    <column name="packing_type" phpName="PackingType" type="VARCHAR" size="255"/>
     <column name="down_payment" phpName="DownPayment" type="FLOAT"/>
     <column name="down_payment_deadline" phpName="DownPaymentDeadline" type="DATE"/>
     <column name="total_price" phpName="TotalPrice" type="FLOAT"/>

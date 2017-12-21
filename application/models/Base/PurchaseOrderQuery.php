@@ -28,8 +28,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderQuery orderByNote($order = Criteria::ASC) Order by the note column
  * @method     ChildPurchaseOrderQuery orderByDate($order = Criteria::ASC) Order by the date column
  * @method     ChildPurchaseOrderQuery orderByPaymentTerm($order = Criteria::ASC) Order by the payment_term column
- * @method     ChildPurchaseOrderQuery orderByShipmentTerm($order = Criteria::ASC) Order by the shipment_term column
- * @method     ChildPurchaseOrderQuery orderByPackingType($order = Criteria::ASC) Order by the packing_type column
  * @method     ChildPurchaseOrderQuery orderByDownPayment($order = Criteria::ASC) Order by the down_payment column
  * @method     ChildPurchaseOrderQuery orderByDownPaymentDeadline($order = Criteria::ASC) Order by the down_payment_deadline column
  * @method     ChildPurchaseOrderQuery orderByTotalPrice($order = Criteria::ASC) Order by the total_price column
@@ -45,8 +43,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderQuery groupByNote() Group by the note column
  * @method     ChildPurchaseOrderQuery groupByDate() Group by the date column
  * @method     ChildPurchaseOrderQuery groupByPaymentTerm() Group by the payment_term column
- * @method     ChildPurchaseOrderQuery groupByShipmentTerm() Group by the shipment_term column
- * @method     ChildPurchaseOrderQuery groupByPackingType() Group by the packing_type column
  * @method     ChildPurchaseOrderQuery groupByDownPayment() Group by the down_payment column
  * @method     ChildPurchaseOrderQuery groupByDownPaymentDeadline() Group by the down_payment_deadline column
  * @method     ChildPurchaseOrderQuery groupByTotalPrice() Group by the total_price column
@@ -115,8 +111,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrder findOneByNote(string $note) Return the first ChildPurchaseOrder filtered by the note column
  * @method     ChildPurchaseOrder findOneByDate(string $date) Return the first ChildPurchaseOrder filtered by the date column
  * @method     ChildPurchaseOrder findOneByPaymentTerm(string $payment_term) Return the first ChildPurchaseOrder filtered by the payment_term column
- * @method     ChildPurchaseOrder findOneByShipmentTerm(string $shipment_term) Return the first ChildPurchaseOrder filtered by the shipment_term column
- * @method     ChildPurchaseOrder findOneByPackingType(string $packing_type) Return the first ChildPurchaseOrder filtered by the packing_type column
  * @method     ChildPurchaseOrder findOneByDownPayment(double $down_payment) Return the first ChildPurchaseOrder filtered by the down_payment column
  * @method     ChildPurchaseOrder findOneByDownPaymentDeadline(string $down_payment_deadline) Return the first ChildPurchaseOrder filtered by the down_payment_deadline column
  * @method     ChildPurchaseOrder findOneByTotalPrice(double $total_price) Return the first ChildPurchaseOrder filtered by the total_price column
@@ -135,8 +129,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrder requireOneByNote(string $note) Return the first ChildPurchaseOrder filtered by the note column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByDate(string $date) Return the first ChildPurchaseOrder filtered by the date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByPaymentTerm(string $payment_term) Return the first ChildPurchaseOrder filtered by the payment_term column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPurchaseOrder requireOneByShipmentTerm(string $shipment_term) Return the first ChildPurchaseOrder filtered by the shipment_term column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPurchaseOrder requireOneByPackingType(string $packing_type) Return the first ChildPurchaseOrder filtered by the packing_type column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByDownPayment(double $down_payment) Return the first ChildPurchaseOrder filtered by the down_payment column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByDownPaymentDeadline(string $down_payment_deadline) Return the first ChildPurchaseOrder filtered by the down_payment_deadline column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByTotalPrice(double $total_price) Return the first ChildPurchaseOrder filtered by the total_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -153,8 +145,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrder[]|ObjectCollection findByNote(string $note) Return ChildPurchaseOrder objects filtered by the note column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByDate(string $date) Return ChildPurchaseOrder objects filtered by the date column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByPaymentTerm(string $payment_term) Return ChildPurchaseOrder objects filtered by the payment_term column
- * @method     ChildPurchaseOrder[]|ObjectCollection findByShipmentTerm(string $shipment_term) Return ChildPurchaseOrder objects filtered by the shipment_term column
- * @method     ChildPurchaseOrder[]|ObjectCollection findByPackingType(string $packing_type) Return ChildPurchaseOrder objects filtered by the packing_type column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByDownPayment(double $down_payment) Return ChildPurchaseOrder objects filtered by the down_payment column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByDownPaymentDeadline(string $down_payment_deadline) Return ChildPurchaseOrder objects filtered by the down_payment_deadline column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByTotalPrice(double $total_price) Return ChildPurchaseOrder objects filtered by the total_price column
@@ -259,7 +249,7 @@ abstract class PurchaseOrderQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, proforma_invoice_id, supplier_id, currency_id, note, date, payment_term, shipment_term, packing_type, down_payment, down_payment_deadline, total_price, state, created_at, updated_at FROM purchase_order WHERE id = :p0';
+        $sql = 'SELECT id, name, proforma_invoice_id, supplier_id, currency_id, note, date, payment_term, down_payment, down_payment_deadline, total_price, state, created_at, updated_at FROM purchase_order WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -635,56 +625,6 @@ abstract class PurchaseOrderQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PurchaseOrderTableMap::COL_PAYMENT_TERM, $paymentTerm, $comparison);
-    }
-
-    /**
-     * Filter the query on the shipment_term column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByShipmentTerm('fooValue');   // WHERE shipment_term = 'fooValue'
-     * $query->filterByShipmentTerm('%fooValue%', Criteria::LIKE); // WHERE shipment_term LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $shipmentTerm The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildPurchaseOrderQuery The current query, for fluid interface
-     */
-    public function filterByShipmentTerm($shipmentTerm = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($shipmentTerm)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(PurchaseOrderTableMap::COL_SHIPMENT_TERM, $shipmentTerm, $comparison);
-    }
-
-    /**
-     * Filter the query on the packing_type column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByPackingType('fooValue');   // WHERE packing_type = 'fooValue'
-     * $query->filterByPackingType('%fooValue%', Criteria::LIKE); // WHERE packing_type LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $packingType The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildPurchaseOrderQuery The current query, for fluid interface
-     */
-    public function filterByPackingType($packingType = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($packingType)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(PurchaseOrderTableMap::COL_PACKING_TYPE, $packingType, $comparison);
     }
 
     /**
