@@ -14,5 +14,23 @@ use Base\PartnerLocationQuery as BasePartnerLocationQuery;
  */
 class PartnerLocationQuery extends BasePartnerLocationQuery
 {
+  public function ownerType($type)
+  {
+    $key = 4;
+    switch ($type) {
+      case 'Internal':
+        $key = 2;
+        break;
+      case 'Customer':
+        $key = 3;
+        break;
 
+      default:
+        # code...
+        break;
+    }
+      return $this->usePartnerQuery()
+      ->where('partner.class_key = ?',$key)
+      ->endUse();
+  }
 }
