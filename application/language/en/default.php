@@ -163,6 +163,7 @@
 'save' => 'Save',
 'sea_20' => 'Sea Freight 20 ft',
 'sea_40' => 'Sea Freight 20 ft',
+'subtotal' =>'Sub total',
 'sea_40_h' => 'Sea Freight 20 ft',
 'seal_no' => 'Seal No',
 'search' => 'Search',

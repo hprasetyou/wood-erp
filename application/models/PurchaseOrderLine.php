@@ -29,7 +29,7 @@ class PurchaseOrderLine extends BasePurchaseOrderLine
     ->findOneByPurchaseOrderId($purchase_order_id);
     //set total price for purchase order
     $po = PurchaseOrderQuery::create()->findPk($purchase_order_id);
-    $po->setTotalPrice($polinetotal['Total'])->save();
+    $po->setTotalPrice($polinetotal['Total']-$po->getDownPaymentAmount())->save();
   }
 
   public function delete(ConnectionInterface $con = null){

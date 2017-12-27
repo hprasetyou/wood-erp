@@ -2,7 +2,7 @@
 res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %}
 <div class="row">
 	<div class="col-md-12 col-sm-12 col-xs-12">
-		<form id="form_PurchaseOrder" method="post" action="{{base_url}}index.php/manage_purchaseorders/write/{{ purchaseorders.id }}" data-parsley-validate class="form-horizontal form-label-left">
+		<form id="form_PurchaseOrder" method="post" action="{{base_url}}index.php/manage_purchaseorders/write/{{ purchaseorders.Id }}" data-parsley-validate class="form-horizontal form-label-left">
 			<div class="box box-info">
 				<div class="box-header with-border">
 					{% include 'common/_form_header.html' with {'back_url':'/index.php/manage_purchaseorders'~back_link, 'title': res.string.purchase_order, 'delete_url':'/index.php/manage_purchaseorders/delete/' ~ purchaseorders.Id, 'object':purchaseorders} %}
@@ -10,7 +10,6 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
 				<div class="box-body">
 					<div class="row">
 						<div class="col-sm-6">
-
 							<div {% if purchaseorders %}style="display:none"{% endif %} class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.name}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
@@ -29,8 +28,8 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProformaInvoiceId">{{res.string.proforma_invoice_id}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
                   <div {% if purchaseorders %}style="display:none"{% else %} class="input-wrap input-group" {% endif %}>
-										<input type="hidden" type="text" id="ProformaInvoiceId" value="{{ purchaseorders.ProformaInvoiceId }}" name="ProformaInvoiceId">
-										<input type="text" required="required" name="displayProformaInvoiceId" id="displayProformaInvoiceId" placeholder="{{ res.string.proforma_invoice_id }}" value="{{ purchaseorders.ProformaInvoice }}" class="form-control" />
+										<input type="hidden" type="text" id="ProformaInvoiceId"  name="ProformaInvoiceId">
+										<input type="text" required="required" name="displayProformaInvoiceId" id="displayProformaInvoiceId" placeholder="{{ res.string.proforma_invoice_id }}" value="{{ purchaseorders.ProformaInvoice.Name }}" class="form-control" />
 										<span class="input-group-btn">
 								<button class="btn btnModal btn-default" id="btnProformaInvoiceId"  data-target="ModalProformaInvoice" type="button">{{res.string.search}}</button>
 							</span>
@@ -82,18 +81,17 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
 									{% endif %}
 								</div>
 							</div>
-
-							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="DownPayment">{{res.string.down_payment}}</label>
-								<div class="col-md-6 col-sm-6 col-xs-12">
-									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
-										<input type="number" placeholder="{{ res.string.down_payment }}" id="DownPayment" value="{{ purchaseorders.DownPayment }}" name="DownPayment" class="form-control  col-md-7 col-xs-12">
-									</div>
-									{% if purchaseorders %}
-									<p class="control-value">{{ purchaseorders.DownPayment }}</p>
-									{% endif %}
-								</div>
-							</div>
+              <div class="form-group">
+    						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="DownPaymentId">{{res.string.down_payment}}</label>
+    						<div class="col-md-6 col-sm-6 col-xs-12">
+    						<div {% if purchaseorders %}style="display:none"{% endif %} class="input-wrap">
+    							{{selection_m2o('DownPaymentId','DownPayment',null,purchaseorders.DownPaymentId?purchaseorders.DownPaymentId:'') | raw}}
+    						</div>
+    								{% if purchaseorders %}
+    									<p class="control-value">{{ purchaseorders.DownPayment.Name  }}</p>
+    								{% endif %}
+    							</div>
+    						</div>
 
 							<div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="DownPaymentDeadline">{{res.string.down_payment_deadline}}</label>
@@ -211,6 +209,15 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
       $('.cb_pi').prop('checked',$(this).prop('checked'))
     })
     $(document).ready(function(){
+      // $('#DownPaymentId').trigger('change')
+      $('#DownPaymentId').change(function(e){
+        var d = $(this).find("option:selected").data('value')
+        var dp = $('#SubTotal').val()*d
+        $('#DownPaymentAmount').val(dp)
+        $('#TotalPrice').val($('#SubTotal').val()-dp)
+
+        console.log(d);
+      })
       $('#tbAddPO').on('change keyup','.PILineQty',function(e){
         if(($(this).val())*1 > ($(this).prop('max'))*1){
           $(this).val($(this).prop('max'))

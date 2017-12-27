@@ -36,6 +36,26 @@
         <th></th>
       </tr>
     </thead>
+    <tfoot>
+      <tr>
+        <th colspan="5">{{ res.string.subtotal }}</th>
+        <th colspan="2">
+          <input type="text" placeholder="{{ res.string.subtotal }}" id="SubTotal" value="{{ purchaseorders.SubTotal }}" name="SubTotal" class="form-control  col-md-7 col-xs-12">
+        </th>
+      </tr>
+      <tr>
+        <th colspan="5">{{res.string.down_payment}}</th>
+        <th colspan="2">
+          <input type="text" placeholder="{{ res.string.down_payment }}" id="DownPaymentAmount" value="{{ purchaseorders.DownPaymentAmount }}" name="DownPaymentAmount" class="form-control  col-md-7 col-xs-12">
+        </th>
+      </tr>
+      <tr>
+        <th colspan="5">{{ res.string.total }}</th>
+        <th colspan="2">
+          <input type="text" placeholder="{{ res.string.total }}" id="TotalPrice" value="{{ purchaseorders.TotalPrice }}" name="TotalPrice" class="form-control  col-md-7 col-xs-12">
+        </th>
+      </tr>
+    </tfoot>
   </table>
 </div>
 </div>

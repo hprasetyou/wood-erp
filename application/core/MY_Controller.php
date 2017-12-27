@@ -10,6 +10,7 @@ class MY_Controller extends CI_Controller{
   protected $form;
   protected $custom_column;
   protected $custom_code;
+  protected $outputstd;
 
 
  function __construct()
@@ -154,10 +155,15 @@ class MY_Controller extends CI_Controller{
 
  function detail($id){
    $vars = $this->tpl;
-   $qobj = $this->objname."Query";
-   $objs = $qobj::create()->findPk($id);
+   if(!$this->objobj){
+     $qobj = $this->objname."Query";
+     $objs = $qobj::create();
+   }else{
+     $objs = $this->objobj;
+   }
+   $o = $this->outputstd?json_decode($objs->findPk($id)->toJSON()):$objs->findPk($id);
    $this->template->render("admin/$vars/form",
-   array($vars=>$objs
+   array($vars=> $o
      ));
  }
 

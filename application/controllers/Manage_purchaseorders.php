@@ -27,20 +27,21 @@ class Manage_purchaseorders extends MY_Controller{
   }
 
   function detail($id){
+    $this->outputstd = 1;
+    $polinetotal = PurchaseOrderLineQuery::create()
+    ->getTotalPricePerPO()
+    ->findOneByPurchaseOrderId($id);
+    $this->objobj = PurchaseOrderQuery::create()
+    ->joinWith('PurchaseOrder.ProformaInvoice')
+    ->joinWith('PurchaseOrder.Supplier')
+    ->joinWith('PurchaseOrder.DownPayment')
+    ->withColumn((is_null($polinetotal['Total'])?"1*0":$polinetotal['Total']),'SubTotal');
 
-		$proforma_invoices = ProformaInvoiceQuery::create()->find();
-
-		$partners = PartnerQuery::create()->find();
-
-		$purchaseorder = PurchaseOrderQuery::create()->findPK($id);
-		$this->template->render('admin/purchaseorders/form',array('purchaseorders'=>$purchaseorder,
-		'proforma_invoices'=> $proforma_invoices,
-
-		'partners'=> $partners,
-			));
+    parent::detail($id);
   }
 
 	function write($id=null){
+    $this->form['DownPaymentId'] = 'DownPaymentId';
 		$data = parent::write($id);
     if($this->input->is_ajax_request()){
       echo $data->toJSON();

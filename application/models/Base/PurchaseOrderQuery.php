@@ -28,7 +28,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderQuery orderByNote($order = Criteria::ASC) Order by the note column
  * @method     ChildPurchaseOrderQuery orderByDate($order = Criteria::ASC) Order by the date column
  * @method     ChildPurchaseOrderQuery orderByPaymentTerm($order = Criteria::ASC) Order by the payment_term column
- * @method     ChildPurchaseOrderQuery orderByDownPayment($order = Criteria::ASC) Order by the down_payment column
+ * @method     ChildPurchaseOrderQuery orderByDownPaymentId($order = Criteria::ASC) Order by the down_payment_id column
+ * @method     ChildPurchaseOrderQuery orderByDownPaymentAmount($order = Criteria::ASC) Order by the down_payment_amount column
  * @method     ChildPurchaseOrderQuery orderByDownPaymentDeadline($order = Criteria::ASC) Order by the down_payment_deadline column
  * @method     ChildPurchaseOrderQuery orderByTotalPrice($order = Criteria::ASC) Order by the total_price column
  * @method     ChildPurchaseOrderQuery orderByState($order = Criteria::ASC) Order by the state column
@@ -43,7 +44,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderQuery groupByNote() Group by the note column
  * @method     ChildPurchaseOrderQuery groupByDate() Group by the date column
  * @method     ChildPurchaseOrderQuery groupByPaymentTerm() Group by the payment_term column
- * @method     ChildPurchaseOrderQuery groupByDownPayment() Group by the down_payment column
+ * @method     ChildPurchaseOrderQuery groupByDownPaymentId() Group by the down_payment_id column
+ * @method     ChildPurchaseOrderQuery groupByDownPaymentAmount() Group by the down_payment_amount column
  * @method     ChildPurchaseOrderQuery groupByDownPaymentDeadline() Group by the down_payment_deadline column
  * @method     ChildPurchaseOrderQuery groupByTotalPrice() Group by the total_price column
  * @method     ChildPurchaseOrderQuery groupByState() Group by the state column
@@ -67,6 +69,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderQuery leftJoinWithProformaInvoice() Adds a LEFT JOIN clause and with to the query using the ProformaInvoice relation
  * @method     ChildPurchaseOrderQuery rightJoinWithProformaInvoice() Adds a RIGHT JOIN clause and with to the query using the ProformaInvoice relation
  * @method     ChildPurchaseOrderQuery innerJoinWithProformaInvoice() Adds a INNER JOIN clause and with to the query using the ProformaInvoice relation
+ *
+ * @method     ChildPurchaseOrderQuery leftJoinDownPayment($relationAlias = null) Adds a LEFT JOIN clause to the query using the DownPayment relation
+ * @method     ChildPurchaseOrderQuery rightJoinDownPayment($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DownPayment relation
+ * @method     ChildPurchaseOrderQuery innerJoinDownPayment($relationAlias = null) Adds a INNER JOIN clause to the query using the DownPayment relation
+ *
+ * @method     ChildPurchaseOrderQuery joinWithDownPayment($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the DownPayment relation
+ *
+ * @method     ChildPurchaseOrderQuery leftJoinWithDownPayment() Adds a LEFT JOIN clause and with to the query using the DownPayment relation
+ * @method     ChildPurchaseOrderQuery rightJoinWithDownPayment() Adds a RIGHT JOIN clause and with to the query using the DownPayment relation
+ * @method     ChildPurchaseOrderQuery innerJoinWithDownPayment() Adds a INNER JOIN clause and with to the query using the DownPayment relation
  *
  * @method     ChildPurchaseOrderQuery leftJoinCurrency($relationAlias = null) Adds a LEFT JOIN clause to the query using the Currency relation
  * @method     ChildPurchaseOrderQuery rightJoinCurrency($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Currency relation
@@ -98,7 +110,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderQuery rightJoinWithPurchaseOrderLine() Adds a RIGHT JOIN clause and with to the query using the PurchaseOrderLine relation
  * @method     ChildPurchaseOrderQuery innerJoinWithPurchaseOrderLine() Adds a INNER JOIN clause and with to the query using the PurchaseOrderLine relation
  *
- * @method     \ProformaInvoiceQuery|\CurrencyQuery|\PartnerQuery|\PurchaseOrderLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \ProformaInvoiceQuery|\DownPaymentQuery|\CurrencyQuery|\PartnerQuery|\PurchaseOrderLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildPurchaseOrder findOne(ConnectionInterface $con = null) Return the first ChildPurchaseOrder matching the query
  * @method     ChildPurchaseOrder findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPurchaseOrder matching the query, or a new ChildPurchaseOrder object populated from the query conditions when no match is found
@@ -111,7 +123,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrder findOneByNote(string $note) Return the first ChildPurchaseOrder filtered by the note column
  * @method     ChildPurchaseOrder findOneByDate(string $date) Return the first ChildPurchaseOrder filtered by the date column
  * @method     ChildPurchaseOrder findOneByPaymentTerm(string $payment_term) Return the first ChildPurchaseOrder filtered by the payment_term column
- * @method     ChildPurchaseOrder findOneByDownPayment(double $down_payment) Return the first ChildPurchaseOrder filtered by the down_payment column
+ * @method     ChildPurchaseOrder findOneByDownPaymentId(int $down_payment_id) Return the first ChildPurchaseOrder filtered by the down_payment_id column
+ * @method     ChildPurchaseOrder findOneByDownPaymentAmount(double $down_payment_amount) Return the first ChildPurchaseOrder filtered by the down_payment_amount column
  * @method     ChildPurchaseOrder findOneByDownPaymentDeadline(string $down_payment_deadline) Return the first ChildPurchaseOrder filtered by the down_payment_deadline column
  * @method     ChildPurchaseOrder findOneByTotalPrice(double $total_price) Return the first ChildPurchaseOrder filtered by the total_price column
  * @method     ChildPurchaseOrder findOneByState(string $state) Return the first ChildPurchaseOrder filtered by the state column
@@ -129,7 +142,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrder requireOneByNote(string $note) Return the first ChildPurchaseOrder filtered by the note column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByDate(string $date) Return the first ChildPurchaseOrder filtered by the date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByPaymentTerm(string $payment_term) Return the first ChildPurchaseOrder filtered by the payment_term column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPurchaseOrder requireOneByDownPayment(double $down_payment) Return the first ChildPurchaseOrder filtered by the down_payment column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPurchaseOrder requireOneByDownPaymentId(int $down_payment_id) Return the first ChildPurchaseOrder filtered by the down_payment_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPurchaseOrder requireOneByDownPaymentAmount(double $down_payment_amount) Return the first ChildPurchaseOrder filtered by the down_payment_amount column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByDownPaymentDeadline(string $down_payment_deadline) Return the first ChildPurchaseOrder filtered by the down_payment_deadline column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByTotalPrice(double $total_price) Return the first ChildPurchaseOrder filtered by the total_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByState(string $state) Return the first ChildPurchaseOrder filtered by the state column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -145,7 +159,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrder[]|ObjectCollection findByNote(string $note) Return ChildPurchaseOrder objects filtered by the note column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByDate(string $date) Return ChildPurchaseOrder objects filtered by the date column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByPaymentTerm(string $payment_term) Return ChildPurchaseOrder objects filtered by the payment_term column
- * @method     ChildPurchaseOrder[]|ObjectCollection findByDownPayment(double $down_payment) Return ChildPurchaseOrder objects filtered by the down_payment column
+ * @method     ChildPurchaseOrder[]|ObjectCollection findByDownPaymentId(int $down_payment_id) Return ChildPurchaseOrder objects filtered by the down_payment_id column
+ * @method     ChildPurchaseOrder[]|ObjectCollection findByDownPaymentAmount(double $down_payment_amount) Return ChildPurchaseOrder objects filtered by the down_payment_amount column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByDownPaymentDeadline(string $down_payment_deadline) Return ChildPurchaseOrder objects filtered by the down_payment_deadline column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByTotalPrice(double $total_price) Return ChildPurchaseOrder objects filtered by the total_price column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByState(string $state) Return ChildPurchaseOrder objects filtered by the state column
@@ -249,7 +264,7 @@ abstract class PurchaseOrderQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, proforma_invoice_id, supplier_id, currency_id, note, date, payment_term, down_payment, down_payment_deadline, total_price, state, created_at, updated_at FROM purchase_order WHERE id = :p0';
+        $sql = 'SELECT id, name, proforma_invoice_id, supplier_id, currency_id, note, date, payment_term, down_payment_id, down_payment_amount, down_payment_deadline, total_price, state, created_at, updated_at FROM purchase_order WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -628,16 +643,18 @@ abstract class PurchaseOrderQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the down_payment column
+     * Filter the query on the down_payment_id column
      *
      * Example usage:
      * <code>
-     * $query->filterByDownPayment(1234); // WHERE down_payment = 1234
-     * $query->filterByDownPayment(array(12, 34)); // WHERE down_payment IN (12, 34)
-     * $query->filterByDownPayment(array('min' => 12)); // WHERE down_payment > 12
+     * $query->filterByDownPaymentId(1234); // WHERE down_payment_id = 1234
+     * $query->filterByDownPaymentId(array(12, 34)); // WHERE down_payment_id IN (12, 34)
+     * $query->filterByDownPaymentId(array('min' => 12)); // WHERE down_payment_id > 12
      * </code>
      *
-     * @param     mixed $downPayment The value to use as filter.
+     * @see       filterByDownPayment()
+     *
+     * @param     mixed $downPaymentId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -645,16 +662,16 @@ abstract class PurchaseOrderQuery extends ModelCriteria
      *
      * @return $this|ChildPurchaseOrderQuery The current query, for fluid interface
      */
-    public function filterByDownPayment($downPayment = null, $comparison = null)
+    public function filterByDownPaymentId($downPaymentId = null, $comparison = null)
     {
-        if (is_array($downPayment)) {
+        if (is_array($downPaymentId)) {
             $useMinMax = false;
-            if (isset($downPayment['min'])) {
-                $this->addUsingAlias(PurchaseOrderTableMap::COL_DOWN_PAYMENT, $downPayment['min'], Criteria::GREATER_EQUAL);
+            if (isset($downPaymentId['min'])) {
+                $this->addUsingAlias(PurchaseOrderTableMap::COL_DOWN_PAYMENT_ID, $downPaymentId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($downPayment['max'])) {
-                $this->addUsingAlias(PurchaseOrderTableMap::COL_DOWN_PAYMENT, $downPayment['max'], Criteria::LESS_EQUAL);
+            if (isset($downPaymentId['max'])) {
+                $this->addUsingAlias(PurchaseOrderTableMap::COL_DOWN_PAYMENT_ID, $downPaymentId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -665,7 +682,48 @@ abstract class PurchaseOrderQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(PurchaseOrderTableMap::COL_DOWN_PAYMENT, $downPayment, $comparison);
+        return $this->addUsingAlias(PurchaseOrderTableMap::COL_DOWN_PAYMENT_ID, $downPaymentId, $comparison);
+    }
+
+    /**
+     * Filter the query on the down_payment_amount column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDownPaymentAmount(1234); // WHERE down_payment_amount = 1234
+     * $query->filterByDownPaymentAmount(array(12, 34)); // WHERE down_payment_amount IN (12, 34)
+     * $query->filterByDownPaymentAmount(array('min' => 12)); // WHERE down_payment_amount > 12
+     * </code>
+     *
+     * @param     mixed $downPaymentAmount The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPurchaseOrderQuery The current query, for fluid interface
+     */
+    public function filterByDownPaymentAmount($downPaymentAmount = null, $comparison = null)
+    {
+        if (is_array($downPaymentAmount)) {
+            $useMinMax = false;
+            if (isset($downPaymentAmount['min'])) {
+                $this->addUsingAlias(PurchaseOrderTableMap::COL_DOWN_PAYMENT_AMOUNT, $downPaymentAmount['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($downPaymentAmount['max'])) {
+                $this->addUsingAlias(PurchaseOrderTableMap::COL_DOWN_PAYMENT_AMOUNT, $downPaymentAmount['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PurchaseOrderTableMap::COL_DOWN_PAYMENT_AMOUNT, $downPaymentAmount, $comparison);
     }
 
     /**
@@ -938,6 +996,83 @@ abstract class PurchaseOrderQuery extends ModelCriteria
         return $this
             ->joinProformaInvoice($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'ProformaInvoice', '\ProformaInvoiceQuery');
+    }
+
+    /**
+     * Filter the query by a related \DownPayment object
+     *
+     * @param \DownPayment|ObjectCollection $downPayment The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildPurchaseOrderQuery The current query, for fluid interface
+     */
+    public function filterByDownPayment($downPayment, $comparison = null)
+    {
+        if ($downPayment instanceof \DownPayment) {
+            return $this
+                ->addUsingAlias(PurchaseOrderTableMap::COL_DOWN_PAYMENT_ID, $downPayment->getId(), $comparison);
+        } elseif ($downPayment instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(PurchaseOrderTableMap::COL_DOWN_PAYMENT_ID, $downPayment->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByDownPayment() only accepts arguments of type \DownPayment or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the DownPayment relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildPurchaseOrderQuery The current query, for fluid interface
+     */
+    public function joinDownPayment($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('DownPayment');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'DownPayment');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the DownPayment relation DownPayment object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \DownPaymentQuery A secondary query class using the current class as primary query
+     */
+    public function useDownPaymentQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinDownPayment($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'DownPayment', '\DownPaymentQuery');
     }
 
     /**

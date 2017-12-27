@@ -2,17 +2,13 @@
 
 namespace Base;
 
-use \Currency as ChildCurrency;
-use \CurrencyQuery as ChildCurrencyQuery;
-use \ProformaInvoice as ChildProformaInvoice;
-use \ProformaInvoiceQuery as ChildProformaInvoiceQuery;
+use \DownPayment as ChildDownPayment;
+use \DownPaymentQuery as ChildDownPaymentQuery;
 use \PurchaseOrder as ChildPurchaseOrder;
 use \PurchaseOrderQuery as ChildPurchaseOrderQuery;
-use \DateTime;
 use \Exception;
 use \PDO;
-use Map\CurrencyTableMap;
-use Map\ProformaInvoiceTableMap;
+use Map\DownPaymentTableMap;
 use Map\PurchaseOrderTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -26,21 +22,20 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
-use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'currency' table.
+ * Base class that represents a row from the 'down_payment' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class Currency implements ActiveRecordInterface
+abstract class DownPayment implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Map\\CurrencyTableMap';
+    const TABLE_MAP = '\\Map\\DownPaymentTableMap';
 
 
     /**
@@ -84,48 +79,11 @@ abstract class Currency implements ActiveRecordInterface
     protected $name;
 
     /**
-     * The value for the code field.
+     * The value for the value field.
      *
-     * @var        string
+     * @var        double
      */
-    protected $code;
-
-    /**
-     * The value for the symbol field.
-     *
-     * @var        string
-     */
-    protected $symbol;
-
-    /**
-     * The value for the placement field.
-     *
-     * Note: this column has a database default value of: 'before'
-     * @var        string
-     */
-    protected $placement;
-
-    /**
-     * The value for the created_at field.
-     *
-     * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
-     * @var        DateTime
-     */
-    protected $created_at;
-
-    /**
-     * The value for the updated_at field.
-     *
-     * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-     * @var        DateTime
-     */
-    protected $updated_at;
-
-    /**
-     * @var        ObjectCollection|ChildProformaInvoice[] Collection to store aggregation of ChildProformaInvoice objects.
-     */
-    protected $collProformaInvoices;
-    protected $collProformaInvoicesPartial;
+    protected $value;
 
     /**
      * @var        ObjectCollection|ChildPurchaseOrder[] Collection to store aggregation of ChildPurchaseOrder objects.
@@ -143,34 +101,15 @@ abstract class Currency implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildProformaInvoice[]
-     */
-    protected $proformaInvoicesScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildPurchaseOrder[]
      */
     protected $purchaseOrdersScheduledForDeletion = null;
 
     /**
-     * Applies default values to this object.
-     * This method should be called from the object's constructor (or
-     * equivalent initialization method).
-     * @see __construct()
-     */
-    public function applyDefaultValues()
-    {
-        $this->placement = 'before';
-    }
-
-    /**
-     * Initializes internal state of Base\Currency object.
-     * @see applyDefaults()
+     * Initializes internal state of Base\DownPayment object.
      */
     public function __construct()
     {
-        $this->applyDefaultValues();
     }
 
     /**
@@ -262,9 +201,9 @@ abstract class Currency implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Currency</code> instance.  If
-     * <code>obj</code> is an instance of <code>Currency</code>, delegates to
-     * <code>equals(Currency)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>DownPayment</code> instance.  If
+     * <code>obj</code> is an instance of <code>DownPayment</code>, delegates to
+     * <code>equals(DownPayment)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -330,7 +269,7 @@ abstract class Currency implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|Currency The current object, for fluid interface
+     * @return $this|DownPayment The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -412,80 +351,20 @@ abstract class Currency implements ActiveRecordInterface
     }
 
     /**
-     * Get the [code] column value.
+     * Get the [value] column value.
      *
-     * @return string
+     * @return double
      */
-    public function getCode()
+    public function getValue()
     {
-        return $this->code;
-    }
-
-    /**
-     * Get the [symbol] column value.
-     *
-     * @return string
-     */
-    public function getSymbol()
-    {
-        return $this->symbol;
-    }
-
-    /**
-     * Get the [placement] column value.
-     *
-     * @return string
-     */
-    public function getPlacement()
-    {
-        return $this->placement;
-    }
-
-    /**
-     * Get the [optionally formatted] temporal [created_at] column value.
-     *
-     *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw DateTime object will be returned.
-     *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
-     *
-     * @throws PropelException - if unable to parse/validate the date/time value.
-     */
-    public function getCreatedAt($format = NULL)
-    {
-        if ($format === null) {
-            return $this->created_at;
-        } else {
-            return $this->created_at instanceof \DateTimeInterface ? $this->created_at->format($format) : null;
-        }
-    }
-
-    /**
-     * Get the [optionally formatted] temporal [updated_at] column value.
-     *
-     *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw DateTime object will be returned.
-     *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
-     *
-     * @throws PropelException - if unable to parse/validate the date/time value.
-     */
-    public function getUpdatedAt($format = NULL)
-    {
-        if ($format === null) {
-            return $this->updated_at;
-        } else {
-            return $this->updated_at instanceof \DateTimeInterface ? $this->updated_at->format($format) : null;
-        }
+        return $this->value;
     }
 
     /**
      * Set the value of [id] column.
      *
      * @param int $v new value
-     * @return $this|\Currency The current object (for fluent API support)
+     * @return $this|\DownPayment The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -495,7 +374,7 @@ abstract class Currency implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[CurrencyTableMap::COL_ID] = true;
+            $this->modifiedColumns[DownPaymentTableMap::COL_ID] = true;
         }
 
         return $this;
@@ -505,7 +384,7 @@ abstract class Currency implements ActiveRecordInterface
      * Set the value of [name] column.
      *
      * @param string $v new value
-     * @return $this|\Currency The current object (for fluent API support)
+     * @return $this|\DownPayment The current object (for fluent API support)
      */
     public function setName($v)
     {
@@ -515,111 +394,31 @@ abstract class Currency implements ActiveRecordInterface
 
         if ($this->name !== $v) {
             $this->name = $v;
-            $this->modifiedColumns[CurrencyTableMap::COL_NAME] = true;
+            $this->modifiedColumns[DownPaymentTableMap::COL_NAME] = true;
         }
 
         return $this;
     } // setName()
 
     /**
-     * Set the value of [code] column.
+     * Set the value of [value] column.
      *
-     * @param string $v new value
-     * @return $this|\Currency The current object (for fluent API support)
+     * @param double $v new value
+     * @return $this|\DownPayment The current object (for fluent API support)
      */
-    public function setCode($v)
+    public function setValue($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            $v = (double) $v;
         }
 
-        if ($this->code !== $v) {
-            $this->code = $v;
-            $this->modifiedColumns[CurrencyTableMap::COL_CODE] = true;
-        }
-
-        return $this;
-    } // setCode()
-
-    /**
-     * Set the value of [symbol] column.
-     *
-     * @param string $v new value
-     * @return $this|\Currency The current object (for fluent API support)
-     */
-    public function setSymbol($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->symbol !== $v) {
-            $this->symbol = $v;
-            $this->modifiedColumns[CurrencyTableMap::COL_SYMBOL] = true;
+        if ($this->value !== $v) {
+            $this->value = $v;
+            $this->modifiedColumns[DownPaymentTableMap::COL_VALUE] = true;
         }
 
         return $this;
-    } // setSymbol()
-
-    /**
-     * Set the value of [placement] column.
-     *
-     * @param string $v new value
-     * @return $this|\Currency The current object (for fluent API support)
-     */
-    public function setPlacement($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->placement !== $v) {
-            $this->placement = $v;
-            $this->modifiedColumns[CurrencyTableMap::COL_PLACEMENT] = true;
-        }
-
-        return $this;
-    } // setPlacement()
-
-    /**
-     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
-     *
-     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
-     *               Empty strings are treated as NULL.
-     * @return $this|\Currency The current object (for fluent API support)
-     */
-    public function setCreatedAt($v)
-    {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->created_at !== null || $dt !== null) {
-            if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_at->format("Y-m-d H:i:s.u")) {
-                $this->created_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[CurrencyTableMap::COL_CREATED_AT] = true;
-            }
-        } // if either are not null
-
-        return $this;
-    } // setCreatedAt()
-
-    /**
-     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
-     *
-     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
-     *               Empty strings are treated as NULL.
-     * @return $this|\Currency The current object (for fluent API support)
-     */
-    public function setUpdatedAt($v)
-    {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->updated_at !== null || $dt !== null) {
-            if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated_at->format("Y-m-d H:i:s.u")) {
-                $this->updated_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[CurrencyTableMap::COL_UPDATED_AT] = true;
-            }
-        } // if either are not null
-
-        return $this;
-    } // setUpdatedAt()
+    } // setValue()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -631,10 +430,6 @@ abstract class Currency implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->placement !== 'before') {
-                return false;
-            }
-
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -661,32 +456,14 @@ abstract class Currency implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : CurrencyTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : DownPaymentTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : CurrencyTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : DownPaymentTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : CurrencyTableMap::translateFieldName('Code', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->code = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : CurrencyTableMap::translateFieldName('Symbol', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->symbol = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : CurrencyTableMap::translateFieldName('Placement', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->placement = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : CurrencyTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
-            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : CurrencyTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
-            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : DownPaymentTableMap::translateFieldName('Value', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->value = (null !== $col) ? (double) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -695,10 +472,10 @@ abstract class Currency implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 7; // 7 = CurrencyTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 3; // 3 = DownPaymentTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\Currency'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\DownPayment'), 0, $e);
         }
     }
 
@@ -740,13 +517,13 @@ abstract class Currency implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(CurrencyTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(DownPaymentTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildCurrencyQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildDownPaymentQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -755,8 +532,6 @@ abstract class Currency implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
-
-            $this->collProformaInvoices = null;
 
             $this->collPurchaseOrders = null;
 
@@ -769,8 +544,8 @@ abstract class Currency implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Currency::setDeleted()
-     * @see Currency::isDeleted()
+     * @see DownPayment::setDeleted()
+     * @see DownPayment::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -779,11 +554,11 @@ abstract class Currency implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(CurrencyTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(DownPaymentTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildCurrencyQuery::create()
+            $deleteQuery = ChildDownPaymentQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -818,7 +593,7 @@ abstract class Currency implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(CurrencyTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(DownPaymentTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -837,7 +612,7 @@ abstract class Currency implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                CurrencyTableMap::addInstanceToPool($this);
+                DownPaymentTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -874,28 +649,12 @@ abstract class Currency implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->proformaInvoicesScheduledForDeletion !== null) {
-                if (!$this->proformaInvoicesScheduledForDeletion->isEmpty()) {
-                    \ProformaInvoiceQuery::create()
-                        ->filterByPrimaryKeys($this->proformaInvoicesScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->proformaInvoicesScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collProformaInvoices !== null) {
-                foreach ($this->collProformaInvoices as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
             if ($this->purchaseOrdersScheduledForDeletion !== null) {
                 if (!$this->purchaseOrdersScheduledForDeletion->isEmpty()) {
-                    \PurchaseOrderQuery::create()
-                        ->filterByPrimaryKeys($this->purchaseOrdersScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
+                    foreach ($this->purchaseOrdersScheduledForDeletion as $purchaseOrder) {
+                        // need to save related object because we set the relation to null
+                        $purchaseOrder->save($con);
+                    }
                     $this->purchaseOrdersScheduledForDeletion = null;
                 }
             }
@@ -928,36 +687,24 @@ abstract class Currency implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[CurrencyTableMap::COL_ID] = true;
+        $this->modifiedColumns[DownPaymentTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . CurrencyTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . DownPaymentTableMap::COL_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(CurrencyTableMap::COL_ID)) {
+        if ($this->isColumnModified(DownPaymentTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(CurrencyTableMap::COL_NAME)) {
+        if ($this->isColumnModified(DownPaymentTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'name';
         }
-        if ($this->isColumnModified(CurrencyTableMap::COL_CODE)) {
-            $modifiedColumns[':p' . $index++]  = 'code';
-        }
-        if ($this->isColumnModified(CurrencyTableMap::COL_SYMBOL)) {
-            $modifiedColumns[':p' . $index++]  = 'symbol';
-        }
-        if ($this->isColumnModified(CurrencyTableMap::COL_PLACEMENT)) {
-            $modifiedColumns[':p' . $index++]  = 'placement';
-        }
-        if ($this->isColumnModified(CurrencyTableMap::COL_CREATED_AT)) {
-            $modifiedColumns[':p' . $index++]  = 'created_at';
-        }
-        if ($this->isColumnModified(CurrencyTableMap::COL_UPDATED_AT)) {
-            $modifiedColumns[':p' . $index++]  = 'updated_at';
+        if ($this->isColumnModified(DownPaymentTableMap::COL_VALUE)) {
+            $modifiedColumns[':p' . $index++]  = 'value';
         }
 
         $sql = sprintf(
-            'INSERT INTO currency (%s) VALUES (%s)',
+            'INSERT INTO down_payment (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -972,20 +719,8 @@ abstract class Currency implements ActiveRecordInterface
                     case 'name':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
-                    case 'code':
-                        $stmt->bindValue($identifier, $this->code, PDO::PARAM_STR);
-                        break;
-                    case 'symbol':
-                        $stmt->bindValue($identifier, $this->symbol, PDO::PARAM_STR);
-                        break;
-                    case 'placement':
-                        $stmt->bindValue($identifier, $this->placement, PDO::PARAM_STR);
-                        break;
-                    case 'created_at':
-                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
-                        break;
-                    case 'updated_at':
-                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                    case 'value':
+                        $stmt->bindValue($identifier, $this->value, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1033,7 +768,7 @@ abstract class Currency implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = CurrencyTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = DownPaymentTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -1056,19 +791,7 @@ abstract class Currency implements ActiveRecordInterface
                 return $this->getName();
                 break;
             case 2:
-                return $this->getCode();
-                break;
-            case 3:
-                return $this->getSymbol();
-                break;
-            case 4:
-                return $this->getPlacement();
-                break;
-            case 5:
-                return $this->getCreatedAt();
-                break;
-            case 6:
-                return $this->getUpdatedAt();
+                return $this->getValue();
                 break;
             default:
                 return null;
@@ -1094,49 +817,22 @@ abstract class Currency implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['Currency'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['DownPayment'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Currency'][$this->hashCode()] = true;
-        $keys = CurrencyTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['DownPayment'][$this->hashCode()] = true;
+        $keys = DownPaymentTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
-            $keys[2] => $this->getCode(),
-            $keys[3] => $this->getSymbol(),
-            $keys[4] => $this->getPlacement(),
-            $keys[5] => $this->getCreatedAt(),
-            $keys[6] => $this->getUpdatedAt(),
+            $keys[2] => $this->getValue(),
         );
-        if ($result[$keys[5]] instanceof \DateTimeInterface) {
-            $result[$keys[5]] = $result[$keys[5]]->format('c');
-        }
-
-        if ($result[$keys[6]] instanceof \DateTimeInterface) {
-            $result[$keys[6]] = $result[$keys[6]]->format('c');
-        }
-
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->collProformaInvoices) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'proformaInvoices';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'proforma_invoices';
-                        break;
-                    default:
-                        $key = 'ProformaInvoices';
-                }
-
-                $result[$key] = $this->collProformaInvoices->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
             if (null !== $this->collPurchaseOrders) {
 
                 switch ($keyType) {
@@ -1166,11 +862,11 @@ abstract class Currency implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\Currency
+     * @return $this|\DownPayment
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = CurrencyTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = DownPaymentTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1181,7 +877,7 @@ abstract class Currency implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\Currency
+     * @return $this|\DownPayment
      */
     public function setByPosition($pos, $value)
     {
@@ -1193,19 +889,7 @@ abstract class Currency implements ActiveRecordInterface
                 $this->setName($value);
                 break;
             case 2:
-                $this->setCode($value);
-                break;
-            case 3:
-                $this->setSymbol($value);
-                break;
-            case 4:
-                $this->setPlacement($value);
-                break;
-            case 5:
-                $this->setCreatedAt($value);
-                break;
-            case 6:
-                $this->setUpdatedAt($value);
+                $this->setValue($value);
                 break;
         } // switch()
 
@@ -1231,7 +915,7 @@ abstract class Currency implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = CurrencyTableMap::getFieldNames($keyType);
+        $keys = DownPaymentTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setId($arr[$keys[0]]);
@@ -1240,19 +924,7 @@ abstract class Currency implements ActiveRecordInterface
             $this->setName($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setCode($arr[$keys[2]]);
-        }
-        if (array_key_exists($keys[3], $arr)) {
-            $this->setSymbol($arr[$keys[3]]);
-        }
-        if (array_key_exists($keys[4], $arr)) {
-            $this->setPlacement($arr[$keys[4]]);
-        }
-        if (array_key_exists($keys[5], $arr)) {
-            $this->setCreatedAt($arr[$keys[5]]);
-        }
-        if (array_key_exists($keys[6], $arr)) {
-            $this->setUpdatedAt($arr[$keys[6]]);
+            $this->setValue($arr[$keys[2]]);
         }
     }
 
@@ -1273,7 +945,7 @@ abstract class Currency implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\Currency The current object, for fluid interface
+     * @return $this|\DownPayment The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1293,28 +965,16 @@ abstract class Currency implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(CurrencyTableMap::DATABASE_NAME);
+        $criteria = new Criteria(DownPaymentTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(CurrencyTableMap::COL_ID)) {
-            $criteria->add(CurrencyTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(DownPaymentTableMap::COL_ID)) {
+            $criteria->add(DownPaymentTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(CurrencyTableMap::COL_NAME)) {
-            $criteria->add(CurrencyTableMap::COL_NAME, $this->name);
+        if ($this->isColumnModified(DownPaymentTableMap::COL_NAME)) {
+            $criteria->add(DownPaymentTableMap::COL_NAME, $this->name);
         }
-        if ($this->isColumnModified(CurrencyTableMap::COL_CODE)) {
-            $criteria->add(CurrencyTableMap::COL_CODE, $this->code);
-        }
-        if ($this->isColumnModified(CurrencyTableMap::COL_SYMBOL)) {
-            $criteria->add(CurrencyTableMap::COL_SYMBOL, $this->symbol);
-        }
-        if ($this->isColumnModified(CurrencyTableMap::COL_PLACEMENT)) {
-            $criteria->add(CurrencyTableMap::COL_PLACEMENT, $this->placement);
-        }
-        if ($this->isColumnModified(CurrencyTableMap::COL_CREATED_AT)) {
-            $criteria->add(CurrencyTableMap::COL_CREATED_AT, $this->created_at);
-        }
-        if ($this->isColumnModified(CurrencyTableMap::COL_UPDATED_AT)) {
-            $criteria->add(CurrencyTableMap::COL_UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(DownPaymentTableMap::COL_VALUE)) {
+            $criteria->add(DownPaymentTableMap::COL_VALUE, $this->value);
         }
 
         return $criteria;
@@ -1332,8 +992,8 @@ abstract class Currency implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildCurrencyQuery::create();
-        $criteria->add(CurrencyTableMap::COL_ID, $this->id);
+        $criteria = ChildDownPaymentQuery::create();
+        $criteria->add(DownPaymentTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1395,7 +1055,7 @@ abstract class Currency implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Currency (or compatible) type.
+     * @param      object $copyObj An object of \DownPayment (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1403,22 +1063,12 @@ abstract class Currency implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setName($this->getName());
-        $copyObj->setCode($this->getCode());
-        $copyObj->setSymbol($this->getSymbol());
-        $copyObj->setPlacement($this->getPlacement());
-        $copyObj->setCreatedAt($this->getCreatedAt());
-        $copyObj->setUpdatedAt($this->getUpdatedAt());
+        $copyObj->setValue($this->getValue());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
-
-            foreach ($this->getProformaInvoices() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addProformaInvoice($relObj->copy($deepCopy));
-                }
-            }
 
             foreach ($this->getPurchaseOrders() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1443,7 +1093,7 @@ abstract class Currency implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \Currency Clone of current object.
+     * @return \DownPayment Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1467,264 +1117,10 @@ abstract class Currency implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('ProformaInvoice' == $relationName) {
-            $this->initProformaInvoices();
-            return;
-        }
         if ('PurchaseOrder' == $relationName) {
             $this->initPurchaseOrders();
             return;
         }
-    }
-
-    /**
-     * Clears out the collProformaInvoices collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addProformaInvoices()
-     */
-    public function clearProformaInvoices()
-    {
-        $this->collProformaInvoices = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collProformaInvoices collection loaded partially.
-     */
-    public function resetPartialProformaInvoices($v = true)
-    {
-        $this->collProformaInvoicesPartial = $v;
-    }
-
-    /**
-     * Initializes the collProformaInvoices collection.
-     *
-     * By default this just sets the collProformaInvoices collection to an empty array (like clearcollProformaInvoices());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initProformaInvoices($overrideExisting = true)
-    {
-        if (null !== $this->collProformaInvoices && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = ProformaInvoiceTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collProformaInvoices = new $collectionClassName;
-        $this->collProformaInvoices->setModel('\ProformaInvoice');
-    }
-
-    /**
-     * Gets an array of ChildProformaInvoice objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildCurrency is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildProformaInvoice[] List of ChildProformaInvoice objects
-     * @throws PropelException
-     */
-    public function getProformaInvoices(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collProformaInvoicesPartial && !$this->isNew();
-        if (null === $this->collProformaInvoices || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collProformaInvoices) {
-                // return empty collection
-                $this->initProformaInvoices();
-            } else {
-                $collProformaInvoices = ChildProformaInvoiceQuery::create(null, $criteria)
-                    ->filterByCurrency($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collProformaInvoicesPartial && count($collProformaInvoices)) {
-                        $this->initProformaInvoices(false);
-
-                        foreach ($collProformaInvoices as $obj) {
-                            if (false == $this->collProformaInvoices->contains($obj)) {
-                                $this->collProformaInvoices->append($obj);
-                            }
-                        }
-
-                        $this->collProformaInvoicesPartial = true;
-                    }
-
-                    return $collProformaInvoices;
-                }
-
-                if ($partial && $this->collProformaInvoices) {
-                    foreach ($this->collProformaInvoices as $obj) {
-                        if ($obj->isNew()) {
-                            $collProformaInvoices[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collProformaInvoices = $collProformaInvoices;
-                $this->collProformaInvoicesPartial = false;
-            }
-        }
-
-        return $this->collProformaInvoices;
-    }
-
-    /**
-     * Sets a collection of ChildProformaInvoice objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $proformaInvoices A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildCurrency The current object (for fluent API support)
-     */
-    public function setProformaInvoices(Collection $proformaInvoices, ConnectionInterface $con = null)
-    {
-        /** @var ChildProformaInvoice[] $proformaInvoicesToDelete */
-        $proformaInvoicesToDelete = $this->getProformaInvoices(new Criteria(), $con)->diff($proformaInvoices);
-
-
-        $this->proformaInvoicesScheduledForDeletion = $proformaInvoicesToDelete;
-
-        foreach ($proformaInvoicesToDelete as $proformaInvoiceRemoved) {
-            $proformaInvoiceRemoved->setCurrency(null);
-        }
-
-        $this->collProformaInvoices = null;
-        foreach ($proformaInvoices as $proformaInvoice) {
-            $this->addProformaInvoice($proformaInvoice);
-        }
-
-        $this->collProformaInvoices = $proformaInvoices;
-        $this->collProformaInvoicesPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related ProformaInvoice objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related ProformaInvoice objects.
-     * @throws PropelException
-     */
-    public function countProformaInvoices(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collProformaInvoicesPartial && !$this->isNew();
-        if (null === $this->collProformaInvoices || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collProformaInvoices) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getProformaInvoices());
-            }
-
-            $query = ChildProformaInvoiceQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByCurrency($this)
-                ->count($con);
-        }
-
-        return count($this->collProformaInvoices);
-    }
-
-    /**
-     * Method called to associate a ChildProformaInvoice object to this object
-     * through the ChildProformaInvoice foreign key attribute.
-     *
-     * @param  ChildProformaInvoice $l ChildProformaInvoice
-     * @return $this|\Currency The current object (for fluent API support)
-     */
-    public function addProformaInvoice(ChildProformaInvoice $l)
-    {
-        if ($this->collProformaInvoices === null) {
-            $this->initProformaInvoices();
-            $this->collProformaInvoicesPartial = true;
-        }
-
-        if (!$this->collProformaInvoices->contains($l)) {
-            $this->doAddProformaInvoice($l);
-
-            if ($this->proformaInvoicesScheduledForDeletion and $this->proformaInvoicesScheduledForDeletion->contains($l)) {
-                $this->proformaInvoicesScheduledForDeletion->remove($this->proformaInvoicesScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildProformaInvoice $proformaInvoice The ChildProformaInvoice object to add.
-     */
-    protected function doAddProformaInvoice(ChildProformaInvoice $proformaInvoice)
-    {
-        $this->collProformaInvoices[]= $proformaInvoice;
-        $proformaInvoice->setCurrency($this);
-    }
-
-    /**
-     * @param  ChildProformaInvoice $proformaInvoice The ChildProformaInvoice object to remove.
-     * @return $this|ChildCurrency The current object (for fluent API support)
-     */
-    public function removeProformaInvoice(ChildProformaInvoice $proformaInvoice)
-    {
-        if ($this->getProformaInvoices()->contains($proformaInvoice)) {
-            $pos = $this->collProformaInvoices->search($proformaInvoice);
-            $this->collProformaInvoices->remove($pos);
-            if (null === $this->proformaInvoicesScheduledForDeletion) {
-                $this->proformaInvoicesScheduledForDeletion = clone $this->collProformaInvoices;
-                $this->proformaInvoicesScheduledForDeletion->clear();
-            }
-            $this->proformaInvoicesScheduledForDeletion[]= clone $proformaInvoice;
-            $proformaInvoice->setCurrency(null);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Currency is new, it will return
-     * an empty collection; or if this Currency has previously
-     * been saved, it will retrieve related ProformaInvoices from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Currency.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildProformaInvoice[] List of ChildProformaInvoice objects
-     */
-    public function getProformaInvoicesJoinPartner(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildProformaInvoiceQuery::create(null, $criteria);
-        $query->joinWith('Partner', $joinBehavior);
-
-        return $this->getProformaInvoices($query, $con);
     }
 
     /**
@@ -1779,7 +1175,7 @@ abstract class Currency implements ActiveRecordInterface
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildCurrency is new, it will return
+     * If this ChildDownPayment is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
@@ -1796,7 +1192,7 @@ abstract class Currency implements ActiveRecordInterface
                 $this->initPurchaseOrders();
             } else {
                 $collPurchaseOrders = ChildPurchaseOrderQuery::create(null, $criteria)
-                    ->filterByCurrency($this)
+                    ->filterByDownPayment($this)
                     ->find($con);
 
                 if (null !== $criteria) {
@@ -1839,7 +1235,7 @@ abstract class Currency implements ActiveRecordInterface
      *
      * @param      Collection $purchaseOrders A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildCurrency The current object (for fluent API support)
+     * @return $this|ChildDownPayment The current object (for fluent API support)
      */
     public function setPurchaseOrders(Collection $purchaseOrders, ConnectionInterface $con = null)
     {
@@ -1850,7 +1246,7 @@ abstract class Currency implements ActiveRecordInterface
         $this->purchaseOrdersScheduledForDeletion = $purchaseOrdersToDelete;
 
         foreach ($purchaseOrdersToDelete as $purchaseOrderRemoved) {
-            $purchaseOrderRemoved->setCurrency(null);
+            $purchaseOrderRemoved->setDownPayment(null);
         }
 
         $this->collPurchaseOrders = null;
@@ -1891,7 +1287,7 @@ abstract class Currency implements ActiveRecordInterface
             }
 
             return $query
-                ->filterByCurrency($this)
+                ->filterByDownPayment($this)
                 ->count($con);
         }
 
@@ -1903,7 +1299,7 @@ abstract class Currency implements ActiveRecordInterface
      * through the ChildPurchaseOrder foreign key attribute.
      *
      * @param  ChildPurchaseOrder $l ChildPurchaseOrder
-     * @return $this|\Currency The current object (for fluent API support)
+     * @return $this|\DownPayment The current object (for fluent API support)
      */
     public function addPurchaseOrder(ChildPurchaseOrder $l)
     {
@@ -1929,12 +1325,12 @@ abstract class Currency implements ActiveRecordInterface
     protected function doAddPurchaseOrder(ChildPurchaseOrder $purchaseOrder)
     {
         $this->collPurchaseOrders[]= $purchaseOrder;
-        $purchaseOrder->setCurrency($this);
+        $purchaseOrder->setDownPayment($this);
     }
 
     /**
      * @param  ChildPurchaseOrder $purchaseOrder The ChildPurchaseOrder object to remove.
-     * @return $this|ChildCurrency The current object (for fluent API support)
+     * @return $this|ChildDownPayment The current object (for fluent API support)
      */
     public function removePurchaseOrder(ChildPurchaseOrder $purchaseOrder)
     {
@@ -1945,8 +1341,8 @@ abstract class Currency implements ActiveRecordInterface
                 $this->purchaseOrdersScheduledForDeletion = clone $this->collPurchaseOrders;
                 $this->purchaseOrdersScheduledForDeletion->clear();
             }
-            $this->purchaseOrdersScheduledForDeletion[]= clone $purchaseOrder;
-            $purchaseOrder->setCurrency(null);
+            $this->purchaseOrdersScheduledForDeletion[]= $purchaseOrder;
+            $purchaseOrder->setDownPayment(null);
         }
 
         return $this;
@@ -1956,13 +1352,13 @@ abstract class Currency implements ActiveRecordInterface
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this Currency is new, it will return
-     * an empty collection; or if this Currency has previously
+     * Otherwise if this DownPayment is new, it will return
+     * an empty collection; or if this DownPayment has previously
      * been saved, it will retrieve related PurchaseOrders from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in Currency.
+     * actually need in DownPayment.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
@@ -1981,23 +1377,23 @@ abstract class Currency implements ActiveRecordInterface
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this Currency is new, it will return
-     * an empty collection; or if this Currency has previously
+     * Otherwise if this DownPayment is new, it will return
+     * an empty collection; or if this DownPayment has previously
      * been saved, it will retrieve related PurchaseOrders from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in Currency.
+     * actually need in DownPayment.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildPurchaseOrder[] List of ChildPurchaseOrder objects
      */
-    public function getPurchaseOrdersJoinDownPayment(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getPurchaseOrdersJoinCurrency(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildPurchaseOrderQuery::create(null, $criteria);
-        $query->joinWith('DownPayment', $joinBehavior);
+        $query->joinWith('Currency', $joinBehavior);
 
         return $this->getPurchaseOrders($query, $con);
     }
@@ -2006,13 +1402,13 @@ abstract class Currency implements ActiveRecordInterface
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this Currency is new, it will return
-     * an empty collection; or if this Currency has previously
+     * Otherwise if this DownPayment is new, it will return
+     * an empty collection; or if this DownPayment has previously
      * been saved, it will retrieve related PurchaseOrders from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in Currency.
+     * actually need in DownPayment.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
@@ -2036,14 +1432,9 @@ abstract class Currency implements ActiveRecordInterface
     {
         $this->id = null;
         $this->name = null;
-        $this->code = null;
-        $this->symbol = null;
-        $this->placement = null;
-        $this->created_at = null;
-        $this->updated_at = null;
+        $this->value = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
-        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
@@ -2060,11 +1451,6 @@ abstract class Currency implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collProformaInvoices) {
-                foreach ($this->collProformaInvoices as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
             if ($this->collPurchaseOrders) {
                 foreach ($this->collPurchaseOrders as $o) {
                     $o->clearAllReferences($deep);
@@ -2072,7 +1458,6 @@ abstract class Currency implements ActiveRecordInterface
             }
         } // if ($deep)
 
-        $this->collProformaInvoices = null;
         $this->collPurchaseOrders = null;
     }
 
@@ -2083,7 +1468,7 @@ abstract class Currency implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(CurrencyTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(DownPaymentTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**
