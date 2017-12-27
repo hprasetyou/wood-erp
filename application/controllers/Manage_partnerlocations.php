@@ -25,11 +25,6 @@ class Manage_partnerlocations extends MY_Controller{
 		$this->template->render('admin/partnerlocations/form');
   }
 
-  function detail($id){
-		$partnerlocation = PartnerLocationQuery::create()->findPK($id);
-		$this->template->render('admin/partnerlocations/form',array('partnerlocations'=>$partnerlocation));
-  }
-
 	function write($id=null){
     $this->form['CountryId'] = 'CountryId';
     if(!$id){

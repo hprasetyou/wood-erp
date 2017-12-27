@@ -16,18 +16,14 @@ class Manage_stockmoves extends MY_Controller{
 		$this->template->render('admin/stockmoves/form');
   }
 
-  function detail($id){
-		$stockmove = StockMoveQuery::create()->findPK($id);
-		$this->template->render('admin/stockmoves/form',array('stockmoves'=>$stockmove));
-  }
 
 	function write($id=null){
 		$this->form = array(
- 'Name' => 'Name', 
- 'SrcId' => 'SrcId', 
- 'DestId' => 'DestId', 
- 'Operation' => 'Operation', 
- 'State' => 'State', 
+ 'Name' => 'Name',
+ 'SrcId' => 'SrcId',
+ 'DestId' => 'DestId',
+ 'Operation' => 'Operation',
+ 'State' => 'State',
 );
 		$data = parent::write($id);
     if($this->input->is_ajax_request()){
@@ -43,4 +39,3 @@ class Manage_stockmoves extends MY_Controller{
   }
 
 }
-    

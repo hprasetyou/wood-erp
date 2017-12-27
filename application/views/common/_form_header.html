@@ -7,5 +7,9 @@
   {% if object.State == 'draft' %}
   <a id="btnConfirm" href="#" class="btn pull-right btn-default" data-toggle="modal" data-target="#confirmModal"><i class="fa fa-check"></i>{{res.string.confirm}}</a>
   {% endif %}
+  {% for button in ebuttons %}
+    {{ button | raw}}
+  {% endfor %}
+
 {% endif %}
 <button type="submit" {% if object %}style="display:none"{% endif %}  name="button" class="btn btn-success pull-right" id="btn-save"><i class="fa fa-save"></i> {{res.string.save}}</button>

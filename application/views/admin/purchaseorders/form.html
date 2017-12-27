@@ -139,6 +139,18 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
 	 {% include "admin/suppliers/_modal.html" %} {% endblock %}
 	{% block bottom%}
 	<script type="text/javascript">
+  {% if res.query_params.packinglist %}
+    $.ajax({
+      url:'/index.php/manage_proformainvoices/detail/{{res.query_params.proformainvoice}}',
+      method:"GET",
+      dataType:"JSON"
+    }).done(function(o){
+      console.log(o);
+      $('#ProformaInvoiceId').val(o.Id)
+      $('#displayProformaInvoiceId').val(o.Name)
+      $('#ProformaInvoiceId').trigger('change')
+    })
+  {% endif %}
   var table_ProformaInvoiceLine = $('#table_ProformaInvoiceLine').DataTable({
     "processing": true,
     "serverSide":true,

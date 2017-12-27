@@ -132,7 +132,7 @@ class Manage_proformainvoicelines extends MY_Controller{
           $ordered += $poline->getQty();
         }
         $prodstock = ProductStockQuery::create()
-        ->filterByProduct($prodcomponent->getComponent())
+        ->filterByProduct($prod)
         ->countProductAllWh()
         ->findOne();
 
@@ -161,7 +161,7 @@ class Manage_proformainvoicelines extends MY_Controller{
 			));
   }
 
-  function detail($id){
+  function detail($id,$render ="html"){
 		$proformainvoiceline = ProformaInvoiceLineQuery::create()
     ->findPK($id);
     $currency = $proformainvoiceline->getProformaInvoice()

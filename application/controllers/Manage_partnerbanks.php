@@ -20,10 +20,6 @@ class Manage_partnerbanks extends MY_Controller{
 		$this->template->render('admin/partnerbanks/form');
   }
 
-  function detail($id){
-		$partnerbank = PartnerBankQuery::create()->findPK($id);
-		$this->template->render('admin/partnerbanks/form',array('partnerbanks'=>$partnerbank));
-  }
 
 	function write($id=null){
     //because these are related so not set auomatically

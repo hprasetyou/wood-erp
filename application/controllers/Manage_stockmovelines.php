@@ -21,10 +21,7 @@ class Manage_stockmovelines extends MY_Controller{
 		$this->template->render('admin/stockmovelines/form');
   }
 
-  function detail($id){
-		$stockmoveline = StockMoveLineQuery::create()->findPK($id);
-		$this->template->render('admin/stockmovelines/form',array('stockmovelines'=>$stockmoveline));
-  }
+
 
 	function write($id=null){
 		$this->form = array(

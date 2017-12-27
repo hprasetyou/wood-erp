@@ -14,5 +14,14 @@ use Base\PackingList as BasePackingList;
  */
 class PackingList extends BasePackingList
 {
-
+  function getProformaInvoices(){
+    $pl = $this;
+    $pi_ids = [];
+    foreach ($pl->getPackingListLines() as $key => $value) {
+      # code...
+      $pi_ids[] = $value->getProformaInvoiceLine()->getProformaInvoiceId();
+    }
+    write_log(json_encode($pi_ids));
+    return ProformaInvoiceQuery::create()->findById($pi_ids);
+  }
 }

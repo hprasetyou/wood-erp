@@ -4,7 +4,11 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<form id="form_PackingList" method="post" action="{{base_url}}index.php/manage_packinglists/write/{{ packinglists.id }}" data-parsley-validate class="form-horizontal form-label-left">
 			<div class="box box-info">
+
 				<div class="box-header with-border">
+          {% set ebuttons = [
+            '<a href="#" data-toggle="modal" data-target="#modalSelectPI" class="btn btn-default pull-right">Create PO</a>'
+            ]%}
 					{% include 'common/_form_header.html' with {
             'buttons':[{'text':'','url':'','type':''}],
             'back_url':'/index.php/manage_packinglists'~back_link, 'title': res.string.packinglist, 'delete_url':'/index.php/manage_packinglists/delete/' ~ packinglists.Id, 'object':packinglists} %}
@@ -214,7 +218,44 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
 		</form>
 		</div>
 	</div>
-	<!-- Modal -->
+  <!-- Modal -->
+<div class="modal fade" id="modalSelectPI" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>PI Number</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for inv in pi %}
+
+            <tr>
+              <td>
+              {{inv.name}}
+              </td>
+              <td>
+                <a href="/index.php/manage_purchaseorders/create?packinglist={{packinglists.Id}}&amp;proformainvoice={{inv.Id}}" class="btn btn-primary">select</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 	{% include "admin/customers/_modal.html" %}
 	{% include "admin/proformainvoices/_modal.html" %}
 	{% include "admin/packinglists/_modal_add_to_line.html" %}

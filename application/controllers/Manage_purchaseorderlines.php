@@ -33,23 +33,6 @@ class Manage_purchaseorderlines extends MY_Controller{
 			));
   }
 
-  function detail($id){
-
-		$proforma_invoice_lines = ProformaInvoiceLineQuery::create()->find();
-
-		$products = ProductQuery::create()->find();
-
-		$components = ComponentQuery::create()->find();
-
-		$purchaseorderline = PurchaseOrderLineQuery::create()->findPK($id);
-		$this->template->render('admin/purchaseorderlines/form',array('purchaseorderlines'=>$purchaseorderline,
-		'proforma_invoice_lines'=> $proforma_invoice_lines,
-
-		'products'=> $products,
-
-		'components'=> $components,
-			));
-  }
 
 	function write($id=null){
     $po_id = $this->input->get('purchase_order');

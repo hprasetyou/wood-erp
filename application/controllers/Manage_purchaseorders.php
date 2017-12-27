@@ -26,7 +26,7 @@ class Manage_purchaseorders extends MY_Controller{
         'tb_field'=>'name'));
   }
 
-  function detail($id){
+  function detail($id,$render="html"){
     $this->outputstd = 1;
     $polinetotal = PurchaseOrderLineQuery::create()
     ->getTotalPricePerPO()
@@ -37,7 +37,7 @@ class Manage_purchaseorders extends MY_Controller{
     ->joinWith('PurchaseOrder.DownPayment')
     ->withColumn((is_null($polinetotal['Total'])?"1*0":$polinetotal['Total']),'SubTotal');
 
-    parent::detail($id);
+    parent::detail($id,$render="html");
   }
 
 	function write($id=null){

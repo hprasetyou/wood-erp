@@ -501,11 +501,6 @@ class Manage_$var extends MY_Controller{
 		\$this->template->render('admin/$var/form');
   }
 
-  function detail(\$id){
-		\$$singular_var = $queryclass::create()->findPK(\$id);
-		\$this->template->render('admin/$var/form',array('$var'=>\$$singular_var));
-  }
-
 	function write(\$id=null){
 		\$this->form = $fls;
 		\$data = parent::write(\$id);

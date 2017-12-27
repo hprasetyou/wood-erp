@@ -69,11 +69,6 @@ class Manage_productpartners extends MY_Controller{
     ->find()->toJSON();
   }
 
-  function detail($id){
-		$productpartner = ProductPartnerQuery::create()->findPK($id);
-		$this->template->render('admin/productpartners/form',array('productpartners'=>$productpartner,
-			));
-  }
 
 	function write($id=null){
     $this->form['type'] = array('value'=>'buy');

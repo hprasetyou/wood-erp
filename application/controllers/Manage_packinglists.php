@@ -33,12 +33,12 @@ class Manage_packinglists extends MY_Controller{
     parent::get_json();
   }
 
-  function detail($id){
+  function detail($id,$render="html"){
 		$packinglist = PackingListQuery::create()->findPK($id);
     if($this->input->is_ajax_request()){
       echo $packinglist->toJSON();
     }else{
-      $this->template->render('admin/packinglists/form',array('packinglists'=>$packinglist	));
+      $this->template->render('admin/packinglists/form',array('packinglists'=>$packinglist,'pi'=>$packinglist->getProformaInvoices()	));
     }
   }
 

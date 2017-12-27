@@ -63,7 +63,7 @@ class Template {
           $selected = "selected=\"selected\"";
         }
         $datavalue = "";
-        if($value->getValue()){
+        if(method_exists($value,'getValue')){
           $datavalue .= 'data-value="'.$value->getValue().'"';
         }
         $o .="<option $selected $datavalue value=\"$id\">$name</option>";

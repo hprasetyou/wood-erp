@@ -90,7 +90,7 @@ class Manage_products extends MY_Controller{
           'tb_field'=>'name'))));
   }
 
-  function detail($id){
+  function detail($id,$render="html"){
     $this->load->helper('good_numbering');
 		$product = ProductQuery::create()->findPK($id);
     $finishings = FinishingQuery::create()->find();
@@ -116,7 +116,7 @@ class Manage_products extends MY_Controller{
 
   function write($id=null){
     $this->form['MaterialId'] = 'MaterialId';
-    $this->form['Type'] = array('value'=>'product'); 
+    $this->form['Type'] = array('value'=>'product');
     $data = parent::write($id);
 		$this->load->helper('base64toimage');
 		$prod_img = json_decode($this->input->post('imgProduct'));

@@ -37,7 +37,7 @@ class Manage_packinglistlines extends MY_Controller{
 		$this->template->render('admin/packinglistlines/form');
   }
 
-  function detail($id){
+  function detail($id,$render="html"){
 		$packinglistline = PackingListLineQuery::create()->findPK($id);
     $av = 0-($packinglistline->getQty());
     foreach ($packinglistline->getProformaInvoiceLine()->getPackingListLines() as $key => $value) {

@@ -36,12 +36,6 @@ class Manage_components extends MY_Controller{
         'tb_field'=>'name'))));
   }
 
-  function detail($id){
-
-		$component = ProductQuery::create()->findPK($id);
-		$this->template->render('admin/components/form',array('components'=>$component,));
-  }
-
 	function write($id=null){
     if(strlen($this->input->post('Material'))>1){
       $new_mtr = new Material();

@@ -153,7 +153,7 @@ class MY_Controller extends CI_Controller{
      ));
  }
 
- function detail($id){
+ function detail($id,$render = "html"){
    $vars = $this->tpl;
    if(!$this->objobj){
      $qobj = $this->objname."Query";
@@ -163,9 +163,15 @@ class MY_Controller extends CI_Controller{
    }
    $o = $this->outputstd?json_decode($objs->findPk($id)->toJSON()):$objs->findPk($id);
    if($this->input->is_ajax_request()){
-     echo ($this->outputstd?json_encode($o):$objs->toJSON());
+     echo ($this->outputstd?json_encode($o):$o->toJSON());
    }else{
-     $this->template->render("admin/$vars/form",
+     $render_path = "form";
+     $render_func = "render";
+     if($render=="pdf"){
+       $render_path = "pdf/report";
+       $render_func = "render_pdf";
+     }
+     $this->template->$render_func("admin/$vars/$render_path",
      array($vars=> $o
        ));
    }
