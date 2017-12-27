@@ -1384,9 +1384,10 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
 
             if ($this->purchaseOrderLinesScheduledForDeletion !== null) {
                 if (!$this->purchaseOrderLinesScheduledForDeletion->isEmpty()) {
-                    \PurchaseOrderLineQuery::create()
-                        ->filterByPrimaryKeys($this->purchaseOrderLinesScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
+                    foreach ($this->purchaseOrderLinesScheduledForDeletion as $purchaseOrderLine) {
+                        // need to save related object because we set the relation to null
+                        $purchaseOrderLine->save($con);
+                    }
                     $this->purchaseOrderLinesScheduledForDeletion = null;
                 }
             }
@@ -2768,7 +2769,7 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
                 $this->purchaseOrderLinesScheduledForDeletion = clone $this->collPurchaseOrderLines;
                 $this->purchaseOrderLinesScheduledForDeletion->clear();
             }
-            $this->purchaseOrderLinesScheduledForDeletion[]= clone $purchaseOrderLine;
+            $this->purchaseOrderLinesScheduledForDeletion[]= $purchaseOrderLine;
             $purchaseOrderLine->setProformaInvoiceLine(null);
         }
 

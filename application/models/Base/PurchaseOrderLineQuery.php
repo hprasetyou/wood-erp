@@ -855,7 +855,7 @@ abstract class PurchaseOrderLineQuery extends ModelCriteria
      *
      * @return $this|ChildPurchaseOrderLineQuery The current query, for fluid interface
      */
-    public function joinProformaInvoiceLine($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinProformaInvoiceLine($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('ProformaInvoiceLine');
@@ -890,7 +890,7 @@ abstract class PurchaseOrderLineQuery extends ModelCriteria
      *
      * @return \ProformaInvoiceLineQuery A secondary query class using the current class as primary query
      */
-    public function useProformaInvoiceLineQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useProformaInvoiceLineQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
             ->joinProformaInvoiceLine($relationAlias, $joinType)

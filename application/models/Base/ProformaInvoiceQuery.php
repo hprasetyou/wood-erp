@@ -1043,7 +1043,7 @@ abstract class ProformaInvoiceQuery extends ModelCriteria
      *
      * @return $this|ChildProformaInvoiceQuery The current query, for fluid interface
      */
-    public function joinPurchaseOrder($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinPurchaseOrder($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('PurchaseOrder');
@@ -1078,7 +1078,7 @@ abstract class ProformaInvoiceQuery extends ModelCriteria
      *
      * @return \PurchaseOrderQuery A secondary query class using the current class as primary query
      */
-    public function usePurchaseOrderQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function usePurchaseOrderQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
             ->joinPurchaseOrder($relationAlias, $joinType)

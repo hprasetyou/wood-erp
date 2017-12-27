@@ -23,6 +23,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildPurchaseOrderQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method     ChildPurchaseOrderQuery orderByProformaInvoiceId($order = Criteria::ASC) Order by the proforma_invoice_id column
+ * @method     ChildPurchaseOrderQuery orderByPackingListId($order = Criteria::ASC) Order by the packing_list_id column
  * @method     ChildPurchaseOrderQuery orderBySupplierId($order = Criteria::ASC) Order by the supplier_id column
  * @method     ChildPurchaseOrderQuery orderByCurrencyId($order = Criteria::ASC) Order by the currency_id column
  * @method     ChildPurchaseOrderQuery orderByNote($order = Criteria::ASC) Order by the note column
@@ -39,6 +40,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderQuery groupById() Group by the id column
  * @method     ChildPurchaseOrderQuery groupByName() Group by the name column
  * @method     ChildPurchaseOrderQuery groupByProformaInvoiceId() Group by the proforma_invoice_id column
+ * @method     ChildPurchaseOrderQuery groupByPackingListId() Group by the packing_list_id column
  * @method     ChildPurchaseOrderQuery groupBySupplierId() Group by the supplier_id column
  * @method     ChildPurchaseOrderQuery groupByCurrencyId() Group by the currency_id column
  * @method     ChildPurchaseOrderQuery groupByNote() Group by the note column
@@ -118,6 +120,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrder findOneById(int $id) Return the first ChildPurchaseOrder filtered by the id column
  * @method     ChildPurchaseOrder findOneByName(string $name) Return the first ChildPurchaseOrder filtered by the name column
  * @method     ChildPurchaseOrder findOneByProformaInvoiceId(int $proforma_invoice_id) Return the first ChildPurchaseOrder filtered by the proforma_invoice_id column
+ * @method     ChildPurchaseOrder findOneByPackingListId(int $packing_list_id) Return the first ChildPurchaseOrder filtered by the packing_list_id column
  * @method     ChildPurchaseOrder findOneBySupplierId(int $supplier_id) Return the first ChildPurchaseOrder filtered by the supplier_id column
  * @method     ChildPurchaseOrder findOneByCurrencyId(int $currency_id) Return the first ChildPurchaseOrder filtered by the currency_id column
  * @method     ChildPurchaseOrder findOneByNote(string $note) Return the first ChildPurchaseOrder filtered by the note column
@@ -137,6 +140,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrder requireOneById(int $id) Return the first ChildPurchaseOrder filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByName(string $name) Return the first ChildPurchaseOrder filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByProformaInvoiceId(int $proforma_invoice_id) Return the first ChildPurchaseOrder filtered by the proforma_invoice_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPurchaseOrder requireOneByPackingListId(int $packing_list_id) Return the first ChildPurchaseOrder filtered by the packing_list_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneBySupplierId(int $supplier_id) Return the first ChildPurchaseOrder filtered by the supplier_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByCurrencyId(int $currency_id) Return the first ChildPurchaseOrder filtered by the currency_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByNote(string $note) Return the first ChildPurchaseOrder filtered by the note column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -154,6 +158,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrder[]|ObjectCollection findById(int $id) Return ChildPurchaseOrder objects filtered by the id column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByName(string $name) Return ChildPurchaseOrder objects filtered by the name column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByProformaInvoiceId(int $proforma_invoice_id) Return ChildPurchaseOrder objects filtered by the proforma_invoice_id column
+ * @method     ChildPurchaseOrder[]|ObjectCollection findByPackingListId(int $packing_list_id) Return ChildPurchaseOrder objects filtered by the packing_list_id column
  * @method     ChildPurchaseOrder[]|ObjectCollection findBySupplierId(int $supplier_id) Return ChildPurchaseOrder objects filtered by the supplier_id column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByCurrencyId(int $currency_id) Return ChildPurchaseOrder objects filtered by the currency_id column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByNote(string $note) Return ChildPurchaseOrder objects filtered by the note column
@@ -264,7 +269,7 @@ abstract class PurchaseOrderQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, proforma_invoice_id, supplier_id, currency_id, note, date, payment_term, down_payment_id, down_payment_amount, down_payment_deadline, total_price, state, created_at, updated_at FROM purchase_order WHERE id = :p0';
+        $sql = 'SELECT id, name, proforma_invoice_id, packing_list_id, supplier_id, currency_id, note, date, payment_term, down_payment_id, down_payment_amount, down_payment_deadline, total_price, state, created_at, updated_at FROM purchase_order WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -461,6 +466,47 @@ abstract class PurchaseOrderQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PurchaseOrderTableMap::COL_PROFORMA_INVOICE_ID, $proformaInvoiceId, $comparison);
+    }
+
+    /**
+     * Filter the query on the packing_list_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByPackingListId(1234); // WHERE packing_list_id = 1234
+     * $query->filterByPackingListId(array(12, 34)); // WHERE packing_list_id IN (12, 34)
+     * $query->filterByPackingListId(array('min' => 12)); // WHERE packing_list_id > 12
+     * </code>
+     *
+     * @param     mixed $packingListId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPurchaseOrderQuery The current query, for fluid interface
+     */
+    public function filterByPackingListId($packingListId = null, $comparison = null)
+    {
+        if (is_array($packingListId)) {
+            $useMinMax = false;
+            if (isset($packingListId['min'])) {
+                $this->addUsingAlias(PurchaseOrderTableMap::COL_PACKING_LIST_ID, $packingListId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($packingListId['max'])) {
+                $this->addUsingAlias(PurchaseOrderTableMap::COL_PACKING_LIST_ID, $packingListId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PurchaseOrderTableMap::COL_PACKING_LIST_ID, $packingListId, $comparison);
     }
 
     /**
@@ -956,7 +1002,7 @@ abstract class PurchaseOrderQuery extends ModelCriteria
      *
      * @return $this|ChildPurchaseOrderQuery The current query, for fluid interface
      */
-    public function joinProformaInvoice($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinProformaInvoice($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('ProformaInvoice');
@@ -991,7 +1037,7 @@ abstract class PurchaseOrderQuery extends ModelCriteria
      *
      * @return \ProformaInvoiceQuery A secondary query class using the current class as primary query
      */
-    public function useProformaInvoiceQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useProformaInvoiceQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
             ->joinProformaInvoice($relationAlias, $joinType)

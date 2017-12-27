@@ -59,7 +59,7 @@ class PurchaseOrderTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 15;
+    const NUM_COLUMNS = 16;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class PurchaseOrderTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 15;
+    const NUM_HYDRATE_COLUMNS = 16;
 
     /**
      * the column name for the id field
@@ -85,6 +85,11 @@ class PurchaseOrderTableMap extends TableMap
      * the column name for the proforma_invoice_id field
      */
     const COL_PROFORMA_INVOICE_ID = 'purchase_order.proforma_invoice_id';
+
+    /**
+     * the column name for the packing_list_id field
+     */
+    const COL_PACKING_LIST_ID = 'purchase_order.packing_list_id';
 
     /**
      * the column name for the supplier_id field
@@ -158,11 +163,11 @@ class PurchaseOrderTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'ProformaInvoiceId', 'SupplierId', 'CurrencyId', 'Note', 'Date', 'PaymentTerm', 'DownPaymentId', 'DownPaymentAmount', 'DownPaymentDeadline', 'TotalPrice', 'State', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'proformaInvoiceId', 'supplierId', 'currencyId', 'note', 'date', 'paymentTerm', 'downPaymentId', 'downPaymentAmount', 'downPaymentDeadline', 'totalPrice', 'state', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(PurchaseOrderTableMap::COL_ID, PurchaseOrderTableMap::COL_NAME, PurchaseOrderTableMap::COL_PROFORMA_INVOICE_ID, PurchaseOrderTableMap::COL_SUPPLIER_ID, PurchaseOrderTableMap::COL_CURRENCY_ID, PurchaseOrderTableMap::COL_NOTE, PurchaseOrderTableMap::COL_DATE, PurchaseOrderTableMap::COL_PAYMENT_TERM, PurchaseOrderTableMap::COL_DOWN_PAYMENT_ID, PurchaseOrderTableMap::COL_DOWN_PAYMENT_AMOUNT, PurchaseOrderTableMap::COL_DOWN_PAYMENT_DEADLINE, PurchaseOrderTableMap::COL_TOTAL_PRICE, PurchaseOrderTableMap::COL_STATE, PurchaseOrderTableMap::COL_CREATED_AT, PurchaseOrderTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'proforma_invoice_id', 'supplier_id', 'currency_id', 'note', 'date', 'payment_term', 'down_payment_id', 'down_payment_amount', 'down_payment_deadline', 'total_price', 'state', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'ProformaInvoiceId', 'PackingListId', 'SupplierId', 'CurrencyId', 'Note', 'Date', 'PaymentTerm', 'DownPaymentId', 'DownPaymentAmount', 'DownPaymentDeadline', 'TotalPrice', 'State', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'proformaInvoiceId', 'packingListId', 'supplierId', 'currencyId', 'note', 'date', 'paymentTerm', 'downPaymentId', 'downPaymentAmount', 'downPaymentDeadline', 'totalPrice', 'state', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(PurchaseOrderTableMap::COL_ID, PurchaseOrderTableMap::COL_NAME, PurchaseOrderTableMap::COL_PROFORMA_INVOICE_ID, PurchaseOrderTableMap::COL_PACKING_LIST_ID, PurchaseOrderTableMap::COL_SUPPLIER_ID, PurchaseOrderTableMap::COL_CURRENCY_ID, PurchaseOrderTableMap::COL_NOTE, PurchaseOrderTableMap::COL_DATE, PurchaseOrderTableMap::COL_PAYMENT_TERM, PurchaseOrderTableMap::COL_DOWN_PAYMENT_ID, PurchaseOrderTableMap::COL_DOWN_PAYMENT_AMOUNT, PurchaseOrderTableMap::COL_DOWN_PAYMENT_DEADLINE, PurchaseOrderTableMap::COL_TOTAL_PRICE, PurchaseOrderTableMap::COL_STATE, PurchaseOrderTableMap::COL_CREATED_AT, PurchaseOrderTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'proforma_invoice_id', 'packing_list_id', 'supplier_id', 'currency_id', 'note', 'date', 'payment_term', 'down_payment_id', 'down_payment_amount', 'down_payment_deadline', 'total_price', 'state', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
     );
 
     /**
@@ -172,11 +177,11 @@ class PurchaseOrderTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'ProformaInvoiceId' => 2, 'SupplierId' => 3, 'CurrencyId' => 4, 'Note' => 5, 'Date' => 6, 'PaymentTerm' => 7, 'DownPaymentId' => 8, 'DownPaymentAmount' => 9, 'DownPaymentDeadline' => 10, 'TotalPrice' => 11, 'State' => 12, 'CreatedAt' => 13, 'UpdatedAt' => 14, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'proformaInvoiceId' => 2, 'supplierId' => 3, 'currencyId' => 4, 'note' => 5, 'date' => 6, 'paymentTerm' => 7, 'downPaymentId' => 8, 'downPaymentAmount' => 9, 'downPaymentDeadline' => 10, 'totalPrice' => 11, 'state' => 12, 'createdAt' => 13, 'updatedAt' => 14, ),
-        self::TYPE_COLNAME       => array(PurchaseOrderTableMap::COL_ID => 0, PurchaseOrderTableMap::COL_NAME => 1, PurchaseOrderTableMap::COL_PROFORMA_INVOICE_ID => 2, PurchaseOrderTableMap::COL_SUPPLIER_ID => 3, PurchaseOrderTableMap::COL_CURRENCY_ID => 4, PurchaseOrderTableMap::COL_NOTE => 5, PurchaseOrderTableMap::COL_DATE => 6, PurchaseOrderTableMap::COL_PAYMENT_TERM => 7, PurchaseOrderTableMap::COL_DOWN_PAYMENT_ID => 8, PurchaseOrderTableMap::COL_DOWN_PAYMENT_AMOUNT => 9, PurchaseOrderTableMap::COL_DOWN_PAYMENT_DEADLINE => 10, PurchaseOrderTableMap::COL_TOTAL_PRICE => 11, PurchaseOrderTableMap::COL_STATE => 12, PurchaseOrderTableMap::COL_CREATED_AT => 13, PurchaseOrderTableMap::COL_UPDATED_AT => 14, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'proforma_invoice_id' => 2, 'supplier_id' => 3, 'currency_id' => 4, 'note' => 5, 'date' => 6, 'payment_term' => 7, 'down_payment_id' => 8, 'down_payment_amount' => 9, 'down_payment_deadline' => 10, 'total_price' => 11, 'state' => 12, 'created_at' => 13, 'updated_at' => 14, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'ProformaInvoiceId' => 2, 'PackingListId' => 3, 'SupplierId' => 4, 'CurrencyId' => 5, 'Note' => 6, 'Date' => 7, 'PaymentTerm' => 8, 'DownPaymentId' => 9, 'DownPaymentAmount' => 10, 'DownPaymentDeadline' => 11, 'TotalPrice' => 12, 'State' => 13, 'CreatedAt' => 14, 'UpdatedAt' => 15, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'proformaInvoiceId' => 2, 'packingListId' => 3, 'supplierId' => 4, 'currencyId' => 5, 'note' => 6, 'date' => 7, 'paymentTerm' => 8, 'downPaymentId' => 9, 'downPaymentAmount' => 10, 'downPaymentDeadline' => 11, 'totalPrice' => 12, 'state' => 13, 'createdAt' => 14, 'updatedAt' => 15, ),
+        self::TYPE_COLNAME       => array(PurchaseOrderTableMap::COL_ID => 0, PurchaseOrderTableMap::COL_NAME => 1, PurchaseOrderTableMap::COL_PROFORMA_INVOICE_ID => 2, PurchaseOrderTableMap::COL_PACKING_LIST_ID => 3, PurchaseOrderTableMap::COL_SUPPLIER_ID => 4, PurchaseOrderTableMap::COL_CURRENCY_ID => 5, PurchaseOrderTableMap::COL_NOTE => 6, PurchaseOrderTableMap::COL_DATE => 7, PurchaseOrderTableMap::COL_PAYMENT_TERM => 8, PurchaseOrderTableMap::COL_DOWN_PAYMENT_ID => 9, PurchaseOrderTableMap::COL_DOWN_PAYMENT_AMOUNT => 10, PurchaseOrderTableMap::COL_DOWN_PAYMENT_DEADLINE => 11, PurchaseOrderTableMap::COL_TOTAL_PRICE => 12, PurchaseOrderTableMap::COL_STATE => 13, PurchaseOrderTableMap::COL_CREATED_AT => 14, PurchaseOrderTableMap::COL_UPDATED_AT => 15, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'proforma_invoice_id' => 2, 'packing_list_id' => 3, 'supplier_id' => 4, 'currency_id' => 5, 'note' => 6, 'date' => 7, 'payment_term' => 8, 'down_payment_id' => 9, 'down_payment_amount' => 10, 'down_payment_deadline' => 11, 'total_price' => 12, 'state' => 13, 'created_at' => 14, 'updated_at' => 15, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
     );
 
     /**
@@ -198,7 +203,8 @@ class PurchaseOrderTableMap extends TableMap
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', true, 255, null);
-        $this->addForeignKey('proforma_invoice_id', 'ProformaInvoiceId', 'INTEGER', 'proforma_invoice', 'id', true, null, null);
+        $this->addForeignKey('proforma_invoice_id', 'ProformaInvoiceId', 'INTEGER', 'proforma_invoice', 'id', false, null, null);
+        $this->addColumn('packing_list_id', 'PackingListId', 'INTEGER', false, null, null);
         $this->addForeignKey('supplier_id', 'SupplierId', 'INTEGER', 'partner', 'id', true, null, null);
         $this->addForeignKey('currency_id', 'CurrencyId', 'INTEGER', 'currency', 'id', true, null, 1);
         $this->addColumn('note', 'Note', 'LONGVARCHAR', false, null, null);
@@ -399,6 +405,7 @@ class PurchaseOrderTableMap extends TableMap
             $criteria->addSelectColumn(PurchaseOrderTableMap::COL_ID);
             $criteria->addSelectColumn(PurchaseOrderTableMap::COL_NAME);
             $criteria->addSelectColumn(PurchaseOrderTableMap::COL_PROFORMA_INVOICE_ID);
+            $criteria->addSelectColumn(PurchaseOrderTableMap::COL_PACKING_LIST_ID);
             $criteria->addSelectColumn(PurchaseOrderTableMap::COL_SUPPLIER_ID);
             $criteria->addSelectColumn(PurchaseOrderTableMap::COL_CURRENCY_ID);
             $criteria->addSelectColumn(PurchaseOrderTableMap::COL_NOTE);
@@ -415,6 +422,7 @@ class PurchaseOrderTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.name');
             $criteria->addSelectColumn($alias . '.proforma_invoice_id');
+            $criteria->addSelectColumn($alias . '.packing_list_id');
             $criteria->addSelectColumn($alias . '.supplier_id');
             $criteria->addSelectColumn($alias . '.currency_id');
             $criteria->addSelectColumn($alias . '.note');

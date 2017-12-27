@@ -179,7 +179,7 @@ class PurchaseOrderLineTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', true, 255, null);
         $this->addForeignKey('purchase_order_id', 'PurchaseOrderId', 'INTEGER', 'purchase_order', 'id', true, null, null);
-        $this->addForeignKey('proforma_invoice_line_id', 'ProformaInvoiceLineId', 'INTEGER', 'proforma_invoice_line', 'id', true, null, null);
+        $this->addForeignKey('proforma_invoice_line_id', 'ProformaInvoiceLineId', 'INTEGER', 'proforma_invoice_line', 'id', false, null, null);
         $this->addForeignKey('product_id', 'ProductId', 'INTEGER', 'product', 'id', true, null, null);
         $this->addColumn('note', 'Note', 'LONGVARCHAR', false, null, null);
         $this->addColumn('price', 'Price', 'FLOAT', false, null, null);

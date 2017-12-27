@@ -348,7 +348,8 @@
   <table name="purchase_order" phpName="PurchaseOrder">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="name" phpName="Name" required="true" type="VARCHAR" size="255"/>
-    <column name="proforma_invoice_id" phpName="ProformaInvoiceId" type="INTEGER" required="true"/>
+    <column name="proforma_invoice_id" phpName="ProformaInvoiceId" type="INTEGER"/>
+    <column name="packing_list_id" phpName="PackingListId" type="INTEGER"/>
     <column name="supplier_id" phpName="SupplierId" type="INTEGER" required="true"/>
     <column name="currency_id" phpName="CurrencyId" type="INTEGER" required="true" defaultValue="1"/>
     <column name="note" phpName="Note" type="LONGVARCHAR"/>

@@ -1174,9 +1174,10 @@ abstract class ProformaInvoice implements ActiveRecordInterface
 
             if ($this->purchaseOrdersScheduledForDeletion !== null) {
                 if (!$this->purchaseOrdersScheduledForDeletion->isEmpty()) {
-                    \PurchaseOrderQuery::create()
-                        ->filterByPrimaryKeys($this->purchaseOrdersScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
+                    foreach ($this->purchaseOrdersScheduledForDeletion as $purchaseOrder) {
+                        // need to save related object because we set the relation to null
+                        $purchaseOrder->save($con);
+                    }
                     $this->purchaseOrdersScheduledForDeletion = null;
                 }
             }
@@ -2466,7 +2467,7 @@ abstract class ProformaInvoice implements ActiveRecordInterface
                 $this->purchaseOrdersScheduledForDeletion = clone $this->collPurchaseOrders;
                 $this->purchaseOrdersScheduledForDeletion->clear();
             }
-            $this->purchaseOrdersScheduledForDeletion[]= clone $purchaseOrder;
+            $this->purchaseOrdersScheduledForDeletion[]= $purchaseOrder;
             $purchaseOrder->setProformaInvoice(null);
         }
 
