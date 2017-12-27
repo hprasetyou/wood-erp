@@ -14,5 +14,9 @@ use Base\ProductPartnerQuery as BaseProductPartnerQuery;
  */
 class ProductPartnerQuery extends BaseProductPartnerQuery
 {
-
+  function get_latest_supplier_price(){
+    $o = $this->orderByCreatedAt('desc')
+    ->findOne();
+    return $o?$o->getProductPrice():0;
+  }
 }

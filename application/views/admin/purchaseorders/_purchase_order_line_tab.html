@@ -15,6 +15,7 @@
                 <th>{{ res.string.component }}</th>
                 <th>{{ res.string.qty_needed }}</th>
                 <th>{{ res.string.qty_on_stock }}</th>
+                <th></th>
               </tr>
             </thead>
           </table>
@@ -40,19 +41,34 @@
       <tr>
         <th colspan="5">{{ res.string.subtotal }}</th>
         <th colspan="2">
-          <input type="text" placeholder="{{ res.string.subtotal }}" id="SubTotal" value="{{ purchaseorders.SubTotal }}" name="SubTotal" class="form-control  col-md-7 col-xs-12">
+          <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+            <input type="text" readonly placeholder="{{ res.string.subtotal }}" id="SubTotal" value="{{ purchaseorders.SubTotal }}" name="SubTotal" class="form-control  col-md-7 col-xs-12">
+          </div>
+          {% if purchaseorders %}
+          <p class="control-value">{{ purchaseorders.SubTotal }}</p>
+          {% endif %}
         </th>
       </tr>
       <tr>
         <th colspan="5">{{res.string.down_payment}}</th>
         <th colspan="2">
-          <input type="text" placeholder="{{ res.string.down_payment }}" id="DownPaymentAmount" value="{{ purchaseorders.DownPaymentAmount }}" name="DownPaymentAmount" class="form-control  col-md-7 col-xs-12">
+          <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+            <input type="text" placeholder="{{ res.string.down_payment }}" id="DownPaymentAmount" value="{{ purchaseorders.DownPaymentAmount }}" name="DownPaymentAmount" class="form-control  col-md-7 col-xs-12">
+          </div>
+          {% if purchaseorders %}
+          <p class="control-value">{{ purchaseorders.DownPaymentAmount }}</p>
+          {% endif %}
         </th>
       </tr>
       <tr>
         <th colspan="5">{{ res.string.total }}</th>
         <th colspan="2">
-          <input type="text" placeholder="{{ res.string.total }}" id="TotalPrice" value="{{ purchaseorders.TotalPrice }}" name="TotalPrice" class="form-control  col-md-7 col-xs-12">
+          <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+            <input type="text" readonly placeholder="{{ res.string.total }}" id="TotalPrice" value="{{ purchaseorders.TotalPrice }}" name="TotalPrice" class="form-control  col-md-7 col-xs-12">
+          </div>
+          {% if purchaseorders %}
+          <p class="control-value">{{ purchaseorders.DownPaymentAmount }}</p>
+          {% endif %}
         </th>
       </tr>
     </tfoot>

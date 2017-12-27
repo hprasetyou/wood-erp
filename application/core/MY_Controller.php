@@ -162,9 +162,13 @@ class MY_Controller extends CI_Controller{
      $objs = $this->objobj;
    }
    $o = $this->outputstd?json_decode($objs->findPk($id)->toJSON()):$objs->findPk($id);
-   $this->template->render("admin/$vars/form",
-   array($vars=> $o
-     ));
+   if($this->input->is_ajax_request()){
+     echo ($this->outputstd?json_encode($o):$objs->toJSON());
+   }else{
+     $this->template->render("admin/$vars/form",
+     array($vars=> $o
+       ));
+   }
  }
 
  function write($id=null){

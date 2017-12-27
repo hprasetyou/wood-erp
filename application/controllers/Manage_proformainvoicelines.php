@@ -72,6 +72,7 @@ class Manage_proformainvoicelines extends MY_Controller{
 
   }
 
+
   function get_pi_component($pi_id=null){
     $lines = ProformaInvoiceLineQuery::create()->findByProformaInvoiceId($pi_id);
     $o = [];
@@ -84,6 +85,10 @@ class Manage_proformainvoicelines extends MY_Controller{
       $o[$i]['article_number'] = $line->getProduct()->getName();
       $o[$i]['description'] = $line->getDescription();
       $o[$i]['has_component'] = $prod->getHasComponent()?$prod->getHasComponent():"Whole Product";
+      $o[$i]['price'] = ProductPartnerQuery::create()
+      ->filterByProductId($prod->getId())
+      ->filterByPartnerId($this->input->get('supplier'))
+      ->get_latest_supplier_price();
 
       if($prod->getHasComponent()){
         foreach (ComponentProductQuery::create()->findByProductId($prod->getId()) as $prodcomponent) {
@@ -91,6 +96,10 @@ class Manage_proformainvoicelines extends MY_Controller{
           $o[$i]['article_number'] = $line->getProduct()->getName();
           $o[$i]['description'] = $line->getDescription();
           $o[$i]['has_component'] = $prodcomponent->getComponent()->getDescription();
+          $o[$i]['price'] = ProductPartnerQuery::create()
+          ->filterByProductId($prodcomponent->getComponent()->getId())
+          ->filterByPartnerId($this->input->get('supplier'))
+          ->get_latest_supplier_price();
           $polines = PurchaseOrderLineQuery::create()
           ->filterByProformaInvoiceLineId($line->getId())
           ->filterByProductId($prodcomponent->getComponentId())
@@ -126,7 +135,7 @@ class Manage_proformainvoicelines extends MY_Controller{
         ->filterByProduct($prodcomponent->getComponent())
         ->countProductAllWh()
         ->findOne();
-        
+
         $o[$i]['qty_on_stock'] = $prodstock?$prodstock['StockQty']*1:0;
 
         $o[$i]['qty_ordered'] = $ordered;

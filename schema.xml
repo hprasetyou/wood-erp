@@ -379,7 +379,7 @@
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="name" phpName="Name" required="true" type="VARCHAR" size="255"/>
     <column name="purchase_order_id" phpName="PurchaseOrderId" type="INTEGER" required="true"/>
-    <column name="proforma_invoice_line_id" phpName="ProformaInvoiceLineId" type="INTEGER" required="true"/>
+    <column name="proforma_invoice_line_id" phpName="ProformaInvoiceLineId" type="INTEGER"/>
     <column name="product_id" phpName="ProductId" type="INTEGER" required="true"/>
     <column name="note" phpName="Note" type="LONGVARCHAR"/>
     <column name="price" phpName="Price" type="FLOAT"/>

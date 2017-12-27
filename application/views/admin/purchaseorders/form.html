@@ -28,11 +28,11 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProformaInvoiceId">{{res.string.proforma_invoice_id}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
                   <div {% if purchaseorders %}style="display:none"{% else %} class="input-wrap input-group" {% endif %}>
-										<input type="hidden" type="text" id="ProformaInvoiceId"  name="ProformaInvoiceId">
+										<input type="hidden" type="text" id="ProformaInvoiceId" value="{{purchaseorders.ProformaInvoiceId}}" name="ProformaInvoiceId">
 										<input type="text" required="required" name="displayProformaInvoiceId" id="displayProformaInvoiceId" placeholder="{{ res.string.proforma_invoice_id }}" value="{{ purchaseorders.ProformaInvoice.Name }}" class="form-control" />
 										<span class="input-group-btn">
-								<button class="btn btnModal btn-default" id="btnProformaInvoiceId"  data-target="ModalProformaInvoice" type="button">{{res.string.search}}</button>
-							</span>
+      								<button class="btn btnModal btn-default" id="btnProformaInvoiceId"  data-target="ModalProformaInvoice" type="button">{{res.string.search}}</button>
+      							</span>
 									</div>
 									{% if purchaseorders %}
 									<p class="value">{{ purchaseorders.ProformaInvoice.Name }}</p>
@@ -145,7 +145,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
     "searching": false,
     "paging": false,
     "ordering": false,
-    "ajax": "/index.php/manage_proformainvoicelines/get_pi_component/"+$('#ProformaInvoiceId').val(),
+    "ajax": "/index.php/manage_proformainvoicelines/get_pi_component/"+$('#ProformaInvoiceId').val()+'?supplier='+$('#SupplierId').val(),
     "columns":[
       {"data":"id",
         "render":function(data){
@@ -156,7 +156,11 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
       {"data":"description"},
       {"data":"has_component"},
       {"data":"qty_needed"},
-      {"data":"qty_on_stock"} ],
+      {"data":"qty_on_stock"},
+      {"data":"price",
+    "render":function(data){
+      return '<span style=\"display:none\">'+data+'</span>'
+    }} ],
     "initComplete" : function(settings, json) {
         $('#table_ProformaInvoiceLine').css('width','100%')
         $('#table_ProformaInvoiceLine_info').hide()
@@ -186,6 +190,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
       $('#tbAddPO').find('tbody').html('')
       $('#table_ProformaInvoiceLine').find('.cb_pi').each(function(i){
         if($(this).is(':checked')){
+          console.log($(this).parents('tr').children('td:eq(6)').text());
           $('#tbAddPO').find('tbody').append('<tr>'+
           '<td><input type="hidden" name="PILineId[]" value="'+
           $(this).data('id')+'">'+
@@ -198,7 +203,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
           '" class="form-control PILineQty" maxlength="4" size="4" value="'+$(this).parents('tr').children('td:eq(4)').text()+'">'+
           '</td>'+
           '<td><input type="number" name="PILinePrice[]" required '+
-                   'class="form-control" value="0">'+
+                   'class="form-control" value="'+$(this).parents('tr').children('td:eq(6)').text()+'">'+
           '</td></tr>');
         }
       })
@@ -234,6 +239,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
             $('#table_ProformaInvoiceLine').DataTable().ajax.reload()
             $('#table_PurchaseOrderLine').DataTable().ajax.reload(function(){
                 $('.btn-delete').show()
+                update_val()
             })
 
           })
@@ -255,12 +261,25 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
             $('#table_ProformaInvoiceLine').DataTable().ajax.reload()
             $('#table_PurchaseOrderLine').DataTable().ajax.reload(function(){
                 $('.btn-delete').show()
+                update_val()
             })
             $('#modalAddPOLine').modal('hide')
           })
         }
       })
     })
+
+    function update_val(){
+      getdetail().then(function(o){
+        for (var i in o) {
+          if (o.hasOwnProperty(i)) {
+            $('#'+i).val(o[i])
+          }
+        }
+        $('#DownPaymentId').trigger('change')
+        submitpo()
+      })
+    }
 
     function submitpoline(po_id){
       return $.ajax({
@@ -276,6 +295,14 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
         url:$('#form_PurchaseOrder').prop('action'),
         method:'POST',
         data:$('#form_PurchaseOrder').serialize(),
+        dataType:'JSON'
+      })
+    }
+
+    function getdetail(){
+      return $.ajax({
+        url:location.href,
+        method:'GET',
         dataType:'JSON'
       })
     }

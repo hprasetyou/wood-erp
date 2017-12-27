@@ -66,7 +66,7 @@ class Manage_purchaseorderlines extends MY_Controller{
       ->filterByPartnerId($this->input->post('PartnerId'))
       ->filterByType("buy")
       ->findOne();
-      if(($pp?$pp->getProductPrice():1) != $price[$key]){
+      if(($pp?$pp->getProductPrice():1) !== $price[$key]){
         $newpp = new ProductPartner;
         $newpp->setProductId($ids[1])
         ->setPartnerId($this->input->post('PartnerId'))
