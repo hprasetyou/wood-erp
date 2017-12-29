@@ -14,7 +14,10 @@ class Manage_purchaseorders extends MY_Controller{
 
 
   function create(){
-		$this->template->render('admin/purchaseorders/form');
+    if($this->input->get('packinglist')){
+      $o['packinglist'] = PackingListQuery::create()->findPK($this->input->get('packinglist'));
+    }
+		$this->template->render('admin/purchaseorders/form',$o);
   }
 
   function get_number($pi){
@@ -32,16 +35,28 @@ class Manage_purchaseorders extends MY_Controller{
     ->getTotalPricePerPO()
     ->findOneByPurchaseOrderId($id);
     $this->objobj = PurchaseOrderQuery::create()
-    ->joinWith('PurchaseOrder.ProformaInvoice')
-    ->joinWith('PurchaseOrder.Supplier')
-    ->joinWith('PurchaseOrder.DownPayment')
+    ->leftJoinWith('PurchaseOrder.ProformaInvoice')
+    ->leftJoinWith('PurchaseOrder.Supplier')
+    ->leftJoinWith('PurchaseOrder.DownPayment')
     ->withColumn((is_null($polinetotal['Total'])?"1*0":$polinetotal['Total']),'SubTotal');
 
     parent::detail($id,$render="html");
   }
 
 	function write($id=null){
+
+    $this->form['PackingListId'] = 'PackingListId';
+    $this->form['ProformaInvoiceId'] = 'ProformaInvoiceId';
     $this->form['DownPaymentId'] = 'DownPaymentId';
+    $this->form['SupplierId'] = 'SupplierId';
+    if($this->input->post('DownPaymentAmount')==""){
+      if($this->input->post('DownPaymentId')){
+        $dpdata = DownPaymentQuery::create()->findPK($this->input->post('DownPaymentId'));
+        $autodp = $dpdata->getValue() * $this->input->post('SubTotal');
+        $this->form['DownPaymentAmount']['value'] = $autodp;
+        // $this->form['TotalPrice']['value'] = $this->input->post('SubTotal') - $autodp;
+      }
+    }
 		$data = parent::write($id);
     if($this->input->is_ajax_request()){
       echo $data->toJSON();

@@ -28,6 +28,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderQuery orderByCurrencyId($order = Criteria::ASC) Order by the currency_id column
  * @method     ChildPurchaseOrderQuery orderByNote($order = Criteria::ASC) Order by the note column
  * @method     ChildPurchaseOrderQuery orderByDate($order = Criteria::ASC) Order by the date column
+ * @method     ChildPurchaseOrderQuery orderByDeliveryDeadline($order = Criteria::ASC) Order by the delivery_deadline column
  * @method     ChildPurchaseOrderQuery orderByPaymentTerm($order = Criteria::ASC) Order by the payment_term column
  * @method     ChildPurchaseOrderQuery orderByDownPaymentId($order = Criteria::ASC) Order by the down_payment_id column
  * @method     ChildPurchaseOrderQuery orderByDownPaymentAmount($order = Criteria::ASC) Order by the down_payment_amount column
@@ -45,6 +46,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderQuery groupByCurrencyId() Group by the currency_id column
  * @method     ChildPurchaseOrderQuery groupByNote() Group by the note column
  * @method     ChildPurchaseOrderQuery groupByDate() Group by the date column
+ * @method     ChildPurchaseOrderQuery groupByDeliveryDeadline() Group by the delivery_deadline column
  * @method     ChildPurchaseOrderQuery groupByPaymentTerm() Group by the payment_term column
  * @method     ChildPurchaseOrderQuery groupByDownPaymentId() Group by the down_payment_id column
  * @method     ChildPurchaseOrderQuery groupByDownPaymentAmount() Group by the down_payment_amount column
@@ -125,6 +127,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrder findOneByCurrencyId(int $currency_id) Return the first ChildPurchaseOrder filtered by the currency_id column
  * @method     ChildPurchaseOrder findOneByNote(string $note) Return the first ChildPurchaseOrder filtered by the note column
  * @method     ChildPurchaseOrder findOneByDate(string $date) Return the first ChildPurchaseOrder filtered by the date column
+ * @method     ChildPurchaseOrder findOneByDeliveryDeadline(string $delivery_deadline) Return the first ChildPurchaseOrder filtered by the delivery_deadline column
  * @method     ChildPurchaseOrder findOneByPaymentTerm(string $payment_term) Return the first ChildPurchaseOrder filtered by the payment_term column
  * @method     ChildPurchaseOrder findOneByDownPaymentId(int $down_payment_id) Return the first ChildPurchaseOrder filtered by the down_payment_id column
  * @method     ChildPurchaseOrder findOneByDownPaymentAmount(double $down_payment_amount) Return the first ChildPurchaseOrder filtered by the down_payment_amount column
@@ -145,6 +148,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrder requireOneByCurrencyId(int $currency_id) Return the first ChildPurchaseOrder filtered by the currency_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByNote(string $note) Return the first ChildPurchaseOrder filtered by the note column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByDate(string $date) Return the first ChildPurchaseOrder filtered by the date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPurchaseOrder requireOneByDeliveryDeadline(string $delivery_deadline) Return the first ChildPurchaseOrder filtered by the delivery_deadline column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByPaymentTerm(string $payment_term) Return the first ChildPurchaseOrder filtered by the payment_term column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByDownPaymentId(int $down_payment_id) Return the first ChildPurchaseOrder filtered by the down_payment_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByDownPaymentAmount(double $down_payment_amount) Return the first ChildPurchaseOrder filtered by the down_payment_amount column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -163,6 +167,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrder[]|ObjectCollection findByCurrencyId(int $currency_id) Return ChildPurchaseOrder objects filtered by the currency_id column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByNote(string $note) Return ChildPurchaseOrder objects filtered by the note column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByDate(string $date) Return ChildPurchaseOrder objects filtered by the date column
+ * @method     ChildPurchaseOrder[]|ObjectCollection findByDeliveryDeadline(string $delivery_deadline) Return ChildPurchaseOrder objects filtered by the delivery_deadline column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByPaymentTerm(string $payment_term) Return ChildPurchaseOrder objects filtered by the payment_term column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByDownPaymentId(int $down_payment_id) Return ChildPurchaseOrder objects filtered by the down_payment_id column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByDownPaymentAmount(double $down_payment_amount) Return ChildPurchaseOrder objects filtered by the down_payment_amount column
@@ -269,7 +274,7 @@ abstract class PurchaseOrderQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, proforma_invoice_id, packing_list_id, supplier_id, currency_id, note, date, payment_term, down_payment_id, down_payment_amount, down_payment_deadline, total_price, state, created_at, updated_at FROM purchase_order WHERE id = :p0';
+        $sql = 'SELECT id, name, proforma_invoice_id, packing_list_id, supplier_id, currency_id, note, date, delivery_deadline, payment_term, down_payment_id, down_payment_amount, down_payment_deadline, total_price, state, created_at, updated_at FROM purchase_order WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -661,6 +666,49 @@ abstract class PurchaseOrderQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PurchaseOrderTableMap::COL_DATE, $date, $comparison);
+    }
+
+    /**
+     * Filter the query on the delivery_deadline column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDeliveryDeadline('2011-03-14'); // WHERE delivery_deadline = '2011-03-14'
+     * $query->filterByDeliveryDeadline('now'); // WHERE delivery_deadline = '2011-03-14'
+     * $query->filterByDeliveryDeadline(array('max' => 'yesterday')); // WHERE delivery_deadline > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $deliveryDeadline The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPurchaseOrderQuery The current query, for fluid interface
+     */
+    public function filterByDeliveryDeadline($deliveryDeadline = null, $comparison = null)
+    {
+        if (is_array($deliveryDeadline)) {
+            $useMinMax = false;
+            if (isset($deliveryDeadline['min'])) {
+                $this->addUsingAlias(PurchaseOrderTableMap::COL_DELIVERY_DEADLINE, $deliveryDeadline['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($deliveryDeadline['max'])) {
+                $this->addUsingAlias(PurchaseOrderTableMap::COL_DELIVERY_DEADLINE, $deliveryDeadline['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PurchaseOrderTableMap::COL_DELIVERY_DEADLINE, $deliveryDeadline, $comparison);
     }
 
     /**

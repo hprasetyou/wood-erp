@@ -17,6 +17,13 @@ function format_currency(val,rule){
 }
 
 $(document).ready(function(){
+    switch (location.hash) {
+      case '#edit':
+        $('#btn-edit').trigger('click')
+        break;
+      default:
+
+    }
     $('table').on('click','tbody>tr',function(e){
       if($(this).find('.btn-select').length>0){
         window.location = $(this).find('.btn-select').prop('href')

@@ -161,7 +161,7 @@ class MY_Controller extends CI_Controller{
    }else{
      $objs = $this->objobj;
    }
-   $o = $this->outputstd?json_decode($objs->findPk($id)->toJSON()):$objs->findPk($id);
+   $o = $this->outputstd?json_decode($objs->findPK($id)->toJSON()):$objs->findPk($id);
    if($this->input->is_ajax_request()){
      echo ($this->outputstd?json_encode($o):$o->toJSON());
    }else{

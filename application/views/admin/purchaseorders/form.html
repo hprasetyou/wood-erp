@@ -14,7 +14,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.name}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
 									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
-										<input type="text" placeholder="{{ res.string.name }}" id="Name" value="{{ purchaseorders.Name }}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
+										<input type="text" readonly placeholder="{{ res.string.name }}" id="Name" value="{{ purchaseorders.Name }}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
 									</div>
 									{% if purchaseorders %}
 									<p class="value">{{ purchaseorders.Name }}</p>
@@ -23,23 +23,40 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
 							</div>
 
               <input type="hidden" name="Id" id="Id" value="{{ purchaseorders.Id }}">
+              <input type="hidden" name="PackingListId" id="PackingListId" value="{{ purchaseorders.PackingListId?purchaseorders.PackingListId:res.query_params.packinglist }}">
 
 							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProformaInvoiceId">{{res.string.proforma_invoice_id}}</label>
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProformaInvoiceId">{{res.string.proforma_invoice}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
-                  <div {% if purchaseorders %}style="display:none"{% else %} class="input-wrap input-group" {% endif %}>
+                  <div style="display:none"  >
 										<input type="hidden" type="text" id="ProformaInvoiceId" value="{{purchaseorders.ProformaInvoiceId}}" name="ProformaInvoiceId">
 										<input type="text" required="required" name="displayProformaInvoiceId" id="displayProformaInvoiceId" placeholder="{{ res.string.proforma_invoice_id }}" value="{{ purchaseorders.ProformaInvoice.Name }}" class="form-control" />
 										<span class="input-group-btn">
       								<button class="btn btnModal btn-default" id="btnProformaInvoiceId"  data-target="ModalProformaInvoice" type="button">{{res.string.search}}</button>
       							</span>
 									</div>
-									{% if purchaseorders %}
-									<p class="value">{{ purchaseorders.ProformaInvoice.Name }}</p>
-									{% endif %}
+                  <p class="value" id="txtPINo">{{ purchaseorders.ProformaInvoice.Name }}</p>
+
 								</div>
 							</div>
+              <div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="SupplierId">{{res.string.loading_date}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+                  <p class="value">{{ packinglist.LoadingDate | date('d M Y') }}</p>
 
+								</div>
+							</div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.deadline}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+                    <input type="text" placeholder="{{ res.string.deadline }}" id="DeliveryDeadline" value="{{ purchaseorders.DeliveryDeadline  | date('Y/m/d') }}" name="DeliveryDeadline" class="form-control input-date col-md-7 col-xs-12">
+                  </div>
+                  {% if purchaseorders %}
+                  <p class="control-value">{{ purchaseorders.DeliveryDeadline | date('d M Y') }}</p>
+                  {% endif %}
+                </div>
+              </div>
 							<div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="SupplierId">{{res.string.supplier}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
@@ -148,45 +165,10 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
       console.log(o);
       $('#ProformaInvoiceId').val(o.Id)
       $('#displayProformaInvoiceId').val(o.Name)
+      $('#txtPINo').text(o.Name)
       $('#ProformaInvoiceId').trigger('change')
     })
   {% endif %}
-  var table_ProformaInvoiceLine = $('#table_ProformaInvoiceLine').DataTable({
-    "processing": true,
-    "serverSide":true,
-    "searching": false,
-    "paging": false,
-    "ordering": false,
-    "ajax": "/index.php/manage_proformainvoicelines/get_pi_component/"+$('#ProformaInvoiceId').val()+'?supplier='+$('#SupplierId').val(),
-    "columns":[
-      {"data":"id",
-        "render":function(data){
-          return "<input type=\"checkbox\" data-id=\""+data+"\" class=\"cb_pi\" ></input>"
-        }
-      },
-      {"data":"article_number"},
-      {"data":"description"},
-      {"data":"has_component"},
-      {"data":"qty_needed"},
-      {"data":"qty_on_stock"},
-      {"data":"price",
-    "render":function(data){
-      return '<span style=\"display:none\">'+data+'</span>'
-    }} ],
-    "initComplete" : function(settings, json) {
-        $('#table_ProformaInvoiceLine').css('width','100%')
-        $('#table_ProformaInvoiceLine_info').hide()
-      }
-  })
-		$('#ProformaInvoiceId').change(function(e){
-      console.log("pi change");
-      table_ProformaInvoiceLine.ajax.url('/index.php/manage_proformainvoicelines/get_pi_component/'+$(this).val()).load()
-			$.ajax({
-				url:"/index.php/manage_purchaseorders/get_number/"+$(this).siblings().val()
-			}).done(function(o){
-				$('#Name').val(o);
-			})
-		})
     $('#table_ProformaInvoiceLine').on('change','.cb_pi',function(e){
       var is_empty = true;
       $('#table_ProformaInvoiceLine').find('.cb_pi').each(function(i){
@@ -235,6 +217,47 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
 
         console.log(d);
       })
+      var table_ProformaInvoiceLine = $('#table_ProformaInvoiceLine').DataTable({
+        "processing": true,
+        "serverSide":true,
+        "searching": false,
+        "paging": false,
+        "ordering": false,
+        "ajax": "/index.php/manage_proformainvoicelines/get_pi_component/"+$('#ProformaInvoiceId').val()+'?supplier='+$('#SupplierId').val()+'&packinglist='+$('#PackingListId').val(),
+        "columns":[
+          {"data":"id",
+            "render":function(data){
+              return "<input type=\"checkbox\" data-id=\""+data+"\" class=\"cb_pi\" ></input>"
+            }
+          },
+          {"data":"article_number"},
+          {"data":"description"},
+          {"data":"has_component"},
+          {"data":"qty_needed"},
+          {"data":"qty_on_stock"},
+          {"data":"price",
+        "render":function(data){
+          return '<span style=\"display:none\">'+data+'</span>'
+        }} ],
+        "initComplete" : function(settings, json) {
+            $('#table_ProformaInvoiceLine').css('width','100%')
+            $('#table_ProformaInvoiceLine_info').hide()
+          }
+      })
+      $('#ProformaInvoiceId').trigger('change')
+
+      $('#ProformaInvoiceId').change(function(e){
+        console.log("pi change");
+        table_ProformaInvoiceLine.ajax.url('/index.php/manage_proformainvoicelines/get_pi_component/'+$(this).val()+'?supplier='+$('#SupplierId').val()+'&packinglist='+$('#PackingListId').val()).load(function(){
+
+        })
+        $.ajax({
+          url:"/index.php/manage_purchaseorders/get_number/"+$(this).siblings().val()
+        }).done(function(o){
+          $('#Name').val(o);
+        })
+      })
+      $('#ProformaInvoiceId').trigger('change')
       $('#tbAddPO').on('change keyup','.PILineQty',function(e){
         if(($(this).val())*1 > ($(this).prop('max'))*1){
           $(this).val($(this).prop('max'))
@@ -262,8 +285,8 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
         if(!$('#Id').val()){
           submitpo().done(function(o){
             console.log('po created . . . . . ');
-            submitpoline(o.Id).done(function(o){
-              window.location = window.location.href.replace('create','detail')+o.Id
+            submitpoline(o.Id).done(function(lo){
+              window.location = '/index.php/manage_purchaseorders/detail/'+o.Id+'#edit'
             })
           })
 

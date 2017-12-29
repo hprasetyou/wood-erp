@@ -354,6 +354,7 @@
     <column name="currency_id" phpName="CurrencyId" type="INTEGER" required="true" defaultValue="1"/>
     <column name="note" phpName="Note" type="LONGVARCHAR"/>
     <column name="date" phpName="Date" type="DATE"/>
+    <column name="delivery_deadline" phpName="DeliveryDeadline" type="DATE"/>
     <column name="payment_term" phpName="PaymentTerm" type="VARCHAR" size="255"/>
     <column name="down_payment_id" phpName="DownPaymentId" type="INTEGER"/>
     <column name="down_payment_amount" phpName="DownPaymentAmount" type="FLOAT"/>

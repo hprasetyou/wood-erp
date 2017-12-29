@@ -74,7 +74,13 @@ class Manage_proformainvoicelines extends MY_Controller{
 
 
   function get_pi_component($pi_id=null){
-    $lines = ProformaInvoiceLineQuery::create()->findByProformaInvoiceId($pi_id);
+    $lines = ProformaInvoiceLineQuery::create()
+    ->usePackingListLineQuery()
+      ->filterByPackingListId($this->input->get('packinglist'))
+    ->endUse()
+    ->filterByProformaInvoiceId($pi_id);
+    write_log($lines->toString());
+    $lines = $lines->find();
     $o = [];
     $i = 0;
     foreach ($lines as $line) {

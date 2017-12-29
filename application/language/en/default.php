@@ -46,6 +46,7 @@
 'customer_art_no' => 'Customer Article Number',
 'customer_id' => 'Customer Id',
 'date' => 'Date',
+'deadline'=>'Deadline',
 'date_of_issue' => 'Date of issue',
 'delete' => 'Delete',
 'delete_confirmation' => 'Are you sure want to delete this?',
