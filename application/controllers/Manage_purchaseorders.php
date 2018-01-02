@@ -12,6 +12,14 @@ class Manage_purchaseorders extends MY_Controller{
 
   }
 
+  function get_json(){
+    if($this->input->get('packinglists')){
+      $this->objobj = PurchaseOrderQuery::create();
+      $this->objobj->filterByPackingListId($this->input->get('packinglists'));
+    }
+    parent::get_json();
+  }
+
 
   function create(){
     if($this->input->get('packinglist')){
@@ -38,6 +46,7 @@ class Manage_purchaseorders extends MY_Controller{
     ->leftJoinWith('PurchaseOrder.ProformaInvoice')
     ->leftJoinWith('PurchaseOrder.Supplier')
     ->leftJoinWith('PurchaseOrder.DownPayment')
+    ->leftJoinWith('PurchaseOrder.PackingList')
     ->withColumn((is_null($polinetotal['Total'])?"1*0":$polinetotal['Total']),'SubTotal');
 
     parent::detail($id,$render="html");

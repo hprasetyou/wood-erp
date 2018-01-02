@@ -209,7 +209,7 @@ class PurchaseOrderTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', true, 255, null);
         $this->addForeignKey('proforma_invoice_id', 'ProformaInvoiceId', 'INTEGER', 'proforma_invoice', 'id', false, null, null);
-        $this->addColumn('packing_list_id', 'PackingListId', 'INTEGER', false, null, null);
+        $this->addForeignKey('packing_list_id', 'PackingListId', 'INTEGER', 'packing_list', 'id', false, null, null);
         $this->addForeignKey('supplier_id', 'SupplierId', 'INTEGER', 'partner', 'id', true, null, null);
         $this->addForeignKey('currency_id', 'CurrencyId', 'INTEGER', 'currency', 'id', true, null, 1);
         $this->addColumn('note', 'Note', 'LONGVARCHAR', false, null, null);
@@ -234,6 +234,13 @@ class PurchaseOrderTableMap extends TableMap
   0 =>
   array (
     0 => ':proforma_invoice_id',
+    1 => ':id',
+  ),
+), null, null, null, false);
+        $this->addRelation('PackingList', '\\PackingList', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':packing_list_id',
     1 => ':id',
   ),
 ), null, null, null, false);

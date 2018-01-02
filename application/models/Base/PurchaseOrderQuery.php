@@ -74,6 +74,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderQuery rightJoinWithProformaInvoice() Adds a RIGHT JOIN clause and with to the query using the ProformaInvoice relation
  * @method     ChildPurchaseOrderQuery innerJoinWithProformaInvoice() Adds a INNER JOIN clause and with to the query using the ProformaInvoice relation
  *
+ * @method     ChildPurchaseOrderQuery leftJoinPackingList($relationAlias = null) Adds a LEFT JOIN clause to the query using the PackingList relation
+ * @method     ChildPurchaseOrderQuery rightJoinPackingList($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PackingList relation
+ * @method     ChildPurchaseOrderQuery innerJoinPackingList($relationAlias = null) Adds a INNER JOIN clause to the query using the PackingList relation
+ *
+ * @method     ChildPurchaseOrderQuery joinWithPackingList($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the PackingList relation
+ *
+ * @method     ChildPurchaseOrderQuery leftJoinWithPackingList() Adds a LEFT JOIN clause and with to the query using the PackingList relation
+ * @method     ChildPurchaseOrderQuery rightJoinWithPackingList() Adds a RIGHT JOIN clause and with to the query using the PackingList relation
+ * @method     ChildPurchaseOrderQuery innerJoinWithPackingList() Adds a INNER JOIN clause and with to the query using the PackingList relation
+ *
  * @method     ChildPurchaseOrderQuery leftJoinDownPayment($relationAlias = null) Adds a LEFT JOIN clause to the query using the DownPayment relation
  * @method     ChildPurchaseOrderQuery rightJoinDownPayment($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DownPayment relation
  * @method     ChildPurchaseOrderQuery innerJoinDownPayment($relationAlias = null) Adds a INNER JOIN clause to the query using the DownPayment relation
@@ -114,7 +124,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderQuery rightJoinWithPurchaseOrderLine() Adds a RIGHT JOIN clause and with to the query using the PurchaseOrderLine relation
  * @method     ChildPurchaseOrderQuery innerJoinWithPurchaseOrderLine() Adds a INNER JOIN clause and with to the query using the PurchaseOrderLine relation
  *
- * @method     \ProformaInvoiceQuery|\DownPaymentQuery|\CurrencyQuery|\PartnerQuery|\PurchaseOrderLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \ProformaInvoiceQuery|\PackingListQuery|\DownPaymentQuery|\CurrencyQuery|\PartnerQuery|\PurchaseOrderLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildPurchaseOrder findOne(ConnectionInterface $con = null) Return the first ChildPurchaseOrder matching the query
  * @method     ChildPurchaseOrder findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPurchaseOrder matching the query, or a new ChildPurchaseOrder object populated from the query conditions when no match is found
@@ -482,6 +492,8 @@ abstract class PurchaseOrderQuery extends ModelCriteria
      * $query->filterByPackingListId(array(12, 34)); // WHERE packing_list_id IN (12, 34)
      * $query->filterByPackingListId(array('min' => 12)); // WHERE packing_list_id > 12
      * </code>
+     *
+     * @see       filterByPackingList()
      *
      * @param     mixed $packingListId The value to use as filter.
      *              Use scalar values for equality.
@@ -1090,6 +1102,83 @@ abstract class PurchaseOrderQuery extends ModelCriteria
         return $this
             ->joinProformaInvoice($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'ProformaInvoice', '\ProformaInvoiceQuery');
+    }
+
+    /**
+     * Filter the query by a related \PackingList object
+     *
+     * @param \PackingList|ObjectCollection $packingList The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildPurchaseOrderQuery The current query, for fluid interface
+     */
+    public function filterByPackingList($packingList, $comparison = null)
+    {
+        if ($packingList instanceof \PackingList) {
+            return $this
+                ->addUsingAlias(PurchaseOrderTableMap::COL_PACKING_LIST_ID, $packingList->getId(), $comparison);
+        } elseif ($packingList instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(PurchaseOrderTableMap::COL_PACKING_LIST_ID, $packingList->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByPackingList() only accepts arguments of type \PackingList or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the PackingList relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildPurchaseOrderQuery The current query, for fluid interface
+     */
+    public function joinPackingList($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('PackingList');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'PackingList');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the PackingList relation PackingList object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \PackingListQuery A secondary query class using the current class as primary query
+     */
+    public function usePackingListQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinPackingList($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'PackingList', '\PackingListQuery');
     }
 
     /**

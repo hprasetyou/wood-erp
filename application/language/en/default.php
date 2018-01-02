@@ -123,6 +123,7 @@
 'partnerlocation' => 'Location',
 'password' => 'Password',
 'payment_term' => 'Payment Term',
+'po_list_pl'=>'PO for this PL',
 'people' => 'People',
 'phone' => 'Phone',
 'pi_number' => 'PI Number',

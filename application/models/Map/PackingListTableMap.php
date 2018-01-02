@@ -268,6 +268,13 @@ class PackingListTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'PackingListLines', false);
+        $this->addRelation('PurchaseOrder', '\\PurchaseOrder', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':packing_list_id',
+    1 => ':id',
+  ),
+), null, null, 'PurchaseOrders', false);
     } // buildRelations()
 
     /**

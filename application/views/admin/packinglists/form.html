@@ -204,11 +204,17 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
                   <li class="active">
                     <a href="#tab_1" data-toggle="tab">{{res.string.packing_list_line}}</a>
                   </li>
+                  <li>
+                    <a href="#tab_2" data-toggle="tab">{{res.string.po_list_pl}}</a>
+                  </li>
                 </ul>
                 <div class="tab-content">
                   <!-- /.tab-pane -->
                   <div class="tab-pane clearfix active" id="tab_1">
                     {% include "admin/packinglists/_packing_list_line_tab.html"%}
+                  </div>
+                  <div class="tab-pane clearfix active" id="tab_2">
+                    {% include "admin/packinglists/_po_list.html"%}
                   </div>
                 </div>
               </div>
@@ -292,6 +298,10 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
         }
   })
   $(document).ready(function(){
+
+    $(document).ready(function(){
+        $('#table_PurchaseOrder').loadTableData()
+      })
     $('#CustomerId').trigger('change')
     $('#table_PackingListLine').on('click','.btn-delete',function(e){
       e.preventDefault()

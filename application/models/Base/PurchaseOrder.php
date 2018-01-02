@@ -6,6 +6,8 @@ use \Currency as ChildCurrency;
 use \CurrencyQuery as ChildCurrencyQuery;
 use \DownPayment as ChildDownPayment;
 use \DownPaymentQuery as ChildDownPaymentQuery;
+use \PackingList as ChildPackingList;
+use \PackingListQuery as ChildPackingListQuery;
 use \Partner as ChildPartner;
 use \PartnerQuery as ChildPartnerQuery;
 use \ProformaInvoice as ChildProformaInvoice;
@@ -201,6 +203,11 @@ abstract class PurchaseOrder implements ActiveRecordInterface
      * @var        ChildProformaInvoice
      */
     protected $aProformaInvoice;
+
+    /**
+     * @var        ChildPackingList
+     */
+    protected $aPackingList;
 
     /**
      * @var        ChildDownPayment
@@ -777,6 +784,10 @@ abstract class PurchaseOrder implements ActiveRecordInterface
             $this->modifiedColumns[PurchaseOrderTableMap::COL_PACKING_LIST_ID] = true;
         }
 
+        if ($this->aPackingList !== null && $this->aPackingList->getId() !== $v) {
+            $this->aPackingList = null;
+        }
+
         return $this;
     } // setPackingListId()
 
@@ -1194,6 +1205,9 @@ abstract class PurchaseOrder implements ActiveRecordInterface
         if ($this->aProformaInvoice !== null && $this->proforma_invoice_id !== $this->aProformaInvoice->getId()) {
             $this->aProformaInvoice = null;
         }
+        if ($this->aPackingList !== null && $this->packing_list_id !== $this->aPackingList->getId()) {
+            $this->aPackingList = null;
+        }
         if ($this->aSupplier !== null && $this->supplier_id !== $this->aSupplier->getId()) {
             $this->aSupplier = null;
         }
@@ -1243,6 +1257,7 @@ abstract class PurchaseOrder implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aProformaInvoice = null;
+            $this->aPackingList = null;
             $this->aDownPayment = null;
             $this->aCurrency = null;
             $this->aSupplier = null;
@@ -1361,6 +1376,13 @@ abstract class PurchaseOrder implements ActiveRecordInterface
                     $affectedRows += $this->aProformaInvoice->save($con);
                 }
                 $this->setProformaInvoice($this->aProformaInvoice);
+            }
+
+            if ($this->aPackingList !== null) {
+                if ($this->aPackingList->isModified() || $this->aPackingList->isNew()) {
+                    $affectedRows += $this->aPackingList->save($con);
+                }
+                $this->setPackingList($this->aPackingList);
             }
 
             if ($this->aDownPayment !== null) {
@@ -1752,6 +1774,21 @@ abstract class PurchaseOrder implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aProformaInvoice->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aPackingList) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'packingList';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'packing_list';
+                        break;
+                    default:
+                        $key = 'PackingList';
+                }
+
+                $result[$key] = $this->aPackingList->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->aDownPayment) {
 
@@ -2263,6 +2300,57 @@ abstract class PurchaseOrder implements ActiveRecordInterface
     }
 
     /**
+     * Declares an association between this object and a ChildPackingList object.
+     *
+     * @param  ChildPackingList $v
+     * @return $this|\PurchaseOrder The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setPackingList(ChildPackingList $v = null)
+    {
+        if ($v === null) {
+            $this->setPackingListId(NULL);
+        } else {
+            $this->setPackingListId($v->getId());
+        }
+
+        $this->aPackingList = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildPackingList object, it will not be re-added.
+        if ($v !== null) {
+            $v->addPurchaseOrder($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildPackingList object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildPackingList The associated ChildPackingList object.
+     * @throws PropelException
+     */
+    public function getPackingList(ConnectionInterface $con = null)
+    {
+        if ($this->aPackingList === null && ($this->packing_list_id != 0)) {
+            $this->aPackingList = ChildPackingListQuery::create()->findPk($this->packing_list_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aPackingList->addPurchaseOrders($this);
+             */
+        }
+
+        return $this->aPackingList;
+    }
+
+    /**
      * Declares an association between this object and a ChildDownPayment object.
      *
      * @param  ChildDownPayment $v
@@ -2717,6 +2805,9 @@ abstract class PurchaseOrder implements ActiveRecordInterface
         if (null !== $this->aProformaInvoice) {
             $this->aProformaInvoice->removePurchaseOrder($this);
         }
+        if (null !== $this->aPackingList) {
+            $this->aPackingList->removePurchaseOrder($this);
+        }
         if (null !== $this->aDownPayment) {
             $this->aDownPayment->removePurchaseOrder($this);
         }
@@ -2771,6 +2862,7 @@ abstract class PurchaseOrder implements ActiveRecordInterface
 
         $this->collPurchaseOrderLines = null;
         $this->aProformaInvoice = null;
+        $this->aPackingList = null;
         $this->aDownPayment = null;
         $this->aCurrency = null;
         $this->aSupplier = null;

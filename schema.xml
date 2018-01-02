@@ -367,6 +367,9 @@
     <foreign-key foreignTable="proforma_invoice">
       <reference local="proforma_invoice_id" foreign="id"/>
     </foreign-key>
+    <foreign-key foreignTable="packing_list">
+      <reference local="packing_list_id" foreign="id"/>
+    </foreign-key>
     <foreign-key foreignTable="down_payment">
       <reference local="down_payment_id" foreign="id"/>
     </foreign-key>

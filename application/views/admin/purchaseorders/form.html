@@ -1,5 +1,8 @@
  {% extends "dashboard.html" %} {% set title=" Purchase Order " %} {% if purchaseorders %} {% set bc_text = purchaseorders.id %} {% else %} {% set bc_text = res.string.new %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_purchaseorders','text':
 res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %}
+{% if purchaseorders %}
+{% set packinglist = purchaseorders.PackingList %}
+{% endif %}
 <div class="row">
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<form id="form_PurchaseOrder" method="post" action="{{base_url}}index.php/manage_purchaseorders/write/{{ purchaseorders.Id }}" data-parsley-validate class="form-horizontal form-label-left">
@@ -25,7 +28,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
               <input type="hidden" name="Id" id="Id" value="{{ purchaseorders.Id }}">
               <input type="hidden" name="PackingListId" id="PackingListId" value="{{ purchaseorders.PackingListId?purchaseorders.PackingListId:res.query_params.packinglist }}">
 
-							<div class="form-group">
+              <div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProformaInvoiceId">{{res.string.proforma_invoice}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
                   <div style="display:none"  >
@@ -37,6 +40,12 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
 									</div>
                   <p class="value" id="txtPINo">{{ purchaseorders.ProformaInvoice.Name }}</p>
 
+								</div>
+							</div>
+              <div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProformaInvoiceId">{{res.string.packinglist}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+                  <p class="value" id="txtPINo">{{ packinglist.Name }}</p>
 								</div>
 							</div>
               <div class="form-group">
