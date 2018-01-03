@@ -39,19 +39,24 @@ class Manage_purchaseorderlines extends MY_Controller{
 		$qty = $this->input->post('PILineQty');
   	$name = $this->input->post('PILineName');
   	$price = $this->input->post('PILinePrice');
+    $prods = $this->input->post('ProductId');
 
     foreach ($this->input->post('PILineId') as $key => $line) {
       # code...
       $ids = explode("-",$line);
+      $prod_id = $ids[1];
+      if(isset($prods[$key])){
+        $prod_id=$prods[$key];
+      }
       $pp = ProductPartnerQuery::create()
       ->orderByCreatedAt('desc')
-      ->filterByProductId($ids[1])
+      ->filterByProductId($prod_id)
       ->filterByPartnerId($this->input->post('PartnerId'))
       ->filterByType("buy")
       ->findOne();
       if(($pp?$pp->getProductPrice():1) !== $price[$key]){
         $newpp = new ProductPartner;
-        $newpp->setProductId($ids[1])
+        $newpp->setProductId($prod_id)
         ->setPartnerId($this->input->post('PartnerId'))
         ->setProductPrice($price[$key])
         ->setType("buy")
@@ -61,7 +66,7 @@ class Manage_purchaseorderlines extends MY_Controller{
       ->filterByName($name[$key])
       ->filterByPurchaseOrderId($po_id)
       ->filterByProformaInvoiceLineId($ids[0])
-      ->filterByProductId($ids[1])
+      ->filterByProductId($prod_id)
       ->findOne();
       if($line){
         $qty[$key] = $qty[$key]+$line->getQty();
@@ -77,7 +82,7 @@ class Manage_purchaseorderlines extends MY_Controller{
          'value'=> $ids[0]
        ),
        'ProductId' =>  array(
-         'value'=> ($ids[1])
+         'value'=> ($prod_id)
        ),
        'Note' => 'Note',
        'Price' => array(

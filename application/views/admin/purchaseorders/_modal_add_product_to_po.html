@@ -1,0 +1,54 @@
+<!-- Modal -->
+<div id="modalAddPOLine" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <form id="formAddPOLine" action="/index.php/manage_purchaseorderlines/write/" class="form-horizontal form-label-left">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">{{res.string.add_pi_to_po}}</h4>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="PILineId[]" value="0-0">
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProductPartnerId">{{res.string.product}}</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <div class="input-wrap input-group">
+                <input type="hidden" type="text" id="ProductId" name="ProductId[]"  >
+                <input required readonly type="text" name="PILineName[]" id="displayProductId"  placeholder="{{ res.string.product }}" class="form-control" />
+                <span class="input-group-btn">
+                  <button class="btn btnModal btn-default" id="btnProductId" data-domain='{"type":["component","support_component"]}'  data-target="ModalProduct" type="button">{{res.string.search}}</button>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Price">{{res.string.price}}</label>
+            <div class="col-sm-1" style="padding:0px">
+              <div class="value lineCurr">
+              </div>
+            </div>
+            <div class="col-sm-5 col-xs-12">
+              <div class="input-wrap">
+                <input required type="text" placeholder="{{ res.string.price }}" id="Price" name="PILinePrice[]" class="form-control  col-md-7 col-xs-12">
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Qty">{{res.string.qty}}</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <div class="input-wrap">
+                <input required type="text" placeholder="{{ res.string.qty }}" id="Qty" name="PILineQty[]" class="form-control  col-md-7 col-xs-12">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" >{{res.string.add}}</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">{{res.string.close}}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

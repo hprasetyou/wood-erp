@@ -7,6 +7,7 @@ class Manage_purchaseorders extends MY_Controller{
     parent::__construct();
 		$this->set_objname('PurchaseOrder');
 		$this->tpl = 'purchaseorders';
+    $this->load->helper('good_numbering');
 
     $this->authorization->check_authorization('manage_purchaseorders');
 
@@ -22,14 +23,20 @@ class Manage_purchaseorders extends MY_Controller{
 
 
   function create(){
-    if($this->input->get('packinglist')){
+    $o = array();
+    if($this->input->get('packinglist') && $this->input->get('proformainvoice')){
       $o['packinglist'] = PackingListQuery::create()->findPK($this->input->get('packinglist'));
+      $this->template->render('admin/purchaseorders/form',$o);
+    }else{
+      $o['po_number'] = create_number(
+          array('format'=>"PO-MISC-y-i",
+          'tb_name'=>'purchase_order',
+          'tb_field'=>'name'));
+      $this->template->render('admin/purchaseorders/form_no_pl',$o);
     }
-		$this->template->render('admin/purchaseorders/form',$o);
   }
 
   function get_number($pi){
-    $this->load->helper('good_numbering');
     $pi = str_replace("PI-","",$pi);
     echo create_number(
         array('format'=>"PO-$pi-i",
@@ -47,9 +54,13 @@ class Manage_purchaseorders extends MY_Controller{
     ->leftJoinWith('PurchaseOrder.Supplier')
     ->leftJoinWith('PurchaseOrder.DownPayment')
     ->leftJoinWith('PurchaseOrder.PackingList')
-    ->withColumn((is_null($polinetotal['Total'])?"1*0":$polinetotal['Total']),'SubTotal');
-
-    parent::detail($id,$render="html");
+    ->withColumn((is_null($polinetotal['Total'])?"1":"'".$polinetotal['Total']."'"),'SubTotal');
+    $obj = json_decode($this->objobj->findPk($id)->toJSON());
+    if($obj->ProformaInvoiceId){
+        $this->template->render("admin/purchaseorders/form",array('purchaseorders' => $obj ));
+    }else{
+        $this->template->render("admin/purchaseorders/form_no_pl",array('purchaseorders' => $obj ));
+    }
   }
 
 	function write($id=null){

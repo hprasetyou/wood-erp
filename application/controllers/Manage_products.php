@@ -16,6 +16,7 @@ class Manage_products extends MY_Controller{
     $type = "product";
     if($this->input->get('type')){
       $type=$this->input->get('type');
+      $type = explode(',',$type);
     }
     $this->objobj = ProductQuery::create()->filterByType($type);
     if($this->input->get('partner_id')){

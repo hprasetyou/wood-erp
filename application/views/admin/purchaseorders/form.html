@@ -14,10 +14,10 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
 					<div class="row">
 						<div class="col-sm-6">
 							<div {% if purchaseorders %}style="display:none"{% endif %} class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.name}}</label>
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.po_number}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
 									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
-										<input type="text" readonly placeholder="{{ res.string.name }}" id="Name" value="{{ purchaseorders.Name }}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
+										<input type="text" readonly placeholder="{{ res.string.po_number }}" id="Name" value="{{ purchaseorders.Name }}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
 									</div>
 									{% if purchaseorders %}
 									<p class="value">{{ purchaseorders.Name }}</p>
@@ -146,6 +146,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
                 <div class="tab-content">
                   <!-- /.tab-pane -->
                   <div class="tab-pane clearfix active" id="tab_1">
+                    {% include "admin/purchaseorders/_pi_line.html" %}
                     {% include "admin/purchaseorders/_purchase_order_line_tab.html"%}
                   </div>
                   <div class="tab-pane clearfix" id="tab_2">
