@@ -44,9 +44,10 @@ class Mailer
     return $this;
   }
   function send_email(){
+    $conf = $this->CI->config->item('email');
     $message = (new Swift_Message('Test'))
       ->setFrom([$conf['username'] => $conf['sender_name']])
-      ->setTo([$this->recipient=> $this->recipient_name])
+      ->setTo([$this->recipient => $this->recipient_name])
       ->setBody($this->body, 'text/html');
     $result = $this->mailer->send($message);
   }

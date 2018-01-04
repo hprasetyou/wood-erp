@@ -32,7 +32,9 @@ class Task extends CI_Controller
     switch ($type) {
       case 'email':
         $this->load->library('mailer');
-        $this->mailer->send_email();
+        $this->mailer
+        ->set_recipient('hprasetyou@gmail.com')
+        ->set_body('coba')->send_email();
         # code...
         break;
       case 'call_func':
