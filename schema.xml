@@ -355,7 +355,7 @@
     <column name="note" phpName="Note" type="LONGVARCHAR"/>
     <column name="date" phpName="Date" type="DATE"/>
     <column name="delivery_deadline" phpName="DeliveryDeadline" type="DATE"/>
-    <column name="payment_term" phpName="PaymentTerm" type="VARCHAR" size="255"/>
+    <column name="payment_term" phpName="PaymentTerm" type="CHAR" sqlType="ENUM('DP/BP','Cash in advance','transfer after delivery in full amount','DP/giro BP','giro FP')"/>
     <column name="down_payment_id" phpName="DownPaymentId" type="INTEGER"/>
     <column name="down_payment_amount" phpName="DownPaymentAmount" type="FLOAT"/>
     <column name="down_payment_deadline" phpName="DownPaymentDeadline" type="DATE"/>

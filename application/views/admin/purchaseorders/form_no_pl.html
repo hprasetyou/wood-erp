@@ -55,7 +55,6 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
              </div>
            </div>
            <div class="col-sm-6">
-
              <div class="form-group">
                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.date}}</label>
                <div class="col-md-6 col-sm-6 col-xs-12">
@@ -72,7 +71,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="PaymentTerm">{{res.string.payment_term}}</label>
                <div class="col-md-6 col-sm-6 col-xs-12">
                  <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
-                   <input type="text" placeholder="{{ res.string.payment_term }}" id="PaymentTerm" value="{{ purchaseorders.PaymentTerm }}" name="PaymentTerm" class="form-control  col-md-7 col-xs-12">
+                   {{ form_enum('PurchaseOrder.PaymentTerm',purchaseorders.PaymentTerm) | raw }}
                  </div>
                  {% if purchaseorders %}
                  <p class="control-value">{{ purchaseorders.PaymentTerm }}</p>
