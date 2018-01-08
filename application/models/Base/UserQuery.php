@@ -25,7 +25,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery orderByPassword($order = Criteria::ASC) Order by the password column
  * @method     ChildUserQuery orderByPartnerId($order = Criteria::ASC) Order by the partner_id column
  * @method     ChildUserQuery orderByLastLogin($order = Criteria::ASC) Order by the last_login column
- * @method     ChildUserQuery orderByStatus($order = Criteria::ASC) Order by the status column
+ * @method     ChildUserQuery orderByActive($order = Criteria::ASC) Order by the active column
  * @method     ChildUserQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildUserQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -34,7 +34,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery groupByPassword() Group by the password column
  * @method     ChildUserQuery groupByPartnerId() Group by the partner_id column
  * @method     ChildUserQuery groupByLastLogin() Group by the last_login column
- * @method     ChildUserQuery groupByStatus() Group by the status column
+ * @method     ChildUserQuery groupByActive() Group by the active column
  * @method     ChildUserQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildUserQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -86,7 +86,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser findOneByPassword(string $password) Return the first ChildUser filtered by the password column
  * @method     ChildUser findOneByPartnerId(int $partner_id) Return the first ChildUser filtered by the partner_id column
  * @method     ChildUser findOneByLastLogin(string $last_login) Return the first ChildUser filtered by the last_login column
- * @method     ChildUser findOneByStatus(boolean $status) Return the first ChildUser filtered by the status column
+ * @method     ChildUser findOneByActive(boolean $active) Return the first ChildUser filtered by the active column
  * @method     ChildUser findOneByCreatedAt(string $created_at) Return the first ChildUser filtered by the created_at column
  * @method     ChildUser findOneByUpdatedAt(string $updated_at) Return the first ChildUser filtered by the updated_at column *
 
@@ -98,7 +98,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser requireOneByPassword(string $password) Return the first ChildUser filtered by the password column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByPartnerId(int $partner_id) Return the first ChildUser filtered by the partner_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByLastLogin(string $last_login) Return the first ChildUser filtered by the last_login column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUser requireOneByStatus(boolean $status) Return the first ChildUser filtered by the status column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneByActive(boolean $active) Return the first ChildUser filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByCreatedAt(string $created_at) Return the first ChildUser filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByUpdatedAt(string $updated_at) Return the first ChildUser filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -108,7 +108,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser[]|ObjectCollection findByPassword(string $password) Return ChildUser objects filtered by the password column
  * @method     ChildUser[]|ObjectCollection findByPartnerId(int $partner_id) Return ChildUser objects filtered by the partner_id column
  * @method     ChildUser[]|ObjectCollection findByLastLogin(string $last_login) Return ChildUser objects filtered by the last_login column
- * @method     ChildUser[]|ObjectCollection findByStatus(boolean $status) Return ChildUser objects filtered by the status column
+ * @method     ChildUser[]|ObjectCollection findByActive(boolean $active) Return ChildUser objects filtered by the active column
  * @method     ChildUser[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildUser objects filtered by the created_at column
  * @method     ChildUser[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildUser objects filtered by the updated_at column
  * @method     ChildUser[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -209,7 +209,7 @@ abstract class UserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, password, partner_id, last_login, status, created_at, updated_at FROM user WHERE id = :p0';
+        $sql = 'SELECT id, name, password, partner_id, last_login, active, created_at, updated_at FROM user WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -477,15 +477,15 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the status column
+     * Filter the query on the active column
      *
      * Example usage:
      * <code>
-     * $query->filterByStatus(true); // WHERE status = true
-     * $query->filterByStatus('yes'); // WHERE status = true
+     * $query->filterByActive(true); // WHERE active = true
+     * $query->filterByActive('yes'); // WHERE active = true
      * </code>
      *
-     * @param     boolean|string $status The value to use as filter.
+     * @param     boolean|string $active The value to use as filter.
      *              Non-boolean arguments are converted using the following rules:
      *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
      *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -494,13 +494,13 @@ abstract class UserQuery extends ModelCriteria
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
-    public function filterByStatus($status = null, $comparison = null)
+    public function filterByActive($active = null, $comparison = null)
     {
-        if (is_string($status)) {
-            $status = in_array(strtolower($status), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        if (is_string($active)) {
+            $active = in_array(strtolower($active), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
-        return $this->addUsingAlias(UserTableMap::COL_STATUS, $status, $comparison);
+        return $this->addUsingAlias(UserTableMap::COL_ACTIVE, $active, $comparison);
     }
 
     /**

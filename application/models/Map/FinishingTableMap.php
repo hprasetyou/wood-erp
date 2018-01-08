@@ -59,7 +59,7 @@ class FinishingTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 5;
+    const NUM_COLUMNS = 6;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class FinishingTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 5;
+    const NUM_HYDRATE_COLUMNS = 6;
 
     /**
      * the column name for the id field
@@ -85,6 +85,11 @@ class FinishingTableMap extends TableMap
      * the column name for the description field
      */
     const COL_DESCRIPTION = 'finishing.description';
+
+    /**
+     * the column name for the active field
+     */
+    const COL_ACTIVE = 'finishing.active';
 
     /**
      * the column name for the created_at field
@@ -108,11 +113,11 @@ class FinishingTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Description', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'description', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(FinishingTableMap::COL_ID, FinishingTableMap::COL_NAME, FinishingTableMap::COL_DESCRIPTION, FinishingTableMap::COL_CREATED_AT, FinishingTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'description', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Description', 'Active', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'description', 'active', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(FinishingTableMap::COL_ID, FinishingTableMap::COL_NAME, FinishingTableMap::COL_DESCRIPTION, FinishingTableMap::COL_ACTIVE, FinishingTableMap::COL_CREATED_AT, FinishingTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'description', 'active', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -122,11 +127,11 @@ class FinishingTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Description' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'createdAt' => 3, 'updatedAt' => 4, ),
-        self::TYPE_COLNAME       => array(FinishingTableMap::COL_ID => 0, FinishingTableMap::COL_NAME => 1, FinishingTableMap::COL_DESCRIPTION => 2, FinishingTableMap::COL_CREATED_AT => 3, FinishingTableMap::COL_UPDATED_AT => 4, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'created_at' => 3, 'updated_at' => 4, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Description' => 2, 'Active' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'active' => 3, 'createdAt' => 4, 'updatedAt' => 5, ),
+        self::TYPE_COLNAME       => array(FinishingTableMap::COL_ID => 0, FinishingTableMap::COL_NAME => 1, FinishingTableMap::COL_DESCRIPTION => 2, FinishingTableMap::COL_ACTIVE => 3, FinishingTableMap::COL_CREATED_AT => 4, FinishingTableMap::COL_UPDATED_AT => 5, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'active' => 3, 'created_at' => 4, 'updated_at' => 5, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -149,6 +154,7 @@ class FinishingTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', true, 255, null);
         $this->addColumn('description', 'Description', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -312,12 +318,14 @@ class FinishingTableMap extends TableMap
             $criteria->addSelectColumn(FinishingTableMap::COL_ID);
             $criteria->addSelectColumn(FinishingTableMap::COL_NAME);
             $criteria->addSelectColumn(FinishingTableMap::COL_DESCRIPTION);
+            $criteria->addSelectColumn(FinishingTableMap::COL_ACTIVE);
             $criteria->addSelectColumn(FinishingTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(FinishingTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.name');
             $criteria->addSelectColumn($alias . '.description');
+            $criteria->addSelectColumn($alias . '.active');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }

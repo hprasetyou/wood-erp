@@ -59,7 +59,7 @@ class ProductImageTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 8;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class ProductImageTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 8;
 
     /**
      * the column name for the id field
@@ -97,6 +97,11 @@ class ProductImageTableMap extends TableMap
     const COL_PRODUCT_ID = 'product_image.product_id';
 
     /**
+     * the column name for the active field
+     */
+    const COL_ACTIVE = 'product_image.active';
+
+    /**
      * the column name for the created_at field
      */
     const COL_CREATED_AT = 'product_image.created_at';
@@ -118,11 +123,11 @@ class ProductImageTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Url', 'Description', 'ProductId', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'url', 'description', 'productId', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ProductImageTableMap::COL_ID, ProductImageTableMap::COL_NAME, ProductImageTableMap::COL_URL, ProductImageTableMap::COL_DESCRIPTION, ProductImageTableMap::COL_PRODUCT_ID, ProductImageTableMap::COL_CREATED_AT, ProductImageTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'url', 'description', 'product_id', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Url', 'Description', 'ProductId', 'Active', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'url', 'description', 'productId', 'active', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ProductImageTableMap::COL_ID, ProductImageTableMap::COL_NAME, ProductImageTableMap::COL_URL, ProductImageTableMap::COL_DESCRIPTION, ProductImageTableMap::COL_PRODUCT_ID, ProductImageTableMap::COL_ACTIVE, ProductImageTableMap::COL_CREATED_AT, ProductImageTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'url', 'description', 'product_id', 'active', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -132,11 +137,11 @@ class ProductImageTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Url' => 2, 'Description' => 3, 'ProductId' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'url' => 2, 'description' => 3, 'productId' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
-        self::TYPE_COLNAME       => array(ProductImageTableMap::COL_ID => 0, ProductImageTableMap::COL_NAME => 1, ProductImageTableMap::COL_URL => 2, ProductImageTableMap::COL_DESCRIPTION => 3, ProductImageTableMap::COL_PRODUCT_ID => 4, ProductImageTableMap::COL_CREATED_AT => 5, ProductImageTableMap::COL_UPDATED_AT => 6, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'url' => 2, 'description' => 3, 'product_id' => 4, 'created_at' => 5, 'updated_at' => 6, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Url' => 2, 'Description' => 3, 'ProductId' => 4, 'Active' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'url' => 2, 'description' => 3, 'productId' => 4, 'active' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
+        self::TYPE_COLNAME       => array(ProductImageTableMap::COL_ID => 0, ProductImageTableMap::COL_NAME => 1, ProductImageTableMap::COL_URL => 2, ProductImageTableMap::COL_DESCRIPTION => 3, ProductImageTableMap::COL_PRODUCT_ID => 4, ProductImageTableMap::COL_ACTIVE => 5, ProductImageTableMap::COL_CREATED_AT => 6, ProductImageTableMap::COL_UPDATED_AT => 7, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'url' => 2, 'description' => 3, 'product_id' => 4, 'active' => 5, 'created_at' => 6, 'updated_at' => 7, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -161,6 +166,7 @@ class ProductImageTableMap extends TableMap
         $this->addColumn('url', 'Url', 'LONGVARCHAR', false, null, null);
         $this->addColumn('description', 'Description', 'LONGVARCHAR', false, null, null);
         $this->addForeignKey('product_id', 'ProductId', 'INTEGER', 'product', 'id', true, null, null);
+        $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -325,6 +331,7 @@ class ProductImageTableMap extends TableMap
             $criteria->addSelectColumn(ProductImageTableMap::COL_URL);
             $criteria->addSelectColumn(ProductImageTableMap::COL_DESCRIPTION);
             $criteria->addSelectColumn(ProductImageTableMap::COL_PRODUCT_ID);
+            $criteria->addSelectColumn(ProductImageTableMap::COL_ACTIVE);
             $criteria->addSelectColumn(ProductImageTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(ProductImageTableMap::COL_UPDATED_AT);
         } else {
@@ -333,6 +340,7 @@ class ProductImageTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.url');
             $criteria->addSelectColumn($alias . '.description');
             $criteria->addSelectColumn($alias . '.product_id');
+            $criteria->addSelectColumn($alias . '.active');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }

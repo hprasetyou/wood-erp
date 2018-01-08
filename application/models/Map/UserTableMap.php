@@ -97,9 +97,9 @@ class UserTableMap extends TableMap
     const COL_LAST_LOGIN = 'user.last_login';
 
     /**
-     * the column name for the status field
+     * the column name for the active field
      */
-    const COL_STATUS = 'user.status';
+    const COL_ACTIVE = 'user.active';
 
     /**
      * the column name for the created_at field
@@ -123,10 +123,10 @@ class UserTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Password', 'PartnerId', 'LastLogin', 'Status', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'password', 'partnerId', 'lastLogin', 'status', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_ID, UserTableMap::COL_NAME, UserTableMap::COL_PASSWORD, UserTableMap::COL_PARTNER_ID, UserTableMap::COL_LAST_LOGIN, UserTableMap::COL_STATUS, UserTableMap::COL_CREATED_AT, UserTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'password', 'partner_id', 'last_login', 'status', 'created_at', 'updated_at', ),
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Password', 'PartnerId', 'LastLogin', 'Active', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'password', 'partnerId', 'lastLogin', 'active', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(UserTableMap::COL_ID, UserTableMap::COL_NAME, UserTableMap::COL_PASSWORD, UserTableMap::COL_PARTNER_ID, UserTableMap::COL_LAST_LOGIN, UserTableMap::COL_ACTIVE, UserTableMap::COL_CREATED_AT, UserTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'password', 'partner_id', 'last_login', 'active', 'created_at', 'updated_at', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
@@ -137,10 +137,10 @@ class UserTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Password' => 2, 'PartnerId' => 3, 'LastLogin' => 4, 'Status' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'password' => 2, 'partnerId' => 3, 'lastLogin' => 4, 'status' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_ID => 0, UserTableMap::COL_NAME => 1, UserTableMap::COL_PASSWORD => 2, UserTableMap::COL_PARTNER_ID => 3, UserTableMap::COL_LAST_LOGIN => 4, UserTableMap::COL_STATUS => 5, UserTableMap::COL_CREATED_AT => 6, UserTableMap::COL_UPDATED_AT => 7, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'password' => 2, 'partner_id' => 3, 'last_login' => 4, 'status' => 5, 'created_at' => 6, 'updated_at' => 7, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Password' => 2, 'PartnerId' => 3, 'LastLogin' => 4, 'Active' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'password' => 2, 'partnerId' => 3, 'lastLogin' => 4, 'active' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
+        self::TYPE_COLNAME       => array(UserTableMap::COL_ID => 0, UserTableMap::COL_NAME => 1, UserTableMap::COL_PASSWORD => 2, UserTableMap::COL_PARTNER_ID => 3, UserTableMap::COL_LAST_LOGIN => 4, UserTableMap::COL_ACTIVE => 5, UserTableMap::COL_CREATED_AT => 6, UserTableMap::COL_UPDATED_AT => 7, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'password' => 2, 'partner_id' => 3, 'last_login' => 4, 'active' => 5, 'created_at' => 6, 'updated_at' => 7, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
@@ -166,7 +166,7 @@ class UserTableMap extends TableMap
         $this->addColumn('password', 'Password', 'VARCHAR', false, 255, null);
         $this->addForeignKey('partner_id', 'PartnerId', 'INTEGER', 'partner', 'id', true, null, null);
         $this->addColumn('last_login', 'LastLogin', 'TIMESTAMP', false, null, null);
-        $this->addColumn('status', 'Status', 'BOOLEAN', true, 1, false);
+        $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -346,7 +346,7 @@ class UserTableMap extends TableMap
             $criteria->addSelectColumn(UserTableMap::COL_PASSWORD);
             $criteria->addSelectColumn(UserTableMap::COL_PARTNER_ID);
             $criteria->addSelectColumn(UserTableMap::COL_LAST_LOGIN);
-            $criteria->addSelectColumn(UserTableMap::COL_STATUS);
+            $criteria->addSelectColumn(UserTableMap::COL_ACTIVE);
             $criteria->addSelectColumn(UserTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(UserTableMap::COL_UPDATED_AT);
         } else {
@@ -355,7 +355,7 @@ class UserTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.password');
             $criteria->addSelectColumn($alias . '.partner_id');
             $criteria->addSelectColumn($alias . '.last_login');
-            $criteria->addSelectColumn($alias . '.status');
+            $criteria->addSelectColumn($alias . '.active');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }

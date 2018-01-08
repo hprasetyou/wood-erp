@@ -92,6 +92,14 @@ abstract class ComponentProduct implements ActiveRecordInterface
     protected $qty;
 
     /**
+     * The value for the active field.
+     *
+     * Note: this column has a database default value of: true
+     * @var        boolean
+     */
+    protected $active;
+
+    /**
      * The value for the created_at field.
      *
      * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
@@ -133,6 +141,7 @@ abstract class ComponentProduct implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
+        $this->active = true;
     }
 
     /**
@@ -403,6 +412,26 @@ abstract class ComponentProduct implements ActiveRecordInterface
     }
 
     /**
+     * Get the [active] column value.
+     *
+     * @return boolean
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * Get the [active] column value.
+     *
+     * @return boolean
+     */
+    public function isActive()
+    {
+        return $this->getActive();
+    }
+
+    /**
      * Get the [optionally formatted] temporal [created_at] column value.
      *
      *
@@ -531,6 +560,34 @@ abstract class ComponentProduct implements ActiveRecordInterface
     } // setQty()
 
     /**
+     * Sets the value of the [active] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     *
+     * @param  boolean|integer|string $v The new value
+     * @return $this|\ComponentProduct The current object (for fluent API support)
+     */
+    public function setActive($v)
+    {
+        if ($v !== null) {
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
+        }
+
+        if ($this->active !== $v) {
+            $this->active = $v;
+            $this->modifiedColumns[ComponentProductTableMap::COL_ACTIVE] = true;
+        }
+
+        return $this;
+    } // setActive()
+
+    /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
@@ -580,6 +637,10 @@ abstract class ComponentProduct implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->active !== true) {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -618,13 +679,16 @@ abstract class ComponentProduct implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ComponentProductTableMap::translateFieldName('Qty', TableMap::TYPE_PHPNAME, $indexType)];
             $this->qty = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ComponentProductTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ComponentProductTableMap::translateFieldName('Active', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->active = (null !== $col) ? (boolean) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ComponentProductTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ComponentProductTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ComponentProductTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -637,7 +701,7 @@ abstract class ComponentProduct implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 6; // 6 = ComponentProductTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = ComponentProductTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\ComponentProduct'), 0, $e);
@@ -877,6 +941,9 @@ abstract class ComponentProduct implements ActiveRecordInterface
         if ($this->isColumnModified(ComponentProductTableMap::COL_QTY)) {
             $modifiedColumns[':p' . $index++]  = 'qty';
         }
+        if ($this->isColumnModified(ComponentProductTableMap::COL_ACTIVE)) {
+            $modifiedColumns[':p' . $index++]  = 'active';
+        }
         if ($this->isColumnModified(ComponentProductTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
@@ -905,6 +972,9 @@ abstract class ComponentProduct implements ActiveRecordInterface
                         break;
                     case 'qty':
                         $stmt->bindValue($identifier, $this->qty, PDO::PARAM_INT);
+                        break;
+                    case 'active':
+                        $stmt->bindValue($identifier, (int) $this->active, PDO::PARAM_INT);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -987,9 +1057,12 @@ abstract class ComponentProduct implements ActiveRecordInterface
                 return $this->getQty();
                 break;
             case 4:
-                return $this->getCreatedAt();
+                return $this->getActive();
                 break;
             case 5:
+                return $this->getCreatedAt();
+                break;
+            case 6:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1026,15 +1099,16 @@ abstract class ComponentProduct implements ActiveRecordInterface
             $keys[1] => $this->getProductId(),
             $keys[2] => $this->getComponentId(),
             $keys[3] => $this->getQty(),
-            $keys[4] => $this->getCreatedAt(),
-            $keys[5] => $this->getUpdatedAt(),
+            $keys[4] => $this->getActive(),
+            $keys[5] => $this->getCreatedAt(),
+            $keys[6] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[4]] instanceof \DateTimeInterface) {
-            $result[$keys[4]] = $result[$keys[4]]->format('c');
-        }
-
         if ($result[$keys[5]] instanceof \DateTimeInterface) {
             $result[$keys[5]] = $result[$keys[5]]->format('c');
+        }
+
+        if ($result[$keys[6]] instanceof \DateTimeInterface) {
+            $result[$keys[6]] = $result[$keys[6]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1120,9 +1194,12 @@ abstract class ComponentProduct implements ActiveRecordInterface
                 $this->setQty($value);
                 break;
             case 4:
-                $this->setCreatedAt($value);
+                $this->setActive($value);
                 break;
             case 5:
+                $this->setCreatedAt($value);
+                break;
+            case 6:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1164,10 +1241,13 @@ abstract class ComponentProduct implements ActiveRecordInterface
             $this->setQty($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setCreatedAt($arr[$keys[4]]);
+            $this->setActive($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setUpdatedAt($arr[$keys[5]]);
+            $this->setCreatedAt($arr[$keys[5]]);
+        }
+        if (array_key_exists($keys[6], $arr)) {
+            $this->setUpdatedAt($arr[$keys[6]]);
         }
     }
 
@@ -1221,6 +1301,9 @@ abstract class ComponentProduct implements ActiveRecordInterface
         }
         if ($this->isColumnModified(ComponentProductTableMap::COL_QTY)) {
             $criteria->add(ComponentProductTableMap::COL_QTY, $this->qty);
+        }
+        if ($this->isColumnModified(ComponentProductTableMap::COL_ACTIVE)) {
+            $criteria->add(ComponentProductTableMap::COL_ACTIVE, $this->active);
         }
         if ($this->isColumnModified(ComponentProductTableMap::COL_CREATED_AT)) {
             $criteria->add(ComponentProductTableMap::COL_CREATED_AT, $this->created_at);
@@ -1317,6 +1400,7 @@ abstract class ComponentProduct implements ActiveRecordInterface
         $copyObj->setProductId($this->getProductId());
         $copyObj->setComponentId($this->getComponentId());
         $copyObj->setQty($this->getQty());
+        $copyObj->setActive($this->getActive());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
         if ($makeNew) {
@@ -1466,6 +1550,7 @@ abstract class ComponentProduct implements ActiveRecordInterface
         $this->product_id = null;
         $this->component_id = null;
         $this->qty = null;
+        $this->active = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;

@@ -59,7 +59,7 @@ class SupplierTypeTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 2;
+    const NUM_COLUMNS = 3;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class SupplierTypeTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 2;
+    const NUM_HYDRATE_COLUMNS = 3;
 
     /**
      * the column name for the id field
@@ -80,6 +80,11 @@ class SupplierTypeTableMap extends TableMap
      * the column name for the name field
      */
     const COL_NAME = 'supplier_type.name';
+
+    /**
+     * the column name for the active field
+     */
+    const COL_ACTIVE = 'supplier_type.active';
 
     /**
      * The default string format for model objects of the related table
@@ -93,11 +98,11 @@ class SupplierTypeTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', ),
-        self::TYPE_COLNAME       => array(SupplierTypeTableMap::COL_ID, SupplierTypeTableMap::COL_NAME, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Active', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'active', ),
+        self::TYPE_COLNAME       => array(SupplierTypeTableMap::COL_ID, SupplierTypeTableMap::COL_NAME, SupplierTypeTableMap::COL_ACTIVE, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'active', ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -107,11 +112,11 @@ class SupplierTypeTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, ),
-        self::TYPE_COLNAME       => array(SupplierTypeTableMap::COL_ID => 0, SupplierTypeTableMap::COL_NAME => 1, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Active' => 2, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'active' => 2, ),
+        self::TYPE_COLNAME       => array(SupplierTypeTableMap::COL_ID => 0, SupplierTypeTableMap::COL_NAME => 1, SupplierTypeTableMap::COL_ACTIVE => 2, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'active' => 2, ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -133,6 +138,7 @@ class SupplierTypeTableMap extends TableMap
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', true, 255, null);
+        $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
     } // initialize()
 
     /**
@@ -292,9 +298,11 @@ class SupplierTypeTableMap extends TableMap
         if (null === $alias) {
             $criteria->addSelectColumn(SupplierTypeTableMap::COL_ID);
             $criteria->addSelectColumn(SupplierTypeTableMap::COL_NAME);
+            $criteria->addSelectColumn(SupplierTypeTableMap::COL_ACTIVE);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.name');
+            $criteria->addSelectColumn($alias . '.active');
         }
     }
 

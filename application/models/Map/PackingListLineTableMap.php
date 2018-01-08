@@ -59,7 +59,7 @@ class PackingListLineTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 11;
+    const NUM_COLUMNS = 12;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class PackingListLineTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 11;
+    const NUM_HYDRATE_COLUMNS = 12;
 
     /**
      * the column name for the id field
@@ -117,6 +117,11 @@ class PackingListLineTableMap extends TableMap
     const COL_TOTAL_CUBIC_DIMENSION = 'packing_list_line.total_cubic_dimension';
 
     /**
+     * the column name for the active field
+     */
+    const COL_ACTIVE = 'packing_list_line.active';
+
+    /**
      * the column name for the created_at field
      */
     const COL_CREATED_AT = 'packing_list_line.created_at';
@@ -138,11 +143,11 @@ class PackingListLineTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'PackingListId', 'ProformaInvoiceLineId', 'NetWeight', 'GrossWeight', 'Qty', 'QtyOfPack', 'CubicDimension', 'TotalCubicDimension', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'packingListId', 'proformaInvoiceLineId', 'netWeight', 'grossWeight', 'qty', 'qtyOfPack', 'cubicDimension', 'totalCubicDimension', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(PackingListLineTableMap::COL_ID, PackingListLineTableMap::COL_PACKING_LIST_ID, PackingListLineTableMap::COL_PROFORMA_INVOICE_LINE_ID, PackingListLineTableMap::COL_NET_WEIGHT, PackingListLineTableMap::COL_GROSS_WEIGHT, PackingListLineTableMap::COL_QTY, PackingListLineTableMap::COL_QTY_OF_PACK, PackingListLineTableMap::COL_CUBIC_DIMENSION, PackingListLineTableMap::COL_TOTAL_CUBIC_DIMENSION, PackingListLineTableMap::COL_CREATED_AT, PackingListLineTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'packing_list_id', 'proforma_invoice_line_id', 'net_weight', 'gross_weight', 'qty', 'qty_of_pack', 'cubic_dimension', 'total_cubic_dimension', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
+        self::TYPE_PHPNAME       => array('Id', 'PackingListId', 'ProformaInvoiceLineId', 'NetWeight', 'GrossWeight', 'Qty', 'QtyOfPack', 'CubicDimension', 'TotalCubicDimension', 'Active', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'packingListId', 'proformaInvoiceLineId', 'netWeight', 'grossWeight', 'qty', 'qtyOfPack', 'cubicDimension', 'totalCubicDimension', 'active', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(PackingListLineTableMap::COL_ID, PackingListLineTableMap::COL_PACKING_LIST_ID, PackingListLineTableMap::COL_PROFORMA_INVOICE_LINE_ID, PackingListLineTableMap::COL_NET_WEIGHT, PackingListLineTableMap::COL_GROSS_WEIGHT, PackingListLineTableMap::COL_QTY, PackingListLineTableMap::COL_QTY_OF_PACK, PackingListLineTableMap::COL_CUBIC_DIMENSION, PackingListLineTableMap::COL_TOTAL_CUBIC_DIMENSION, PackingListLineTableMap::COL_ACTIVE, PackingListLineTableMap::COL_CREATED_AT, PackingListLineTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'packing_list_id', 'proforma_invoice_line_id', 'net_weight', 'gross_weight', 'qty', 'qty_of_pack', 'cubic_dimension', 'total_cubic_dimension', 'active', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
     );
 
     /**
@@ -152,11 +157,11 @@ class PackingListLineTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'PackingListId' => 1, 'ProformaInvoiceLineId' => 2, 'NetWeight' => 3, 'GrossWeight' => 4, 'Qty' => 5, 'QtyOfPack' => 6, 'CubicDimension' => 7, 'TotalCubicDimension' => 8, 'CreatedAt' => 9, 'UpdatedAt' => 10, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'packingListId' => 1, 'proformaInvoiceLineId' => 2, 'netWeight' => 3, 'grossWeight' => 4, 'qty' => 5, 'qtyOfPack' => 6, 'cubicDimension' => 7, 'totalCubicDimension' => 8, 'createdAt' => 9, 'updatedAt' => 10, ),
-        self::TYPE_COLNAME       => array(PackingListLineTableMap::COL_ID => 0, PackingListLineTableMap::COL_PACKING_LIST_ID => 1, PackingListLineTableMap::COL_PROFORMA_INVOICE_LINE_ID => 2, PackingListLineTableMap::COL_NET_WEIGHT => 3, PackingListLineTableMap::COL_GROSS_WEIGHT => 4, PackingListLineTableMap::COL_QTY => 5, PackingListLineTableMap::COL_QTY_OF_PACK => 6, PackingListLineTableMap::COL_CUBIC_DIMENSION => 7, PackingListLineTableMap::COL_TOTAL_CUBIC_DIMENSION => 8, PackingListLineTableMap::COL_CREATED_AT => 9, PackingListLineTableMap::COL_UPDATED_AT => 10, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'packing_list_id' => 1, 'proforma_invoice_line_id' => 2, 'net_weight' => 3, 'gross_weight' => 4, 'qty' => 5, 'qty_of_pack' => 6, 'cubic_dimension' => 7, 'total_cubic_dimension' => 8, 'created_at' => 9, 'updated_at' => 10, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'PackingListId' => 1, 'ProformaInvoiceLineId' => 2, 'NetWeight' => 3, 'GrossWeight' => 4, 'Qty' => 5, 'QtyOfPack' => 6, 'CubicDimension' => 7, 'TotalCubicDimension' => 8, 'Active' => 9, 'CreatedAt' => 10, 'UpdatedAt' => 11, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'packingListId' => 1, 'proformaInvoiceLineId' => 2, 'netWeight' => 3, 'grossWeight' => 4, 'qty' => 5, 'qtyOfPack' => 6, 'cubicDimension' => 7, 'totalCubicDimension' => 8, 'active' => 9, 'createdAt' => 10, 'updatedAt' => 11, ),
+        self::TYPE_COLNAME       => array(PackingListLineTableMap::COL_ID => 0, PackingListLineTableMap::COL_PACKING_LIST_ID => 1, PackingListLineTableMap::COL_PROFORMA_INVOICE_LINE_ID => 2, PackingListLineTableMap::COL_NET_WEIGHT => 3, PackingListLineTableMap::COL_GROSS_WEIGHT => 4, PackingListLineTableMap::COL_QTY => 5, PackingListLineTableMap::COL_QTY_OF_PACK => 6, PackingListLineTableMap::COL_CUBIC_DIMENSION => 7, PackingListLineTableMap::COL_TOTAL_CUBIC_DIMENSION => 8, PackingListLineTableMap::COL_ACTIVE => 9, PackingListLineTableMap::COL_CREATED_AT => 10, PackingListLineTableMap::COL_UPDATED_AT => 11, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'packing_list_id' => 1, 'proforma_invoice_line_id' => 2, 'net_weight' => 3, 'gross_weight' => 4, 'qty' => 5, 'qty_of_pack' => 6, 'cubic_dimension' => 7, 'total_cubic_dimension' => 8, 'active' => 9, 'created_at' => 10, 'updated_at' => 11, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
     );
 
     /**
@@ -185,6 +190,7 @@ class PackingListLineTableMap extends TableMap
         $this->addColumn('qty_of_pack', 'QtyOfPack', 'INTEGER', false, null, null);
         $this->addColumn('cubic_dimension', 'CubicDimension', 'FLOAT', false, null, null);
         $this->addColumn('total_cubic_dimension', 'TotalCubicDimension', 'FLOAT', false, null, null);
+        $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -360,6 +366,7 @@ class PackingListLineTableMap extends TableMap
             $criteria->addSelectColumn(PackingListLineTableMap::COL_QTY_OF_PACK);
             $criteria->addSelectColumn(PackingListLineTableMap::COL_CUBIC_DIMENSION);
             $criteria->addSelectColumn(PackingListLineTableMap::COL_TOTAL_CUBIC_DIMENSION);
+            $criteria->addSelectColumn(PackingListLineTableMap::COL_ACTIVE);
             $criteria->addSelectColumn(PackingListLineTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(PackingListLineTableMap::COL_UPDATED_AT);
         } else {
@@ -372,6 +379,7 @@ class PackingListLineTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.qty_of_pack');
             $criteria->addSelectColumn($alias . '.cubic_dimension');
             $criteria->addSelectColumn($alias . '.total_cubic_dimension');
+            $criteria->addSelectColumn($alias . '.active');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }

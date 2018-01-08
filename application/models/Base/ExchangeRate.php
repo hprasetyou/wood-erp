@@ -97,6 +97,14 @@ abstract class ExchangeRate implements ActiveRecordInterface
     protected $rate;
 
     /**
+     * The value for the active field.
+     *
+     * Note: this column has a database default value of: true
+     * @var        boolean
+     */
+    protected $active;
+
+    /**
      * The value for the created_at field.
      *
      * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
@@ -128,6 +136,7 @@ abstract class ExchangeRate implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
+        $this->active = true;
     }
 
     /**
@@ -408,6 +417,26 @@ abstract class ExchangeRate implements ActiveRecordInterface
     }
 
     /**
+     * Get the [active] column value.
+     *
+     * @return boolean
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * Get the [active] column value.
+     *
+     * @return boolean
+     */
+    public function isActive()
+    {
+        return $this->getActive();
+    }
+
+    /**
      * Get the [optionally formatted] temporal [created_at] column value.
      *
      *
@@ -548,6 +577,34 @@ abstract class ExchangeRate implements ActiveRecordInterface
     } // setRate()
 
     /**
+     * Sets the value of the [active] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     *
+     * @param  boolean|integer|string $v The new value
+     * @return $this|\ExchangeRate The current object (for fluent API support)
+     */
+    public function setActive($v)
+    {
+        if ($v !== null) {
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
+        }
+
+        if ($this->active !== $v) {
+            $this->active = $v;
+            $this->modifiedColumns[ExchangeRateTableMap::COL_ACTIVE] = true;
+        }
+
+        return $this;
+    } // setActive()
+
+    /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
@@ -597,6 +654,10 @@ abstract class ExchangeRate implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->active !== true) {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -638,13 +699,16 @@ abstract class ExchangeRate implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ExchangeRateTableMap::translateFieldName('Rate', TableMap::TYPE_PHPNAME, $indexType)];
             $this->rate = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ExchangeRateTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ExchangeRateTableMap::translateFieldName('Active', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->active = (null !== $col) ? (boolean) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ExchangeRateTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ExchangeRateTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : ExchangeRateTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -657,7 +721,7 @@ abstract class ExchangeRate implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 7; // 7 = ExchangeRateTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = ExchangeRateTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\ExchangeRate'), 0, $e);
@@ -873,6 +937,9 @@ abstract class ExchangeRate implements ActiveRecordInterface
         if ($this->isColumnModified(ExchangeRateTableMap::COL_RATE)) {
             $modifiedColumns[':p' . $index++]  = 'rate';
         }
+        if ($this->isColumnModified(ExchangeRateTableMap::COL_ACTIVE)) {
+            $modifiedColumns[':p' . $index++]  = 'active';
+        }
         if ($this->isColumnModified(ExchangeRateTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
@@ -904,6 +971,9 @@ abstract class ExchangeRate implements ActiveRecordInterface
                         break;
                     case 'rate':
                         $stmt->bindValue($identifier, $this->rate, PDO::PARAM_STR);
+                        break;
+                    case 'active':
+                        $stmt->bindValue($identifier, (int) $this->active, PDO::PARAM_INT);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -989,9 +1059,12 @@ abstract class ExchangeRate implements ActiveRecordInterface
                 return $this->getRate();
                 break;
             case 5:
-                return $this->getCreatedAt();
+                return $this->getActive();
                 break;
             case 6:
+                return $this->getCreatedAt();
+                break;
+            case 7:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1028,15 +1101,16 @@ abstract class ExchangeRate implements ActiveRecordInterface
             $keys[2] => $this->getBase(),
             $keys[3] => $this->getTarget(),
             $keys[4] => $this->getRate(),
-            $keys[5] => $this->getCreatedAt(),
-            $keys[6] => $this->getUpdatedAt(),
+            $keys[5] => $this->getActive(),
+            $keys[6] => $this->getCreatedAt(),
+            $keys[7] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[5]] instanceof \DateTimeInterface) {
-            $result[$keys[5]] = $result[$keys[5]]->format('c');
-        }
-
         if ($result[$keys[6]] instanceof \DateTimeInterface) {
             $result[$keys[6]] = $result[$keys[6]]->format('c');
+        }
+
+        if ($result[$keys[7]] instanceof \DateTimeInterface) {
+            $result[$keys[7]] = $result[$keys[7]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1093,9 +1167,12 @@ abstract class ExchangeRate implements ActiveRecordInterface
                 $this->setRate($value);
                 break;
             case 5:
-                $this->setCreatedAt($value);
+                $this->setActive($value);
                 break;
             case 6:
+                $this->setCreatedAt($value);
+                break;
+            case 7:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1140,10 +1217,13 @@ abstract class ExchangeRate implements ActiveRecordInterface
             $this->setRate($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setCreatedAt($arr[$keys[5]]);
+            $this->setActive($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setUpdatedAt($arr[$keys[6]]);
+            $this->setCreatedAt($arr[$keys[6]]);
+        }
+        if (array_key_exists($keys[7], $arr)) {
+            $this->setUpdatedAt($arr[$keys[7]]);
         }
     }
 
@@ -1200,6 +1280,9 @@ abstract class ExchangeRate implements ActiveRecordInterface
         }
         if ($this->isColumnModified(ExchangeRateTableMap::COL_RATE)) {
             $criteria->add(ExchangeRateTableMap::COL_RATE, $this->rate);
+        }
+        if ($this->isColumnModified(ExchangeRateTableMap::COL_ACTIVE)) {
+            $criteria->add(ExchangeRateTableMap::COL_ACTIVE, $this->active);
         }
         if ($this->isColumnModified(ExchangeRateTableMap::COL_CREATED_AT)) {
             $criteria->add(ExchangeRateTableMap::COL_CREATED_AT, $this->created_at);
@@ -1297,6 +1380,7 @@ abstract class ExchangeRate implements ActiveRecordInterface
         $copyObj->setBase($this->getBase());
         $copyObj->setTarget($this->getTarget());
         $copyObj->setRate($this->getRate());
+        $copyObj->setActive($this->getActive());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
         if ($makeNew) {
@@ -1339,6 +1423,7 @@ abstract class ExchangeRate implements ActiveRecordInterface
         $this->base = null;
         $this->target = null;
         $this->rate = null;
+        $this->active = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;

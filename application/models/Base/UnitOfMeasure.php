@@ -2,22 +2,17 @@
 
 namespace Base;
 
-use \Activity as ChildActivity;
-use \ActivityQuery as ChildActivityQuery;
-use \Group as ChildGroup;
-use \GroupQuery as ChildGroupQuery;
-use \Partner as ChildPartner;
-use \PartnerQuery as ChildPartnerQuery;
-use \User as ChildUser;
-use \UserGroup as ChildUserGroup;
-use \UserGroupQuery as ChildUserGroupQuery;
-use \UserQuery as ChildUserQuery;
+use \Product as ChildProduct;
+use \ProductQuery as ChildProductQuery;
+use \UnitOfMeasure as ChildUnitOfMeasure;
+use \UnitOfMeasureCategory as ChildUnitOfMeasureCategory;
+use \UnitOfMeasureCategoryQuery as ChildUnitOfMeasureCategoryQuery;
+use \UnitOfMeasureQuery as ChildUnitOfMeasureQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
-use Map\ActivityTableMap;
-use Map\UserGroupTableMap;
-use Map\UserTableMap;
+use Map\ProductTableMap;
+use Map\UnitOfMeasureTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -33,18 +28,18 @@ use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'user' table.
+ * Base class that represents a row from the 'unit_of_measure' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class User implements ActiveRecordInterface
+abstract class UnitOfMeasure implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Map\\UserTableMap';
+    const TABLE_MAP = '\\Map\\UnitOfMeasureTableMap';
 
 
     /**
@@ -88,25 +83,25 @@ abstract class User implements ActiveRecordInterface
     protected $name;
 
     /**
-     * The value for the password field.
-     *
-     * @var        string
-     */
-    protected $password;
-
-    /**
-     * The value for the partner_id field.
+     * The value for the category_id field.
      *
      * @var        int
      */
-    protected $partner_id;
+    protected $category_id;
 
     /**
-     * The value for the last_login field.
+     * The value for the type field.
      *
-     * @var        DateTime
+     * @var        string
      */
-    protected $last_login;
+    protected $type;
+
+    /**
+     * The value for the ratio field.
+     *
+     * @var        double
+     */
+    protected $ratio;
 
     /**
      * The value for the active field.
@@ -133,31 +128,15 @@ abstract class User implements ActiveRecordInterface
     protected $updated_at;
 
     /**
-     * @var        ChildPartner
+     * @var        ChildUnitOfMeasureCategory
      */
-    protected $aPartner;
+    protected $aUnitOfMeasureCategory;
 
     /**
-     * @var        ObjectCollection|ChildUserGroup[] Collection to store aggregation of ChildUserGroup objects.
+     * @var        ObjectCollection|ChildProduct[] Collection to store aggregation of ChildProduct objects.
      */
-    protected $collUserGroups;
-    protected $collUserGroupsPartial;
-
-    /**
-     * @var        ObjectCollection|ChildActivity[] Collection to store aggregation of ChildActivity objects.
-     */
-    protected $collActivities;
-    protected $collActivitiesPartial;
-
-    /**
-     * @var        ObjectCollection|ChildGroup[] Cross Collection to store aggregation of ChildGroup objects.
-     */
-    protected $collGroups;
-
-    /**
-     * @var bool
-     */
-    protected $collGroupsPartial;
+    protected $collProducts;
+    protected $collProductsPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -169,21 +148,9 @@ abstract class User implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildGroup[]
+     * @var ObjectCollection|ChildProduct[]
      */
-    protected $groupsScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildUserGroup[]
-     */
-    protected $userGroupsScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildActivity[]
-     */
-    protected $activitiesScheduledForDeletion = null;
+    protected $productsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -197,7 +164,7 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * Initializes internal state of Base\User object.
+     * Initializes internal state of Base\UnitOfMeasure object.
      * @see applyDefaults()
      */
     public function __construct()
@@ -294,9 +261,9 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>User</code> instance.  If
-     * <code>obj</code> is an instance of <code>User</code>, delegates to
-     * <code>equals(User)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>UnitOfMeasure</code> instance.  If
+     * <code>obj</code> is an instance of <code>UnitOfMeasure</code>, delegates to
+     * <code>equals(UnitOfMeasure)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -362,7 +329,7 @@ abstract class User implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|User The current object, for fluid interface
+     * @return $this|UnitOfMeasure The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -444,43 +411,33 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * Get the [password] column value.
-     *
-     * @return string
-     */
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    /**
-     * Get the [partner_id] column value.
+     * Get the [category_id] column value.
      *
      * @return int
      */
-    public function getPartnerId()
+    public function getCategoryId()
     {
-        return $this->partner_id;
+        return $this->category_id;
     }
 
     /**
-     * Get the [optionally formatted] temporal [last_login] column value.
+     * Get the [type] column value.
      *
-     *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw DateTime object will be returned.
-     *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
-     *
-     * @throws PropelException - if unable to parse/validate the date/time value.
+     * @return string
      */
-    public function getLastLogin($format = NULL)
+    public function getType()
     {
-        if ($format === null) {
-            return $this->last_login;
-        } else {
-            return $this->last_login instanceof \DateTimeInterface ? $this->last_login->format($format) : null;
-        }
+        return $this->type;
+    }
+
+    /**
+     * Get the [ratio] column value.
+     *
+     * @return double
+     */
+    public function getRatio()
+    {
+        return $this->ratio;
     }
 
     /**
@@ -547,7 +504,7 @@ abstract class User implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param int $v new value
-     * @return $this|\User The current object (for fluent API support)
+     * @return $this|\UnitOfMeasure The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -557,7 +514,7 @@ abstract class User implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[UserTableMap::COL_ID] = true;
+            $this->modifiedColumns[UnitOfMeasureTableMap::COL_ID] = true;
         }
 
         return $this;
@@ -567,7 +524,7 @@ abstract class User implements ActiveRecordInterface
      * Set the value of [name] column.
      *
      * @param string $v new value
-     * @return $this|\User The current object (for fluent API support)
+     * @return $this|\UnitOfMeasure The current object (for fluent API support)
      */
     public function setName($v)
     {
@@ -577,75 +534,75 @@ abstract class User implements ActiveRecordInterface
 
         if ($this->name !== $v) {
             $this->name = $v;
-            $this->modifiedColumns[UserTableMap::COL_NAME] = true;
+            $this->modifiedColumns[UnitOfMeasureTableMap::COL_NAME] = true;
         }
 
         return $this;
     } // setName()
 
     /**
-     * Set the value of [password] column.
-     *
-     * @param string $v new value
-     * @return $this|\User The current object (for fluent API support)
-     */
-    public function setPassword($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->password !== $v) {
-            $this->password = $v;
-            $this->modifiedColumns[UserTableMap::COL_PASSWORD] = true;
-        }
-
-        return $this;
-    } // setPassword()
-
-    /**
-     * Set the value of [partner_id] column.
+     * Set the value of [category_id] column.
      *
      * @param int $v new value
-     * @return $this|\User The current object (for fluent API support)
+     * @return $this|\UnitOfMeasure The current object (for fluent API support)
      */
-    public function setPartnerId($v)
+    public function setCategoryId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->partner_id !== $v) {
-            $this->partner_id = $v;
-            $this->modifiedColumns[UserTableMap::COL_PARTNER_ID] = true;
+        if ($this->category_id !== $v) {
+            $this->category_id = $v;
+            $this->modifiedColumns[UnitOfMeasureTableMap::COL_CATEGORY_ID] = true;
         }
 
-        if ($this->aPartner !== null && $this->aPartner->getId() !== $v) {
-            $this->aPartner = null;
+        if ($this->aUnitOfMeasureCategory !== null && $this->aUnitOfMeasureCategory->getId() !== $v) {
+            $this->aUnitOfMeasureCategory = null;
         }
 
         return $this;
-    } // setPartnerId()
+    } // setCategoryId()
 
     /**
-     * Sets the value of [last_login] column to a normalized version of the date/time value specified.
+     * Set the value of [type] column.
      *
-     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
-     *               Empty strings are treated as NULL.
-     * @return $this|\User The current object (for fluent API support)
+     * @param string $v new value
+     * @return $this|\UnitOfMeasure The current object (for fluent API support)
      */
-    public function setLastLogin($v)
+    public function setType($v)
     {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->last_login !== null || $dt !== null) {
-            if ($this->last_login === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->last_login->format("Y-m-d H:i:s.u")) {
-                $this->last_login = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[UserTableMap::COL_LAST_LOGIN] = true;
-            }
-        } // if either are not null
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->type !== $v) {
+            $this->type = $v;
+            $this->modifiedColumns[UnitOfMeasureTableMap::COL_TYPE] = true;
+        }
 
         return $this;
-    } // setLastLogin()
+    } // setType()
+
+    /**
+     * Set the value of [ratio] column.
+     *
+     * @param double $v new value
+     * @return $this|\UnitOfMeasure The current object (for fluent API support)
+     */
+    public function setRatio($v)
+    {
+        if ($v !== null) {
+            $v = (double) $v;
+        }
+
+        if ($this->ratio !== $v) {
+            $this->ratio = $v;
+            $this->modifiedColumns[UnitOfMeasureTableMap::COL_RATIO] = true;
+        }
+
+        return $this;
+    } // setRatio()
 
     /**
      * Sets the value of the [active] column.
@@ -655,7 +612,7 @@ abstract class User implements ActiveRecordInterface
      * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
      *
      * @param  boolean|integer|string $v The new value
-     * @return $this|\User The current object (for fluent API support)
+     * @return $this|\UnitOfMeasure The current object (for fluent API support)
      */
     public function setActive($v)
     {
@@ -669,7 +626,7 @@ abstract class User implements ActiveRecordInterface
 
         if ($this->active !== $v) {
             $this->active = $v;
-            $this->modifiedColumns[UserTableMap::COL_ACTIVE] = true;
+            $this->modifiedColumns[UnitOfMeasureTableMap::COL_ACTIVE] = true;
         }
 
         return $this;
@@ -680,7 +637,7 @@ abstract class User implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\User The current object (for fluent API support)
+     * @return $this|\UnitOfMeasure The current object (for fluent API support)
      */
     public function setCreatedAt($v)
     {
@@ -688,7 +645,7 @@ abstract class User implements ActiveRecordInterface
         if ($this->created_at !== null || $dt !== null) {
             if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_at->format("Y-m-d H:i:s.u")) {
                 $this->created_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[UserTableMap::COL_CREATED_AT] = true;
+                $this->modifiedColumns[UnitOfMeasureTableMap::COL_CREATED_AT] = true;
             }
         } // if either are not null
 
@@ -700,7 +657,7 @@ abstract class User implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\User The current object (for fluent API support)
+     * @return $this|\UnitOfMeasure The current object (for fluent API support)
      */
     public function setUpdatedAt($v)
     {
@@ -708,7 +665,7 @@ abstract class User implements ActiveRecordInterface
         if ($this->updated_at !== null || $dt !== null) {
             if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated_at->format("Y-m-d H:i:s.u")) {
                 $this->updated_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[UserTableMap::COL_UPDATED_AT] = true;
+                $this->modifiedColumns[UnitOfMeasureTableMap::COL_UPDATED_AT] = true;
             }
         } // if either are not null
 
@@ -755,34 +712,31 @@ abstract class User implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : UserTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : UnitOfMeasureTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : UserTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : UnitOfMeasureTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : UserTableMap::translateFieldName('Password', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->password = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : UnitOfMeasureTableMap::translateFieldName('CategoryId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->category_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : UserTableMap::translateFieldName('PartnerId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->partner_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : UnitOfMeasureTableMap::translateFieldName('Type', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->type = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : UserTableMap::translateFieldName('LastLogin', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
-            $this->last_login = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : UnitOfMeasureTableMap::translateFieldName('Ratio', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->ratio = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : UserTableMap::translateFieldName('Active', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : UnitOfMeasureTableMap::translateFieldName('Active', TableMap::TYPE_PHPNAME, $indexType)];
             $this->active = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : UserTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : UnitOfMeasureTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : UserTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : UnitOfMeasureTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -795,10 +749,10 @@ abstract class User implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 8; // 8 = UserTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = UnitOfMeasureTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\User'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\UnitOfMeasure'), 0, $e);
         }
     }
 
@@ -817,8 +771,8 @@ abstract class User implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aPartner !== null && $this->partner_id !== $this->aPartner->getId()) {
-            $this->aPartner = null;
+        if ($this->aUnitOfMeasureCategory !== null && $this->category_id !== $this->aUnitOfMeasureCategory->getId()) {
+            $this->aUnitOfMeasureCategory = null;
         }
     } // ensureConsistency
 
@@ -843,13 +797,13 @@ abstract class User implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(UserTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(UnitOfMeasureTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildUserQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildUnitOfMeasureQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -859,12 +813,9 @@ abstract class User implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aPartner = null;
-            $this->collUserGroups = null;
+            $this->aUnitOfMeasureCategory = null;
+            $this->collProducts = null;
 
-            $this->collActivities = null;
-
-            $this->collGroups = null;
         } // if (deep)
     }
 
@@ -874,8 +825,8 @@ abstract class User implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see User::setDeleted()
-     * @see User::isDeleted()
+     * @see UnitOfMeasure::setDeleted()
+     * @see UnitOfMeasure::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -884,11 +835,11 @@ abstract class User implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(UserTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UnitOfMeasureTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildUserQuery::create()
+            $deleteQuery = ChildUnitOfMeasureQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -923,7 +874,7 @@ abstract class User implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(UserTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UnitOfMeasureTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -942,7 +893,7 @@ abstract class User implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                UserTableMap::addInstanceToPool($this);
+                UnitOfMeasureTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -973,11 +924,11 @@ abstract class User implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aPartner !== null) {
-                if ($this->aPartner->isModified() || $this->aPartner->isNew()) {
-                    $affectedRows += $this->aPartner->save($con);
+            if ($this->aUnitOfMeasureCategory !== null) {
+                if ($this->aUnitOfMeasureCategory->isModified() || $this->aUnitOfMeasureCategory->isNew()) {
+                    $affectedRows += $this->aUnitOfMeasureCategory->save($con);
                 }
-                $this->setPartner($this->aPartner);
+                $this->setUnitOfMeasureCategory($this->aUnitOfMeasureCategory);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -991,63 +942,18 @@ abstract class User implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->groupsScheduledForDeletion !== null) {
-                if (!$this->groupsScheduledForDeletion->isEmpty()) {
-                    $pks = array();
-                    foreach ($this->groupsScheduledForDeletion as $entry) {
-                        $entryPk = [];
-
-                        $entryPk[0] = $this->getId();
-                        $entryPk[1] = $entry->getId();
-                        $pks[] = $entryPk;
+            if ($this->productsScheduledForDeletion !== null) {
+                if (!$this->productsScheduledForDeletion->isEmpty()) {
+                    foreach ($this->productsScheduledForDeletion as $product) {
+                        // need to save related object because we set the relation to null
+                        $product->save($con);
                     }
-
-                    \UserGroupQuery::create()
-                        ->filterByPrimaryKeys($pks)
-                        ->delete($con);
-
-                    $this->groupsScheduledForDeletion = null;
-                }
-
-            }
-
-            if ($this->collGroups) {
-                foreach ($this->collGroups as $group) {
-                    if (!$group->isDeleted() && ($group->isNew() || $group->isModified())) {
-                        $group->save($con);
-                    }
+                    $this->productsScheduledForDeletion = null;
                 }
             }
 
-
-            if ($this->userGroupsScheduledForDeletion !== null) {
-                if (!$this->userGroupsScheduledForDeletion->isEmpty()) {
-                    \UserGroupQuery::create()
-                        ->filterByPrimaryKeys($this->userGroupsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->userGroupsScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collUserGroups !== null) {
-                foreach ($this->collUserGroups as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->activitiesScheduledForDeletion !== null) {
-                if (!$this->activitiesScheduledForDeletion->isEmpty()) {
-                    \ActivityQuery::create()
-                        ->filterByPrimaryKeys($this->activitiesScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->activitiesScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collActivities !== null) {
-                foreach ($this->collActivities as $referrerFK) {
+            if ($this->collProducts !== null) {
+                foreach ($this->collProducts as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1074,39 +980,39 @@ abstract class User implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[UserTableMap::COL_ID] = true;
+        $this->modifiedColumns[UnitOfMeasureTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . UserTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . UnitOfMeasureTableMap::COL_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(UserTableMap::COL_ID)) {
+        if ($this->isColumnModified(UnitOfMeasureTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(UserTableMap::COL_NAME)) {
+        if ($this->isColumnModified(UnitOfMeasureTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'name';
         }
-        if ($this->isColumnModified(UserTableMap::COL_PASSWORD)) {
-            $modifiedColumns[':p' . $index++]  = 'password';
+        if ($this->isColumnModified(UnitOfMeasureTableMap::COL_CATEGORY_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'category_id';
         }
-        if ($this->isColumnModified(UserTableMap::COL_PARTNER_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'partner_id';
+        if ($this->isColumnModified(UnitOfMeasureTableMap::COL_TYPE)) {
+            $modifiedColumns[':p' . $index++]  = 'type';
         }
-        if ($this->isColumnModified(UserTableMap::COL_LAST_LOGIN)) {
-            $modifiedColumns[':p' . $index++]  = 'last_login';
+        if ($this->isColumnModified(UnitOfMeasureTableMap::COL_RATIO)) {
+            $modifiedColumns[':p' . $index++]  = 'ratio';
         }
-        if ($this->isColumnModified(UserTableMap::COL_ACTIVE)) {
+        if ($this->isColumnModified(UnitOfMeasureTableMap::COL_ACTIVE)) {
             $modifiedColumns[':p' . $index++]  = 'active';
         }
-        if ($this->isColumnModified(UserTableMap::COL_CREATED_AT)) {
+        if ($this->isColumnModified(UnitOfMeasureTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
-        if ($this->isColumnModified(UserTableMap::COL_UPDATED_AT)) {
+        if ($this->isColumnModified(UnitOfMeasureTableMap::COL_UPDATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'updated_at';
         }
 
         $sql = sprintf(
-            'INSERT INTO user (%s) VALUES (%s)',
+            'INSERT INTO unit_of_measure (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -1121,14 +1027,14 @@ abstract class User implements ActiveRecordInterface
                     case 'name':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
-                    case 'password':
-                        $stmt->bindValue($identifier, $this->password, PDO::PARAM_STR);
+                    case 'category_id':
+                        $stmt->bindValue($identifier, $this->category_id, PDO::PARAM_INT);
                         break;
-                    case 'partner_id':
-                        $stmt->bindValue($identifier, $this->partner_id, PDO::PARAM_INT);
+                    case 'type':
+                        $stmt->bindValue($identifier, $this->type, PDO::PARAM_STR);
                         break;
-                    case 'last_login':
-                        $stmt->bindValue($identifier, $this->last_login ? $this->last_login->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                    case 'ratio':
+                        $stmt->bindValue($identifier, $this->ratio, PDO::PARAM_STR);
                         break;
                     case 'active':
                         $stmt->bindValue($identifier, (int) $this->active, PDO::PARAM_INT);
@@ -1185,7 +1091,7 @@ abstract class User implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = UserTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = UnitOfMeasureTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -1208,13 +1114,13 @@ abstract class User implements ActiveRecordInterface
                 return $this->getName();
                 break;
             case 2:
-                return $this->getPassword();
+                return $this->getCategoryId();
                 break;
             case 3:
-                return $this->getPartnerId();
+                return $this->getType();
                 break;
             case 4:
-                return $this->getLastLogin();
+                return $this->getRatio();
                 break;
             case 5:
                 return $this->getActive();
@@ -1249,25 +1155,21 @@ abstract class User implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['User'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['UnitOfMeasure'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['User'][$this->hashCode()] = true;
-        $keys = UserTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['UnitOfMeasure'][$this->hashCode()] = true;
+        $keys = UnitOfMeasureTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
-            $keys[2] => $this->getPassword(),
-            $keys[3] => $this->getPartnerId(),
-            $keys[4] => $this->getLastLogin(),
+            $keys[2] => $this->getCategoryId(),
+            $keys[3] => $this->getType(),
+            $keys[4] => $this->getRatio(),
             $keys[5] => $this->getActive(),
             $keys[6] => $this->getCreatedAt(),
             $keys[7] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[4]] instanceof \DateTimeInterface) {
-            $result[$keys[4]] = $result[$keys[4]]->format('c');
-        }
-
         if ($result[$keys[6]] instanceof \DateTimeInterface) {
             $result[$keys[6]] = $result[$keys[6]]->format('c');
         }
@@ -1282,50 +1184,35 @@ abstract class User implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aPartner) {
+            if (null !== $this->aUnitOfMeasureCategory) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'partner';
+                        $key = 'unitOfMeasureCategory';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'partner';
+                        $key = 'unit_of_measure_category';
                         break;
                     default:
-                        $key = 'Partner';
+                        $key = 'UnitOfMeasureCategory';
                 }
 
-                $result[$key] = $this->aPartner->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aUnitOfMeasureCategory->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->collUserGroups) {
+            if (null !== $this->collProducts) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'userGroups';
+                        $key = 'products';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'user_groups';
+                        $key = 'products';
                         break;
                     default:
-                        $key = 'UserGroups';
+                        $key = 'Products';
                 }
 
-                $result[$key] = $this->collUserGroups->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collActivities) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'activities';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'activities';
-                        break;
-                    default:
-                        $key = 'Activities';
-                }
-
-                $result[$key] = $this->collActivities->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collProducts->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1341,11 +1228,11 @@ abstract class User implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\User
+     * @return $this|\UnitOfMeasure
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = UserTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = UnitOfMeasureTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1356,7 +1243,7 @@ abstract class User implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\User
+     * @return $this|\UnitOfMeasure
      */
     public function setByPosition($pos, $value)
     {
@@ -1368,13 +1255,13 @@ abstract class User implements ActiveRecordInterface
                 $this->setName($value);
                 break;
             case 2:
-                $this->setPassword($value);
+                $this->setCategoryId($value);
                 break;
             case 3:
-                $this->setPartnerId($value);
+                $this->setType($value);
                 break;
             case 4:
-                $this->setLastLogin($value);
+                $this->setRatio($value);
                 break;
             case 5:
                 $this->setActive($value);
@@ -1409,7 +1296,7 @@ abstract class User implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = UserTableMap::getFieldNames($keyType);
+        $keys = UnitOfMeasureTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setId($arr[$keys[0]]);
@@ -1418,13 +1305,13 @@ abstract class User implements ActiveRecordInterface
             $this->setName($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setPassword($arr[$keys[2]]);
+            $this->setCategoryId($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setPartnerId($arr[$keys[3]]);
+            $this->setType($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setLastLogin($arr[$keys[4]]);
+            $this->setRatio($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
             $this->setActive($arr[$keys[5]]);
@@ -1454,7 +1341,7 @@ abstract class User implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\User The current object, for fluid interface
+     * @return $this|\UnitOfMeasure The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1474,31 +1361,31 @@ abstract class User implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(UserTableMap::DATABASE_NAME);
+        $criteria = new Criteria(UnitOfMeasureTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(UserTableMap::COL_ID)) {
-            $criteria->add(UserTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(UnitOfMeasureTableMap::COL_ID)) {
+            $criteria->add(UnitOfMeasureTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(UserTableMap::COL_NAME)) {
-            $criteria->add(UserTableMap::COL_NAME, $this->name);
+        if ($this->isColumnModified(UnitOfMeasureTableMap::COL_NAME)) {
+            $criteria->add(UnitOfMeasureTableMap::COL_NAME, $this->name);
         }
-        if ($this->isColumnModified(UserTableMap::COL_PASSWORD)) {
-            $criteria->add(UserTableMap::COL_PASSWORD, $this->password);
+        if ($this->isColumnModified(UnitOfMeasureTableMap::COL_CATEGORY_ID)) {
+            $criteria->add(UnitOfMeasureTableMap::COL_CATEGORY_ID, $this->category_id);
         }
-        if ($this->isColumnModified(UserTableMap::COL_PARTNER_ID)) {
-            $criteria->add(UserTableMap::COL_PARTNER_ID, $this->partner_id);
+        if ($this->isColumnModified(UnitOfMeasureTableMap::COL_TYPE)) {
+            $criteria->add(UnitOfMeasureTableMap::COL_TYPE, $this->type);
         }
-        if ($this->isColumnModified(UserTableMap::COL_LAST_LOGIN)) {
-            $criteria->add(UserTableMap::COL_LAST_LOGIN, $this->last_login);
+        if ($this->isColumnModified(UnitOfMeasureTableMap::COL_RATIO)) {
+            $criteria->add(UnitOfMeasureTableMap::COL_RATIO, $this->ratio);
         }
-        if ($this->isColumnModified(UserTableMap::COL_ACTIVE)) {
-            $criteria->add(UserTableMap::COL_ACTIVE, $this->active);
+        if ($this->isColumnModified(UnitOfMeasureTableMap::COL_ACTIVE)) {
+            $criteria->add(UnitOfMeasureTableMap::COL_ACTIVE, $this->active);
         }
-        if ($this->isColumnModified(UserTableMap::COL_CREATED_AT)) {
-            $criteria->add(UserTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(UnitOfMeasureTableMap::COL_CREATED_AT)) {
+            $criteria->add(UnitOfMeasureTableMap::COL_CREATED_AT, $this->created_at);
         }
-        if ($this->isColumnModified(UserTableMap::COL_UPDATED_AT)) {
-            $criteria->add(UserTableMap::COL_UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(UnitOfMeasureTableMap::COL_UPDATED_AT)) {
+            $criteria->add(UnitOfMeasureTableMap::COL_UPDATED_AT, $this->updated_at);
         }
 
         return $criteria;
@@ -1516,8 +1403,8 @@ abstract class User implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildUserQuery::create();
-        $criteria->add(UserTableMap::COL_ID, $this->id);
+        $criteria = ChildUnitOfMeasureQuery::create();
+        $criteria->add(UnitOfMeasureTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1579,7 +1466,7 @@ abstract class User implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \User (or compatible) type.
+     * @param      object $copyObj An object of \UnitOfMeasure (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1587,9 +1474,9 @@ abstract class User implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setName($this->getName());
-        $copyObj->setPassword($this->getPassword());
-        $copyObj->setPartnerId($this->getPartnerId());
-        $copyObj->setLastLogin($this->getLastLogin());
+        $copyObj->setCategoryId($this->getCategoryId());
+        $copyObj->setType($this->getType());
+        $copyObj->setRatio($this->getRatio());
         $copyObj->setActive($this->getActive());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
@@ -1599,15 +1486,9 @@ abstract class User implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getUserGroups() as $relObj) {
+            foreach ($this->getProducts() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addUserGroup($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getActivities() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addActivity($relObj->copy($deepCopy));
+                    $copyObj->addProduct($relObj->copy($deepCopy));
                 }
             }
 
@@ -1628,7 +1509,7 @@ abstract class User implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \User Clone of current object.
+     * @return \UnitOfMeasure Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1642,26 +1523,26 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildPartner object.
+     * Declares an association between this object and a ChildUnitOfMeasureCategory object.
      *
-     * @param  ChildPartner $v
-     * @return $this|\User The current object (for fluent API support)
+     * @param  ChildUnitOfMeasureCategory $v
+     * @return $this|\UnitOfMeasure The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setPartner(ChildPartner $v = null)
+    public function setUnitOfMeasureCategory(ChildUnitOfMeasureCategory $v = null)
     {
         if ($v === null) {
-            $this->setPartnerId(NULL);
+            $this->setCategoryId(NULL);
         } else {
-            $this->setPartnerId($v->getId());
+            $this->setCategoryId($v->getId());
         }
 
-        $this->aPartner = $v;
+        $this->aUnitOfMeasureCategory = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildPartner object, it will not be re-added.
+        // If this object has already been added to the ChildUnitOfMeasureCategory object, it will not be re-added.
         if ($v !== null) {
-            $v->addUser($this);
+            $v->addUnitOfMeasure($this);
         }
 
 
@@ -1670,26 +1551,26 @@ abstract class User implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildPartner object
+     * Get the associated ChildUnitOfMeasureCategory object
      *
      * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildPartner The associated ChildPartner object.
+     * @return ChildUnitOfMeasureCategory The associated ChildUnitOfMeasureCategory object.
      * @throws PropelException
      */
-    public function getPartner(ConnectionInterface $con = null)
+    public function getUnitOfMeasureCategory(ConnectionInterface $con = null)
     {
-        if ($this->aPartner === null && ($this->partner_id != 0)) {
-            $this->aPartner = ChildPartnerQuery::create()->findPk($this->partner_id, $con);
+        if ($this->aUnitOfMeasureCategory === null && ($this->category_id != 0)) {
+            $this->aUnitOfMeasureCategory = ChildUnitOfMeasureCategoryQuery::create()->findPk($this->category_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aPartner->addUsers($this);
+                $this->aUnitOfMeasureCategory->addUnitOfMeasures($this);
              */
         }
 
-        return $this->aPartner;
+        return $this->aUnitOfMeasureCategory;
     }
 
 
@@ -1703,42 +1584,38 @@ abstract class User implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('UserGroup' == $relationName) {
-            $this->initUserGroups();
-            return;
-        }
-        if ('Activity' == $relationName) {
-            $this->initActivities();
+        if ('Product' == $relationName) {
+            $this->initProducts();
             return;
         }
     }
 
     /**
-     * Clears out the collUserGroups collection
+     * Clears out the collProducts collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addUserGroups()
+     * @see        addProducts()
      */
-    public function clearUserGroups()
+    public function clearProducts()
     {
-        $this->collUserGroups = null; // important to set this to NULL since that means it is uninitialized
+        $this->collProducts = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collUserGroups collection loaded partially.
+     * Reset is the collProducts collection loaded partially.
      */
-    public function resetPartialUserGroups($v = true)
+    public function resetPartialProducts($v = true)
     {
-        $this->collUserGroupsPartial = $v;
+        $this->collProductsPartial = $v;
     }
 
     /**
-     * Initializes the collUserGroups collection.
+     * Initializes the collProducts collection.
      *
-     * By default this just sets the collUserGroups collection to an empty array (like clearcollUserGroups());
+     * By default this just sets the collProducts collection to an empty array (like clearcollProducts());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1747,165 +1624,162 @@ abstract class User implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initUserGroups($overrideExisting = true)
+    public function initProducts($overrideExisting = true)
     {
-        if (null !== $this->collUserGroups && !$overrideExisting) {
+        if (null !== $this->collProducts && !$overrideExisting) {
             return;
         }
 
-        $collectionClassName = UserGroupTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = ProductTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collUserGroups = new $collectionClassName;
-        $this->collUserGroups->setModel('\UserGroup');
+        $this->collProducts = new $collectionClassName;
+        $this->collProducts->setModel('\Product');
     }
 
     /**
-     * Gets an array of ChildUserGroup objects which contain a foreign key that references this object.
+     * Gets an array of ChildProduct objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildUser is new, it will return
+     * If this ChildUnitOfMeasure is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildUserGroup[] List of ChildUserGroup objects
+     * @return ObjectCollection|ChildProduct[] List of ChildProduct objects
      * @throws PropelException
      */
-    public function getUserGroups(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getProducts(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collUserGroupsPartial && !$this->isNew();
-        if (null === $this->collUserGroups || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collUserGroups) {
+        $partial = $this->collProductsPartial && !$this->isNew();
+        if (null === $this->collProducts || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collProducts) {
                 // return empty collection
-                $this->initUserGroups();
+                $this->initProducts();
             } else {
-                $collUserGroups = ChildUserGroupQuery::create(null, $criteria)
-                    ->filterByUser($this)
+                $collProducts = ChildProductQuery::create(null, $criteria)
+                    ->filterByUnitOfMeasure($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collUserGroupsPartial && count($collUserGroups)) {
-                        $this->initUserGroups(false);
+                    if (false !== $this->collProductsPartial && count($collProducts)) {
+                        $this->initProducts(false);
 
-                        foreach ($collUserGroups as $obj) {
-                            if (false == $this->collUserGroups->contains($obj)) {
-                                $this->collUserGroups->append($obj);
+                        foreach ($collProducts as $obj) {
+                            if (false == $this->collProducts->contains($obj)) {
+                                $this->collProducts->append($obj);
                             }
                         }
 
-                        $this->collUserGroupsPartial = true;
+                        $this->collProductsPartial = true;
                     }
 
-                    return $collUserGroups;
+                    return $collProducts;
                 }
 
-                if ($partial && $this->collUserGroups) {
-                    foreach ($this->collUserGroups as $obj) {
+                if ($partial && $this->collProducts) {
+                    foreach ($this->collProducts as $obj) {
                         if ($obj->isNew()) {
-                            $collUserGroups[] = $obj;
+                            $collProducts[] = $obj;
                         }
                     }
                 }
 
-                $this->collUserGroups = $collUserGroups;
-                $this->collUserGroupsPartial = false;
+                $this->collProducts = $collProducts;
+                $this->collProductsPartial = false;
             }
         }
 
-        return $this->collUserGroups;
+        return $this->collProducts;
     }
 
     /**
-     * Sets a collection of ChildUserGroup objects related by a one-to-many relationship
+     * Sets a collection of ChildProduct objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $userGroups A Propel collection.
+     * @param      Collection $products A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildUser The current object (for fluent API support)
+     * @return $this|ChildUnitOfMeasure The current object (for fluent API support)
      */
-    public function setUserGroups(Collection $userGroups, ConnectionInterface $con = null)
+    public function setProducts(Collection $products, ConnectionInterface $con = null)
     {
-        /** @var ChildUserGroup[] $userGroupsToDelete */
-        $userGroupsToDelete = $this->getUserGroups(new Criteria(), $con)->diff($userGroups);
+        /** @var ChildProduct[] $productsToDelete */
+        $productsToDelete = $this->getProducts(new Criteria(), $con)->diff($products);
 
 
-        //since at least one column in the foreign key is at the same time a PK
-        //we can not just set a PK to NULL in the lines below. We have to store
-        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
-        $this->userGroupsScheduledForDeletion = clone $userGroupsToDelete;
+        $this->productsScheduledForDeletion = $productsToDelete;
 
-        foreach ($userGroupsToDelete as $userGroupRemoved) {
-            $userGroupRemoved->setUser(null);
+        foreach ($productsToDelete as $productRemoved) {
+            $productRemoved->setUnitOfMeasure(null);
         }
 
-        $this->collUserGroups = null;
-        foreach ($userGroups as $userGroup) {
-            $this->addUserGroup($userGroup);
+        $this->collProducts = null;
+        foreach ($products as $product) {
+            $this->addProduct($product);
         }
 
-        $this->collUserGroups = $userGroups;
-        $this->collUserGroupsPartial = false;
+        $this->collProducts = $products;
+        $this->collProductsPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related UserGroup objects.
+     * Returns the number of related Product objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related UserGroup objects.
+     * @return int             Count of related Product objects.
      * @throws PropelException
      */
-    public function countUserGroups(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countProducts(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collUserGroupsPartial && !$this->isNew();
-        if (null === $this->collUserGroups || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collUserGroups) {
+        $partial = $this->collProductsPartial && !$this->isNew();
+        if (null === $this->collProducts || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collProducts) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getUserGroups());
+                return count($this->getProducts());
             }
 
-            $query = ChildUserGroupQuery::create(null, $criteria);
+            $query = ChildProductQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
 
             return $query
-                ->filterByUser($this)
+                ->filterByUnitOfMeasure($this)
                 ->count($con);
         }
 
-        return count($this->collUserGroups);
+        return count($this->collProducts);
     }
 
     /**
-     * Method called to associate a ChildUserGroup object to this object
-     * through the ChildUserGroup foreign key attribute.
+     * Method called to associate a ChildProduct object to this object
+     * through the ChildProduct foreign key attribute.
      *
-     * @param  ChildUserGroup $l ChildUserGroup
-     * @return $this|\User The current object (for fluent API support)
+     * @param  ChildProduct $l ChildProduct
+     * @return $this|\UnitOfMeasure The current object (for fluent API support)
      */
-    public function addUserGroup(ChildUserGroup $l)
+    public function addProduct(ChildProduct $l)
     {
-        if ($this->collUserGroups === null) {
-            $this->initUserGroups();
-            $this->collUserGroupsPartial = true;
+        if ($this->collProducts === null) {
+            $this->initProducts();
+            $this->collProductsPartial = true;
         }
 
-        if (!$this->collUserGroups->contains($l)) {
-            $this->doAddUserGroup($l);
+        if (!$this->collProducts->contains($l)) {
+            $this->doAddProduct($l);
 
-            if ($this->userGroupsScheduledForDeletion and $this->userGroupsScheduledForDeletion->contains($l)) {
-                $this->userGroupsScheduledForDeletion->remove($this->userGroupsScheduledForDeletion->search($l));
+            if ($this->productsScheduledForDeletion and $this->productsScheduledForDeletion->contains($l)) {
+                $this->productsScheduledForDeletion->remove($this->productsScheduledForDeletion->search($l));
             }
         }
 
@@ -1913,29 +1787,29 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildUserGroup $userGroup The ChildUserGroup object to add.
+     * @param ChildProduct $product The ChildProduct object to add.
      */
-    protected function doAddUserGroup(ChildUserGroup $userGroup)
+    protected function doAddProduct(ChildProduct $product)
     {
-        $this->collUserGroups[]= $userGroup;
-        $userGroup->setUser($this);
+        $this->collProducts[]= $product;
+        $product->setUnitOfMeasure($this);
     }
 
     /**
-     * @param  ChildUserGroup $userGroup The ChildUserGroup object to remove.
-     * @return $this|ChildUser The current object (for fluent API support)
+     * @param  ChildProduct $product The ChildProduct object to remove.
+     * @return $this|ChildUnitOfMeasure The current object (for fluent API support)
      */
-    public function removeUserGroup(ChildUserGroup $userGroup)
+    public function removeProduct(ChildProduct $product)
     {
-        if ($this->getUserGroups()->contains($userGroup)) {
-            $pos = $this->collUserGroups->search($userGroup);
-            $this->collUserGroups->remove($pos);
-            if (null === $this->userGroupsScheduledForDeletion) {
-                $this->userGroupsScheduledForDeletion = clone $this->collUserGroups;
-                $this->userGroupsScheduledForDeletion->clear();
+        if ($this->getProducts()->contains($product)) {
+            $pos = $this->collProducts->search($product);
+            $this->collProducts->remove($pos);
+            if (null === $this->productsScheduledForDeletion) {
+                $this->productsScheduledForDeletion = clone $this->collProducts;
+                $this->productsScheduledForDeletion->clear();
             }
-            $this->userGroupsScheduledForDeletion[]= clone $userGroup;
-            $userGroup->setUser(null);
+            $this->productsScheduledForDeletion[]= $product;
+            $product->setUnitOfMeasure(null);
         }
 
         return $this;
@@ -1945,493 +1819,25 @@ abstract class User implements ActiveRecordInterface
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this User is new, it will return
-     * an empty collection; or if this User has previously
-     * been saved, it will retrieve related UserGroups from storage.
+     * Otherwise if this UnitOfMeasure is new, it will return
+     * an empty collection; or if this UnitOfMeasure has previously
+     * been saved, it will retrieve related Products from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in User.
+     * actually need in UnitOfMeasure.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildUserGroup[] List of ChildUserGroup objects
+     * @return ObjectCollection|ChildProduct[] List of ChildProduct objects
      */
-    public function getUserGroupsJoinGroup(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getProductsJoinMaterial(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildUserGroupQuery::create(null, $criteria);
-        $query->joinWith('Group', $joinBehavior);
+        $query = ChildProductQuery::create(null, $criteria);
+        $query->joinWith('Material', $joinBehavior);
 
-        return $this->getUserGroups($query, $con);
-    }
-
-    /**
-     * Clears out the collActivities collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addActivities()
-     */
-    public function clearActivities()
-    {
-        $this->collActivities = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collActivities collection loaded partially.
-     */
-    public function resetPartialActivities($v = true)
-    {
-        $this->collActivitiesPartial = $v;
-    }
-
-    /**
-     * Initializes the collActivities collection.
-     *
-     * By default this just sets the collActivities collection to an empty array (like clearcollActivities());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initActivities($overrideExisting = true)
-    {
-        if (null !== $this->collActivities && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = ActivityTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collActivities = new $collectionClassName;
-        $this->collActivities->setModel('\Activity');
-    }
-
-    /**
-     * Gets an array of ChildActivity objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildUser is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildActivity[] List of ChildActivity objects
-     * @throws PropelException
-     */
-    public function getActivities(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collActivitiesPartial && !$this->isNew();
-        if (null === $this->collActivities || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collActivities) {
-                // return empty collection
-                $this->initActivities();
-            } else {
-                $collActivities = ChildActivityQuery::create(null, $criteria)
-                    ->filterByUser($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collActivitiesPartial && count($collActivities)) {
-                        $this->initActivities(false);
-
-                        foreach ($collActivities as $obj) {
-                            if (false == $this->collActivities->contains($obj)) {
-                                $this->collActivities->append($obj);
-                            }
-                        }
-
-                        $this->collActivitiesPartial = true;
-                    }
-
-                    return $collActivities;
-                }
-
-                if ($partial && $this->collActivities) {
-                    foreach ($this->collActivities as $obj) {
-                        if ($obj->isNew()) {
-                            $collActivities[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collActivities = $collActivities;
-                $this->collActivitiesPartial = false;
-            }
-        }
-
-        return $this->collActivities;
-    }
-
-    /**
-     * Sets a collection of ChildActivity objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $activities A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildUser The current object (for fluent API support)
-     */
-    public function setActivities(Collection $activities, ConnectionInterface $con = null)
-    {
-        /** @var ChildActivity[] $activitiesToDelete */
-        $activitiesToDelete = $this->getActivities(new Criteria(), $con)->diff($activities);
-
-
-        $this->activitiesScheduledForDeletion = $activitiesToDelete;
-
-        foreach ($activitiesToDelete as $activityRemoved) {
-            $activityRemoved->setUser(null);
-        }
-
-        $this->collActivities = null;
-        foreach ($activities as $activity) {
-            $this->addActivity($activity);
-        }
-
-        $this->collActivities = $activities;
-        $this->collActivitiesPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related Activity objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related Activity objects.
-     * @throws PropelException
-     */
-    public function countActivities(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collActivitiesPartial && !$this->isNew();
-        if (null === $this->collActivities || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collActivities) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getActivities());
-            }
-
-            $query = ChildActivityQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUser($this)
-                ->count($con);
-        }
-
-        return count($this->collActivities);
-    }
-
-    /**
-     * Method called to associate a ChildActivity object to this object
-     * through the ChildActivity foreign key attribute.
-     *
-     * @param  ChildActivity $l ChildActivity
-     * @return $this|\User The current object (for fluent API support)
-     */
-    public function addActivity(ChildActivity $l)
-    {
-        if ($this->collActivities === null) {
-            $this->initActivities();
-            $this->collActivitiesPartial = true;
-        }
-
-        if (!$this->collActivities->contains($l)) {
-            $this->doAddActivity($l);
-
-            if ($this->activitiesScheduledForDeletion and $this->activitiesScheduledForDeletion->contains($l)) {
-                $this->activitiesScheduledForDeletion->remove($this->activitiesScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildActivity $activity The ChildActivity object to add.
-     */
-    protected function doAddActivity(ChildActivity $activity)
-    {
-        $this->collActivities[]= $activity;
-        $activity->setUser($this);
-    }
-
-    /**
-     * @param  ChildActivity $activity The ChildActivity object to remove.
-     * @return $this|ChildUser The current object (for fluent API support)
-     */
-    public function removeActivity(ChildActivity $activity)
-    {
-        if ($this->getActivities()->contains($activity)) {
-            $pos = $this->collActivities->search($activity);
-            $this->collActivities->remove($pos);
-            if (null === $this->activitiesScheduledForDeletion) {
-                $this->activitiesScheduledForDeletion = clone $this->collActivities;
-                $this->activitiesScheduledForDeletion->clear();
-            }
-            $this->activitiesScheduledForDeletion[]= clone $activity;
-            $activity->setUser(null);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Clears out the collGroups collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addGroups()
-     */
-    public function clearGroups()
-    {
-        $this->collGroups = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Initializes the collGroups crossRef collection.
-     *
-     * By default this just sets the collGroups collection to an empty collection (like clearGroups());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @return void
-     */
-    public function initGroups()
-    {
-        $collectionClassName = UserGroupTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collGroups = new $collectionClassName;
-        $this->collGroupsPartial = true;
-        $this->collGroups->setModel('\Group');
-    }
-
-    /**
-     * Checks if the collGroups collection is loaded.
-     *
-     * @return bool
-     */
-    public function isGroupsLoaded()
-    {
-        return null !== $this->collGroups;
-    }
-
-    /**
-     * Gets a collection of ChildGroup objects related by a many-to-many relationship
-     * to the current object by way of the user_group cross-reference table.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildUser is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria Optional query object to filter the query
-     * @param      ConnectionInterface $con Optional connection object
-     *
-     * @return ObjectCollection|ChildGroup[] List of ChildGroup objects
-     */
-    public function getGroups(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collGroupsPartial && !$this->isNew();
-        if (null === $this->collGroups || null !== $criteria || $partial) {
-            if ($this->isNew()) {
-                // return empty collection
-                if (null === $this->collGroups) {
-                    $this->initGroups();
-                }
-            } else {
-
-                $query = ChildGroupQuery::create(null, $criteria)
-                    ->filterByUser($this);
-                $collGroups = $query->find($con);
-                if (null !== $criteria) {
-                    return $collGroups;
-                }
-
-                if ($partial && $this->collGroups) {
-                    //make sure that already added objects gets added to the list of the database.
-                    foreach ($this->collGroups as $obj) {
-                        if (!$collGroups->contains($obj)) {
-                            $collGroups[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collGroups = $collGroups;
-                $this->collGroupsPartial = false;
-            }
-        }
-
-        return $this->collGroups;
-    }
-
-    /**
-     * Sets a collection of Group objects related by a many-to-many relationship
-     * to the current object by way of the user_group cross-reference table.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param  Collection $groups A Propel collection.
-     * @param  ConnectionInterface $con Optional connection object
-     * @return $this|ChildUser The current object (for fluent API support)
-     */
-    public function setGroups(Collection $groups, ConnectionInterface $con = null)
-    {
-        $this->clearGroups();
-        $currentGroups = $this->getGroups();
-
-        $groupsScheduledForDeletion = $currentGroups->diff($groups);
-
-        foreach ($groupsScheduledForDeletion as $toDelete) {
-            $this->removeGroup($toDelete);
-        }
-
-        foreach ($groups as $group) {
-            if (!$currentGroups->contains($group)) {
-                $this->doAddGroup($group);
-            }
-        }
-
-        $this->collGroupsPartial = false;
-        $this->collGroups = $groups;
-
-        return $this;
-    }
-
-    /**
-     * Gets the number of Group objects related by a many-to-many relationship
-     * to the current object by way of the user_group cross-reference table.
-     *
-     * @param      Criteria $criteria Optional query object to filter the query
-     * @param      boolean $distinct Set to true to force count distinct
-     * @param      ConnectionInterface $con Optional connection object
-     *
-     * @return int the number of related Group objects
-     */
-    public function countGroups(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collGroupsPartial && !$this->isNew();
-        if (null === $this->collGroups || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collGroups) {
-                return 0;
-            } else {
-
-                if ($partial && !$criteria) {
-                    return count($this->getGroups());
-                }
-
-                $query = ChildGroupQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByUser($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->collGroups);
-        }
-    }
-
-    /**
-     * Associate a ChildGroup to this object
-     * through the user_group cross reference table.
-     *
-     * @param ChildGroup $group
-     * @return ChildUser The current object (for fluent API support)
-     */
-    public function addGroup(ChildGroup $group)
-    {
-        if ($this->collGroups === null) {
-            $this->initGroups();
-        }
-
-        if (!$this->getGroups()->contains($group)) {
-            // only add it if the **same** object is not already associated
-            $this->collGroups->push($group);
-            $this->doAddGroup($group);
-        }
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param ChildGroup $group
-     */
-    protected function doAddGroup(ChildGroup $group)
-    {
-        $userGroup = new ChildUserGroup();
-
-        $userGroup->setGroup($group);
-
-        $userGroup->setUser($this);
-
-        $this->addUserGroup($userGroup);
-
-        // set the back reference to this object directly as using provided method either results
-        // in endless loop or in multiple relations
-        if (!$group->isUsersLoaded()) {
-            $group->initUsers();
-            $group->getUsers()->push($this);
-        } elseif (!$group->getUsers()->contains($this)) {
-            $group->getUsers()->push($this);
-        }
-
-    }
-
-    /**
-     * Remove group of this object
-     * through the user_group cross reference table.
-     *
-     * @param ChildGroup $group
-     * @return ChildUser The current object (for fluent API support)
-     */
-    public function removeGroup(ChildGroup $group)
-    {
-        if ($this->getGroups()->contains($group)) {
-            $userGroup = new ChildUserGroup();
-            $userGroup->setGroup($group);
-            if ($group->isUsersLoaded()) {
-                //remove the back reference if available
-                $group->getUsers()->removeObject($this);
-            }
-
-            $userGroup->setUser($this);
-            $this->removeUserGroup(clone $userGroup);
-            $userGroup->clear();
-
-            $this->collGroups->remove($this->collGroups->search($group));
-
-            if (null === $this->groupsScheduledForDeletion) {
-                $this->groupsScheduledForDeletion = clone $this->collGroups;
-                $this->groupsScheduledForDeletion->clear();
-            }
-
-            $this->groupsScheduledForDeletion->push($group);
-        }
-
-
-        return $this;
+        return $this->getProducts($query, $con);
     }
 
     /**
@@ -2441,14 +1847,14 @@ abstract class User implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aPartner) {
-            $this->aPartner->removeUser($this);
+        if (null !== $this->aUnitOfMeasureCategory) {
+            $this->aUnitOfMeasureCategory->removeUnitOfMeasure($this);
         }
         $this->id = null;
         $this->name = null;
-        $this->password = null;
-        $this->partner_id = null;
-        $this->last_login = null;
+        $this->category_id = null;
+        $this->type = null;
+        $this->ratio = null;
         $this->active = null;
         $this->created_at = null;
         $this->updated_at = null;
@@ -2471,27 +1877,15 @@ abstract class User implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collUserGroups) {
-                foreach ($this->collUserGroups as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collActivities) {
-                foreach ($this->collActivities as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collGroups) {
-                foreach ($this->collGroups as $o) {
+            if ($this->collProducts) {
+                foreach ($this->collProducts as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
         } // if ($deep)
 
-        $this->collUserGroups = null;
-        $this->collActivities = null;
-        $this->collGroups = null;
-        $this->aPartner = null;
+        $this->collProducts = null;
+        $this->aUnitOfMeasureCategory = null;
     }
 
     /**
@@ -2501,7 +1895,7 @@ abstract class User implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(UserTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(UnitOfMeasureTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

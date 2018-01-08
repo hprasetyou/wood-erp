@@ -30,6 +30,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery orderByQtyPerPack($order = Criteria::ASC) Order by the qty_per_pack column
  * @method     ChildProductQuery orderByListPrice($order = Criteria::ASC) Order by the list_price column
  * @method     ChildProductQuery orderByMaterialId($order = Criteria::ASC) Order by the material_id column
+ * @method     ChildProductQuery orderByUomId($order = Criteria::ASC) Order by the uom_id column
  * @method     ChildProductQuery orderByNote($order = Criteria::ASC) Order by the note column
  * @method     ChildProductQuery orderByCubicAsb($order = Criteria::ASC) Order by the cubic_asb column
  * @method     ChildProductQuery orderByCubicKdn($order = Criteria::ASC) Order by the cubic_kdn column
@@ -43,6 +44,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery orderByNetWeight($order = Criteria::ASC) Order by the net_weight column
  * @method     ChildProductQuery orderByGrossWeight($order = Criteria::ASC) Order by the gross_weight column
  * @method     ChildProductQuery orderByType($order = Criteria::ASC) Order by the type column
+ * @method     ChildProductQuery orderByActive($order = Criteria::ASC) Order by the active column
  * @method     ChildProductQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildProductQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -56,6 +58,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery groupByQtyPerPack() Group by the qty_per_pack column
  * @method     ChildProductQuery groupByListPrice() Group by the list_price column
  * @method     ChildProductQuery groupByMaterialId() Group by the material_id column
+ * @method     ChildProductQuery groupByUomId() Group by the uom_id column
  * @method     ChildProductQuery groupByNote() Group by the note column
  * @method     ChildProductQuery groupByCubicAsb() Group by the cubic_asb column
  * @method     ChildProductQuery groupByCubicKdn() Group by the cubic_kdn column
@@ -69,6 +72,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery groupByNetWeight() Group by the net_weight column
  * @method     ChildProductQuery groupByGrossWeight() Group by the gross_weight column
  * @method     ChildProductQuery groupByType() Group by the type column
+ * @method     ChildProductQuery groupByActive() Group by the active column
  * @method     ChildProductQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildProductQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -89,6 +93,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery leftJoinWithMaterial() Adds a LEFT JOIN clause and with to the query using the Material relation
  * @method     ChildProductQuery rightJoinWithMaterial() Adds a RIGHT JOIN clause and with to the query using the Material relation
  * @method     ChildProductQuery innerJoinWithMaterial() Adds a INNER JOIN clause and with to the query using the Material relation
+ *
+ * @method     ChildProductQuery leftJoinUnitOfMeasure($relationAlias = null) Adds a LEFT JOIN clause to the query using the UnitOfMeasure relation
+ * @method     ChildProductQuery rightJoinUnitOfMeasure($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UnitOfMeasure relation
+ * @method     ChildProductQuery innerJoinUnitOfMeasure($relationAlias = null) Adds a INNER JOIN clause to the query using the UnitOfMeasure relation
+ *
+ * @method     ChildProductQuery joinWithUnitOfMeasure($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the UnitOfMeasure relation
+ *
+ * @method     ChildProductQuery leftJoinWithUnitOfMeasure() Adds a LEFT JOIN clause and with to the query using the UnitOfMeasure relation
+ * @method     ChildProductQuery rightJoinWithUnitOfMeasure() Adds a RIGHT JOIN clause and with to the query using the UnitOfMeasure relation
+ * @method     ChildProductQuery innerJoinWithUnitOfMeasure() Adds a INNER JOIN clause and with to the query using the UnitOfMeasure relation
  *
  * @method     ChildProductQuery leftJoinListComponent($relationAlias = null) Adds a LEFT JOIN clause to the query using the ListComponent relation
  * @method     ChildProductQuery rightJoinListComponent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ListComponent relation
@@ -180,7 +194,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery rightJoinWithStockMoveLine() Adds a RIGHT JOIN clause and with to the query using the StockMoveLine relation
  * @method     ChildProductQuery innerJoinWithStockMoveLine() Adds a INNER JOIN clause and with to the query using the StockMoveLine relation
  *
- * @method     \MaterialQuery|\ComponentProductQuery|\ProductPartnerQuery|\ProductFinishingQuery|\ProductImageQuery|\ProformaInvoiceLineQuery|\PurchaseOrderLineQuery|\ProductStockQuery|\StockMoveLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \MaterialQuery|\UnitOfMeasureQuery|\ComponentProductQuery|\ProductPartnerQuery|\ProductFinishingQuery|\ProductImageQuery|\ProformaInvoiceLineQuery|\PurchaseOrderLineQuery|\ProductStockQuery|\StockMoveLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildProduct findOne(ConnectionInterface $con = null) Return the first ChildProduct matching the query
  * @method     ChildProduct findOneOrCreate(ConnectionInterface $con = null) Return the first ChildProduct matching the query, or a new ChildProduct object populated from the query conditions when no match is found
@@ -195,6 +209,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct findOneByQtyPerPack(int $qty_per_pack) Return the first ChildProduct filtered by the qty_per_pack column
  * @method     ChildProduct findOneByListPrice(double $list_price) Return the first ChildProduct filtered by the list_price column
  * @method     ChildProduct findOneByMaterialId(int $material_id) Return the first ChildProduct filtered by the material_id column
+ * @method     ChildProduct findOneByUomId(int $uom_id) Return the first ChildProduct filtered by the uom_id column
  * @method     ChildProduct findOneByNote(string $note) Return the first ChildProduct filtered by the note column
  * @method     ChildProduct findOneByCubicAsb(double $cubic_asb) Return the first ChildProduct filtered by the cubic_asb column
  * @method     ChildProduct findOneByCubicKdn(double $cubic_kdn) Return the first ChildProduct filtered by the cubic_kdn column
@@ -208,6 +223,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct findOneByNetWeight(double $net_weight) Return the first ChildProduct filtered by the net_weight column
  * @method     ChildProduct findOneByGrossWeight(double $gross_weight) Return the first ChildProduct filtered by the gross_weight column
  * @method     ChildProduct findOneByType(string $type) Return the first ChildProduct filtered by the type column
+ * @method     ChildProduct findOneByActive(boolean $active) Return the first ChildProduct filtered by the active column
  * @method     ChildProduct findOneByCreatedAt(string $created_at) Return the first ChildProduct filtered by the created_at column
  * @method     ChildProduct findOneByUpdatedAt(string $updated_at) Return the first ChildProduct filtered by the updated_at column *
 
@@ -224,6 +240,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct requireOneByQtyPerPack(int $qty_per_pack) Return the first ChildProduct filtered by the qty_per_pack column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByListPrice(double $list_price) Return the first ChildProduct filtered by the list_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByMaterialId(int $material_id) Return the first ChildProduct filtered by the material_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProduct requireOneByUomId(int $uom_id) Return the first ChildProduct filtered by the uom_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByNote(string $note) Return the first ChildProduct filtered by the note column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByCubicAsb(double $cubic_asb) Return the first ChildProduct filtered by the cubic_asb column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByCubicKdn(double $cubic_kdn) Return the first ChildProduct filtered by the cubic_kdn column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -237,6 +254,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct requireOneByNetWeight(double $net_weight) Return the first ChildProduct filtered by the net_weight column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByGrossWeight(double $gross_weight) Return the first ChildProduct filtered by the gross_weight column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByType(string $type) Return the first ChildProduct filtered by the type column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProduct requireOneByActive(boolean $active) Return the first ChildProduct filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByCreatedAt(string $created_at) Return the first ChildProduct filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProduct requireOneByUpdatedAt(string $updated_at) Return the first ChildProduct filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -251,6 +269,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct[]|ObjectCollection findByQtyPerPack(int $qty_per_pack) Return ChildProduct objects filtered by the qty_per_pack column
  * @method     ChildProduct[]|ObjectCollection findByListPrice(double $list_price) Return ChildProduct objects filtered by the list_price column
  * @method     ChildProduct[]|ObjectCollection findByMaterialId(int $material_id) Return ChildProduct objects filtered by the material_id column
+ * @method     ChildProduct[]|ObjectCollection findByUomId(int $uom_id) Return ChildProduct objects filtered by the uom_id column
  * @method     ChildProduct[]|ObjectCollection findByNote(string $note) Return ChildProduct objects filtered by the note column
  * @method     ChildProduct[]|ObjectCollection findByCubicAsb(double $cubic_asb) Return ChildProduct objects filtered by the cubic_asb column
  * @method     ChildProduct[]|ObjectCollection findByCubicKdn(double $cubic_kdn) Return ChildProduct objects filtered by the cubic_kdn column
@@ -264,6 +283,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct[]|ObjectCollection findByNetWeight(double $net_weight) Return ChildProduct objects filtered by the net_weight column
  * @method     ChildProduct[]|ObjectCollection findByGrossWeight(double $gross_weight) Return ChildProduct objects filtered by the gross_weight column
  * @method     ChildProduct[]|ObjectCollection findByType(string $type) Return ChildProduct objects filtered by the type column
+ * @method     ChildProduct[]|ObjectCollection findByActive(boolean $active) Return ChildProduct objects filtered by the active column
  * @method     ChildProduct[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildProduct objects filtered by the created_at column
  * @method     ChildProduct[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildProduct objects filtered by the updated_at column
  * @method     ChildProduct[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -364,7 +384,7 @@ abstract class ProductQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, description, is_round, is_kdn, is_flegt, has_component, qty_per_pack, list_price, material_id, note, cubic_asb, cubic_kdn, width_asb, height_asb, depth_asb, width_kdn, height_kdn, depth_kdn, net_cubic, net_weight, gross_weight, type, created_at, updated_at FROM product WHERE id = :p0';
+        $sql = 'SELECT id, name, description, is_round, is_kdn, is_flegt, has_component, qty_per_pack, list_price, material_id, uom_id, note, cubic_asb, cubic_kdn, width_asb, height_asb, depth_asb, width_kdn, height_kdn, depth_kdn, net_cubic, net_weight, gross_weight, type, active, created_at, updated_at FROM product WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -776,6 +796,49 @@ abstract class ProductQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProductTableMap::COL_MATERIAL_ID, $materialId, $comparison);
+    }
+
+    /**
+     * Filter the query on the uom_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUomId(1234); // WHERE uom_id = 1234
+     * $query->filterByUomId(array(12, 34)); // WHERE uom_id IN (12, 34)
+     * $query->filterByUomId(array('min' => 12)); // WHERE uom_id > 12
+     * </code>
+     *
+     * @see       filterByUnitOfMeasure()
+     *
+     * @param     mixed $uomId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProductQuery The current query, for fluid interface
+     */
+    public function filterByUomId($uomId = null, $comparison = null)
+    {
+        if (is_array($uomId)) {
+            $useMinMax = false;
+            if (isset($uomId['min'])) {
+                $this->addUsingAlias(ProductTableMap::COL_UOM_ID, $uomId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($uomId['max'])) {
+                $this->addUsingAlias(ProductTableMap::COL_UOM_ID, $uomId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProductTableMap::COL_UOM_ID, $uomId, $comparison);
     }
 
     /**
@@ -1280,6 +1343,33 @@ abstract class ProductQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the active column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByActive(true); // WHERE active = true
+     * $query->filterByActive('yes'); // WHERE active = true
+     * </code>
+     *
+     * @param     boolean|string $active The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProductQuery The current query, for fluid interface
+     */
+    public function filterByActive($active = null, $comparison = null)
+    {
+        if (is_string($active)) {
+            $active = in_array(strtolower($active), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(ProductTableMap::COL_ACTIVE, $active, $comparison);
+    }
+
+    /**
      * Filter the query on the created_at column
      *
      * Example usage:
@@ -1440,6 +1530,83 @@ abstract class ProductQuery extends ModelCriteria
         return $this
             ->joinMaterial($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Material', '\MaterialQuery');
+    }
+
+    /**
+     * Filter the query by a related \UnitOfMeasure object
+     *
+     * @param \UnitOfMeasure|ObjectCollection $unitOfMeasure The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildProductQuery The current query, for fluid interface
+     */
+    public function filterByUnitOfMeasure($unitOfMeasure, $comparison = null)
+    {
+        if ($unitOfMeasure instanceof \UnitOfMeasure) {
+            return $this
+                ->addUsingAlias(ProductTableMap::COL_UOM_ID, $unitOfMeasure->getId(), $comparison);
+        } elseif ($unitOfMeasure instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(ProductTableMap::COL_UOM_ID, $unitOfMeasure->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByUnitOfMeasure() only accepts arguments of type \UnitOfMeasure or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the UnitOfMeasure relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildProductQuery The current query, for fluid interface
+     */
+    public function joinUnitOfMeasure($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('UnitOfMeasure');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'UnitOfMeasure');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the UnitOfMeasure relation UnitOfMeasure object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \UnitOfMeasureQuery A secondary query class using the current class as primary query
+     */
+    public function useUnitOfMeasureQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinUnitOfMeasure($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'UnitOfMeasure', '\UnitOfMeasureQuery');
     }
 
     /**

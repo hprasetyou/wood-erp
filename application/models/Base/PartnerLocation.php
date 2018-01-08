@@ -136,6 +136,14 @@ abstract class PartnerLocation implements ActiveRecordInterface
     protected $address;
 
     /**
+     * The value for the active field.
+     *
+     * Note: this column has a database default value of: true
+     * @var        boolean
+     */
+    protected $active;
+
+    /**
      * @var        ChildCountry
      */
     protected $aCountry;
@@ -198,6 +206,7 @@ abstract class PartnerLocation implements ActiveRecordInterface
     public function applyDefaultValues()
     {
         $this->type = 'warehouse';
+        $this->active = true;
     }
 
     /**
@@ -518,6 +527,26 @@ abstract class PartnerLocation implements ActiveRecordInterface
     }
 
     /**
+     * Get the [active] column value.
+     *
+     * @return boolean
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * Get the [active] column value.
+     *
+     * @return boolean
+     */
+    public function isActive()
+    {
+        return $this->getActive();
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v new value
@@ -706,6 +735,34 @@ abstract class PartnerLocation implements ActiveRecordInterface
     } // setAddress()
 
     /**
+     * Sets the value of the [active] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     *
+     * @param  boolean|integer|string $v The new value
+     * @return $this|\PartnerLocation The current object (for fluent API support)
+     */
+    public function setActive($v)
+    {
+        if ($v !== null) {
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
+        }
+
+        if ($this->active !== $v) {
+            $this->active = $v;
+            $this->modifiedColumns[PartnerLocationTableMap::COL_ACTIVE] = true;
+        }
+
+        return $this;
+    } // setActive()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -716,6 +773,10 @@ abstract class PartnerLocation implements ActiveRecordInterface
     public function hasOnlyDefaultValues()
     {
             if ($this->type !== 'warehouse') {
+                return false;
+            }
+
+            if ($this->active !== true) {
                 return false;
             }
 
@@ -771,6 +832,9 @@ abstract class PartnerLocation implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PartnerLocationTableMap::translateFieldName('Address', TableMap::TYPE_PHPNAME, $indexType)];
             $this->address = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PartnerLocationTableMap::translateFieldName('Active', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->active = (null !== $col) ? (boolean) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -779,7 +843,7 @@ abstract class PartnerLocation implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 9; // 9 = PartnerLocationTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 10; // 10 = PartnerLocationTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\PartnerLocation'), 0, $e);
@@ -1091,6 +1155,9 @@ abstract class PartnerLocation implements ActiveRecordInterface
         if ($this->isColumnModified(PartnerLocationTableMap::COL_ADDRESS)) {
             $modifiedColumns[':p' . $index++]  = 'address';
         }
+        if ($this->isColumnModified(PartnerLocationTableMap::COL_ACTIVE)) {
+            $modifiedColumns[':p' . $index++]  = 'active';
+        }
 
         $sql = sprintf(
             'INSERT INTO partner_location (%s) VALUES (%s)',
@@ -1128,6 +1195,9 @@ abstract class PartnerLocation implements ActiveRecordInterface
                         break;
                     case 'address':
                         $stmt->bindValue($identifier, $this->address, PDO::PARAM_STR);
+                        break;
+                    case 'active':
+                        $stmt->bindValue($identifier, (int) $this->active, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -1218,6 +1288,9 @@ abstract class PartnerLocation implements ActiveRecordInterface
             case 8:
                 return $this->getAddress();
                 break;
+            case 9:
+                return $this->getActive();
+                break;
             default:
                 return null;
                 break;
@@ -1257,6 +1330,7 @@ abstract class PartnerLocation implements ActiveRecordInterface
             $keys[6] => $this->getCity(),
             $keys[7] => $this->getType(),
             $keys[8] => $this->getAddress(),
+            $keys[9] => $this->getActive(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1400,6 +1474,9 @@ abstract class PartnerLocation implements ActiveRecordInterface
             case 8:
                 $this->setAddress($value);
                 break;
+            case 9:
+                $this->setActive($value);
+                break;
         } // switch()
 
         return $this;
@@ -1452,6 +1529,9 @@ abstract class PartnerLocation implements ActiveRecordInterface
         }
         if (array_key_exists($keys[8], $arr)) {
             $this->setAddress($arr[$keys[8]]);
+        }
+        if (array_key_exists($keys[9], $arr)) {
+            $this->setActive($arr[$keys[9]]);
         }
     }
 
@@ -1520,6 +1600,9 @@ abstract class PartnerLocation implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PartnerLocationTableMap::COL_ADDRESS)) {
             $criteria->add(PartnerLocationTableMap::COL_ADDRESS, $this->address);
+        }
+        if ($this->isColumnModified(PartnerLocationTableMap::COL_ACTIVE)) {
+            $criteria->add(PartnerLocationTableMap::COL_ACTIVE, $this->active);
         }
 
         return $criteria;
@@ -1615,6 +1698,7 @@ abstract class PartnerLocation implements ActiveRecordInterface
         $copyObj->setCity($this->getCity());
         $copyObj->setType($this->getType());
         $copyObj->setAddress($this->getAddress());
+        $copyObj->setActive($this->getActive());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -2518,6 +2602,7 @@ abstract class PartnerLocation implements ActiveRecordInterface
         $this->city = null;
         $this->type = null;
         $this->address = null;
+        $this->active = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

@@ -35,6 +35,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderQuery orderByDownPaymentDeadline($order = Criteria::ASC) Order by the down_payment_deadline column
  * @method     ChildPurchaseOrderQuery orderByTotalPrice($order = Criteria::ASC) Order by the total_price column
  * @method     ChildPurchaseOrderQuery orderByState($order = Criteria::ASC) Order by the state column
+ * @method     ChildPurchaseOrderQuery orderByActive($order = Criteria::ASC) Order by the active column
  * @method     ChildPurchaseOrderQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildPurchaseOrderQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -53,6 +54,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderQuery groupByDownPaymentDeadline() Group by the down_payment_deadline column
  * @method     ChildPurchaseOrderQuery groupByTotalPrice() Group by the total_price column
  * @method     ChildPurchaseOrderQuery groupByState() Group by the state column
+ * @method     ChildPurchaseOrderQuery groupByActive() Group by the active column
  * @method     ChildPurchaseOrderQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildPurchaseOrderQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -144,6 +146,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrder findOneByDownPaymentDeadline(string $down_payment_deadline) Return the first ChildPurchaseOrder filtered by the down_payment_deadline column
  * @method     ChildPurchaseOrder findOneByTotalPrice(double $total_price) Return the first ChildPurchaseOrder filtered by the total_price column
  * @method     ChildPurchaseOrder findOneByState(string $state) Return the first ChildPurchaseOrder filtered by the state column
+ * @method     ChildPurchaseOrder findOneByActive(boolean $active) Return the first ChildPurchaseOrder filtered by the active column
  * @method     ChildPurchaseOrder findOneByCreatedAt(string $created_at) Return the first ChildPurchaseOrder filtered by the created_at column
  * @method     ChildPurchaseOrder findOneByUpdatedAt(string $updated_at) Return the first ChildPurchaseOrder filtered by the updated_at column *
 
@@ -165,6 +168,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrder requireOneByDownPaymentDeadline(string $down_payment_deadline) Return the first ChildPurchaseOrder filtered by the down_payment_deadline column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByTotalPrice(double $total_price) Return the first ChildPurchaseOrder filtered by the total_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByState(string $state) Return the first ChildPurchaseOrder filtered by the state column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPurchaseOrder requireOneByActive(boolean $active) Return the first ChildPurchaseOrder filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByCreatedAt(string $created_at) Return the first ChildPurchaseOrder filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrder requireOneByUpdatedAt(string $updated_at) Return the first ChildPurchaseOrder filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -184,6 +188,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrder[]|ObjectCollection findByDownPaymentDeadline(string $down_payment_deadline) Return ChildPurchaseOrder objects filtered by the down_payment_deadline column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByTotalPrice(double $total_price) Return ChildPurchaseOrder objects filtered by the total_price column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByState(string $state) Return ChildPurchaseOrder objects filtered by the state column
+ * @method     ChildPurchaseOrder[]|ObjectCollection findByActive(boolean $active) Return ChildPurchaseOrder objects filtered by the active column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildPurchaseOrder objects filtered by the created_at column
  * @method     ChildPurchaseOrder[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildPurchaseOrder objects filtered by the updated_at column
  * @method     ChildPurchaseOrder[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -284,7 +289,7 @@ abstract class PurchaseOrderQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, proforma_invoice_id, packing_list_id, supplier_id, currency_id, note, date, delivery_deadline, payment_term, down_payment_id, down_payment_amount, down_payment_deadline, total_price, state, created_at, updated_at FROM purchase_order WHERE id = :p0';
+        $sql = 'SELECT id, name, proforma_invoice_id, packing_list_id, supplier_id, currency_id, note, date, delivery_deadline, payment_term, down_payment_id, down_payment_amount, down_payment_deadline, total_price, state, active, created_at, updated_at FROM purchase_order WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -939,6 +944,33 @@ abstract class PurchaseOrderQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PurchaseOrderTableMap::COL_STATE, $state, $comparison);
+    }
+
+    /**
+     * Filter the query on the active column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByActive(true); // WHERE active = true
+     * $query->filterByActive('yes'); // WHERE active = true
+     * </code>
+     *
+     * @param     boolean|string $active The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPurchaseOrderQuery The current query, for fluid interface
+     */
+    public function filterByActive($active = null, $comparison = null)
+    {
+        if (is_string($active)) {
+            $active = in_array(strtolower($active), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(PurchaseOrderTableMap::COL_ACTIVE, $active, $comparison);
     }
 
     /**

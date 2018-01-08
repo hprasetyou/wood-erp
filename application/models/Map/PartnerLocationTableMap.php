@@ -59,7 +59,7 @@ class PartnerLocationTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 9;
+    const NUM_COLUMNS = 10;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class PartnerLocationTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 9;
+    const NUM_HYDRATE_COLUMNS = 10;
 
     /**
      * the column name for the id field
@@ -117,6 +117,11 @@ class PartnerLocationTableMap extends TableMap
     const COL_ADDRESS = 'partner_location.address';
 
     /**
+     * the column name for the active field
+     */
+    const COL_ACTIVE = 'partner_location.active';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -128,11 +133,11 @@ class PartnerLocationTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Description', 'PartnerId', 'CountryId', 'Postal', 'City', 'Type', 'Address', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'description', 'partnerId', 'countryId', 'postal', 'city', 'type', 'address', ),
-        self::TYPE_COLNAME       => array(PartnerLocationTableMap::COL_ID, PartnerLocationTableMap::COL_NAME, PartnerLocationTableMap::COL_DESCRIPTION, PartnerLocationTableMap::COL_PARTNER_ID, PartnerLocationTableMap::COL_COUNTRY_ID, PartnerLocationTableMap::COL_POSTAL, PartnerLocationTableMap::COL_CITY, PartnerLocationTableMap::COL_TYPE, PartnerLocationTableMap::COL_ADDRESS, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'description', 'partner_id', 'country_id', 'postal', 'city', 'type', 'address', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Description', 'PartnerId', 'CountryId', 'Postal', 'City', 'Type', 'Address', 'Active', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'description', 'partnerId', 'countryId', 'postal', 'city', 'type', 'address', 'active', ),
+        self::TYPE_COLNAME       => array(PartnerLocationTableMap::COL_ID, PartnerLocationTableMap::COL_NAME, PartnerLocationTableMap::COL_DESCRIPTION, PartnerLocationTableMap::COL_PARTNER_ID, PartnerLocationTableMap::COL_COUNTRY_ID, PartnerLocationTableMap::COL_POSTAL, PartnerLocationTableMap::COL_CITY, PartnerLocationTableMap::COL_TYPE, PartnerLocationTableMap::COL_ADDRESS, PartnerLocationTableMap::COL_ACTIVE, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'description', 'partner_id', 'country_id', 'postal', 'city', 'type', 'address', 'active', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
     /**
@@ -142,11 +147,11 @@ class PartnerLocationTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Description' => 2, 'PartnerId' => 3, 'CountryId' => 4, 'Postal' => 5, 'City' => 6, 'Type' => 7, 'Address' => 8, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'partnerId' => 3, 'countryId' => 4, 'postal' => 5, 'city' => 6, 'type' => 7, 'address' => 8, ),
-        self::TYPE_COLNAME       => array(PartnerLocationTableMap::COL_ID => 0, PartnerLocationTableMap::COL_NAME => 1, PartnerLocationTableMap::COL_DESCRIPTION => 2, PartnerLocationTableMap::COL_PARTNER_ID => 3, PartnerLocationTableMap::COL_COUNTRY_ID => 4, PartnerLocationTableMap::COL_POSTAL => 5, PartnerLocationTableMap::COL_CITY => 6, PartnerLocationTableMap::COL_TYPE => 7, PartnerLocationTableMap::COL_ADDRESS => 8, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'partner_id' => 3, 'country_id' => 4, 'postal' => 5, 'city' => 6, 'type' => 7, 'address' => 8, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Description' => 2, 'PartnerId' => 3, 'CountryId' => 4, 'Postal' => 5, 'City' => 6, 'Type' => 7, 'Address' => 8, 'Active' => 9, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'partnerId' => 3, 'countryId' => 4, 'postal' => 5, 'city' => 6, 'type' => 7, 'address' => 8, 'active' => 9, ),
+        self::TYPE_COLNAME       => array(PartnerLocationTableMap::COL_ID => 0, PartnerLocationTableMap::COL_NAME => 1, PartnerLocationTableMap::COL_DESCRIPTION => 2, PartnerLocationTableMap::COL_PARTNER_ID => 3, PartnerLocationTableMap::COL_COUNTRY_ID => 4, PartnerLocationTableMap::COL_POSTAL => 5, PartnerLocationTableMap::COL_CITY => 6, PartnerLocationTableMap::COL_TYPE => 7, PartnerLocationTableMap::COL_ADDRESS => 8, PartnerLocationTableMap::COL_ACTIVE => 9, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'partner_id' => 3, 'country_id' => 4, 'postal' => 5, 'city' => 6, 'type' => 7, 'address' => 8, 'active' => 9, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
     /**
@@ -175,6 +180,7 @@ class PartnerLocationTableMap extends TableMap
         $this->addColumn('city', 'City', 'VARCHAR', false, 255, null);
         $this->addColumn('type', 'Type', 'CHAR', false, null, 'warehouse');
         $this->addColumn('address', 'Address', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
     } // initialize()
 
     /**
@@ -369,6 +375,7 @@ class PartnerLocationTableMap extends TableMap
             $criteria->addSelectColumn(PartnerLocationTableMap::COL_CITY);
             $criteria->addSelectColumn(PartnerLocationTableMap::COL_TYPE);
             $criteria->addSelectColumn(PartnerLocationTableMap::COL_ADDRESS);
+            $criteria->addSelectColumn(PartnerLocationTableMap::COL_ACTIVE);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.name');
@@ -379,6 +386,7 @@ class PartnerLocationTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.city');
             $criteria->addSelectColumn($alias . '.type');
             $criteria->addSelectColumn($alias . '.address');
+            $criteria->addSelectColumn($alias . '.active');
         }
     }
 

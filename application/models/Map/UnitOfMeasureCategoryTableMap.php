@@ -2,8 +2,8 @@
 
 namespace Map;
 
-use \Currency;
-use \CurrencyQuery;
+use \UnitOfMeasureCategory;
+use \UnitOfMeasureCategoryQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'currency' table.
+ * This class defines the structure of the 'unit_of_measure_category' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class CurrencyTableMap extends TableMap
+class UnitOfMeasureCategoryTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class CurrencyTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.CurrencyTableMap';
+    const CLASS_NAME = '.Map.UnitOfMeasureCategoryTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class CurrencyTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'currency';
+    const TABLE_NAME = 'unit_of_measure_category';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\Currency';
+    const OM_CLASS = '\\UnitOfMeasureCategory';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Currency';
+    const CLASS_DEFAULT = 'UnitOfMeasureCategory';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 8;
+    const NUM_COLUMNS = 4;
 
     /**
      * The number of lazy-loaded columns
@@ -69,47 +69,27 @@ class CurrencyTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 8;
+    const NUM_HYDRATE_COLUMNS = 4;
 
     /**
      * the column name for the id field
      */
-    const COL_ID = 'currency.id';
+    const COL_ID = 'unit_of_measure_category.id';
 
     /**
      * the column name for the name field
      */
-    const COL_NAME = 'currency.name';
-
-    /**
-     * the column name for the code field
-     */
-    const COL_CODE = 'currency.code';
-
-    /**
-     * the column name for the symbol field
-     */
-    const COL_SYMBOL = 'currency.symbol';
-
-    /**
-     * the column name for the placement field
-     */
-    const COL_PLACEMENT = 'currency.placement';
-
-    /**
-     * the column name for the active field
-     */
-    const COL_ACTIVE = 'currency.active';
+    const COL_NAME = 'unit_of_measure_category.name';
 
     /**
      * the column name for the created_at field
      */
-    const COL_CREATED_AT = 'currency.created_at';
+    const COL_CREATED_AT = 'unit_of_measure_category.created_at';
 
     /**
      * the column name for the updated_at field
      */
-    const COL_UPDATED_AT = 'currency.updated_at';
+    const COL_UPDATED_AT = 'unit_of_measure_category.updated_at';
 
     /**
      * The default string format for model objects of the related table
@@ -123,11 +103,11 @@ class CurrencyTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Code', 'Symbol', 'Placement', 'Active', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'code', 'symbol', 'placement', 'active', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(CurrencyTableMap::COL_ID, CurrencyTableMap::COL_NAME, CurrencyTableMap::COL_CODE, CurrencyTableMap::COL_SYMBOL, CurrencyTableMap::COL_PLACEMENT, CurrencyTableMap::COL_ACTIVE, CurrencyTableMap::COL_CREATED_AT, CurrencyTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'code', 'symbol', 'placement', 'active', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(UnitOfMeasureCategoryTableMap::COL_ID, UnitOfMeasureCategoryTableMap::COL_NAME, UnitOfMeasureCategoryTableMap::COL_CREATED_AT, UnitOfMeasureCategoryTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -137,11 +117,11 @@ class CurrencyTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Code' => 2, 'Symbol' => 3, 'Placement' => 4, 'Active' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'code' => 2, 'symbol' => 3, 'placement' => 4, 'active' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
-        self::TYPE_COLNAME       => array(CurrencyTableMap::COL_ID => 0, CurrencyTableMap::COL_NAME => 1, CurrencyTableMap::COL_CODE => 2, CurrencyTableMap::COL_SYMBOL => 3, CurrencyTableMap::COL_PLACEMENT => 4, CurrencyTableMap::COL_ACTIVE => 5, CurrencyTableMap::COL_CREATED_AT => 6, CurrencyTableMap::COL_UPDATED_AT => 7, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'code' => 2, 'symbol' => 3, 'placement' => 4, 'active' => 5, 'created_at' => 6, 'updated_at' => 7, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'CreatedAt' => 2, 'UpdatedAt' => 3, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'createdAt' => 2, 'updatedAt' => 3, ),
+        self::TYPE_COLNAME       => array(UnitOfMeasureCategoryTableMap::COL_ID => 0, UnitOfMeasureCategoryTableMap::COL_NAME => 1, UnitOfMeasureCategoryTableMap::COL_CREATED_AT => 2, UnitOfMeasureCategoryTableMap::COL_UPDATED_AT => 3, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'created_at' => 2, 'updated_at' => 3, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -154,19 +134,15 @@ class CurrencyTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('currency');
-        $this->setPhpName('Currency');
+        $this->setName('unit_of_measure_category');
+        $this->setPhpName('UnitOfMeasureCategory');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\Currency');
+        $this->setClassName('\\UnitOfMeasureCategory');
         $this->setPackage('');
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('name', 'Name', 'VARCHAR', false, 18, null);
-        $this->addColumn('code', 'Code', 'VARCHAR', true, 3, null);
-        $this->addColumn('symbol', 'Symbol', 'VARCHAR', true, 3, null);
-        $this->addColumn('placement', 'Placement', 'CHAR', true, null, 'before');
-        $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
+        $this->addColumn('name', 'Name', 'VARCHAR', false, 180, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -176,20 +152,13 @@ class CurrencyTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('ProformaInvoice', '\\ProformaInvoice', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('UnitOfMeasure', '\\UnitOfMeasure', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
-    0 => ':currency_id',
+    0 => ':category_id',
     1 => ':id',
   ),
-), null, null, 'ProformaInvoices', false);
-        $this->addRelation('PurchaseOrder', '\\PurchaseOrder', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':currency_id',
-    1 => ':id',
-  ),
-), null, null, 'PurchaseOrders', false);
+), null, null, 'UnitOfMeasures', false);
     } // buildRelations()
 
     /**
@@ -249,7 +218,7 @@ class CurrencyTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? CurrencyTableMap::CLASS_DEFAULT : CurrencyTableMap::OM_CLASS;
+        return $withPrefix ? UnitOfMeasureCategoryTableMap::CLASS_DEFAULT : UnitOfMeasureCategoryTableMap::OM_CLASS;
     }
 
     /**
@@ -263,22 +232,22 @@ class CurrencyTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Currency object, last column rank)
+     * @return array           (UnitOfMeasureCategory object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = CurrencyTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = CurrencyTableMap::getInstanceFromPool($key))) {
+        $key = UnitOfMeasureCategoryTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = UnitOfMeasureCategoryTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + CurrencyTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + UnitOfMeasureCategoryTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = CurrencyTableMap::OM_CLASS;
-            /** @var Currency $obj */
+            $cls = UnitOfMeasureCategoryTableMap::OM_CLASS;
+            /** @var UnitOfMeasureCategory $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            CurrencyTableMap::addInstanceToPool($obj, $key);
+            UnitOfMeasureCategoryTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -301,18 +270,18 @@ class CurrencyTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = CurrencyTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = CurrencyTableMap::getInstanceFromPool($key))) {
+            $key = UnitOfMeasureCategoryTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = UnitOfMeasureCategoryTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Currency $obj */
+                /** @var UnitOfMeasureCategory $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                CurrencyTableMap::addInstanceToPool($obj, $key);
+                UnitOfMeasureCategoryTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -333,21 +302,13 @@ class CurrencyTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(CurrencyTableMap::COL_ID);
-            $criteria->addSelectColumn(CurrencyTableMap::COL_NAME);
-            $criteria->addSelectColumn(CurrencyTableMap::COL_CODE);
-            $criteria->addSelectColumn(CurrencyTableMap::COL_SYMBOL);
-            $criteria->addSelectColumn(CurrencyTableMap::COL_PLACEMENT);
-            $criteria->addSelectColumn(CurrencyTableMap::COL_ACTIVE);
-            $criteria->addSelectColumn(CurrencyTableMap::COL_CREATED_AT);
-            $criteria->addSelectColumn(CurrencyTableMap::COL_UPDATED_AT);
+            $criteria->addSelectColumn(UnitOfMeasureCategoryTableMap::COL_ID);
+            $criteria->addSelectColumn(UnitOfMeasureCategoryTableMap::COL_NAME);
+            $criteria->addSelectColumn(UnitOfMeasureCategoryTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(UnitOfMeasureCategoryTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.name');
-            $criteria->addSelectColumn($alias . '.code');
-            $criteria->addSelectColumn($alias . '.symbol');
-            $criteria->addSelectColumn($alias . '.placement');
-            $criteria->addSelectColumn($alias . '.active');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }
@@ -362,7 +323,7 @@ class CurrencyTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(CurrencyTableMap::DATABASE_NAME)->getTable(CurrencyTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(UnitOfMeasureCategoryTableMap::DATABASE_NAME)->getTable(UnitOfMeasureCategoryTableMap::TABLE_NAME);
     }
 
     /**
@@ -370,16 +331,16 @@ class CurrencyTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(CurrencyTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(CurrencyTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new CurrencyTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(UnitOfMeasureCategoryTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(UnitOfMeasureCategoryTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new UnitOfMeasureCategoryTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Currency or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a UnitOfMeasureCategory or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Currency object or primary key or array of primary keys
+     * @param mixed               $values Criteria or UnitOfMeasureCategory object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -390,27 +351,27 @@ class CurrencyTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(CurrencyTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UnitOfMeasureCategoryTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \Currency) { // it's a model object
+        } elseif ($values instanceof \UnitOfMeasureCategory) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(CurrencyTableMap::DATABASE_NAME);
-            $criteria->add(CurrencyTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(UnitOfMeasureCategoryTableMap::DATABASE_NAME);
+            $criteria->add(UnitOfMeasureCategoryTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
-        $query = CurrencyQuery::create()->mergeWith($criteria);
+        $query = UnitOfMeasureCategoryQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            CurrencyTableMap::clearInstancePool();
+            UnitOfMeasureCategoryTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                CurrencyTableMap::removeInstanceFromPool($singleval);
+                UnitOfMeasureCategoryTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -418,20 +379,20 @@ class CurrencyTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the currency table.
+     * Deletes all rows from the unit_of_measure_category table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return CurrencyQuery::create()->doDeleteAll($con);
+        return UnitOfMeasureCategoryQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Currency or Criteria object.
+     * Performs an INSERT on the database, given a UnitOfMeasureCategory or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Currency object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or UnitOfMeasureCategory object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -440,22 +401,22 @@ class CurrencyTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(CurrencyTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UnitOfMeasureCategoryTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Currency object
+            $criteria = $criteria->buildCriteria(); // build Criteria from UnitOfMeasureCategory object
         }
 
-        if ($criteria->containsKey(CurrencyTableMap::COL_ID) && $criteria->keyContainsValue(CurrencyTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.CurrencyTableMap::COL_ID.')');
+        if ($criteria->containsKey(UnitOfMeasureCategoryTableMap::COL_ID) && $criteria->keyContainsValue(UnitOfMeasureCategoryTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.UnitOfMeasureCategoryTableMap::COL_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = CurrencyQuery::create()->mergeWith($criteria);
+        $query = UnitOfMeasureCategoryQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -464,7 +425,7 @@ class CurrencyTableMap extends TableMap
         });
     }
 
-} // CurrencyTableMap
+} // UnitOfMeasureCategoryTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-CurrencyTableMap::buildTableMap();
+UnitOfMeasureCategoryTableMap::buildTableMap();

@@ -25,6 +25,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildActivityQuery orderByObject($order = Criteria::ASC) Order by the object column
  * @method     ChildActivityQuery orderByObjectId($order = Criteria::ASC) Order by the object_id column
  * @method     ChildActivityQuery orderByDescription($order = Criteria::ASC) Order by the description column
+ * @method     ChildActivityQuery orderByActive($order = Criteria::ASC) Order by the active column
  * @method     ChildActivityQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildActivityQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -33,6 +34,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildActivityQuery groupByObject() Group by the object column
  * @method     ChildActivityQuery groupByObjectId() Group by the object_id column
  * @method     ChildActivityQuery groupByDescription() Group by the description column
+ * @method     ChildActivityQuery groupByActive() Group by the active column
  * @method     ChildActivityQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildActivityQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -64,6 +66,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildActivity findOneByObject(string $object) Return the first ChildActivity filtered by the object column
  * @method     ChildActivity findOneByObjectId(int $object_id) Return the first ChildActivity filtered by the object_id column
  * @method     ChildActivity findOneByDescription(string $description) Return the first ChildActivity filtered by the description column
+ * @method     ChildActivity findOneByActive(boolean $active) Return the first ChildActivity filtered by the active column
  * @method     ChildActivity findOneByCreatedAt(string $created_at) Return the first ChildActivity filtered by the created_at column
  * @method     ChildActivity findOneByUpdatedAt(string $updated_at) Return the first ChildActivity filtered by the updated_at column *
 
@@ -75,6 +78,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildActivity requireOneByObject(string $object) Return the first ChildActivity filtered by the object column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildActivity requireOneByObjectId(int $object_id) Return the first ChildActivity filtered by the object_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildActivity requireOneByDescription(string $description) Return the first ChildActivity filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildActivity requireOneByActive(boolean $active) Return the first ChildActivity filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildActivity requireOneByCreatedAt(string $created_at) Return the first ChildActivity filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildActivity requireOneByUpdatedAt(string $updated_at) Return the first ChildActivity filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -84,6 +88,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildActivity[]|ObjectCollection findByObject(string $object) Return ChildActivity objects filtered by the object column
  * @method     ChildActivity[]|ObjectCollection findByObjectId(int $object_id) Return ChildActivity objects filtered by the object_id column
  * @method     ChildActivity[]|ObjectCollection findByDescription(string $description) Return ChildActivity objects filtered by the description column
+ * @method     ChildActivity[]|ObjectCollection findByActive(boolean $active) Return ChildActivity objects filtered by the active column
  * @method     ChildActivity[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildActivity objects filtered by the created_at column
  * @method     ChildActivity[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildActivity objects filtered by the updated_at column
  * @method     ChildActivity[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -184,7 +189,7 @@ abstract class ActivityQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT uuid, user_id, object, object_id, description, created_at, updated_at FROM activity WHERE uuid = :p0';
+        $sql = 'SELECT uuid, user_id, object, object_id, description, active, created_at, updated_at FROM activity WHERE uuid = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_STR);
@@ -431,6 +436,33 @@ abstract class ActivityQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ActivityTableMap::COL_DESCRIPTION, $description, $comparison);
+    }
+
+    /**
+     * Filter the query on the active column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByActive(true); // WHERE active = true
+     * $query->filterByActive('yes'); // WHERE active = true
+     * </code>
+     *
+     * @param     boolean|string $active The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildActivityQuery The current query, for fluid interface
+     */
+    public function filterByActive($active = null, $comparison = null)
+    {
+        if (is_string($active)) {
+            $active = in_array(strtolower($active), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(ActivityTableMap::COL_ACTIVE, $active, $comparison);
     }
 
     /**

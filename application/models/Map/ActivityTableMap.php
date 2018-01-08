@@ -59,7 +59,7 @@ class ActivityTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 8;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class ActivityTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 8;
 
     /**
      * the column name for the uuid field
@@ -97,6 +97,11 @@ class ActivityTableMap extends TableMap
     const COL_DESCRIPTION = 'activity.description';
 
     /**
+     * the column name for the active field
+     */
+    const COL_ACTIVE = 'activity.active';
+
+    /**
      * the column name for the created_at field
      */
     const COL_CREATED_AT = 'activity.created_at';
@@ -118,11 +123,11 @@ class ActivityTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Uuid', 'UserId', 'Object', 'ObjectId', 'Description', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('uuid', 'userId', 'object', 'objectId', 'description', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ActivityTableMap::COL_UUID, ActivityTableMap::COL_USER_ID, ActivityTableMap::COL_OBJECT, ActivityTableMap::COL_OBJECT_ID, ActivityTableMap::COL_DESCRIPTION, ActivityTableMap::COL_CREATED_AT, ActivityTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('uuid', 'user_id', 'object', 'object_id', 'description', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Uuid', 'UserId', 'Object', 'ObjectId', 'Description', 'Active', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('uuid', 'userId', 'object', 'objectId', 'description', 'active', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ActivityTableMap::COL_UUID, ActivityTableMap::COL_USER_ID, ActivityTableMap::COL_OBJECT, ActivityTableMap::COL_OBJECT_ID, ActivityTableMap::COL_DESCRIPTION, ActivityTableMap::COL_ACTIVE, ActivityTableMap::COL_CREATED_AT, ActivityTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('uuid', 'user_id', 'object', 'object_id', 'description', 'active', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -132,11 +137,11 @@ class ActivityTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Uuid' => 0, 'UserId' => 1, 'Object' => 2, 'ObjectId' => 3, 'Description' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
-        self::TYPE_CAMELNAME     => array('uuid' => 0, 'userId' => 1, 'object' => 2, 'objectId' => 3, 'description' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
-        self::TYPE_COLNAME       => array(ActivityTableMap::COL_UUID => 0, ActivityTableMap::COL_USER_ID => 1, ActivityTableMap::COL_OBJECT => 2, ActivityTableMap::COL_OBJECT_ID => 3, ActivityTableMap::COL_DESCRIPTION => 4, ActivityTableMap::COL_CREATED_AT => 5, ActivityTableMap::COL_UPDATED_AT => 6, ),
-        self::TYPE_FIELDNAME     => array('uuid' => 0, 'user_id' => 1, 'object' => 2, 'object_id' => 3, 'description' => 4, 'created_at' => 5, 'updated_at' => 6, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Uuid' => 0, 'UserId' => 1, 'Object' => 2, 'ObjectId' => 3, 'Description' => 4, 'Active' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
+        self::TYPE_CAMELNAME     => array('uuid' => 0, 'userId' => 1, 'object' => 2, 'objectId' => 3, 'description' => 4, 'active' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
+        self::TYPE_COLNAME       => array(ActivityTableMap::COL_UUID => 0, ActivityTableMap::COL_USER_ID => 1, ActivityTableMap::COL_OBJECT => 2, ActivityTableMap::COL_OBJECT_ID => 3, ActivityTableMap::COL_DESCRIPTION => 4, ActivityTableMap::COL_ACTIVE => 5, ActivityTableMap::COL_CREATED_AT => 6, ActivityTableMap::COL_UPDATED_AT => 7, ),
+        self::TYPE_FIELDNAME     => array('uuid' => 0, 'user_id' => 1, 'object' => 2, 'object_id' => 3, 'description' => 4, 'active' => 5, 'created_at' => 6, 'updated_at' => 7, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -161,6 +166,7 @@ class ActivityTableMap extends TableMap
         $this->addColumn('object', 'Object', 'VARCHAR', true, 255, null);
         $this->addColumn('object_id', 'ObjectId', 'INTEGER', true, null, null);
         $this->addColumn('description', 'Description', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -325,6 +331,7 @@ class ActivityTableMap extends TableMap
             $criteria->addSelectColumn(ActivityTableMap::COL_OBJECT);
             $criteria->addSelectColumn(ActivityTableMap::COL_OBJECT_ID);
             $criteria->addSelectColumn(ActivityTableMap::COL_DESCRIPTION);
+            $criteria->addSelectColumn(ActivityTableMap::COL_ACTIVE);
             $criteria->addSelectColumn(ActivityTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(ActivityTableMap::COL_UPDATED_AT);
         } else {
@@ -333,6 +340,7 @@ class ActivityTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.object');
             $criteria->addSelectColumn($alias . '.object_id');
             $criteria->addSelectColumn($alias . '.description');
+            $criteria->addSelectColumn($alias . '.active');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }

@@ -35,6 +35,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceLineQuery orderByTotalPrice($order = Criteria::ASC) Order by the total_price column
  * @method     ChildProformaInvoiceLineQuery orderByIsSample($order = Criteria::ASC) Order by the is_sample column
  * @method     ChildProformaInvoiceLineQuery orderByIsNeedBox($order = Criteria::ASC) Order by the is_need_box column
+ * @method     ChildProformaInvoiceLineQuery orderByActive($order = Criteria::ASC) Order by the active column
  * @method     ChildProformaInvoiceLineQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildProformaInvoiceLineQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -53,6 +54,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceLineQuery groupByTotalPrice() Group by the total_price column
  * @method     ChildProformaInvoiceLineQuery groupByIsSample() Group by the is_sample column
  * @method     ChildProformaInvoiceLineQuery groupByIsNeedBox() Group by the is_need_box column
+ * @method     ChildProformaInvoiceLineQuery groupByActive() Group by the active column
  * @method     ChildProformaInvoiceLineQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildProformaInvoiceLineQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -124,6 +126,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceLine findOneByTotalPrice(double $total_price) Return the first ChildProformaInvoiceLine filtered by the total_price column
  * @method     ChildProformaInvoiceLine findOneByIsSample(boolean $is_sample) Return the first ChildProformaInvoiceLine filtered by the is_sample column
  * @method     ChildProformaInvoiceLine findOneByIsNeedBox(boolean $is_need_box) Return the first ChildProformaInvoiceLine filtered by the is_need_box column
+ * @method     ChildProformaInvoiceLine findOneByActive(boolean $active) Return the first ChildProformaInvoiceLine filtered by the active column
  * @method     ChildProformaInvoiceLine findOneByCreatedAt(string $created_at) Return the first ChildProformaInvoiceLine filtered by the created_at column
  * @method     ChildProformaInvoiceLine findOneByUpdatedAt(string $updated_at) Return the first ChildProformaInvoiceLine filtered by the updated_at column *
 
@@ -145,6 +148,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceLine requireOneByTotalPrice(double $total_price) Return the first ChildProformaInvoiceLine filtered by the total_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoiceLine requireOneByIsSample(boolean $is_sample) Return the first ChildProformaInvoiceLine filtered by the is_sample column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoiceLine requireOneByIsNeedBox(boolean $is_need_box) Return the first ChildProformaInvoiceLine filtered by the is_need_box column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProformaInvoiceLine requireOneByActive(boolean $active) Return the first ChildProformaInvoiceLine filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoiceLine requireOneByCreatedAt(string $created_at) Return the first ChildProformaInvoiceLine filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoiceLine requireOneByUpdatedAt(string $updated_at) Return the first ChildProformaInvoiceLine filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -164,6 +168,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByTotalPrice(double $total_price) Return ChildProformaInvoiceLine objects filtered by the total_price column
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByIsSample(boolean $is_sample) Return ChildProformaInvoiceLine objects filtered by the is_sample column
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByIsNeedBox(boolean $is_need_box) Return ChildProformaInvoiceLine objects filtered by the is_need_box column
+ * @method     ChildProformaInvoiceLine[]|ObjectCollection findByActive(boolean $active) Return ChildProformaInvoiceLine objects filtered by the active column
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildProformaInvoiceLine objects filtered by the created_at column
  * @method     ChildProformaInvoiceLine[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildProformaInvoiceLine objects filtered by the updated_at column
  * @method     ChildProformaInvoiceLine[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -264,7 +269,7 @@ abstract class ProformaInvoiceLineQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, proforma_invoice_id, product_id, product_finishing, name, remark, description, qty, qty_per_pack, cubic_dimension, total_cubic_dimension, price, total_price, is_sample, is_need_box, created_at, updated_at FROM proforma_invoice_line WHERE id = :p0';
+        $sql = 'SELECT id, proforma_invoice_id, product_id, product_finishing, name, remark, description, qty, qty_per_pack, cubic_dimension, total_cubic_dimension, price, total_price, is_sample, is_need_box, active, created_at, updated_at FROM proforma_invoice_line WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -879,6 +884,33 @@ abstract class ProformaInvoiceLineQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProformaInvoiceLineTableMap::COL_IS_NEED_BOX, $isNeedBox, $comparison);
+    }
+
+    /**
+     * Filter the query on the active column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByActive(true); // WHERE active = true
+     * $query->filterByActive('yes'); // WHERE active = true
+     * </code>
+     *
+     * @param     boolean|string $active The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProformaInvoiceLineQuery The current query, for fluid interface
+     */
+    public function filterByActive($active = null, $comparison = null)
+    {
+        if (is_string($active)) {
+            $active = in_array(strtolower($active), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(ProformaInvoiceLineTableMap::COL_ACTIVE, $active, $comparison);
     }
 
     /**

@@ -59,7 +59,7 @@ class ProductTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 25;
+    const NUM_COLUMNS = 27;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class ProductTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 25;
+    const NUM_HYDRATE_COLUMNS = 27;
 
     /**
      * the column name for the id field
@@ -120,6 +120,11 @@ class ProductTableMap extends TableMap
      * the column name for the material_id field
      */
     const COL_MATERIAL_ID = 'product.material_id';
+
+    /**
+     * the column name for the uom_id field
+     */
+    const COL_UOM_ID = 'product.uom_id';
 
     /**
      * the column name for the note field
@@ -187,6 +192,11 @@ class ProductTableMap extends TableMap
     const COL_TYPE = 'product.type';
 
     /**
+     * the column name for the active field
+     */
+    const COL_ACTIVE = 'product.active';
+
+    /**
      * the column name for the created_at field
      */
     const COL_CREATED_AT = 'product.created_at';
@@ -208,11 +218,11 @@ class ProductTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Description', 'IsRound', 'IsKdn', 'IsFlegt', 'HasComponent', 'QtyPerPack', 'ListPrice', 'MaterialId', 'Note', 'CubicAsb', 'CubicKdn', 'WidthAsb', 'HeightAsb', 'DepthAsb', 'WidthKdn', 'HeightKdn', 'DepthKdn', 'NetCubic', 'NetWeight', 'GrossWeight', 'Type', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'description', 'isRound', 'isKdn', 'isFlegt', 'hasComponent', 'qtyPerPack', 'listPrice', 'materialId', 'note', 'cubicAsb', 'cubicKdn', 'widthAsb', 'heightAsb', 'depthAsb', 'widthKdn', 'heightKdn', 'depthKdn', 'netCubic', 'netWeight', 'grossWeight', 'type', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ProductTableMap::COL_ID, ProductTableMap::COL_NAME, ProductTableMap::COL_DESCRIPTION, ProductTableMap::COL_IS_ROUND, ProductTableMap::COL_IS_KDN, ProductTableMap::COL_IS_FLEGT, ProductTableMap::COL_HAS_COMPONENT, ProductTableMap::COL_QTY_PER_PACK, ProductTableMap::COL_LIST_PRICE, ProductTableMap::COL_MATERIAL_ID, ProductTableMap::COL_NOTE, ProductTableMap::COL_CUBIC_ASB, ProductTableMap::COL_CUBIC_KDN, ProductTableMap::COL_WIDTH_ASB, ProductTableMap::COL_HEIGHT_ASB, ProductTableMap::COL_DEPTH_ASB, ProductTableMap::COL_WIDTH_KDN, ProductTableMap::COL_HEIGHT_KDN, ProductTableMap::COL_DEPTH_KDN, ProductTableMap::COL_NET_CUBIC, ProductTableMap::COL_NET_WEIGHT, ProductTableMap::COL_GROSS_WEIGHT, ProductTableMap::COL_TYPE, ProductTableMap::COL_CREATED_AT, ProductTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'description', 'is_round', 'is_kdn', 'is_flegt', 'has_component', 'qty_per_pack', 'list_price', 'material_id', 'note', 'cubic_asb', 'cubic_kdn', 'width_asb', 'height_asb', 'depth_asb', 'width_kdn', 'height_kdn', 'depth_kdn', 'net_cubic', 'net_weight', 'gross_weight', 'type', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Description', 'IsRound', 'IsKdn', 'IsFlegt', 'HasComponent', 'QtyPerPack', 'ListPrice', 'MaterialId', 'UomId', 'Note', 'CubicAsb', 'CubicKdn', 'WidthAsb', 'HeightAsb', 'DepthAsb', 'WidthKdn', 'HeightKdn', 'DepthKdn', 'NetCubic', 'NetWeight', 'GrossWeight', 'Type', 'Active', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'description', 'isRound', 'isKdn', 'isFlegt', 'hasComponent', 'qtyPerPack', 'listPrice', 'materialId', 'uomId', 'note', 'cubicAsb', 'cubicKdn', 'widthAsb', 'heightAsb', 'depthAsb', 'widthKdn', 'heightKdn', 'depthKdn', 'netCubic', 'netWeight', 'grossWeight', 'type', 'active', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ProductTableMap::COL_ID, ProductTableMap::COL_NAME, ProductTableMap::COL_DESCRIPTION, ProductTableMap::COL_IS_ROUND, ProductTableMap::COL_IS_KDN, ProductTableMap::COL_IS_FLEGT, ProductTableMap::COL_HAS_COMPONENT, ProductTableMap::COL_QTY_PER_PACK, ProductTableMap::COL_LIST_PRICE, ProductTableMap::COL_MATERIAL_ID, ProductTableMap::COL_UOM_ID, ProductTableMap::COL_NOTE, ProductTableMap::COL_CUBIC_ASB, ProductTableMap::COL_CUBIC_KDN, ProductTableMap::COL_WIDTH_ASB, ProductTableMap::COL_HEIGHT_ASB, ProductTableMap::COL_DEPTH_ASB, ProductTableMap::COL_WIDTH_KDN, ProductTableMap::COL_HEIGHT_KDN, ProductTableMap::COL_DEPTH_KDN, ProductTableMap::COL_NET_CUBIC, ProductTableMap::COL_NET_WEIGHT, ProductTableMap::COL_GROSS_WEIGHT, ProductTableMap::COL_TYPE, ProductTableMap::COL_ACTIVE, ProductTableMap::COL_CREATED_AT, ProductTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'description', 'is_round', 'is_kdn', 'is_flegt', 'has_component', 'qty_per_pack', 'list_price', 'material_id', 'uom_id', 'note', 'cubic_asb', 'cubic_kdn', 'width_asb', 'height_asb', 'depth_asb', 'width_kdn', 'height_kdn', 'depth_kdn', 'net_cubic', 'net_weight', 'gross_weight', 'type', 'active', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, )
     );
 
     /**
@@ -222,11 +232,11 @@ class ProductTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Description' => 2, 'IsRound' => 3, 'IsKdn' => 4, 'IsFlegt' => 5, 'HasComponent' => 6, 'QtyPerPack' => 7, 'ListPrice' => 8, 'MaterialId' => 9, 'Note' => 10, 'CubicAsb' => 11, 'CubicKdn' => 12, 'WidthAsb' => 13, 'HeightAsb' => 14, 'DepthAsb' => 15, 'WidthKdn' => 16, 'HeightKdn' => 17, 'DepthKdn' => 18, 'NetCubic' => 19, 'NetWeight' => 20, 'GrossWeight' => 21, 'Type' => 22, 'CreatedAt' => 23, 'UpdatedAt' => 24, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'isRound' => 3, 'isKdn' => 4, 'isFlegt' => 5, 'hasComponent' => 6, 'qtyPerPack' => 7, 'listPrice' => 8, 'materialId' => 9, 'note' => 10, 'cubicAsb' => 11, 'cubicKdn' => 12, 'widthAsb' => 13, 'heightAsb' => 14, 'depthAsb' => 15, 'widthKdn' => 16, 'heightKdn' => 17, 'depthKdn' => 18, 'netCubic' => 19, 'netWeight' => 20, 'grossWeight' => 21, 'type' => 22, 'createdAt' => 23, 'updatedAt' => 24, ),
-        self::TYPE_COLNAME       => array(ProductTableMap::COL_ID => 0, ProductTableMap::COL_NAME => 1, ProductTableMap::COL_DESCRIPTION => 2, ProductTableMap::COL_IS_ROUND => 3, ProductTableMap::COL_IS_KDN => 4, ProductTableMap::COL_IS_FLEGT => 5, ProductTableMap::COL_HAS_COMPONENT => 6, ProductTableMap::COL_QTY_PER_PACK => 7, ProductTableMap::COL_LIST_PRICE => 8, ProductTableMap::COL_MATERIAL_ID => 9, ProductTableMap::COL_NOTE => 10, ProductTableMap::COL_CUBIC_ASB => 11, ProductTableMap::COL_CUBIC_KDN => 12, ProductTableMap::COL_WIDTH_ASB => 13, ProductTableMap::COL_HEIGHT_ASB => 14, ProductTableMap::COL_DEPTH_ASB => 15, ProductTableMap::COL_WIDTH_KDN => 16, ProductTableMap::COL_HEIGHT_KDN => 17, ProductTableMap::COL_DEPTH_KDN => 18, ProductTableMap::COL_NET_CUBIC => 19, ProductTableMap::COL_NET_WEIGHT => 20, ProductTableMap::COL_GROSS_WEIGHT => 21, ProductTableMap::COL_TYPE => 22, ProductTableMap::COL_CREATED_AT => 23, ProductTableMap::COL_UPDATED_AT => 24, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'is_round' => 3, 'is_kdn' => 4, 'is_flegt' => 5, 'has_component' => 6, 'qty_per_pack' => 7, 'list_price' => 8, 'material_id' => 9, 'note' => 10, 'cubic_asb' => 11, 'cubic_kdn' => 12, 'width_asb' => 13, 'height_asb' => 14, 'depth_asb' => 15, 'width_kdn' => 16, 'height_kdn' => 17, 'depth_kdn' => 18, 'net_cubic' => 19, 'net_weight' => 20, 'gross_weight' => 21, 'type' => 22, 'created_at' => 23, 'updated_at' => 24, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Description' => 2, 'IsRound' => 3, 'IsKdn' => 4, 'IsFlegt' => 5, 'HasComponent' => 6, 'QtyPerPack' => 7, 'ListPrice' => 8, 'MaterialId' => 9, 'UomId' => 10, 'Note' => 11, 'CubicAsb' => 12, 'CubicKdn' => 13, 'WidthAsb' => 14, 'HeightAsb' => 15, 'DepthAsb' => 16, 'WidthKdn' => 17, 'HeightKdn' => 18, 'DepthKdn' => 19, 'NetCubic' => 20, 'NetWeight' => 21, 'GrossWeight' => 22, 'Type' => 23, 'Active' => 24, 'CreatedAt' => 25, 'UpdatedAt' => 26, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'isRound' => 3, 'isKdn' => 4, 'isFlegt' => 5, 'hasComponent' => 6, 'qtyPerPack' => 7, 'listPrice' => 8, 'materialId' => 9, 'uomId' => 10, 'note' => 11, 'cubicAsb' => 12, 'cubicKdn' => 13, 'widthAsb' => 14, 'heightAsb' => 15, 'depthAsb' => 16, 'widthKdn' => 17, 'heightKdn' => 18, 'depthKdn' => 19, 'netCubic' => 20, 'netWeight' => 21, 'grossWeight' => 22, 'type' => 23, 'active' => 24, 'createdAt' => 25, 'updatedAt' => 26, ),
+        self::TYPE_COLNAME       => array(ProductTableMap::COL_ID => 0, ProductTableMap::COL_NAME => 1, ProductTableMap::COL_DESCRIPTION => 2, ProductTableMap::COL_IS_ROUND => 3, ProductTableMap::COL_IS_KDN => 4, ProductTableMap::COL_IS_FLEGT => 5, ProductTableMap::COL_HAS_COMPONENT => 6, ProductTableMap::COL_QTY_PER_PACK => 7, ProductTableMap::COL_LIST_PRICE => 8, ProductTableMap::COL_MATERIAL_ID => 9, ProductTableMap::COL_UOM_ID => 10, ProductTableMap::COL_NOTE => 11, ProductTableMap::COL_CUBIC_ASB => 12, ProductTableMap::COL_CUBIC_KDN => 13, ProductTableMap::COL_WIDTH_ASB => 14, ProductTableMap::COL_HEIGHT_ASB => 15, ProductTableMap::COL_DEPTH_ASB => 16, ProductTableMap::COL_WIDTH_KDN => 17, ProductTableMap::COL_HEIGHT_KDN => 18, ProductTableMap::COL_DEPTH_KDN => 19, ProductTableMap::COL_NET_CUBIC => 20, ProductTableMap::COL_NET_WEIGHT => 21, ProductTableMap::COL_GROSS_WEIGHT => 22, ProductTableMap::COL_TYPE => 23, ProductTableMap::COL_ACTIVE => 24, ProductTableMap::COL_CREATED_AT => 25, ProductTableMap::COL_UPDATED_AT => 26, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'is_round' => 3, 'is_kdn' => 4, 'is_flegt' => 5, 'has_component' => 6, 'qty_per_pack' => 7, 'list_price' => 8, 'material_id' => 9, 'uom_id' => 10, 'note' => 11, 'cubic_asb' => 12, 'cubic_kdn' => 13, 'width_asb' => 14, 'height_asb' => 15, 'depth_asb' => 16, 'width_kdn' => 17, 'height_kdn' => 18, 'depth_kdn' => 19, 'net_cubic' => 20, 'net_weight' => 21, 'gross_weight' => 22, 'type' => 23, 'active' => 24, 'created_at' => 25, 'updated_at' => 26, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, )
     );
 
     /**
@@ -256,6 +266,7 @@ class ProductTableMap extends TableMap
         $this->addColumn('qty_per_pack', 'QtyPerPack', 'INTEGER', false, null, 1);
         $this->addColumn('list_price', 'ListPrice', 'FLOAT', false, null, null);
         $this->addForeignKey('material_id', 'MaterialId', 'INTEGER', 'material', 'id', false, null, null);
+        $this->addForeignKey('uom_id', 'UomId', 'INTEGER', 'unit_of_measure', 'id', false, null, null);
         $this->addColumn('note', 'Note', 'LONGVARCHAR', false, null, null);
         $this->addColumn('cubic_asb', 'CubicAsb', 'FLOAT', false, null, null);
         $this->addColumn('cubic_kdn', 'CubicKdn', 'FLOAT', false, null, null);
@@ -269,6 +280,7 @@ class ProductTableMap extends TableMap
         $this->addColumn('net_weight', 'NetWeight', 'FLOAT', false, null, null);
         $this->addColumn('gross_weight', 'GrossWeight', 'FLOAT', false, null, null);
         $this->addColumn('type', 'Type', 'CHAR', false, null, 'product');
+        $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -282,6 +294,13 @@ class ProductTableMap extends TableMap
   0 =>
   array (
     0 => ':material_id',
+    1 => ':id',
+  ),
+), null, null, null, false);
+        $this->addRelation('UnitOfMeasure', '\\UnitOfMeasure', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':uom_id',
     1 => ':id',
   ),
 ), null, null, null, false);
@@ -502,6 +521,7 @@ class ProductTableMap extends TableMap
             $criteria->addSelectColumn(ProductTableMap::COL_QTY_PER_PACK);
             $criteria->addSelectColumn(ProductTableMap::COL_LIST_PRICE);
             $criteria->addSelectColumn(ProductTableMap::COL_MATERIAL_ID);
+            $criteria->addSelectColumn(ProductTableMap::COL_UOM_ID);
             $criteria->addSelectColumn(ProductTableMap::COL_NOTE);
             $criteria->addSelectColumn(ProductTableMap::COL_CUBIC_ASB);
             $criteria->addSelectColumn(ProductTableMap::COL_CUBIC_KDN);
@@ -515,6 +535,7 @@ class ProductTableMap extends TableMap
             $criteria->addSelectColumn(ProductTableMap::COL_NET_WEIGHT);
             $criteria->addSelectColumn(ProductTableMap::COL_GROSS_WEIGHT);
             $criteria->addSelectColumn(ProductTableMap::COL_TYPE);
+            $criteria->addSelectColumn(ProductTableMap::COL_ACTIVE);
             $criteria->addSelectColumn(ProductTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(ProductTableMap::COL_UPDATED_AT);
         } else {
@@ -528,6 +549,7 @@ class ProductTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.qty_per_pack');
             $criteria->addSelectColumn($alias . '.list_price');
             $criteria->addSelectColumn($alias . '.material_id');
+            $criteria->addSelectColumn($alias . '.uom_id');
             $criteria->addSelectColumn($alias . '.note');
             $criteria->addSelectColumn($alias . '.cubic_asb');
             $criteria->addSelectColumn($alias . '.cubic_kdn');
@@ -541,6 +563,7 @@ class ProductTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.net_weight');
             $criteria->addSelectColumn($alias . '.gross_weight');
             $criteria->addSelectColumn($alias . '.type');
+            $criteria->addSelectColumn($alias . '.active');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }

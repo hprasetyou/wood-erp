@@ -30,6 +30,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceQuery orderByTotalCubicDimension($order = Criteria::ASC) Order by the total_cubic_dimension column
  * @method     ChildProformaInvoiceQuery orderByTotalPrice($order = Criteria::ASC) Order by the total_price column
  * @method     ChildProformaInvoiceQuery orderByState($order = Criteria::ASC) Order by the state column
+ * @method     ChildProformaInvoiceQuery orderByActive($order = Criteria::ASC) Order by the active column
  * @method     ChildProformaInvoiceQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildProformaInvoiceQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -43,6 +44,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceQuery groupByTotalCubicDimension() Group by the total_cubic_dimension column
  * @method     ChildProformaInvoiceQuery groupByTotalPrice() Group by the total_price column
  * @method     ChildProformaInvoiceQuery groupByState() Group by the state column
+ * @method     ChildProformaInvoiceQuery groupByActive() Group by the active column
  * @method     ChildProformaInvoiceQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildProformaInvoiceQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -109,6 +111,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoice findOneByTotalCubicDimension(double $total_cubic_dimension) Return the first ChildProformaInvoice filtered by the total_cubic_dimension column
  * @method     ChildProformaInvoice findOneByTotalPrice(double $total_price) Return the first ChildProformaInvoice filtered by the total_price column
  * @method     ChildProformaInvoice findOneByState(string $state) Return the first ChildProformaInvoice filtered by the state column
+ * @method     ChildProformaInvoice findOneByActive(boolean $active) Return the first ChildProformaInvoice filtered by the active column
  * @method     ChildProformaInvoice findOneByCreatedAt(string $created_at) Return the first ChildProformaInvoice filtered by the created_at column
  * @method     ChildProformaInvoice findOneByUpdatedAt(string $updated_at) Return the first ChildProformaInvoice filtered by the updated_at column *
 
@@ -125,6 +128,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoice requireOneByTotalCubicDimension(double $total_cubic_dimension) Return the first ChildProformaInvoice filtered by the total_cubic_dimension column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByTotalPrice(double $total_price) Return the first ChildProformaInvoice filtered by the total_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByState(string $state) Return the first ChildProformaInvoice filtered by the state column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProformaInvoice requireOneByActive(boolean $active) Return the first ChildProformaInvoice filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByCreatedAt(string $created_at) Return the first ChildProformaInvoice filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByUpdatedAt(string $updated_at) Return the first ChildProformaInvoice filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -139,6 +143,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoice[]|ObjectCollection findByTotalCubicDimension(double $total_cubic_dimension) Return ChildProformaInvoice objects filtered by the total_cubic_dimension column
  * @method     ChildProformaInvoice[]|ObjectCollection findByTotalPrice(double $total_price) Return ChildProformaInvoice objects filtered by the total_price column
  * @method     ChildProformaInvoice[]|ObjectCollection findByState(string $state) Return ChildProformaInvoice objects filtered by the state column
+ * @method     ChildProformaInvoice[]|ObjectCollection findByActive(boolean $active) Return ChildProformaInvoice objects filtered by the active column
  * @method     ChildProformaInvoice[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildProformaInvoice objects filtered by the created_at column
  * @method     ChildProformaInvoice[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildProformaInvoice objects filtered by the updated_at column
  * @method     ChildProformaInvoice[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -239,7 +244,7 @@ abstract class ProformaInvoiceQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, currency_id, customer_id, date, confirm_date, description, total_cubic_dimension, total_price, state, created_at, updated_at FROM proforma_invoice WHERE id = :p0';
+        $sql = 'SELECT id, name, currency_id, customer_id, date, confirm_date, description, total_cubic_dimension, total_price, state, active, created_at, updated_at FROM proforma_invoice WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -697,6 +702,33 @@ abstract class ProformaInvoiceQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProformaInvoiceTableMap::COL_STATE, $state, $comparison);
+    }
+
+    /**
+     * Filter the query on the active column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByActive(true); // WHERE active = true
+     * $query->filterByActive('yes'); // WHERE active = true
+     * </code>
+     *
+     * @param     boolean|string $active The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProformaInvoiceQuery The current query, for fluid interface
+     */
+    public function filterByActive($active = null, $comparison = null)
+    {
+        if (is_string($active)) {
+            $active = in_array(strtolower($active), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(ProformaInvoiceTableMap::COL_ACTIVE, $active, $comparison);
     }
 
     /**

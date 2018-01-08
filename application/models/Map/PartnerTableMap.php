@@ -59,7 +59,7 @@ class PartnerTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 14;
+    const NUM_COLUMNS = 15;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class PartnerTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 14;
+    const NUM_HYDRATE_COLUMNS = 15;
 
     /**
      * the column name for the id field
@@ -125,6 +125,11 @@ class PartnerTableMap extends TableMap
      * the column name for the supplier_type_id field
      */
     const COL_SUPPLIER_TYPE_ID = 'partner.supplier_type_id';
+
+    /**
+     * the column name for the active field
+     */
+    const COL_ACTIVE = 'partner.active';
 
     /**
      * the column name for the class_key field
@@ -189,11 +194,11 @@ class PartnerTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Email', 'Phone', 'Website', 'Fax', 'Image', 'TaxNumber', 'Role', 'CompanyId', 'SupplierTypeId', 'ClassKey', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'email', 'phone', 'website', 'fax', 'image', 'taxNumber', 'role', 'companyId', 'supplierTypeId', 'classKey', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(PartnerTableMap::COL_ID, PartnerTableMap::COL_NAME, PartnerTableMap::COL_EMAIL, PartnerTableMap::COL_PHONE, PartnerTableMap::COL_WEBSITE, PartnerTableMap::COL_FAX, PartnerTableMap::COL_IMAGE, PartnerTableMap::COL_TAX_NUMBER, PartnerTableMap::COL_ROLE, PartnerTableMap::COL_COMPANY_ID, PartnerTableMap::COL_SUPPLIER_TYPE_ID, PartnerTableMap::COL_CLASS_KEY, PartnerTableMap::COL_CREATED_AT, PartnerTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'email', 'phone', 'website', 'fax', 'image', 'tax_number', 'role', 'company_id', 'supplier_type_id', 'class_key', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Email', 'Phone', 'Website', 'Fax', 'Image', 'TaxNumber', 'Role', 'CompanyId', 'SupplierTypeId', 'Active', 'ClassKey', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'email', 'phone', 'website', 'fax', 'image', 'taxNumber', 'role', 'companyId', 'supplierTypeId', 'active', 'classKey', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(PartnerTableMap::COL_ID, PartnerTableMap::COL_NAME, PartnerTableMap::COL_EMAIL, PartnerTableMap::COL_PHONE, PartnerTableMap::COL_WEBSITE, PartnerTableMap::COL_FAX, PartnerTableMap::COL_IMAGE, PartnerTableMap::COL_TAX_NUMBER, PartnerTableMap::COL_ROLE, PartnerTableMap::COL_COMPANY_ID, PartnerTableMap::COL_SUPPLIER_TYPE_ID, PartnerTableMap::COL_ACTIVE, PartnerTableMap::COL_CLASS_KEY, PartnerTableMap::COL_CREATED_AT, PartnerTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'email', 'phone', 'website', 'fax', 'image', 'tax_number', 'role', 'company_id', 'supplier_type_id', 'active', 'class_key', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
     );
 
     /**
@@ -203,11 +208,11 @@ class PartnerTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Email' => 2, 'Phone' => 3, 'Website' => 4, 'Fax' => 5, 'Image' => 6, 'TaxNumber' => 7, 'Role' => 8, 'CompanyId' => 9, 'SupplierTypeId' => 10, 'ClassKey' => 11, 'CreatedAt' => 12, 'UpdatedAt' => 13, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'email' => 2, 'phone' => 3, 'website' => 4, 'fax' => 5, 'image' => 6, 'taxNumber' => 7, 'role' => 8, 'companyId' => 9, 'supplierTypeId' => 10, 'classKey' => 11, 'createdAt' => 12, 'updatedAt' => 13, ),
-        self::TYPE_COLNAME       => array(PartnerTableMap::COL_ID => 0, PartnerTableMap::COL_NAME => 1, PartnerTableMap::COL_EMAIL => 2, PartnerTableMap::COL_PHONE => 3, PartnerTableMap::COL_WEBSITE => 4, PartnerTableMap::COL_FAX => 5, PartnerTableMap::COL_IMAGE => 6, PartnerTableMap::COL_TAX_NUMBER => 7, PartnerTableMap::COL_ROLE => 8, PartnerTableMap::COL_COMPANY_ID => 9, PartnerTableMap::COL_SUPPLIER_TYPE_ID => 10, PartnerTableMap::COL_CLASS_KEY => 11, PartnerTableMap::COL_CREATED_AT => 12, PartnerTableMap::COL_UPDATED_AT => 13, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'email' => 2, 'phone' => 3, 'website' => 4, 'fax' => 5, 'image' => 6, 'tax_number' => 7, 'role' => 8, 'company_id' => 9, 'supplier_type_id' => 10, 'class_key' => 11, 'created_at' => 12, 'updated_at' => 13, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Email' => 2, 'Phone' => 3, 'Website' => 4, 'Fax' => 5, 'Image' => 6, 'TaxNumber' => 7, 'Role' => 8, 'CompanyId' => 9, 'SupplierTypeId' => 10, 'Active' => 11, 'ClassKey' => 12, 'CreatedAt' => 13, 'UpdatedAt' => 14, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'email' => 2, 'phone' => 3, 'website' => 4, 'fax' => 5, 'image' => 6, 'taxNumber' => 7, 'role' => 8, 'companyId' => 9, 'supplierTypeId' => 10, 'active' => 11, 'classKey' => 12, 'createdAt' => 13, 'updatedAt' => 14, ),
+        self::TYPE_COLNAME       => array(PartnerTableMap::COL_ID => 0, PartnerTableMap::COL_NAME => 1, PartnerTableMap::COL_EMAIL => 2, PartnerTableMap::COL_PHONE => 3, PartnerTableMap::COL_WEBSITE => 4, PartnerTableMap::COL_FAX => 5, PartnerTableMap::COL_IMAGE => 6, PartnerTableMap::COL_TAX_NUMBER => 7, PartnerTableMap::COL_ROLE => 8, PartnerTableMap::COL_COMPANY_ID => 9, PartnerTableMap::COL_SUPPLIER_TYPE_ID => 10, PartnerTableMap::COL_ACTIVE => 11, PartnerTableMap::COL_CLASS_KEY => 12, PartnerTableMap::COL_CREATED_AT => 13, PartnerTableMap::COL_UPDATED_AT => 14, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'email' => 2, 'phone' => 3, 'website' => 4, 'fax' => 5, 'image' => 6, 'tax_number' => 7, 'role' => 8, 'company_id' => 9, 'supplier_type_id' => 10, 'active' => 11, 'class_key' => 12, 'created_at' => 13, 'updated_at' => 14, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
     );
 
     /**
@@ -239,6 +244,7 @@ class PartnerTableMap extends TableMap
         $this->addColumn('role', 'Role', 'VARCHAR', false, 255, null);
         $this->addForeignKey('company_id', 'CompanyId', 'INTEGER', 'partner', 'id', false, null, null);
         $this->addForeignKey('supplier_type_id', 'SupplierTypeId', 'INTEGER', 'supplier_type', 'id', false, null, null);
+        $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
         $this->addColumn('class_key', 'ClassKey', 'INTEGER', false, null, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
@@ -382,7 +388,7 @@ class PartnerTableMap extends TableMap
         try {
 
             $omClass = null;
-            $classKey = $row[$colnum + 11];
+            $classKey = $row[$colnum + 12];
 
             switch ($classKey) {
 
@@ -510,6 +516,7 @@ class PartnerTableMap extends TableMap
             $criteria->addSelectColumn(PartnerTableMap::COL_ROLE);
             $criteria->addSelectColumn(PartnerTableMap::COL_COMPANY_ID);
             $criteria->addSelectColumn(PartnerTableMap::COL_SUPPLIER_TYPE_ID);
+            $criteria->addSelectColumn(PartnerTableMap::COL_ACTIVE);
             $criteria->addSelectColumn(PartnerTableMap::COL_CLASS_KEY);
             $criteria->addSelectColumn(PartnerTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(PartnerTableMap::COL_UPDATED_AT);
@@ -525,6 +532,7 @@ class PartnerTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.role');
             $criteria->addSelectColumn($alias . '.company_id');
             $criteria->addSelectColumn($alias . '.supplier_type_id');
+            $criteria->addSelectColumn($alias . '.active');
             $criteria->addSelectColumn($alias . '.class_key');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');

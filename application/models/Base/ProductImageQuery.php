@@ -25,6 +25,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductImageQuery orderByUrl($order = Criteria::ASC) Order by the url column
  * @method     ChildProductImageQuery orderByDescription($order = Criteria::ASC) Order by the description column
  * @method     ChildProductImageQuery orderByProductId($order = Criteria::ASC) Order by the product_id column
+ * @method     ChildProductImageQuery orderByActive($order = Criteria::ASC) Order by the active column
  * @method     ChildProductImageQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildProductImageQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -33,6 +34,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductImageQuery groupByUrl() Group by the url column
  * @method     ChildProductImageQuery groupByDescription() Group by the description column
  * @method     ChildProductImageQuery groupByProductId() Group by the product_id column
+ * @method     ChildProductImageQuery groupByActive() Group by the active column
  * @method     ChildProductImageQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildProductImageQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -64,6 +66,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductImage findOneByUrl(string $url) Return the first ChildProductImage filtered by the url column
  * @method     ChildProductImage findOneByDescription(string $description) Return the first ChildProductImage filtered by the description column
  * @method     ChildProductImage findOneByProductId(int $product_id) Return the first ChildProductImage filtered by the product_id column
+ * @method     ChildProductImage findOneByActive(boolean $active) Return the first ChildProductImage filtered by the active column
  * @method     ChildProductImage findOneByCreatedAt(string $created_at) Return the first ChildProductImage filtered by the created_at column
  * @method     ChildProductImage findOneByUpdatedAt(string $updated_at) Return the first ChildProductImage filtered by the updated_at column *
 
@@ -75,6 +78,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductImage requireOneByUrl(string $url) Return the first ChildProductImage filtered by the url column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductImage requireOneByDescription(string $description) Return the first ChildProductImage filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductImage requireOneByProductId(int $product_id) Return the first ChildProductImage filtered by the product_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProductImage requireOneByActive(boolean $active) Return the first ChildProductImage filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductImage requireOneByCreatedAt(string $created_at) Return the first ChildProductImage filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductImage requireOneByUpdatedAt(string $updated_at) Return the first ChildProductImage filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -84,6 +88,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductImage[]|ObjectCollection findByUrl(string $url) Return ChildProductImage objects filtered by the url column
  * @method     ChildProductImage[]|ObjectCollection findByDescription(string $description) Return ChildProductImage objects filtered by the description column
  * @method     ChildProductImage[]|ObjectCollection findByProductId(int $product_id) Return ChildProductImage objects filtered by the product_id column
+ * @method     ChildProductImage[]|ObjectCollection findByActive(boolean $active) Return ChildProductImage objects filtered by the active column
  * @method     ChildProductImage[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildProductImage objects filtered by the created_at column
  * @method     ChildProductImage[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildProductImage objects filtered by the updated_at column
  * @method     ChildProductImage[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -184,7 +189,7 @@ abstract class ProductImageQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, url, description, product_id, created_at, updated_at FROM product_image WHERE id = :p0';
+        $sql = 'SELECT id, name, url, description, product_id, active, created_at, updated_at FROM product_image WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -431,6 +436,33 @@ abstract class ProductImageQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProductImageTableMap::COL_PRODUCT_ID, $productId, $comparison);
+    }
+
+    /**
+     * Filter the query on the active column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByActive(true); // WHERE active = true
+     * $query->filterByActive('yes'); // WHERE active = true
+     * </code>
+     *
+     * @param     boolean|string $active The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProductImageQuery The current query, for fluid interface
+     */
+    public function filterByActive($active = null, $comparison = null)
+    {
+        if (is_string($active)) {
+            $active = in_array(strtolower($active), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(ProductImageTableMap::COL_ACTIVE, $active, $comparison);
     }
 
     /**

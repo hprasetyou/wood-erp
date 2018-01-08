@@ -2,11 +2,11 @@
 
 namespace Base;
 
-use \Material as ChildMaterial;
-use \MaterialQuery as ChildMaterialQuery;
+use \UnitOfMeasureCategory as ChildUnitOfMeasureCategory;
+use \UnitOfMeasureCategoryQuery as ChildUnitOfMeasureCategoryQuery;
 use \Exception;
 use \PDO;
-use Map\MaterialTableMap;
+use Map\UnitOfMeasureCategoryTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -16,99 +16,94 @@ use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
 
 /**
- * Base class that represents a query for the 'material' table.
+ * Base class that represents a query for the 'unit_of_measure_category' table.
  *
  *
  *
- * @method     ChildMaterialQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildMaterialQuery orderByName($order = Criteria::ASC) Order by the name column
- * @method     ChildMaterialQuery orderByActive($order = Criteria::ASC) Order by the active column
- * @method     ChildMaterialQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
- * @method     ChildMaterialQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
+ * @method     ChildUnitOfMeasureCategoryQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     ChildUnitOfMeasureCategoryQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method     ChildUnitOfMeasureCategoryQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildUnitOfMeasureCategoryQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
- * @method     ChildMaterialQuery groupById() Group by the id column
- * @method     ChildMaterialQuery groupByName() Group by the name column
- * @method     ChildMaterialQuery groupByActive() Group by the active column
- * @method     ChildMaterialQuery groupByCreatedAt() Group by the created_at column
- * @method     ChildMaterialQuery groupByUpdatedAt() Group by the updated_at column
+ * @method     ChildUnitOfMeasureCategoryQuery groupById() Group by the id column
+ * @method     ChildUnitOfMeasureCategoryQuery groupByName() Group by the name column
+ * @method     ChildUnitOfMeasureCategoryQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildUnitOfMeasureCategoryQuery groupByUpdatedAt() Group by the updated_at column
  *
- * @method     ChildMaterialQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     ChildMaterialQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     ChildMaterialQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     ChildUnitOfMeasureCategoryQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     ChildUnitOfMeasureCategoryQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     ChildUnitOfMeasureCategoryQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildMaterialQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildMaterialQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildMaterialQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ * @method     ChildUnitOfMeasureCategoryQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildUnitOfMeasureCategoryQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildUnitOfMeasureCategoryQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildMaterialQuery leftJoinProduct($relationAlias = null) Adds a LEFT JOIN clause to the query using the Product relation
- * @method     ChildMaterialQuery rightJoinProduct($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Product relation
- * @method     ChildMaterialQuery innerJoinProduct($relationAlias = null) Adds a INNER JOIN clause to the query using the Product relation
+ * @method     ChildUnitOfMeasureCategoryQuery leftJoinUnitOfMeasure($relationAlias = null) Adds a LEFT JOIN clause to the query using the UnitOfMeasure relation
+ * @method     ChildUnitOfMeasureCategoryQuery rightJoinUnitOfMeasure($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UnitOfMeasure relation
+ * @method     ChildUnitOfMeasureCategoryQuery innerJoinUnitOfMeasure($relationAlias = null) Adds a INNER JOIN clause to the query using the UnitOfMeasure relation
  *
- * @method     ChildMaterialQuery joinWithProduct($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Product relation
+ * @method     ChildUnitOfMeasureCategoryQuery joinWithUnitOfMeasure($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the UnitOfMeasure relation
  *
- * @method     ChildMaterialQuery leftJoinWithProduct() Adds a LEFT JOIN clause and with to the query using the Product relation
- * @method     ChildMaterialQuery rightJoinWithProduct() Adds a RIGHT JOIN clause and with to the query using the Product relation
- * @method     ChildMaterialQuery innerJoinWithProduct() Adds a INNER JOIN clause and with to the query using the Product relation
+ * @method     ChildUnitOfMeasureCategoryQuery leftJoinWithUnitOfMeasure() Adds a LEFT JOIN clause and with to the query using the UnitOfMeasure relation
+ * @method     ChildUnitOfMeasureCategoryQuery rightJoinWithUnitOfMeasure() Adds a RIGHT JOIN clause and with to the query using the UnitOfMeasure relation
+ * @method     ChildUnitOfMeasureCategoryQuery innerJoinWithUnitOfMeasure() Adds a INNER JOIN clause and with to the query using the UnitOfMeasure relation
  *
- * @method     \ProductQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \UnitOfMeasureQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
- * @method     ChildMaterial findOne(ConnectionInterface $con = null) Return the first ChildMaterial matching the query
- * @method     ChildMaterial findOneOrCreate(ConnectionInterface $con = null) Return the first ChildMaterial matching the query, or a new ChildMaterial object populated from the query conditions when no match is found
+ * @method     ChildUnitOfMeasureCategory findOne(ConnectionInterface $con = null) Return the first ChildUnitOfMeasureCategory matching the query
+ * @method     ChildUnitOfMeasureCategory findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUnitOfMeasureCategory matching the query, or a new ChildUnitOfMeasureCategory object populated from the query conditions when no match is found
  *
- * @method     ChildMaterial findOneById(int $id) Return the first ChildMaterial filtered by the id column
- * @method     ChildMaterial findOneByName(string $name) Return the first ChildMaterial filtered by the name column
- * @method     ChildMaterial findOneByActive(boolean $active) Return the first ChildMaterial filtered by the active column
- * @method     ChildMaterial findOneByCreatedAt(string $created_at) Return the first ChildMaterial filtered by the created_at column
- * @method     ChildMaterial findOneByUpdatedAt(string $updated_at) Return the first ChildMaterial filtered by the updated_at column *
+ * @method     ChildUnitOfMeasureCategory findOneById(int $id) Return the first ChildUnitOfMeasureCategory filtered by the id column
+ * @method     ChildUnitOfMeasureCategory findOneByName(string $name) Return the first ChildUnitOfMeasureCategory filtered by the name column
+ * @method     ChildUnitOfMeasureCategory findOneByCreatedAt(string $created_at) Return the first ChildUnitOfMeasureCategory filtered by the created_at column
+ * @method     ChildUnitOfMeasureCategory findOneByUpdatedAt(string $updated_at) Return the first ChildUnitOfMeasureCategory filtered by the updated_at column *
 
- * @method     ChildMaterial requirePk($key, ConnectionInterface $con = null) Return the ChildMaterial by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildMaterial requireOne(ConnectionInterface $con = null) Return the first ChildMaterial matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUnitOfMeasureCategory requirePk($key, ConnectionInterface $con = null) Return the ChildUnitOfMeasureCategory by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUnitOfMeasureCategory requireOne(ConnectionInterface $con = null) Return the first ChildUnitOfMeasureCategory matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildMaterial requireOneById(int $id) Return the first ChildMaterial filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildMaterial requireOneByName(string $name) Return the first ChildMaterial filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildMaterial requireOneByActive(boolean $active) Return the first ChildMaterial filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildMaterial requireOneByCreatedAt(string $created_at) Return the first ChildMaterial filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildMaterial requireOneByUpdatedAt(string $updated_at) Return the first ChildMaterial filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUnitOfMeasureCategory requireOneById(int $id) Return the first ChildUnitOfMeasureCategory filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUnitOfMeasureCategory requireOneByName(string $name) Return the first ChildUnitOfMeasureCategory filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUnitOfMeasureCategory requireOneByCreatedAt(string $created_at) Return the first ChildUnitOfMeasureCategory filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUnitOfMeasureCategory requireOneByUpdatedAt(string $updated_at) Return the first ChildUnitOfMeasureCategory filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildMaterial[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildMaterial objects based on current ModelCriteria
- * @method     ChildMaterial[]|ObjectCollection findById(int $id) Return ChildMaterial objects filtered by the id column
- * @method     ChildMaterial[]|ObjectCollection findByName(string $name) Return ChildMaterial objects filtered by the name column
- * @method     ChildMaterial[]|ObjectCollection findByActive(boolean $active) Return ChildMaterial objects filtered by the active column
- * @method     ChildMaterial[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildMaterial objects filtered by the created_at column
- * @method     ChildMaterial[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildMaterial objects filtered by the updated_at column
- * @method     ChildMaterial[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
+ * @method     ChildUnitOfMeasureCategory[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildUnitOfMeasureCategory objects based on current ModelCriteria
+ * @method     ChildUnitOfMeasureCategory[]|ObjectCollection findById(int $id) Return ChildUnitOfMeasureCategory objects filtered by the id column
+ * @method     ChildUnitOfMeasureCategory[]|ObjectCollection findByName(string $name) Return ChildUnitOfMeasureCategory objects filtered by the name column
+ * @method     ChildUnitOfMeasureCategory[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildUnitOfMeasureCategory objects filtered by the created_at column
+ * @method     ChildUnitOfMeasureCategory[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildUnitOfMeasureCategory objects filtered by the updated_at column
+ * @method     ChildUnitOfMeasureCategory[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
-abstract class MaterialQuery extends ModelCriteria
+abstract class UnitOfMeasureCategoryQuery extends ModelCriteria
 {
     protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
-     * Initializes internal state of \Base\MaterialQuery object.
+     * Initializes internal state of \Base\UnitOfMeasureCategoryQuery object.
      *
      * @param     string $dbName The database name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'default', $modelName = '\\Material', $modelAlias = null)
+    public function __construct($dbName = 'default', $modelName = '\\UnitOfMeasureCategory', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
-     * Returns a new ChildMaterialQuery object.
+     * Returns a new ChildUnitOfMeasureCategoryQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
      * @param     Criteria $criteria Optional Criteria to build the query from
      *
-     * @return ChildMaterialQuery
+     * @return ChildUnitOfMeasureCategoryQuery
      */
     public static function create($modelAlias = null, Criteria $criteria = null)
     {
-        if ($criteria instanceof ChildMaterialQuery) {
+        if ($criteria instanceof ChildUnitOfMeasureCategoryQuery) {
             return $criteria;
         }
-        $query = new ChildMaterialQuery();
+        $query = new ChildUnitOfMeasureCategoryQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -131,7 +126,7 @@ abstract class MaterialQuery extends ModelCriteria
      * @param mixed $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
-     * @return ChildMaterial|array|mixed the result, formatted by the current formatter
+     * @return ChildUnitOfMeasureCategory|array|mixed the result, formatted by the current formatter
      */
     public function findPk($key, ConnectionInterface $con = null)
     {
@@ -140,7 +135,7 @@ abstract class MaterialQuery extends ModelCriteria
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(MaterialTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(UnitOfMeasureCategoryTableMap::DATABASE_NAME);
         }
 
         $this->basePreSelect($con);
@@ -153,7 +148,7 @@ abstract class MaterialQuery extends ModelCriteria
             return $this->findPkComplex($key, $con);
         }
 
-        if ((null !== ($obj = MaterialTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+        if ((null !== ($obj = UnitOfMeasureCategoryTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -170,11 +165,11 @@ abstract class MaterialQuery extends ModelCriteria
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildMaterial A model object, or null if the key is not found
+     * @return ChildUnitOfMeasureCategory A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, active, created_at, updated_at FROM material WHERE id = :p0';
+        $sql = 'SELECT id, name, created_at, updated_at FROM unit_of_measure_category WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -185,10 +180,10 @@ abstract class MaterialQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-            /** @var ChildMaterial $obj */
-            $obj = new ChildMaterial();
+            /** @var ChildUnitOfMeasureCategory $obj */
+            $obj = new ChildUnitOfMeasureCategory();
             $obj->hydrate($row);
-            MaterialTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            UnitOfMeasureCategoryTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -201,7 +196,7 @@ abstract class MaterialQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return ChildMaterial|array|mixed the result, formatted by the current formatter
+     * @return ChildUnitOfMeasureCategory|array|mixed the result, formatted by the current formatter
      */
     protected function findPkComplex($key, ConnectionInterface $con)
     {
@@ -243,12 +238,12 @@ abstract class MaterialQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return $this|ChildMaterialQuery The current query, for fluid interface
+     * @return $this|ChildUnitOfMeasureCategoryQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
 
-        return $this->addUsingAlias(MaterialTableMap::COL_ID, $key, Criteria::EQUAL);
+        return $this->addUsingAlias(UnitOfMeasureCategoryTableMap::COL_ID, $key, Criteria::EQUAL);
     }
 
     /**
@@ -256,12 +251,12 @@ abstract class MaterialQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return $this|ChildMaterialQuery The current query, for fluid interface
+     * @return $this|ChildUnitOfMeasureCategoryQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
 
-        return $this->addUsingAlias(MaterialTableMap::COL_ID, $keys, Criteria::IN);
+        return $this->addUsingAlias(UnitOfMeasureCategoryTableMap::COL_ID, $keys, Criteria::IN);
     }
 
     /**
@@ -280,18 +275,18 @@ abstract class MaterialQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildMaterialQuery The current query, for fluid interface
+     * @return $this|ChildUnitOfMeasureCategoryQuery The current query, for fluid interface
      */
     public function filterById($id = null, $comparison = null)
     {
         if (is_array($id)) {
             $useMinMax = false;
             if (isset($id['min'])) {
-                $this->addUsingAlias(MaterialTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(UnitOfMeasureCategoryTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($id['max'])) {
-                $this->addUsingAlias(MaterialTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(UnitOfMeasureCategoryTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -302,7 +297,7 @@ abstract class MaterialQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(MaterialTableMap::COL_ID, $id, $comparison);
+        return $this->addUsingAlias(UnitOfMeasureCategoryTableMap::COL_ID, $id, $comparison);
     }
 
     /**
@@ -317,7 +312,7 @@ abstract class MaterialQuery extends ModelCriteria
      * @param     string $name The value to use as filter.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildMaterialQuery The current query, for fluid interface
+     * @return $this|ChildUnitOfMeasureCategoryQuery The current query, for fluid interface
      */
     public function filterByName($name = null, $comparison = null)
     {
@@ -327,34 +322,7 @@ abstract class MaterialQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(MaterialTableMap::COL_NAME, $name, $comparison);
-    }
-
-    /**
-     * Filter the query on the active column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByActive(true); // WHERE active = true
-     * $query->filterByActive('yes'); // WHERE active = true
-     * </code>
-     *
-     * @param     boolean|string $active The value to use as filter.
-     *              Non-boolean arguments are converted using the following rules:
-     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildMaterialQuery The current query, for fluid interface
-     */
-    public function filterByActive($active = null, $comparison = null)
-    {
-        if (is_string($active)) {
-            $active = in_array(strtolower($active), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-        }
-
-        return $this->addUsingAlias(MaterialTableMap::COL_ACTIVE, $active, $comparison);
+        return $this->addUsingAlias(UnitOfMeasureCategoryTableMap::COL_NAME, $name, $comparison);
     }
 
     /**
@@ -375,18 +343,18 @@ abstract class MaterialQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildMaterialQuery The current query, for fluid interface
+     * @return $this|ChildUnitOfMeasureCategoryQuery The current query, for fluid interface
      */
     public function filterByCreatedAt($createdAt = null, $comparison = null)
     {
         if (is_array($createdAt)) {
             $useMinMax = false;
             if (isset($createdAt['min'])) {
-                $this->addUsingAlias(MaterialTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(UnitOfMeasureCategoryTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($createdAt['max'])) {
-                $this->addUsingAlias(MaterialTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(UnitOfMeasureCategoryTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -397,7 +365,7 @@ abstract class MaterialQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(MaterialTableMap::COL_CREATED_AT, $createdAt, $comparison);
+        return $this->addUsingAlias(UnitOfMeasureCategoryTableMap::COL_CREATED_AT, $createdAt, $comparison);
     }
 
     /**
@@ -418,18 +386,18 @@ abstract class MaterialQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildMaterialQuery The current query, for fluid interface
+     * @return $this|ChildUnitOfMeasureCategoryQuery The current query, for fluid interface
      */
     public function filterByUpdatedAt($updatedAt = null, $comparison = null)
     {
         if (is_array($updatedAt)) {
             $useMinMax = false;
             if (isset($updatedAt['min'])) {
-                $this->addUsingAlias(MaterialTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(UnitOfMeasureCategoryTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($updatedAt['max'])) {
-                $this->addUsingAlias(MaterialTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(UnitOfMeasureCategoryTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -440,44 +408,44 @@ abstract class MaterialQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(MaterialTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
+        return $this->addUsingAlias(UnitOfMeasureCategoryTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
     }
 
     /**
-     * Filter the query by a related \Product object
+     * Filter the query by a related \UnitOfMeasure object
      *
-     * @param \Product|ObjectCollection $product the related object to use as filter
+     * @param \UnitOfMeasure|ObjectCollection $unitOfMeasure the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMaterialQuery The current query, for fluid interface
+     * @return ChildUnitOfMeasureCategoryQuery The current query, for fluid interface
      */
-    public function filterByProduct($product, $comparison = null)
+    public function filterByUnitOfMeasure($unitOfMeasure, $comparison = null)
     {
-        if ($product instanceof \Product) {
+        if ($unitOfMeasure instanceof \UnitOfMeasure) {
             return $this
-                ->addUsingAlias(MaterialTableMap::COL_ID, $product->getMaterialId(), $comparison);
-        } elseif ($product instanceof ObjectCollection) {
+                ->addUsingAlias(UnitOfMeasureCategoryTableMap::COL_ID, $unitOfMeasure->getCategoryId(), $comparison);
+        } elseif ($unitOfMeasure instanceof ObjectCollection) {
             return $this
-                ->useProductQuery()
-                ->filterByPrimaryKeys($product->getPrimaryKeys())
+                ->useUnitOfMeasureQuery()
+                ->filterByPrimaryKeys($unitOfMeasure->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByProduct() only accepts arguments of type \Product or Collection');
+            throw new PropelException('filterByUnitOfMeasure() only accepts arguments of type \UnitOfMeasure or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Product relation
+     * Adds a JOIN clause to the query using the UnitOfMeasure relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return $this|ChildMaterialQuery The current query, for fluid interface
+     * @return $this|ChildUnitOfMeasureCategoryQuery The current query, for fluid interface
      */
-    public function joinProduct($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinUnitOfMeasure($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Product');
+        $relationMap = $tableMap->getRelation('UnitOfMeasure');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -492,14 +460,14 @@ abstract class MaterialQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Product');
+            $this->addJoinObject($join, 'UnitOfMeasure');
         }
 
         return $this;
     }
 
     /**
-     * Use the Product relation Product object
+     * Use the UnitOfMeasure relation UnitOfMeasure object
      *
      * @see useQuery()
      *
@@ -507,33 +475,33 @@ abstract class MaterialQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \ProductQuery A secondary query class using the current class as primary query
+     * @return \UnitOfMeasureQuery A secondary query class using the current class as primary query
      */
-    public function useProductQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useUnitOfMeasureQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinProduct($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Product', '\ProductQuery');
+            ->joinUnitOfMeasure($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'UnitOfMeasure', '\UnitOfMeasureQuery');
     }
 
     /**
      * Exclude object from result
      *
-     * @param   ChildMaterial $material Object to remove from the list of results
+     * @param   ChildUnitOfMeasureCategory $unitOfMeasureCategory Object to remove from the list of results
      *
-     * @return $this|ChildMaterialQuery The current query, for fluid interface
+     * @return $this|ChildUnitOfMeasureCategoryQuery The current query, for fluid interface
      */
-    public function prune($material = null)
+    public function prune($unitOfMeasureCategory = null)
     {
-        if ($material) {
-            $this->addUsingAlias(MaterialTableMap::COL_ID, $material->getId(), Criteria::NOT_EQUAL);
+        if ($unitOfMeasureCategory) {
+            $this->addUsingAlias(UnitOfMeasureCategoryTableMap::COL_ID, $unitOfMeasureCategory->getId(), Criteria::NOT_EQUAL);
         }
 
         return $this;
     }
 
     /**
-     * Deletes all rows from the material table.
+     * Deletes all rows from the unit_of_measure_category table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
@@ -541,7 +509,7 @@ abstract class MaterialQuery extends ModelCriteria
     public function doDeleteAll(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MaterialTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UnitOfMeasureCategoryTableMap::DATABASE_NAME);
         }
 
         // use transaction because $criteria could contain info
@@ -552,8 +520,8 @@ abstract class MaterialQuery extends ModelCriteria
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            MaterialTableMap::clearInstancePool();
-            MaterialTableMap::clearRelatedInstancePool();
+            UnitOfMeasureCategoryTableMap::clearInstancePool();
+            UnitOfMeasureCategoryTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
@@ -571,26 +539,26 @@ abstract class MaterialQuery extends ModelCriteria
     public function delete(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MaterialTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UnitOfMeasureCategoryTableMap::DATABASE_NAME);
         }
 
         $criteria = $this;
 
         // Set the correct dbName
-        $criteria->setDbName(MaterialTableMap::DATABASE_NAME);
+        $criteria->setDbName(UnitOfMeasureCategoryTableMap::DATABASE_NAME);
 
         // use transaction because $criteria could contain info
         // for more than one table or we could emulating ON DELETE CASCADE, etc.
         return $con->transaction(function () use ($con, $criteria) {
             $affectedRows = 0; // initialize var to track total num of affected rows
 
-            MaterialTableMap::removeInstanceFromPool($criteria);
+            UnitOfMeasureCategoryTableMap::removeInstanceFromPool($criteria);
 
             $affectedRows += ModelCriteria::delete($con);
-            MaterialTableMap::clearRelatedInstancePool();
+            UnitOfMeasureCategoryTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
     }
 
-} // MaterialQuery
+} // UnitOfMeasureCategoryQuery

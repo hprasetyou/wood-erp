@@ -59,7 +59,7 @@ class DownPaymentTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 3;
+    const NUM_COLUMNS = 4;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class DownPaymentTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 3;
+    const NUM_HYDRATE_COLUMNS = 4;
 
     /**
      * the column name for the id field
@@ -87,6 +87,11 @@ class DownPaymentTableMap extends TableMap
     const COL_VALUE = 'down_payment.value';
 
     /**
+     * the column name for the active field
+     */
+    const COL_ACTIVE = 'down_payment.active';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -98,11 +103,11 @@ class DownPaymentTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Value', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'value', ),
-        self::TYPE_COLNAME       => array(DownPaymentTableMap::COL_ID, DownPaymentTableMap::COL_NAME, DownPaymentTableMap::COL_VALUE, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'value', ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Value', 'Active', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'value', 'active', ),
+        self::TYPE_COLNAME       => array(DownPaymentTableMap::COL_ID, DownPaymentTableMap::COL_NAME, DownPaymentTableMap::COL_VALUE, DownPaymentTableMap::COL_ACTIVE, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'value', 'active', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -112,11 +117,11 @@ class DownPaymentTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Value' => 2, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'value' => 2, ),
-        self::TYPE_COLNAME       => array(DownPaymentTableMap::COL_ID => 0, DownPaymentTableMap::COL_NAME => 1, DownPaymentTableMap::COL_VALUE => 2, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'value' => 2, ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Value' => 2, 'Active' => 3, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'value' => 2, 'active' => 3, ),
+        self::TYPE_COLNAME       => array(DownPaymentTableMap::COL_ID => 0, DownPaymentTableMap::COL_NAME => 1, DownPaymentTableMap::COL_VALUE => 2, DownPaymentTableMap::COL_ACTIVE => 3, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'value' => 2, 'active' => 3, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -139,6 +144,7 @@ class DownPaymentTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', true, 255, null);
         $this->addColumn('value', 'Value', 'FLOAT', true, null, null);
+        $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
     } // initialize()
 
     /**
@@ -299,10 +305,12 @@ class DownPaymentTableMap extends TableMap
             $criteria->addSelectColumn(DownPaymentTableMap::COL_ID);
             $criteria->addSelectColumn(DownPaymentTableMap::COL_NAME);
             $criteria->addSelectColumn(DownPaymentTableMap::COL_VALUE);
+            $criteria->addSelectColumn(DownPaymentTableMap::COL_ACTIVE);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.name');
             $criteria->addSelectColumn($alias . '.value');
+            $criteria->addSelectColumn($alias . '.active');
         }
     }
 

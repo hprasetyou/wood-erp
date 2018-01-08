@@ -116,6 +116,14 @@ abstract class ProductPartner implements ActiveRecordInterface
     protected $type;
 
     /**
+     * The value for the active field.
+     *
+     * Note: this column has a database default value of: true
+     * @var        boolean
+     */
+    protected $active;
+
+    /**
      * The value for the created_at field.
      *
      * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
@@ -158,6 +166,7 @@ abstract class ProductPartner implements ActiveRecordInterface
     public function applyDefaultValues()
     {
         $this->type = 'sell';
+        $this->active = true;
     }
 
     /**
@@ -458,6 +467,26 @@ abstract class ProductPartner implements ActiveRecordInterface
     }
 
     /**
+     * Get the [active] column value.
+     *
+     * @return boolean
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * Get the [active] column value.
+     *
+     * @return boolean
+     */
+    public function isActive()
+    {
+        return $this->getActive();
+    }
+
+    /**
      * Get the [optionally formatted] temporal [created_at] column value.
      *
      *
@@ -646,6 +675,34 @@ abstract class ProductPartner implements ActiveRecordInterface
     } // setType()
 
     /**
+     * Sets the value of the [active] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     *
+     * @param  boolean|integer|string $v The new value
+     * @return $this|\ProductPartner The current object (for fluent API support)
+     */
+    public function setActive($v)
+    {
+        if ($v !== null) {
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
+        }
+
+        if ($this->active !== $v) {
+            $this->active = $v;
+            $this->modifiedColumns[ProductPartnerTableMap::COL_ACTIVE] = true;
+        }
+
+        return $this;
+    } // setActive()
+
+    /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
@@ -699,6 +756,10 @@ abstract class ProductPartner implements ActiveRecordInterface
                 return false;
             }
 
+            if ($this->active !== true) {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -746,13 +807,16 @@ abstract class ProductPartner implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ProductPartnerTableMap::translateFieldName('Type', TableMap::TYPE_PHPNAME, $indexType)];
             $this->type = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : ProductPartnerTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : ProductPartnerTableMap::translateFieldName('Active', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->active = (null !== $col) ? (boolean) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : ProductPartnerTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : ProductPartnerTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : ProductPartnerTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -765,7 +829,7 @@ abstract class ProductPartner implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 9; // 9 = ProductPartnerTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 10; // 10 = ProductPartnerTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\ProductPartner'), 0, $e);
@@ -1014,6 +1078,9 @@ abstract class ProductPartner implements ActiveRecordInterface
         if ($this->isColumnModified(ProductPartnerTableMap::COL_TYPE)) {
             $modifiedColumns[':p' . $index++]  = 'type';
         }
+        if ($this->isColumnModified(ProductPartnerTableMap::COL_ACTIVE)) {
+            $modifiedColumns[':p' . $index++]  = 'active';
+        }
         if ($this->isColumnModified(ProductPartnerTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
@@ -1051,6 +1118,9 @@ abstract class ProductPartner implements ActiveRecordInterface
                         break;
                     case 'type':
                         $stmt->bindValue($identifier, $this->type, PDO::PARAM_STR);
+                        break;
+                    case 'active':
+                        $stmt->bindValue($identifier, (int) $this->active, PDO::PARAM_INT);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -1142,9 +1212,12 @@ abstract class ProductPartner implements ActiveRecordInterface
                 return $this->getType();
                 break;
             case 7:
-                return $this->getCreatedAt();
+                return $this->getActive();
                 break;
             case 8:
+                return $this->getCreatedAt();
+                break;
+            case 9:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1184,15 +1257,16 @@ abstract class ProductPartner implements ActiveRecordInterface
             $keys[4] => $this->getProductPrice(),
             $keys[5] => $this->getDescription(),
             $keys[6] => $this->getType(),
-            $keys[7] => $this->getCreatedAt(),
-            $keys[8] => $this->getUpdatedAt(),
+            $keys[7] => $this->getActive(),
+            $keys[8] => $this->getCreatedAt(),
+            $keys[9] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[7]] instanceof \DateTimeInterface) {
-            $result[$keys[7]] = $result[$keys[7]]->format('c');
-        }
-
         if ($result[$keys[8]] instanceof \DateTimeInterface) {
             $result[$keys[8]] = $result[$keys[8]]->format('c');
+        }
+
+        if ($result[$keys[9]] instanceof \DateTimeInterface) {
+            $result[$keys[9]] = $result[$keys[9]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1287,9 +1361,12 @@ abstract class ProductPartner implements ActiveRecordInterface
                 $this->setType($value);
                 break;
             case 7:
-                $this->setCreatedAt($value);
+                $this->setActive($value);
                 break;
             case 8:
+                $this->setCreatedAt($value);
+                break;
+            case 9:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1340,10 +1417,13 @@ abstract class ProductPartner implements ActiveRecordInterface
             $this->setType($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setCreatedAt($arr[$keys[7]]);
+            $this->setActive($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setUpdatedAt($arr[$keys[8]]);
+            $this->setCreatedAt($arr[$keys[8]]);
+        }
+        if (array_key_exists($keys[9], $arr)) {
+            $this->setUpdatedAt($arr[$keys[9]]);
         }
     }
 
@@ -1406,6 +1486,9 @@ abstract class ProductPartner implements ActiveRecordInterface
         }
         if ($this->isColumnModified(ProductPartnerTableMap::COL_TYPE)) {
             $criteria->add(ProductPartnerTableMap::COL_TYPE, $this->type);
+        }
+        if ($this->isColumnModified(ProductPartnerTableMap::COL_ACTIVE)) {
+            $criteria->add(ProductPartnerTableMap::COL_ACTIVE, $this->active);
         }
         if ($this->isColumnModified(ProductPartnerTableMap::COL_CREATED_AT)) {
             $criteria->add(ProductPartnerTableMap::COL_CREATED_AT, $this->created_at);
@@ -1505,6 +1588,7 @@ abstract class ProductPartner implements ActiveRecordInterface
         $copyObj->setProductPrice($this->getProductPrice());
         $copyObj->setDescription($this->getDescription());
         $copyObj->setType($this->getType());
+        $copyObj->setActive($this->getActive());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
         if ($makeNew) {
@@ -1657,6 +1741,7 @@ abstract class ProductPartner implements ActiveRecordInterface
         $this->product_price = null;
         $this->description = null;
         $this->type = null;
+        $this->active = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;

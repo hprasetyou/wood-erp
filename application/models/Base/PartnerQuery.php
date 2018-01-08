@@ -31,6 +31,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery orderByRole($order = Criteria::ASC) Order by the role column
  * @method     ChildPartnerQuery orderByCompanyId($order = Criteria::ASC) Order by the company_id column
  * @method     ChildPartnerQuery orderBySupplierTypeId($order = Criteria::ASC) Order by the supplier_type_id column
+ * @method     ChildPartnerQuery orderByActive($order = Criteria::ASC) Order by the active column
  * @method     ChildPartnerQuery orderByClassKey($order = Criteria::ASC) Order by the class_key column
  * @method     ChildPartnerQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildPartnerQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
@@ -46,6 +47,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerQuery groupByRole() Group by the role column
  * @method     ChildPartnerQuery groupByCompanyId() Group by the company_id column
  * @method     ChildPartnerQuery groupBySupplierTypeId() Group by the supplier_type_id column
+ * @method     ChildPartnerQuery groupByActive() Group by the active column
  * @method     ChildPartnerQuery groupByClassKey() Group by the class_key column
  * @method     ChildPartnerQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildPartnerQuery groupByUpdatedAt() Group by the updated_at column
@@ -174,6 +176,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner findOneByRole(string $role) Return the first ChildPartner filtered by the role column
  * @method     ChildPartner findOneByCompanyId(int $company_id) Return the first ChildPartner filtered by the company_id column
  * @method     ChildPartner findOneBySupplierTypeId(int $supplier_type_id) Return the first ChildPartner filtered by the supplier_type_id column
+ * @method     ChildPartner findOneByActive(boolean $active) Return the first ChildPartner filtered by the active column
  * @method     ChildPartner findOneByClassKey(int $class_key) Return the first ChildPartner filtered by the class_key column
  * @method     ChildPartner findOneByCreatedAt(string $created_at) Return the first ChildPartner filtered by the created_at column
  * @method     ChildPartner findOneByUpdatedAt(string $updated_at) Return the first ChildPartner filtered by the updated_at column *
@@ -192,6 +195,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner requireOneByRole(string $role) Return the first ChildPartner filtered by the role column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByCompanyId(int $company_id) Return the first ChildPartner filtered by the company_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneBySupplierTypeId(int $supplier_type_id) Return the first ChildPartner filtered by the supplier_type_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPartner requireOneByActive(boolean $active) Return the first ChildPartner filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByClassKey(int $class_key) Return the first ChildPartner filtered by the class_key column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByCreatedAt(string $created_at) Return the first ChildPartner filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartner requireOneByUpdatedAt(string $updated_at) Return the first ChildPartner filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -208,6 +212,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartner[]|ObjectCollection findByRole(string $role) Return ChildPartner objects filtered by the role column
  * @method     ChildPartner[]|ObjectCollection findByCompanyId(int $company_id) Return ChildPartner objects filtered by the company_id column
  * @method     ChildPartner[]|ObjectCollection findBySupplierTypeId(int $supplier_type_id) Return ChildPartner objects filtered by the supplier_type_id column
+ * @method     ChildPartner[]|ObjectCollection findByActive(boolean $active) Return ChildPartner objects filtered by the active column
  * @method     ChildPartner[]|ObjectCollection findByClassKey(int $class_key) Return ChildPartner objects filtered by the class_key column
  * @method     ChildPartner[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildPartner objects filtered by the created_at column
  * @method     ChildPartner[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildPartner objects filtered by the updated_at column
@@ -309,7 +314,7 @@ abstract class PartnerQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, email, phone, website, fax, image, tax_number, role, company_id, supplier_type_id, class_key, created_at, updated_at FROM partner WHERE id = :p0';
+        $sql = 'SELECT id, name, email, phone, website, fax, image, tax_number, role, company_id, supplier_type_id, active, class_key, created_at, updated_at FROM partner WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -725,6 +730,33 @@ abstract class PartnerQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PartnerTableMap::COL_SUPPLIER_TYPE_ID, $supplierTypeId, $comparison);
+    }
+
+    /**
+     * Filter the query on the active column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByActive(true); // WHERE active = true
+     * $query->filterByActive('yes'); // WHERE active = true
+     * </code>
+     *
+     * @param     boolean|string $active The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPartnerQuery The current query, for fluid interface
+     */
+    public function filterByActive($active = null, $comparison = null)
+    {
+        if (is_string($active)) {
+            $active = in_array(strtolower($active), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(PartnerTableMap::COL_ACTIVE, $active, $comparison);
     }
 
     /**

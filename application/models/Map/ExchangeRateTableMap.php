@@ -59,7 +59,7 @@ class ExchangeRateTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 8;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class ExchangeRateTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 8;
 
     /**
      * the column name for the id field
@@ -97,6 +97,11 @@ class ExchangeRateTableMap extends TableMap
     const COL_RATE = 'exchange_rate.rate';
 
     /**
+     * the column name for the active field
+     */
+    const COL_ACTIVE = 'exchange_rate.active';
+
+    /**
      * the column name for the created_at field
      */
     const COL_CREATED_AT = 'exchange_rate.created_at';
@@ -118,11 +123,11 @@ class ExchangeRateTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Base', 'Target', 'Rate', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'base', 'target', 'rate', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ExchangeRateTableMap::COL_ID, ExchangeRateTableMap::COL_NAME, ExchangeRateTableMap::COL_BASE, ExchangeRateTableMap::COL_TARGET, ExchangeRateTableMap::COL_RATE, ExchangeRateTableMap::COL_CREATED_AT, ExchangeRateTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'base', 'target', 'rate', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Base', 'Target', 'Rate', 'Active', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'base', 'target', 'rate', 'active', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ExchangeRateTableMap::COL_ID, ExchangeRateTableMap::COL_NAME, ExchangeRateTableMap::COL_BASE, ExchangeRateTableMap::COL_TARGET, ExchangeRateTableMap::COL_RATE, ExchangeRateTableMap::COL_ACTIVE, ExchangeRateTableMap::COL_CREATED_AT, ExchangeRateTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'base', 'target', 'rate', 'active', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -132,11 +137,11 @@ class ExchangeRateTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Base' => 2, 'Target' => 3, 'Rate' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'base' => 2, 'target' => 3, 'rate' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
-        self::TYPE_COLNAME       => array(ExchangeRateTableMap::COL_ID => 0, ExchangeRateTableMap::COL_NAME => 1, ExchangeRateTableMap::COL_BASE => 2, ExchangeRateTableMap::COL_TARGET => 3, ExchangeRateTableMap::COL_RATE => 4, ExchangeRateTableMap::COL_CREATED_AT => 5, ExchangeRateTableMap::COL_UPDATED_AT => 6, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'base' => 2, 'target' => 3, 'rate' => 4, 'created_at' => 5, 'updated_at' => 6, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Base' => 2, 'Target' => 3, 'Rate' => 4, 'Active' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'base' => 2, 'target' => 3, 'rate' => 4, 'active' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
+        self::TYPE_COLNAME       => array(ExchangeRateTableMap::COL_ID => 0, ExchangeRateTableMap::COL_NAME => 1, ExchangeRateTableMap::COL_BASE => 2, ExchangeRateTableMap::COL_TARGET => 3, ExchangeRateTableMap::COL_RATE => 4, ExchangeRateTableMap::COL_ACTIVE => 5, ExchangeRateTableMap::COL_CREATED_AT => 6, ExchangeRateTableMap::COL_UPDATED_AT => 7, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'base' => 2, 'target' => 3, 'rate' => 4, 'active' => 5, 'created_at' => 6, 'updated_at' => 7, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -161,6 +166,7 @@ class ExchangeRateTableMap extends TableMap
         $this->addColumn('base', 'Base', 'VARCHAR', true, 3, null);
         $this->addColumn('target', 'Target', 'VARCHAR', true, 3, null);
         $this->addColumn('rate', 'Rate', 'FLOAT', true, null, null);
+        $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -318,6 +324,7 @@ class ExchangeRateTableMap extends TableMap
             $criteria->addSelectColumn(ExchangeRateTableMap::COL_BASE);
             $criteria->addSelectColumn(ExchangeRateTableMap::COL_TARGET);
             $criteria->addSelectColumn(ExchangeRateTableMap::COL_RATE);
+            $criteria->addSelectColumn(ExchangeRateTableMap::COL_ACTIVE);
             $criteria->addSelectColumn(ExchangeRateTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(ExchangeRateTableMap::COL_UPDATED_AT);
         } else {
@@ -326,6 +333,7 @@ class ExchangeRateTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.base');
             $criteria->addSelectColumn($alias . '.target');
             $criteria->addSelectColumn($alias . '.rate');
+            $criteria->addSelectColumn($alias . '.active');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }

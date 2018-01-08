@@ -25,6 +25,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductStockQuery orderByPartnerLocationId($order = Criteria::ASC) Order by the partner_location_id column
  * @method     ChildProductStockQuery orderByProductId($order = Criteria::ASC) Order by the product_id column
  * @method     ChildProductStockQuery orderByQty($order = Criteria::ASC) Order by the qty column
+ * @method     ChildProductStockQuery orderByActive($order = Criteria::ASC) Order by the active column
  * @method     ChildProductStockQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildProductStockQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -33,6 +34,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductStockQuery groupByPartnerLocationId() Group by the partner_location_id column
  * @method     ChildProductStockQuery groupByProductId() Group by the product_id column
  * @method     ChildProductStockQuery groupByQty() Group by the qty column
+ * @method     ChildProductStockQuery groupByActive() Group by the active column
  * @method     ChildProductStockQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildProductStockQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -74,6 +76,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductStock findOneByPartnerLocationId(int $partner_location_id) Return the first ChildProductStock filtered by the partner_location_id column
  * @method     ChildProductStock findOneByProductId(int $product_id) Return the first ChildProductStock filtered by the product_id column
  * @method     ChildProductStock findOneByQty(int $qty) Return the first ChildProductStock filtered by the qty column
+ * @method     ChildProductStock findOneByActive(boolean $active) Return the first ChildProductStock filtered by the active column
  * @method     ChildProductStock findOneByCreatedAt(string $created_at) Return the first ChildProductStock filtered by the created_at column
  * @method     ChildProductStock findOneByUpdatedAt(string $updated_at) Return the first ChildProductStock filtered by the updated_at column *
 
@@ -85,6 +88,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductStock requireOneByPartnerLocationId(int $partner_location_id) Return the first ChildProductStock filtered by the partner_location_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductStock requireOneByProductId(int $product_id) Return the first ChildProductStock filtered by the product_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductStock requireOneByQty(int $qty) Return the first ChildProductStock filtered by the qty column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProductStock requireOneByActive(boolean $active) Return the first ChildProductStock filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductStock requireOneByCreatedAt(string $created_at) Return the first ChildProductStock filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductStock requireOneByUpdatedAt(string $updated_at) Return the first ChildProductStock filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -94,6 +98,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductStock[]|ObjectCollection findByPartnerLocationId(int $partner_location_id) Return ChildProductStock objects filtered by the partner_location_id column
  * @method     ChildProductStock[]|ObjectCollection findByProductId(int $product_id) Return ChildProductStock objects filtered by the product_id column
  * @method     ChildProductStock[]|ObjectCollection findByQty(int $qty) Return ChildProductStock objects filtered by the qty column
+ * @method     ChildProductStock[]|ObjectCollection findByActive(boolean $active) Return ChildProductStock objects filtered by the active column
  * @method     ChildProductStock[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildProductStock objects filtered by the created_at column
  * @method     ChildProductStock[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildProductStock objects filtered by the updated_at column
  * @method     ChildProductStock[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -194,7 +199,7 @@ abstract class ProductStockQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, partner_location_id, product_id, qty, created_at, updated_at FROM product_stock WHERE id = :p0';
+        $sql = 'SELECT id, name, partner_location_id, product_id, qty, active, created_at, updated_at FROM product_stock WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -475,6 +480,33 @@ abstract class ProductStockQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProductStockTableMap::COL_QTY, $qty, $comparison);
+    }
+
+    /**
+     * Filter the query on the active column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByActive(true); // WHERE active = true
+     * $query->filterByActive('yes'); // WHERE active = true
+     * </code>
+     *
+     * @param     boolean|string $active The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProductStockQuery The current query, for fluid interface
+     */
+    public function filterByActive($active = null, $comparison = null)
+    {
+        if (is_string($active)) {
+            $active = in_array(strtolower($active), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(ProductStockTableMap::COL_ACTIVE, $active, $comparison);
     }
 
     /**

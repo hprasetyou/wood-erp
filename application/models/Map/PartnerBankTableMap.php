@@ -59,7 +59,7 @@ class PartnerBankTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 8;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class PartnerBankTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 8;
 
     /**
      * the column name for the id field
@@ -97,6 +97,11 @@ class PartnerBankTableMap extends TableMap
     const COL_BANK_ID = 'partner_bank.bank_id';
 
     /**
+     * the column name for the active field
+     */
+    const COL_ACTIVE = 'partner_bank.active';
+
+    /**
      * the column name for the created_at field
      */
     const COL_CREATED_AT = 'partner_bank.created_at';
@@ -118,11 +123,11 @@ class PartnerBankTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'AccountNo', 'PartnerId', 'BankId', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'accountNo', 'partnerId', 'bankId', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(PartnerBankTableMap::COL_ID, PartnerBankTableMap::COL_NAME, PartnerBankTableMap::COL_ACOUNT_NO, PartnerBankTableMap::COL_PARTNER_ID, PartnerBankTableMap::COL_BANK_ID, PartnerBankTableMap::COL_CREATED_AT, PartnerBankTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'acount_no', 'partner_id', 'bank_id', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'AccountNo', 'PartnerId', 'BankId', 'Active', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'accountNo', 'partnerId', 'bankId', 'active', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(PartnerBankTableMap::COL_ID, PartnerBankTableMap::COL_NAME, PartnerBankTableMap::COL_ACOUNT_NO, PartnerBankTableMap::COL_PARTNER_ID, PartnerBankTableMap::COL_BANK_ID, PartnerBankTableMap::COL_ACTIVE, PartnerBankTableMap::COL_CREATED_AT, PartnerBankTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'acount_no', 'partner_id', 'bank_id', 'active', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -132,11 +137,11 @@ class PartnerBankTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'AccountNo' => 2, 'PartnerId' => 3, 'BankId' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'accountNo' => 2, 'partnerId' => 3, 'bankId' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
-        self::TYPE_COLNAME       => array(PartnerBankTableMap::COL_ID => 0, PartnerBankTableMap::COL_NAME => 1, PartnerBankTableMap::COL_ACOUNT_NO => 2, PartnerBankTableMap::COL_PARTNER_ID => 3, PartnerBankTableMap::COL_BANK_ID => 4, PartnerBankTableMap::COL_CREATED_AT => 5, PartnerBankTableMap::COL_UPDATED_AT => 6, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'acount_no' => 2, 'partner_id' => 3, 'bank_id' => 4, 'created_at' => 5, 'updated_at' => 6, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'AccountNo' => 2, 'PartnerId' => 3, 'BankId' => 4, 'Active' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'accountNo' => 2, 'partnerId' => 3, 'bankId' => 4, 'active' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
+        self::TYPE_COLNAME       => array(PartnerBankTableMap::COL_ID => 0, PartnerBankTableMap::COL_NAME => 1, PartnerBankTableMap::COL_ACOUNT_NO => 2, PartnerBankTableMap::COL_PARTNER_ID => 3, PartnerBankTableMap::COL_BANK_ID => 4, PartnerBankTableMap::COL_ACTIVE => 5, PartnerBankTableMap::COL_CREATED_AT => 6, PartnerBankTableMap::COL_UPDATED_AT => 7, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'acount_no' => 2, 'partner_id' => 3, 'bank_id' => 4, 'active' => 5, 'created_at' => 6, 'updated_at' => 7, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -161,6 +166,7 @@ class PartnerBankTableMap extends TableMap
         $this->addColumn('acount_no', 'AccountNo', 'VARCHAR', true, 255, null);
         $this->addForeignKey('partner_id', 'PartnerId', 'INTEGER', 'partner', 'id', true, null, null);
         $this->addForeignKey('bank_id', 'BankId', 'INTEGER', 'bank', 'id', true, null, null);
+        $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -332,6 +338,7 @@ class PartnerBankTableMap extends TableMap
             $criteria->addSelectColumn(PartnerBankTableMap::COL_ACOUNT_NO);
             $criteria->addSelectColumn(PartnerBankTableMap::COL_PARTNER_ID);
             $criteria->addSelectColumn(PartnerBankTableMap::COL_BANK_ID);
+            $criteria->addSelectColumn(PartnerBankTableMap::COL_ACTIVE);
             $criteria->addSelectColumn(PartnerBankTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(PartnerBankTableMap::COL_UPDATED_AT);
         } else {
@@ -340,6 +347,7 @@ class PartnerBankTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.acount_no');
             $criteria->addSelectColumn($alias . '.partner_id');
             $criteria->addSelectColumn($alias . '.bank_id');
+            $criteria->addSelectColumn($alias . '.active');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }

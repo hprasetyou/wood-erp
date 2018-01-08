@@ -29,6 +29,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLineQuery orderByPrice($order = Criteria::ASC) Order by the price column
  * @method     ChildPurchaseOrderLineQuery orderByTotalPrice($order = Criteria::ASC) Order by the total_price column
  * @method     ChildPurchaseOrderLineQuery orderByQty($order = Criteria::ASC) Order by the qty column
+ * @method     ChildPurchaseOrderLineQuery orderByActive($order = Criteria::ASC) Order by the active column
  * @method     ChildPurchaseOrderLineQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildPurchaseOrderLineQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -41,6 +42,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLineQuery groupByPrice() Group by the price column
  * @method     ChildPurchaseOrderLineQuery groupByTotalPrice() Group by the total_price column
  * @method     ChildPurchaseOrderLineQuery groupByQty() Group by the qty column
+ * @method     ChildPurchaseOrderLineQuery groupByActive() Group by the active column
  * @method     ChildPurchaseOrderLineQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildPurchaseOrderLineQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -96,6 +98,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLine findOneByPrice(double $price) Return the first ChildPurchaseOrderLine filtered by the price column
  * @method     ChildPurchaseOrderLine findOneByTotalPrice(double $total_price) Return the first ChildPurchaseOrderLine filtered by the total_price column
  * @method     ChildPurchaseOrderLine findOneByQty(double $qty) Return the first ChildPurchaseOrderLine filtered by the qty column
+ * @method     ChildPurchaseOrderLine findOneByActive(boolean $active) Return the first ChildPurchaseOrderLine filtered by the active column
  * @method     ChildPurchaseOrderLine findOneByCreatedAt(string $created_at) Return the first ChildPurchaseOrderLine filtered by the created_at column
  * @method     ChildPurchaseOrderLine findOneByUpdatedAt(string $updated_at) Return the first ChildPurchaseOrderLine filtered by the updated_at column *
 
@@ -111,6 +114,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLine requireOneByPrice(double $price) Return the first ChildPurchaseOrderLine filtered by the price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrderLine requireOneByTotalPrice(double $total_price) Return the first ChildPurchaseOrderLine filtered by the total_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrderLine requireOneByQty(double $qty) Return the first ChildPurchaseOrderLine filtered by the qty column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPurchaseOrderLine requireOneByActive(boolean $active) Return the first ChildPurchaseOrderLine filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrderLine requireOneByCreatedAt(string $created_at) Return the first ChildPurchaseOrderLine filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrderLine requireOneByUpdatedAt(string $updated_at) Return the first ChildPurchaseOrderLine filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -124,6 +128,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByPrice(double $price) Return ChildPurchaseOrderLine objects filtered by the price column
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByTotalPrice(double $total_price) Return ChildPurchaseOrderLine objects filtered by the total_price column
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByQty(double $qty) Return ChildPurchaseOrderLine objects filtered by the qty column
+ * @method     ChildPurchaseOrderLine[]|ObjectCollection findByActive(boolean $active) Return ChildPurchaseOrderLine objects filtered by the active column
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildPurchaseOrderLine objects filtered by the created_at column
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildPurchaseOrderLine objects filtered by the updated_at column
  * @method     ChildPurchaseOrderLine[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -224,7 +229,7 @@ abstract class PurchaseOrderLineQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, purchase_order_id, proforma_invoice_line_id, product_id, note, price, total_price, qty, created_at, updated_at FROM purchase_order_line WHERE id = :p0';
+        $sql = 'SELECT id, name, purchase_order_id, proforma_invoice_line_id, product_id, note, price, total_price, qty, active, created_at, updated_at FROM purchase_order_line WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -655,6 +660,33 @@ abstract class PurchaseOrderLineQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PurchaseOrderLineTableMap::COL_QTY, $qty, $comparison);
+    }
+
+    /**
+     * Filter the query on the active column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByActive(true); // WHERE active = true
+     * $query->filterByActive('yes'); // WHERE active = true
+     * </code>
+     *
+     * @param     boolean|string $active The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPurchaseOrderLineQuery The current query, for fluid interface
+     */
+    public function filterByActive($active = null, $comparison = null)
+    {
+        if (is_string($active)) {
+            $active = in_array(strtolower($active), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(PurchaseOrderLineTableMap::COL_ACTIVE, $active, $comparison);
     }
 
     /**

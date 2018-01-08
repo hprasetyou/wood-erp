@@ -146,6 +146,14 @@ abstract class ProformaInvoice implements ActiveRecordInterface
     protected $state;
 
     /**
+     * The value for the active field.
+     *
+     * Note: this column has a database default value of: true
+     * @var        boolean
+     */
+    protected $active;
+
+    /**
      * The value for the created_at field.
      *
      * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
@@ -213,6 +221,7 @@ abstract class ProformaInvoice implements ActiveRecordInterface
     {
         $this->currency_id = 1;
         $this->state = 'draft';
+        $this->active = true;
     }
 
     /**
@@ -563,6 +572,26 @@ abstract class ProformaInvoice implements ActiveRecordInterface
     }
 
     /**
+     * Get the [active] column value.
+     *
+     * @return boolean
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * Get the [active] column value.
+     *
+     * @return boolean
+     */
+    public function isActive()
+    {
+        return $this->getActive();
+    }
+
+    /**
      * Get the [optionally formatted] temporal [created_at] column value.
      *
      *
@@ -811,6 +840,34 @@ abstract class ProformaInvoice implements ActiveRecordInterface
     } // setState()
 
     /**
+     * Sets the value of the [active] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     *
+     * @param  boolean|integer|string $v The new value
+     * @return $this|\ProformaInvoice The current object (for fluent API support)
+     */
+    public function setActive($v)
+    {
+        if ($v !== null) {
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
+        }
+
+        if ($this->active !== $v) {
+            $this->active = $v;
+            $this->modifiedColumns[ProformaInvoiceTableMap::COL_ACTIVE] = true;
+        }
+
+        return $this;
+    } // setActive()
+
+    /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
@@ -865,6 +922,10 @@ abstract class ProformaInvoice implements ActiveRecordInterface
             }
 
             if ($this->state !== 'draft') {
+                return false;
+            }
+
+            if ($this->active !== true) {
                 return false;
             }
 
@@ -930,13 +991,16 @@ abstract class ProformaInvoice implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : ProformaInvoiceTableMap::translateFieldName('State', TableMap::TYPE_PHPNAME, $indexType)];
             $this->state = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : ProformaInvoiceTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : ProformaInvoiceTableMap::translateFieldName('Active', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->active = (null !== $col) ? (boolean) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : ProformaInvoiceTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : ProformaInvoiceTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : ProformaInvoiceTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -949,7 +1013,7 @@ abstract class ProformaInvoice implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 12; // 12 = ProformaInvoiceTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 13; // 13 = ProformaInvoiceTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\ProformaInvoice'), 0, $e);
@@ -1246,6 +1310,9 @@ abstract class ProformaInvoice implements ActiveRecordInterface
         if ($this->isColumnModified(ProformaInvoiceTableMap::COL_STATE)) {
             $modifiedColumns[':p' . $index++]  = 'state';
         }
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_ACTIVE)) {
+            $modifiedColumns[':p' . $index++]  = 'active';
+        }
         if ($this->isColumnModified(ProformaInvoiceTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
@@ -1292,6 +1359,9 @@ abstract class ProformaInvoice implements ActiveRecordInterface
                         break;
                     case 'state':
                         $stmt->bindValue($identifier, $this->state, PDO::PARAM_STR);
+                        break;
+                    case 'active':
+                        $stmt->bindValue($identifier, (int) $this->active, PDO::PARAM_INT);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -1392,9 +1462,12 @@ abstract class ProformaInvoice implements ActiveRecordInterface
                 return $this->getState();
                 break;
             case 10:
-                return $this->getCreatedAt();
+                return $this->getActive();
                 break;
             case 11:
+                return $this->getCreatedAt();
+                break;
+            case 12:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1437,8 +1510,9 @@ abstract class ProformaInvoice implements ActiveRecordInterface
             $keys[7] => $this->getTotalCubicDimension(),
             $keys[8] => $this->getTotalPrice(),
             $keys[9] => $this->getState(),
-            $keys[10] => $this->getCreatedAt(),
-            $keys[11] => $this->getUpdatedAt(),
+            $keys[10] => $this->getActive(),
+            $keys[11] => $this->getCreatedAt(),
+            $keys[12] => $this->getUpdatedAt(),
         );
         if ($result[$keys[4]] instanceof \DateTimeInterface) {
             $result[$keys[4]] = $result[$keys[4]]->format('c');
@@ -1448,12 +1522,12 @@ abstract class ProformaInvoice implements ActiveRecordInterface
             $result[$keys[5]] = $result[$keys[5]]->format('c');
         }
 
-        if ($result[$keys[10]] instanceof \DateTimeInterface) {
-            $result[$keys[10]] = $result[$keys[10]]->format('c');
-        }
-
         if ($result[$keys[11]] instanceof \DateTimeInterface) {
             $result[$keys[11]] = $result[$keys[11]]->format('c');
+        }
+
+        if ($result[$keys[12]] instanceof \DateTimeInterface) {
+            $result[$keys[12]] = $result[$keys[12]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1587,9 +1661,12 @@ abstract class ProformaInvoice implements ActiveRecordInterface
                 $this->setState($value);
                 break;
             case 10:
-                $this->setCreatedAt($value);
+                $this->setActive($value);
                 break;
             case 11:
+                $this->setCreatedAt($value);
+                break;
+            case 12:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1649,10 +1726,13 @@ abstract class ProformaInvoice implements ActiveRecordInterface
             $this->setState($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setCreatedAt($arr[$keys[10]]);
+            $this->setActive($arr[$keys[10]]);
         }
         if (array_key_exists($keys[11], $arr)) {
-            $this->setUpdatedAt($arr[$keys[11]]);
+            $this->setCreatedAt($arr[$keys[11]]);
+        }
+        if (array_key_exists($keys[12], $arr)) {
+            $this->setUpdatedAt($arr[$keys[12]]);
         }
     }
 
@@ -1724,6 +1804,9 @@ abstract class ProformaInvoice implements ActiveRecordInterface
         }
         if ($this->isColumnModified(ProformaInvoiceTableMap::COL_STATE)) {
             $criteria->add(ProformaInvoiceTableMap::COL_STATE, $this->state);
+        }
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_ACTIVE)) {
+            $criteria->add(ProformaInvoiceTableMap::COL_ACTIVE, $this->active);
         }
         if ($this->isColumnModified(ProformaInvoiceTableMap::COL_CREATED_AT)) {
             $criteria->add(ProformaInvoiceTableMap::COL_CREATED_AT, $this->created_at);
@@ -1826,6 +1909,7 @@ abstract class ProformaInvoice implements ActiveRecordInterface
         $copyObj->setTotalCubicDimension($this->getTotalCubicDimension());
         $copyObj->setTotalPrice($this->getTotalPrice());
         $copyObj->setState($this->getState());
+        $copyObj->setActive($this->getActive());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
 
@@ -2597,6 +2681,7 @@ abstract class ProformaInvoice implements ActiveRecordInterface
         $this->total_cubic_dimension = null;
         $this->total_price = null;
         $this->state = null;
+        $this->active = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;

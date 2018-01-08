@@ -24,6 +24,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildComponentProductQuery orderByProductId($order = Criteria::ASC) Order by the product_id column
  * @method     ChildComponentProductQuery orderByComponentId($order = Criteria::ASC) Order by the component_id column
  * @method     ChildComponentProductQuery orderByQty($order = Criteria::ASC) Order by the qty column
+ * @method     ChildComponentProductQuery orderByActive($order = Criteria::ASC) Order by the active column
  * @method     ChildComponentProductQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildComponentProductQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -31,6 +32,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildComponentProductQuery groupByProductId() Group by the product_id column
  * @method     ChildComponentProductQuery groupByComponentId() Group by the component_id column
  * @method     ChildComponentProductQuery groupByQty() Group by the qty column
+ * @method     ChildComponentProductQuery groupByActive() Group by the active column
  * @method     ChildComponentProductQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildComponentProductQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -71,6 +73,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildComponentProduct findOneByProductId(int $product_id) Return the first ChildComponentProduct filtered by the product_id column
  * @method     ChildComponentProduct findOneByComponentId(int $component_id) Return the first ChildComponentProduct filtered by the component_id column
  * @method     ChildComponentProduct findOneByQty(int $qty) Return the first ChildComponentProduct filtered by the qty column
+ * @method     ChildComponentProduct findOneByActive(boolean $active) Return the first ChildComponentProduct filtered by the active column
  * @method     ChildComponentProduct findOneByCreatedAt(string $created_at) Return the first ChildComponentProduct filtered by the created_at column
  * @method     ChildComponentProduct findOneByUpdatedAt(string $updated_at) Return the first ChildComponentProduct filtered by the updated_at column *
 
@@ -81,6 +84,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildComponentProduct requireOneByProductId(int $product_id) Return the first ChildComponentProduct filtered by the product_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildComponentProduct requireOneByComponentId(int $component_id) Return the first ChildComponentProduct filtered by the component_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildComponentProduct requireOneByQty(int $qty) Return the first ChildComponentProduct filtered by the qty column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildComponentProduct requireOneByActive(boolean $active) Return the first ChildComponentProduct filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildComponentProduct requireOneByCreatedAt(string $created_at) Return the first ChildComponentProduct filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildComponentProduct requireOneByUpdatedAt(string $updated_at) Return the first ChildComponentProduct filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -89,6 +93,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildComponentProduct[]|ObjectCollection findByProductId(int $product_id) Return ChildComponentProduct objects filtered by the product_id column
  * @method     ChildComponentProduct[]|ObjectCollection findByComponentId(int $component_id) Return ChildComponentProduct objects filtered by the component_id column
  * @method     ChildComponentProduct[]|ObjectCollection findByQty(int $qty) Return ChildComponentProduct objects filtered by the qty column
+ * @method     ChildComponentProduct[]|ObjectCollection findByActive(boolean $active) Return ChildComponentProduct objects filtered by the active column
  * @method     ChildComponentProduct[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildComponentProduct objects filtered by the created_at column
  * @method     ChildComponentProduct[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildComponentProduct objects filtered by the updated_at column
  * @method     ChildComponentProduct[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -189,7 +194,7 @@ abstract class ComponentProductQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, product_id, component_id, qty, created_at, updated_at FROM component_product WHERE id = :p0';
+        $sql = 'SELECT id, product_id, component_id, qty, active, created_at, updated_at FROM component_product WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -445,6 +450,33 @@ abstract class ComponentProductQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ComponentProductTableMap::COL_QTY, $qty, $comparison);
+    }
+
+    /**
+     * Filter the query on the active column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByActive(true); // WHERE active = true
+     * $query->filterByActive('yes'); // WHERE active = true
+     * </code>
+     *
+     * @param     boolean|string $active The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildComponentProductQuery The current query, for fluid interface
+     */
+    public function filterByActive($active = null, $comparison = null)
+    {
+        if (is_string($active)) {
+            $active = in_array(strtolower($active), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(ComponentProductTableMap::COL_ACTIVE, $active, $comparison);
     }
 
     /**

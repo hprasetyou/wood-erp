@@ -26,6 +26,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildMenuQuery orderByIcon($order = Criteria::ASC) Order by the icon column
  * @method     ChildMenuQuery orderByController($order = Criteria::ASC) Order by the controller column
  * @method     ChildMenuQuery orderByParentId($order = Criteria::ASC) Order by the parent_id column
+ * @method     ChildMenuQuery orderByActive($order = Criteria::ASC) Order by the active column
  * @method     ChildMenuQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildMenuQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -35,6 +36,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildMenuQuery groupByIcon() Group by the icon column
  * @method     ChildMenuQuery groupByController() Group by the controller column
  * @method     ChildMenuQuery groupByParentId() Group by the parent_id column
+ * @method     ChildMenuQuery groupByActive() Group by the active column
  * @method     ChildMenuQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildMenuQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -87,6 +89,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildMenu findOneByIcon(string $icon) Return the first ChildMenu filtered by the icon column
  * @method     ChildMenu findOneByController(string $controller) Return the first ChildMenu filtered by the controller column
  * @method     ChildMenu findOneByParentId(int $parent_id) Return the first ChildMenu filtered by the parent_id column
+ * @method     ChildMenu findOneByActive(boolean $active) Return the first ChildMenu filtered by the active column
  * @method     ChildMenu findOneByCreatedAt(string $created_at) Return the first ChildMenu filtered by the created_at column
  * @method     ChildMenu findOneByUpdatedAt(string $updated_at) Return the first ChildMenu filtered by the updated_at column *
 
@@ -99,6 +102,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildMenu requireOneByIcon(string $icon) Return the first ChildMenu filtered by the icon column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildMenu requireOneByController(string $controller) Return the first ChildMenu filtered by the controller column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildMenu requireOneByParentId(int $parent_id) Return the first ChildMenu filtered by the parent_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildMenu requireOneByActive(boolean $active) Return the first ChildMenu filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildMenu requireOneByCreatedAt(string $created_at) Return the first ChildMenu filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildMenu requireOneByUpdatedAt(string $updated_at) Return the first ChildMenu filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -109,6 +113,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildMenu[]|ObjectCollection findByIcon(string $icon) Return ChildMenu objects filtered by the icon column
  * @method     ChildMenu[]|ObjectCollection findByController(string $controller) Return ChildMenu objects filtered by the controller column
  * @method     ChildMenu[]|ObjectCollection findByParentId(int $parent_id) Return ChildMenu objects filtered by the parent_id column
+ * @method     ChildMenu[]|ObjectCollection findByActive(boolean $active) Return ChildMenu objects filtered by the active column
  * @method     ChildMenu[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildMenu objects filtered by the created_at column
  * @method     ChildMenu[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildMenu objects filtered by the updated_at column
  * @method     ChildMenu[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -209,7 +214,7 @@ abstract class MenuQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, url, icon, controller, parent_id, created_at, updated_at FROM menu WHERE id = :p0';
+        $sql = 'SELECT id, name, url, icon, controller, parent_id, active, created_at, updated_at FROM menu WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -481,6 +486,33 @@ abstract class MenuQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(MenuTableMap::COL_PARENT_ID, $parentId, $comparison);
+    }
+
+    /**
+     * Filter the query on the active column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByActive(true); // WHERE active = true
+     * $query->filterByActive('yes'); // WHERE active = true
+     * </code>
+     *
+     * @param     boolean|string $active The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildMenuQuery The current query, for fluid interface
+     */
+    public function filterByActive($active = null, $comparison = null)
+    {
+        if (is_string($active)) {
+            $active = in_array(strtolower($active), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(MenuTableMap::COL_ACTIVE, $active, $comparison);
     }
 
     /**

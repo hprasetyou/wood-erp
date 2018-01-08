@@ -25,6 +25,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerBankQuery orderByAccountNo($order = Criteria::ASC) Order by the acount_no column
  * @method     ChildPartnerBankQuery orderByPartnerId($order = Criteria::ASC) Order by the partner_id column
  * @method     ChildPartnerBankQuery orderByBankId($order = Criteria::ASC) Order by the bank_id column
+ * @method     ChildPartnerBankQuery orderByActive($order = Criteria::ASC) Order by the active column
  * @method     ChildPartnerBankQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildPartnerBankQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -33,6 +34,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerBankQuery groupByAccountNo() Group by the acount_no column
  * @method     ChildPartnerBankQuery groupByPartnerId() Group by the partner_id column
  * @method     ChildPartnerBankQuery groupByBankId() Group by the bank_id column
+ * @method     ChildPartnerBankQuery groupByActive() Group by the active column
  * @method     ChildPartnerBankQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildPartnerBankQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -74,6 +76,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerBank findOneByAccountNo(string $acount_no) Return the first ChildPartnerBank filtered by the acount_no column
  * @method     ChildPartnerBank findOneByPartnerId(int $partner_id) Return the first ChildPartnerBank filtered by the partner_id column
  * @method     ChildPartnerBank findOneByBankId(int $bank_id) Return the first ChildPartnerBank filtered by the bank_id column
+ * @method     ChildPartnerBank findOneByActive(boolean $active) Return the first ChildPartnerBank filtered by the active column
  * @method     ChildPartnerBank findOneByCreatedAt(string $created_at) Return the first ChildPartnerBank filtered by the created_at column
  * @method     ChildPartnerBank findOneByUpdatedAt(string $updated_at) Return the first ChildPartnerBank filtered by the updated_at column *
 
@@ -85,6 +88,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerBank requireOneByAccountNo(string $acount_no) Return the first ChildPartnerBank filtered by the acount_no column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartnerBank requireOneByPartnerId(int $partner_id) Return the first ChildPartnerBank filtered by the partner_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartnerBank requireOneByBankId(int $bank_id) Return the first ChildPartnerBank filtered by the bank_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPartnerBank requireOneByActive(boolean $active) Return the first ChildPartnerBank filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartnerBank requireOneByCreatedAt(string $created_at) Return the first ChildPartnerBank filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartnerBank requireOneByUpdatedAt(string $updated_at) Return the first ChildPartnerBank filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -94,6 +98,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerBank[]|ObjectCollection findByAccountNo(string $acount_no) Return ChildPartnerBank objects filtered by the acount_no column
  * @method     ChildPartnerBank[]|ObjectCollection findByPartnerId(int $partner_id) Return ChildPartnerBank objects filtered by the partner_id column
  * @method     ChildPartnerBank[]|ObjectCollection findByBankId(int $bank_id) Return ChildPartnerBank objects filtered by the bank_id column
+ * @method     ChildPartnerBank[]|ObjectCollection findByActive(boolean $active) Return ChildPartnerBank objects filtered by the active column
  * @method     ChildPartnerBank[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildPartnerBank objects filtered by the created_at column
  * @method     ChildPartnerBank[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildPartnerBank objects filtered by the updated_at column
  * @method     ChildPartnerBank[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -194,7 +199,7 @@ abstract class PartnerBankQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, acount_no, partner_id, bank_id, created_at, updated_at FROM partner_bank WHERE id = :p0';
+        $sql = 'SELECT id, name, acount_no, partner_id, bank_id, active, created_at, updated_at FROM partner_bank WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -459,6 +464,33 @@ abstract class PartnerBankQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PartnerBankTableMap::COL_BANK_ID, $bankId, $comparison);
+    }
+
+    /**
+     * Filter the query on the active column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByActive(true); // WHERE active = true
+     * $query->filterByActive('yes'); // WHERE active = true
+     * </code>
+     *
+     * @param     boolean|string $active The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPartnerBankQuery The current query, for fluid interface
+     */
+    public function filterByActive($active = null, $comparison = null)
+    {
+        if (is_string($active)) {
+            $active = in_array(strtolower($active), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(PartnerBankTableMap::COL_ACTIVE, $active, $comparison);
     }
 
     /**

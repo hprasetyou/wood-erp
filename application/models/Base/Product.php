@@ -24,6 +24,8 @@ use \PurchaseOrderLine as ChildPurchaseOrderLine;
 use \PurchaseOrderLineQuery as ChildPurchaseOrderLineQuery;
 use \StockMoveLine as ChildStockMoveLine;
 use \StockMoveLineQuery as ChildStockMoveLineQuery;
+use \UnitOfMeasure as ChildUnitOfMeasure;
+use \UnitOfMeasureQuery as ChildUnitOfMeasureQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
@@ -167,6 +169,13 @@ abstract class Product implements ActiveRecordInterface
     protected $material_id;
 
     /**
+     * The value for the uom_id field.
+     *
+     * @var        int
+     */
+    protected $uom_id;
+
+    /**
      * The value for the note field.
      *
      * @var        string
@@ -259,6 +268,14 @@ abstract class Product implements ActiveRecordInterface
     protected $type;
 
     /**
+     * The value for the active field.
+     *
+     * Note: this column has a database default value of: true
+     * @var        boolean
+     */
+    protected $active;
+
+    /**
      * The value for the created_at field.
      *
      * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
@@ -278,6 +295,11 @@ abstract class Product implements ActiveRecordInterface
      * @var        ChildMaterial
      */
     protected $aMaterial;
+
+    /**
+     * @var        ChildUnitOfMeasure
+     */
+    protected $aUnitOfMeasure;
 
     /**
      * @var        ObjectCollection|ChildComponentProduct[] Collection to store aggregation of ChildComponentProduct objects.
@@ -425,6 +447,7 @@ abstract class Product implements ActiveRecordInterface
         $this->has_component = false;
         $this->qty_per_pack = 1;
         $this->type = 'product';
+        $this->active = true;
     }
 
     /**
@@ -795,6 +818,16 @@ abstract class Product implements ActiveRecordInterface
     }
 
     /**
+     * Get the [uom_id] column value.
+     *
+     * @return int
+     */
+    public function getUomId()
+    {
+        return $this->uom_id;
+    }
+
+    /**
      * Get the [note] column value.
      *
      * @return string
@@ -922,6 +955,26 @@ abstract class Product implements ActiveRecordInterface
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Get the [active] column value.
+     *
+     * @return boolean
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * Get the [active] column value.
+     *
+     * @return boolean
+     */
+    public function isActive()
+    {
+        return $this->getActive();
     }
 
     /**
@@ -1201,6 +1254,30 @@ abstract class Product implements ActiveRecordInterface
     } // setMaterialId()
 
     /**
+     * Set the value of [uom_id] column.
+     *
+     * @param int $v new value
+     * @return $this|\Product The current object (for fluent API support)
+     */
+    public function setUomId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->uom_id !== $v) {
+            $this->uom_id = $v;
+            $this->modifiedColumns[ProductTableMap::COL_UOM_ID] = true;
+        }
+
+        if ($this->aUnitOfMeasure !== null && $this->aUnitOfMeasure->getId() !== $v) {
+            $this->aUnitOfMeasure = null;
+        }
+
+        return $this;
+    } // setUomId()
+
+    /**
      * Set the value of [note] column.
      *
      * @param string $v new value
@@ -1461,6 +1538,34 @@ abstract class Product implements ActiveRecordInterface
     } // setType()
 
     /**
+     * Sets the value of the [active] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     *
+     * @param  boolean|integer|string $v The new value
+     * @return $this|\Product The current object (for fluent API support)
+     */
+    public function setActive($v)
+    {
+        if ($v !== null) {
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
+        }
+
+        if ($this->active !== $v) {
+            $this->active = $v;
+            $this->modifiedColumns[ProductTableMap::COL_ACTIVE] = true;
+        }
+
+        return $this;
+    } // setActive()
+
+    /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
@@ -1534,6 +1639,10 @@ abstract class Product implements ActiveRecordInterface
                 return false;
             }
 
+            if ($this->active !== true) {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -1590,52 +1699,58 @@ abstract class Product implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : ProductTableMap::translateFieldName('MaterialId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->material_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : ProductTableMap::translateFieldName('Note', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : ProductTableMap::translateFieldName('UomId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->uom_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : ProductTableMap::translateFieldName('Note', TableMap::TYPE_PHPNAME, $indexType)];
             $this->note = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : ProductTableMap::translateFieldName('CubicAsb', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : ProductTableMap::translateFieldName('CubicAsb', TableMap::TYPE_PHPNAME, $indexType)];
             $this->cubic_asb = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : ProductTableMap::translateFieldName('CubicKdn', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : ProductTableMap::translateFieldName('CubicKdn', TableMap::TYPE_PHPNAME, $indexType)];
             $this->cubic_kdn = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : ProductTableMap::translateFieldName('WidthAsb', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : ProductTableMap::translateFieldName('WidthAsb', TableMap::TYPE_PHPNAME, $indexType)];
             $this->width_asb = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : ProductTableMap::translateFieldName('HeightAsb', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : ProductTableMap::translateFieldName('HeightAsb', TableMap::TYPE_PHPNAME, $indexType)];
             $this->height_asb = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : ProductTableMap::translateFieldName('DepthAsb', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : ProductTableMap::translateFieldName('DepthAsb', TableMap::TYPE_PHPNAME, $indexType)];
             $this->depth_asb = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : ProductTableMap::translateFieldName('WidthKdn', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : ProductTableMap::translateFieldName('WidthKdn', TableMap::TYPE_PHPNAME, $indexType)];
             $this->width_kdn = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : ProductTableMap::translateFieldName('HeightKdn', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 18 + $startcol : ProductTableMap::translateFieldName('HeightKdn', TableMap::TYPE_PHPNAME, $indexType)];
             $this->height_kdn = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 18 + $startcol : ProductTableMap::translateFieldName('DepthKdn', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 19 + $startcol : ProductTableMap::translateFieldName('DepthKdn', TableMap::TYPE_PHPNAME, $indexType)];
             $this->depth_kdn = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 19 + $startcol : ProductTableMap::translateFieldName('NetCubic', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 20 + $startcol : ProductTableMap::translateFieldName('NetCubic', TableMap::TYPE_PHPNAME, $indexType)];
             $this->net_cubic = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 20 + $startcol : ProductTableMap::translateFieldName('NetWeight', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 21 + $startcol : ProductTableMap::translateFieldName('NetWeight', TableMap::TYPE_PHPNAME, $indexType)];
             $this->net_weight = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 21 + $startcol : ProductTableMap::translateFieldName('GrossWeight', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 22 + $startcol : ProductTableMap::translateFieldName('GrossWeight', TableMap::TYPE_PHPNAME, $indexType)];
             $this->gross_weight = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 22 + $startcol : ProductTableMap::translateFieldName('Type', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 23 + $startcol : ProductTableMap::translateFieldName('Type', TableMap::TYPE_PHPNAME, $indexType)];
             $this->type = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 23 + $startcol : ProductTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 24 + $startcol : ProductTableMap::translateFieldName('Active', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->active = (null !== $col) ? (boolean) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 25 + $startcol : ProductTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 24 + $startcol : ProductTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 26 + $startcol : ProductTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -1648,7 +1763,7 @@ abstract class Product implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 25; // 25 = ProductTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 27; // 27 = ProductTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Product'), 0, $e);
@@ -1672,6 +1787,9 @@ abstract class Product implements ActiveRecordInterface
     {
         if ($this->aMaterial !== null && $this->material_id !== $this->aMaterial->getId()) {
             $this->aMaterial = null;
+        }
+        if ($this->aUnitOfMeasure !== null && $this->uom_id !== $this->aUnitOfMeasure->getId()) {
+            $this->aUnitOfMeasure = null;
         }
     } // ensureConsistency
 
@@ -1713,6 +1831,7 @@ abstract class Product implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aMaterial = null;
+            $this->aUnitOfMeasure = null;
             $this->collListComponents = null;
 
             $this->collParents = null;
@@ -1845,6 +1964,13 @@ abstract class Product implements ActiveRecordInterface
                     $affectedRows += $this->aMaterial->save($con);
                 }
                 $this->setMaterial($this->aMaterial);
+            }
+
+            if ($this->aUnitOfMeasure !== null) {
+                if ($this->aUnitOfMeasure->isModified() || $this->aUnitOfMeasure->isNew()) {
+                    $affectedRows += $this->aUnitOfMeasure->save($con);
+                }
+                $this->setUnitOfMeasure($this->aUnitOfMeasure);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -2097,6 +2223,9 @@ abstract class Product implements ActiveRecordInterface
         if ($this->isColumnModified(ProductTableMap::COL_MATERIAL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'material_id';
         }
+        if ($this->isColumnModified(ProductTableMap::COL_UOM_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'uom_id';
+        }
         if ($this->isColumnModified(ProductTableMap::COL_NOTE)) {
             $modifiedColumns[':p' . $index++]  = 'note';
         }
@@ -2135,6 +2264,9 @@ abstract class Product implements ActiveRecordInterface
         }
         if ($this->isColumnModified(ProductTableMap::COL_TYPE)) {
             $modifiedColumns[':p' . $index++]  = 'type';
+        }
+        if ($this->isColumnModified(ProductTableMap::COL_ACTIVE)) {
+            $modifiedColumns[':p' . $index++]  = 'active';
         }
         if ($this->isColumnModified(ProductTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
@@ -2183,6 +2315,9 @@ abstract class Product implements ActiveRecordInterface
                     case 'material_id':
                         $stmt->bindValue($identifier, $this->material_id, PDO::PARAM_INT);
                         break;
+                    case 'uom_id':
+                        $stmt->bindValue($identifier, $this->uom_id, PDO::PARAM_INT);
+                        break;
                     case 'note':
                         $stmt->bindValue($identifier, $this->note, PDO::PARAM_STR);
                         break;
@@ -2221,6 +2356,9 @@ abstract class Product implements ActiveRecordInterface
                         break;
                     case 'type':
                         $stmt->bindValue($identifier, $this->type, PDO::PARAM_STR);
+                        break;
+                    case 'active':
+                        $stmt->bindValue($identifier, (int) $this->active, PDO::PARAM_INT);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -2321,48 +2459,54 @@ abstract class Product implements ActiveRecordInterface
                 return $this->getMaterialId();
                 break;
             case 10:
-                return $this->getNote();
+                return $this->getUomId();
                 break;
             case 11:
-                return $this->getCubicAsb();
+                return $this->getNote();
                 break;
             case 12:
-                return $this->getCubicKdn();
+                return $this->getCubicAsb();
                 break;
             case 13:
-                return $this->getWidthAsb();
+                return $this->getCubicKdn();
                 break;
             case 14:
-                return $this->getHeightAsb();
+                return $this->getWidthAsb();
                 break;
             case 15:
-                return $this->getDepthAsb();
+                return $this->getHeightAsb();
                 break;
             case 16:
-                return $this->getWidthKdn();
+                return $this->getDepthAsb();
                 break;
             case 17:
-                return $this->getHeightKdn();
+                return $this->getWidthKdn();
                 break;
             case 18:
-                return $this->getDepthKdn();
+                return $this->getHeightKdn();
                 break;
             case 19:
-                return $this->getNetCubic();
+                return $this->getDepthKdn();
                 break;
             case 20:
-                return $this->getNetWeight();
+                return $this->getNetCubic();
                 break;
             case 21:
-                return $this->getGrossWeight();
+                return $this->getNetWeight();
                 break;
             case 22:
-                return $this->getType();
+                return $this->getGrossWeight();
                 break;
             case 23:
-                return $this->getCreatedAt();
+                return $this->getType();
                 break;
             case 24:
+                return $this->getActive();
+                break;
+            case 25:
+                return $this->getCreatedAt();
+                break;
+            case 26:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -2405,28 +2549,30 @@ abstract class Product implements ActiveRecordInterface
             $keys[7] => $this->getQtyPerPack(),
             $keys[8] => $this->getListPrice(),
             $keys[9] => $this->getMaterialId(),
-            $keys[10] => $this->getNote(),
-            $keys[11] => $this->getCubicAsb(),
-            $keys[12] => $this->getCubicKdn(),
-            $keys[13] => $this->getWidthAsb(),
-            $keys[14] => $this->getHeightAsb(),
-            $keys[15] => $this->getDepthAsb(),
-            $keys[16] => $this->getWidthKdn(),
-            $keys[17] => $this->getHeightKdn(),
-            $keys[18] => $this->getDepthKdn(),
-            $keys[19] => $this->getNetCubic(),
-            $keys[20] => $this->getNetWeight(),
-            $keys[21] => $this->getGrossWeight(),
-            $keys[22] => $this->getType(),
-            $keys[23] => $this->getCreatedAt(),
-            $keys[24] => $this->getUpdatedAt(),
+            $keys[10] => $this->getUomId(),
+            $keys[11] => $this->getNote(),
+            $keys[12] => $this->getCubicAsb(),
+            $keys[13] => $this->getCubicKdn(),
+            $keys[14] => $this->getWidthAsb(),
+            $keys[15] => $this->getHeightAsb(),
+            $keys[16] => $this->getDepthAsb(),
+            $keys[17] => $this->getWidthKdn(),
+            $keys[18] => $this->getHeightKdn(),
+            $keys[19] => $this->getDepthKdn(),
+            $keys[20] => $this->getNetCubic(),
+            $keys[21] => $this->getNetWeight(),
+            $keys[22] => $this->getGrossWeight(),
+            $keys[23] => $this->getType(),
+            $keys[24] => $this->getActive(),
+            $keys[25] => $this->getCreatedAt(),
+            $keys[26] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[23]] instanceof \DateTimeInterface) {
-            $result[$keys[23]] = $result[$keys[23]]->format('c');
+        if ($result[$keys[25]] instanceof \DateTimeInterface) {
+            $result[$keys[25]] = $result[$keys[25]]->format('c');
         }
 
-        if ($result[$keys[24]] instanceof \DateTimeInterface) {
-            $result[$keys[24]] = $result[$keys[24]]->format('c');
+        if ($result[$keys[26]] instanceof \DateTimeInterface) {
+            $result[$keys[26]] = $result[$keys[26]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -2449,6 +2595,21 @@ abstract class Product implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aMaterial->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aUnitOfMeasure) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'unitOfMeasure';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'unit_of_measure';
+                        break;
+                    default:
+                        $key = 'UnitOfMeasure';
+                }
+
+                $result[$key] = $this->aUnitOfMeasure->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->collListComponents) {
 
@@ -2650,48 +2811,54 @@ abstract class Product implements ActiveRecordInterface
                 $this->setMaterialId($value);
                 break;
             case 10:
-                $this->setNote($value);
+                $this->setUomId($value);
                 break;
             case 11:
-                $this->setCubicAsb($value);
+                $this->setNote($value);
                 break;
             case 12:
-                $this->setCubicKdn($value);
+                $this->setCubicAsb($value);
                 break;
             case 13:
-                $this->setWidthAsb($value);
+                $this->setCubicKdn($value);
                 break;
             case 14:
-                $this->setHeightAsb($value);
+                $this->setWidthAsb($value);
                 break;
             case 15:
-                $this->setDepthAsb($value);
+                $this->setHeightAsb($value);
                 break;
             case 16:
-                $this->setWidthKdn($value);
+                $this->setDepthAsb($value);
                 break;
             case 17:
-                $this->setHeightKdn($value);
+                $this->setWidthKdn($value);
                 break;
             case 18:
-                $this->setDepthKdn($value);
+                $this->setHeightKdn($value);
                 break;
             case 19:
-                $this->setNetCubic($value);
+                $this->setDepthKdn($value);
                 break;
             case 20:
-                $this->setNetWeight($value);
+                $this->setNetCubic($value);
                 break;
             case 21:
-                $this->setGrossWeight($value);
+                $this->setNetWeight($value);
                 break;
             case 22:
-                $this->setType($value);
+                $this->setGrossWeight($value);
                 break;
             case 23:
-                $this->setCreatedAt($value);
+                $this->setType($value);
                 break;
             case 24:
+                $this->setActive($value);
+                break;
+            case 25:
+                $this->setCreatedAt($value);
+                break;
+            case 26:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -2751,49 +2918,55 @@ abstract class Product implements ActiveRecordInterface
             $this->setMaterialId($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setNote($arr[$keys[10]]);
+            $this->setUomId($arr[$keys[10]]);
         }
         if (array_key_exists($keys[11], $arr)) {
-            $this->setCubicAsb($arr[$keys[11]]);
+            $this->setNote($arr[$keys[11]]);
         }
         if (array_key_exists($keys[12], $arr)) {
-            $this->setCubicKdn($arr[$keys[12]]);
+            $this->setCubicAsb($arr[$keys[12]]);
         }
         if (array_key_exists($keys[13], $arr)) {
-            $this->setWidthAsb($arr[$keys[13]]);
+            $this->setCubicKdn($arr[$keys[13]]);
         }
         if (array_key_exists($keys[14], $arr)) {
-            $this->setHeightAsb($arr[$keys[14]]);
+            $this->setWidthAsb($arr[$keys[14]]);
         }
         if (array_key_exists($keys[15], $arr)) {
-            $this->setDepthAsb($arr[$keys[15]]);
+            $this->setHeightAsb($arr[$keys[15]]);
         }
         if (array_key_exists($keys[16], $arr)) {
-            $this->setWidthKdn($arr[$keys[16]]);
+            $this->setDepthAsb($arr[$keys[16]]);
         }
         if (array_key_exists($keys[17], $arr)) {
-            $this->setHeightKdn($arr[$keys[17]]);
+            $this->setWidthKdn($arr[$keys[17]]);
         }
         if (array_key_exists($keys[18], $arr)) {
-            $this->setDepthKdn($arr[$keys[18]]);
+            $this->setHeightKdn($arr[$keys[18]]);
         }
         if (array_key_exists($keys[19], $arr)) {
-            $this->setNetCubic($arr[$keys[19]]);
+            $this->setDepthKdn($arr[$keys[19]]);
         }
         if (array_key_exists($keys[20], $arr)) {
-            $this->setNetWeight($arr[$keys[20]]);
+            $this->setNetCubic($arr[$keys[20]]);
         }
         if (array_key_exists($keys[21], $arr)) {
-            $this->setGrossWeight($arr[$keys[21]]);
+            $this->setNetWeight($arr[$keys[21]]);
         }
         if (array_key_exists($keys[22], $arr)) {
-            $this->setType($arr[$keys[22]]);
+            $this->setGrossWeight($arr[$keys[22]]);
         }
         if (array_key_exists($keys[23], $arr)) {
-            $this->setCreatedAt($arr[$keys[23]]);
+            $this->setType($arr[$keys[23]]);
         }
         if (array_key_exists($keys[24], $arr)) {
-            $this->setUpdatedAt($arr[$keys[24]]);
+            $this->setActive($arr[$keys[24]]);
+        }
+        if (array_key_exists($keys[25], $arr)) {
+            $this->setCreatedAt($arr[$keys[25]]);
+        }
+        if (array_key_exists($keys[26], $arr)) {
+            $this->setUpdatedAt($arr[$keys[26]]);
         }
     }
 
@@ -2866,6 +3039,9 @@ abstract class Product implements ActiveRecordInterface
         if ($this->isColumnModified(ProductTableMap::COL_MATERIAL_ID)) {
             $criteria->add(ProductTableMap::COL_MATERIAL_ID, $this->material_id);
         }
+        if ($this->isColumnModified(ProductTableMap::COL_UOM_ID)) {
+            $criteria->add(ProductTableMap::COL_UOM_ID, $this->uom_id);
+        }
         if ($this->isColumnModified(ProductTableMap::COL_NOTE)) {
             $criteria->add(ProductTableMap::COL_NOTE, $this->note);
         }
@@ -2904,6 +3080,9 @@ abstract class Product implements ActiveRecordInterface
         }
         if ($this->isColumnModified(ProductTableMap::COL_TYPE)) {
             $criteria->add(ProductTableMap::COL_TYPE, $this->type);
+        }
+        if ($this->isColumnModified(ProductTableMap::COL_ACTIVE)) {
+            $criteria->add(ProductTableMap::COL_ACTIVE, $this->active);
         }
         if ($this->isColumnModified(ProductTableMap::COL_CREATED_AT)) {
             $criteria->add(ProductTableMap::COL_CREATED_AT, $this->created_at);
@@ -3006,6 +3185,7 @@ abstract class Product implements ActiveRecordInterface
         $copyObj->setQtyPerPack($this->getQtyPerPack());
         $copyObj->setListPrice($this->getListPrice());
         $copyObj->setMaterialId($this->getMaterialId());
+        $copyObj->setUomId($this->getUomId());
         $copyObj->setNote($this->getNote());
         $copyObj->setCubicAsb($this->getCubicAsb());
         $copyObj->setCubicKdn($this->getCubicKdn());
@@ -3019,6 +3199,7 @@ abstract class Product implements ActiveRecordInterface
         $copyObj->setNetWeight($this->getNetWeight());
         $copyObj->setGrossWeight($this->getGrossWeight());
         $copyObj->setType($this->getType());
+        $copyObj->setActive($this->getActive());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
 
@@ -3160,6 +3341,57 @@ abstract class Product implements ActiveRecordInterface
         }
 
         return $this->aMaterial;
+    }
+
+    /**
+     * Declares an association between this object and a ChildUnitOfMeasure object.
+     *
+     * @param  ChildUnitOfMeasure $v
+     * @return $this|\Product The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setUnitOfMeasure(ChildUnitOfMeasure $v = null)
+    {
+        if ($v === null) {
+            $this->setUomId(NULL);
+        } else {
+            $this->setUomId($v->getId());
+        }
+
+        $this->aUnitOfMeasure = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildUnitOfMeasure object, it will not be re-added.
+        if ($v !== null) {
+            $v->addProduct($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildUnitOfMeasure object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildUnitOfMeasure The associated ChildUnitOfMeasure object.
+     * @throws PropelException
+     */
+    public function getUnitOfMeasure(ConnectionInterface $con = null)
+    {
+        if ($this->aUnitOfMeasure === null && ($this->uom_id != 0)) {
+            $this->aUnitOfMeasure = ChildUnitOfMeasureQuery::create()->findPk($this->uom_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aUnitOfMeasure->addProducts($this);
+             */
+        }
+
+        return $this->aUnitOfMeasure;
     }
 
 
@@ -5667,6 +5899,9 @@ abstract class Product implements ActiveRecordInterface
         if (null !== $this->aMaterial) {
             $this->aMaterial->removeProduct($this);
         }
+        if (null !== $this->aUnitOfMeasure) {
+            $this->aUnitOfMeasure->removeProduct($this);
+        }
         $this->id = null;
         $this->name = null;
         $this->description = null;
@@ -5677,6 +5912,7 @@ abstract class Product implements ActiveRecordInterface
         $this->qty_per_pack = null;
         $this->list_price = null;
         $this->material_id = null;
+        $this->uom_id = null;
         $this->note = null;
         $this->cubic_asb = null;
         $this->cubic_kdn = null;
@@ -5690,6 +5926,7 @@ abstract class Product implements ActiveRecordInterface
         $this->net_weight = null;
         $this->gross_weight = null;
         $this->type = null;
+        $this->active = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;
@@ -5774,6 +6011,7 @@ abstract class Product implements ActiveRecordInterface
         $this->collStockMoveLines = null;
         $this->collFinishings = null;
         $this->aMaterial = null;
+        $this->aUnitOfMeasure = null;
     }
 
     /**

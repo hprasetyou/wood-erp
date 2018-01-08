@@ -59,7 +59,7 @@ class BankTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 5;
+    const NUM_COLUMNS = 6;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class BankTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 5;
+    const NUM_HYDRATE_COLUMNS = 6;
 
     /**
      * the column name for the id field
@@ -85,6 +85,11 @@ class BankTableMap extends TableMap
      * the column name for the ref_code field
      */
     const COL_REF_CODE = 'bank.ref_code';
+
+    /**
+     * the column name for the active field
+     */
+    const COL_ACTIVE = 'bank.active';
 
     /**
      * the column name for the created_at field
@@ -108,11 +113,11 @@ class BankTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'CodeName', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'codeName', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(BankTableMap::COL_ID, BankTableMap::COL_NAME, BankTableMap::COL_REF_CODE, BankTableMap::COL_CREATED_AT, BankTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'ref_code', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'CodeName', 'Active', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'codeName', 'active', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(BankTableMap::COL_ID, BankTableMap::COL_NAME, BankTableMap::COL_REF_CODE, BankTableMap::COL_ACTIVE, BankTableMap::COL_CREATED_AT, BankTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'ref_code', 'active', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -122,11 +127,11 @@ class BankTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'CodeName' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'codeName' => 2, 'createdAt' => 3, 'updatedAt' => 4, ),
-        self::TYPE_COLNAME       => array(BankTableMap::COL_ID => 0, BankTableMap::COL_NAME => 1, BankTableMap::COL_REF_CODE => 2, BankTableMap::COL_CREATED_AT => 3, BankTableMap::COL_UPDATED_AT => 4, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'ref_code' => 2, 'created_at' => 3, 'updated_at' => 4, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'CodeName' => 2, 'Active' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'codeName' => 2, 'active' => 3, 'createdAt' => 4, 'updatedAt' => 5, ),
+        self::TYPE_COLNAME       => array(BankTableMap::COL_ID => 0, BankTableMap::COL_NAME => 1, BankTableMap::COL_REF_CODE => 2, BankTableMap::COL_ACTIVE => 3, BankTableMap::COL_CREATED_AT => 4, BankTableMap::COL_UPDATED_AT => 5, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'ref_code' => 2, 'active' => 3, 'created_at' => 4, 'updated_at' => 5, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -149,6 +154,7 @@ class BankTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', true, 255, null);
         $this->addColumn('ref_code', 'CodeName', 'VARCHAR', true, 255, null);
+        $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -311,12 +317,14 @@ class BankTableMap extends TableMap
             $criteria->addSelectColumn(BankTableMap::COL_ID);
             $criteria->addSelectColumn(BankTableMap::COL_NAME);
             $criteria->addSelectColumn(BankTableMap::COL_REF_CODE);
+            $criteria->addSelectColumn(BankTableMap::COL_ACTIVE);
             $criteria->addSelectColumn(BankTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(BankTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.name');
             $criteria->addSelectColumn($alias . '.ref_code');
+            $criteria->addSelectColumn($alias . '.active');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }

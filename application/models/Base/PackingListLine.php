@@ -129,6 +129,14 @@ abstract class PackingListLine implements ActiveRecordInterface
     protected $total_cubic_dimension;
 
     /**
+     * The value for the active field.
+     *
+     * Note: this column has a database default value of: true
+     * @var        boolean
+     */
+    protected $active;
+
+    /**
      * The value for the created_at field.
      *
      * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
@@ -170,6 +178,7 @@ abstract class PackingListLine implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
+        $this->active = true;
     }
 
     /**
@@ -490,6 +499,26 @@ abstract class PackingListLine implements ActiveRecordInterface
     }
 
     /**
+     * Get the [active] column value.
+     *
+     * @return boolean
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * Get the [active] column value.
+     *
+     * @return boolean
+     */
+    public function isActive()
+    {
+        return $this->getActive();
+    }
+
+    /**
      * Get the [optionally formatted] temporal [created_at] column value.
      *
      *
@@ -718,6 +747,34 @@ abstract class PackingListLine implements ActiveRecordInterface
     } // setTotalCubicDimension()
 
     /**
+     * Sets the value of the [active] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     *
+     * @param  boolean|integer|string $v The new value
+     * @return $this|\PackingListLine The current object (for fluent API support)
+     */
+    public function setActive($v)
+    {
+        if ($v !== null) {
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
+        }
+
+        if ($this->active !== $v) {
+            $this->active = $v;
+            $this->modifiedColumns[PackingListLineTableMap::COL_ACTIVE] = true;
+        }
+
+        return $this;
+    } // setActive()
+
+    /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
@@ -767,6 +824,10 @@ abstract class PackingListLine implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->active !== true) {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -820,13 +881,16 @@ abstract class PackingListLine implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PackingListLineTableMap::translateFieldName('TotalCubicDimension', TableMap::TYPE_PHPNAME, $indexType)];
             $this->total_cubic_dimension = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PackingListLineTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PackingListLineTableMap::translateFieldName('Active', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->active = (null !== $col) ? (boolean) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PackingListLineTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PackingListLineTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : PackingListLineTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -839,7 +903,7 @@ abstract class PackingListLine implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 11; // 11 = PackingListLineTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 12; // 12 = PackingListLineTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\PackingListLine'), 0, $e);
@@ -1094,6 +1158,9 @@ abstract class PackingListLine implements ActiveRecordInterface
         if ($this->isColumnModified(PackingListLineTableMap::COL_TOTAL_CUBIC_DIMENSION)) {
             $modifiedColumns[':p' . $index++]  = 'total_cubic_dimension';
         }
+        if ($this->isColumnModified(PackingListLineTableMap::COL_ACTIVE)) {
+            $modifiedColumns[':p' . $index++]  = 'active';
+        }
         if ($this->isColumnModified(PackingListLineTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
@@ -1137,6 +1204,9 @@ abstract class PackingListLine implements ActiveRecordInterface
                         break;
                     case 'total_cubic_dimension':
                         $stmt->bindValue($identifier, $this->total_cubic_dimension, PDO::PARAM_STR);
+                        break;
+                    case 'active':
+                        $stmt->bindValue($identifier, (int) $this->active, PDO::PARAM_INT);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -1234,9 +1304,12 @@ abstract class PackingListLine implements ActiveRecordInterface
                 return $this->getTotalCubicDimension();
                 break;
             case 9:
-                return $this->getCreatedAt();
+                return $this->getActive();
                 break;
             case 10:
+                return $this->getCreatedAt();
+                break;
+            case 11:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1278,15 +1351,16 @@ abstract class PackingListLine implements ActiveRecordInterface
             $keys[6] => $this->getQtyOfPack(),
             $keys[7] => $this->getCubicDimension(),
             $keys[8] => $this->getTotalCubicDimension(),
-            $keys[9] => $this->getCreatedAt(),
-            $keys[10] => $this->getUpdatedAt(),
+            $keys[9] => $this->getActive(),
+            $keys[10] => $this->getCreatedAt(),
+            $keys[11] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[9]] instanceof \DateTimeInterface) {
-            $result[$keys[9]] = $result[$keys[9]]->format('c');
-        }
-
         if ($result[$keys[10]] instanceof \DateTimeInterface) {
             $result[$keys[10]] = $result[$keys[10]]->format('c');
+        }
+
+        if ($result[$keys[11]] instanceof \DateTimeInterface) {
+            $result[$keys[11]] = $result[$keys[11]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1387,9 +1461,12 @@ abstract class PackingListLine implements ActiveRecordInterface
                 $this->setTotalCubicDimension($value);
                 break;
             case 9:
-                $this->setCreatedAt($value);
+                $this->setActive($value);
                 break;
             case 10:
+                $this->setCreatedAt($value);
+                break;
+            case 11:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1446,10 +1523,13 @@ abstract class PackingListLine implements ActiveRecordInterface
             $this->setTotalCubicDimension($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setCreatedAt($arr[$keys[9]]);
+            $this->setActive($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setUpdatedAt($arr[$keys[10]]);
+            $this->setCreatedAt($arr[$keys[10]]);
+        }
+        if (array_key_exists($keys[11], $arr)) {
+            $this->setUpdatedAt($arr[$keys[11]]);
         }
     }
 
@@ -1518,6 +1598,9 @@ abstract class PackingListLine implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PackingListLineTableMap::COL_TOTAL_CUBIC_DIMENSION)) {
             $criteria->add(PackingListLineTableMap::COL_TOTAL_CUBIC_DIMENSION, $this->total_cubic_dimension);
+        }
+        if ($this->isColumnModified(PackingListLineTableMap::COL_ACTIVE)) {
+            $criteria->add(PackingListLineTableMap::COL_ACTIVE, $this->active);
         }
         if ($this->isColumnModified(PackingListLineTableMap::COL_CREATED_AT)) {
             $criteria->add(PackingListLineTableMap::COL_CREATED_AT, $this->created_at);
@@ -1619,6 +1702,7 @@ abstract class PackingListLine implements ActiveRecordInterface
         $copyObj->setQtyOfPack($this->getQtyOfPack());
         $copyObj->setCubicDimension($this->getCubicDimension());
         $copyObj->setTotalCubicDimension($this->getTotalCubicDimension());
+        $copyObj->setActive($this->getActive());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
         if ($makeNew) {
@@ -1773,6 +1857,7 @@ abstract class PackingListLine implements ActiveRecordInterface
         $this->qty_of_pack = null;
         $this->cubic_dimension = null;
         $this->total_cubic_dimension = null;
+        $this->active = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;

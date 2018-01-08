@@ -23,10 +23,12 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildDownPaymentQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildDownPaymentQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method     ChildDownPaymentQuery orderByValue($order = Criteria::ASC) Order by the value column
+ * @method     ChildDownPaymentQuery orderByActive($order = Criteria::ASC) Order by the active column
  *
  * @method     ChildDownPaymentQuery groupById() Group by the id column
  * @method     ChildDownPaymentQuery groupByName() Group by the name column
  * @method     ChildDownPaymentQuery groupByValue() Group by the value column
+ * @method     ChildDownPaymentQuery groupByActive() Group by the active column
  *
  * @method     ChildDownPaymentQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildDownPaymentQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -53,7 +55,8 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildDownPayment findOneById(int $id) Return the first ChildDownPayment filtered by the id column
  * @method     ChildDownPayment findOneByName(string $name) Return the first ChildDownPayment filtered by the name column
- * @method     ChildDownPayment findOneByValue(double $value) Return the first ChildDownPayment filtered by the value column *
+ * @method     ChildDownPayment findOneByValue(double $value) Return the first ChildDownPayment filtered by the value column
+ * @method     ChildDownPayment findOneByActive(boolean $active) Return the first ChildDownPayment filtered by the active column *
 
  * @method     ChildDownPayment requirePk($key, ConnectionInterface $con = null) Return the ChildDownPayment by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildDownPayment requireOne(ConnectionInterface $con = null) Return the first ChildDownPayment matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -61,11 +64,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildDownPayment requireOneById(int $id) Return the first ChildDownPayment filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildDownPayment requireOneByName(string $name) Return the first ChildDownPayment filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildDownPayment requireOneByValue(double $value) Return the first ChildDownPayment filtered by the value column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildDownPayment requireOneByActive(boolean $active) Return the first ChildDownPayment filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildDownPayment[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildDownPayment objects based on current ModelCriteria
  * @method     ChildDownPayment[]|ObjectCollection findById(int $id) Return ChildDownPayment objects filtered by the id column
  * @method     ChildDownPayment[]|ObjectCollection findByName(string $name) Return ChildDownPayment objects filtered by the name column
  * @method     ChildDownPayment[]|ObjectCollection findByValue(double $value) Return ChildDownPayment objects filtered by the value column
+ * @method     ChildDownPayment[]|ObjectCollection findByActive(boolean $active) Return ChildDownPayment objects filtered by the active column
  * @method     ChildDownPayment[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -164,7 +169,7 @@ abstract class DownPaymentQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, value FROM down_payment WHERE id = :p0';
+        $sql = 'SELECT id, name, value, active FROM down_payment WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -359,6 +364,33 @@ abstract class DownPaymentQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(DownPaymentTableMap::COL_VALUE, $value, $comparison);
+    }
+
+    /**
+     * Filter the query on the active column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByActive(true); // WHERE active = true
+     * $query->filterByActive('yes'); // WHERE active = true
+     * </code>
+     *
+     * @param     boolean|string $active The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildDownPaymentQuery The current query, for fluid interface
+     */
+    public function filterByActive($active = null, $comparison = null)
+    {
+        if (is_string($active)) {
+            $active = in_array(strtolower($active), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(DownPaymentTableMap::COL_ACTIVE, $active, $comparison);
     }
 
     /**

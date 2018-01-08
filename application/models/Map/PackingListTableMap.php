@@ -59,7 +59,7 @@ class PackingListTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 21;
+    const NUM_COLUMNS = 22;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class PackingListTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 21;
+    const NUM_HYDRATE_COLUMNS = 22;
 
     /**
      * the column name for the id field
@@ -167,6 +167,11 @@ class PackingListTableMap extends TableMap
     const COL_TOTAL_CUBIC_DIMENSION = 'packing_list.total_cubic_dimension';
 
     /**
+     * the column name for the active field
+     */
+    const COL_ACTIVE = 'packing_list.active';
+
+    /**
      * the column name for the created_at field
      */
     const COL_CREATED_AT = 'packing_list.created_at';
@@ -188,11 +193,11 @@ class PackingListTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Date', 'LoadingDate', 'CustomerId', 'OceanVessel', 'BlNo', 'GoodsDescription', 'CntrNo', 'SealNo', 'Pod', 'Shipping', 'Pol', 'EtdSrg', 'RefDoc', 'State', 'TotalQty', 'TotalQtyOfPack', 'TotalCubicDimension', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'date', 'loadingDate', 'customerId', 'oceanVessel', 'blNo', 'goodsDescription', 'cntrNo', 'sealNo', 'pod', 'shipping', 'pol', 'etdSrg', 'refDoc', 'state', 'totalQty', 'totalQtyOfPack', 'totalCubicDimension', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(PackingListTableMap::COL_ID, PackingListTableMap::COL_NAME, PackingListTableMap::COL_DATE, PackingListTableMap::COL_LOADING_DATE, PackingListTableMap::COL_CUSTOMER_ID, PackingListTableMap::COL_OCEAN_VESSEL, PackingListTableMap::COL_BL_NO, PackingListTableMap::COL_GOODS_DESCRIPTION, PackingListTableMap::COL_CNTR_NO, PackingListTableMap::COL_SEAL_NO, PackingListTableMap::COL_POD, PackingListTableMap::COL_SHIPPING, PackingListTableMap::COL_POL, PackingListTableMap::COL_ETD_SRG, PackingListTableMap::COL_REF_DOC, PackingListTableMap::COL_STATE, PackingListTableMap::COL_TOTAL_QTY, PackingListTableMap::COL_TOTAL_QTY_OF_PACK, PackingListTableMap::COL_TOTAL_CUBIC_DIMENSION, PackingListTableMap::COL_CREATED_AT, PackingListTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'date', 'loading_date', 'customer_id', 'ocean_vessel', 'bl_no', 'goods_description', 'cntr_no', 'seal_no', 'pod', 'shipping', 'pol', 'etd_srg', 'ref_doc', 'state', 'total_qty', 'total_qty_of_pack', 'total_cubic_dimension', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Date', 'LoadingDate', 'CustomerId', 'OceanVessel', 'BlNo', 'GoodsDescription', 'CntrNo', 'SealNo', 'Pod', 'Shipping', 'Pol', 'EtdSrg', 'RefDoc', 'State', 'TotalQty', 'TotalQtyOfPack', 'TotalCubicDimension', 'Active', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'date', 'loadingDate', 'customerId', 'oceanVessel', 'blNo', 'goodsDescription', 'cntrNo', 'sealNo', 'pod', 'shipping', 'pol', 'etdSrg', 'refDoc', 'state', 'totalQty', 'totalQtyOfPack', 'totalCubicDimension', 'active', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(PackingListTableMap::COL_ID, PackingListTableMap::COL_NAME, PackingListTableMap::COL_DATE, PackingListTableMap::COL_LOADING_DATE, PackingListTableMap::COL_CUSTOMER_ID, PackingListTableMap::COL_OCEAN_VESSEL, PackingListTableMap::COL_BL_NO, PackingListTableMap::COL_GOODS_DESCRIPTION, PackingListTableMap::COL_CNTR_NO, PackingListTableMap::COL_SEAL_NO, PackingListTableMap::COL_POD, PackingListTableMap::COL_SHIPPING, PackingListTableMap::COL_POL, PackingListTableMap::COL_ETD_SRG, PackingListTableMap::COL_REF_DOC, PackingListTableMap::COL_STATE, PackingListTableMap::COL_TOTAL_QTY, PackingListTableMap::COL_TOTAL_QTY_OF_PACK, PackingListTableMap::COL_TOTAL_CUBIC_DIMENSION, PackingListTableMap::COL_ACTIVE, PackingListTableMap::COL_CREATED_AT, PackingListTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'date', 'loading_date', 'customer_id', 'ocean_vessel', 'bl_no', 'goods_description', 'cntr_no', 'seal_no', 'pod', 'shipping', 'pol', 'etd_srg', 'ref_doc', 'state', 'total_qty', 'total_qty_of_pack', 'total_cubic_dimension', 'active', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, )
     );
 
     /**
@@ -202,11 +207,11 @@ class PackingListTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Date' => 2, 'LoadingDate' => 3, 'CustomerId' => 4, 'OceanVessel' => 5, 'BlNo' => 6, 'GoodsDescription' => 7, 'CntrNo' => 8, 'SealNo' => 9, 'Pod' => 10, 'Shipping' => 11, 'Pol' => 12, 'EtdSrg' => 13, 'RefDoc' => 14, 'State' => 15, 'TotalQty' => 16, 'TotalQtyOfPack' => 17, 'TotalCubicDimension' => 18, 'CreatedAt' => 19, 'UpdatedAt' => 20, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'date' => 2, 'loadingDate' => 3, 'customerId' => 4, 'oceanVessel' => 5, 'blNo' => 6, 'goodsDescription' => 7, 'cntrNo' => 8, 'sealNo' => 9, 'pod' => 10, 'shipping' => 11, 'pol' => 12, 'etdSrg' => 13, 'refDoc' => 14, 'state' => 15, 'totalQty' => 16, 'totalQtyOfPack' => 17, 'totalCubicDimension' => 18, 'createdAt' => 19, 'updatedAt' => 20, ),
-        self::TYPE_COLNAME       => array(PackingListTableMap::COL_ID => 0, PackingListTableMap::COL_NAME => 1, PackingListTableMap::COL_DATE => 2, PackingListTableMap::COL_LOADING_DATE => 3, PackingListTableMap::COL_CUSTOMER_ID => 4, PackingListTableMap::COL_OCEAN_VESSEL => 5, PackingListTableMap::COL_BL_NO => 6, PackingListTableMap::COL_GOODS_DESCRIPTION => 7, PackingListTableMap::COL_CNTR_NO => 8, PackingListTableMap::COL_SEAL_NO => 9, PackingListTableMap::COL_POD => 10, PackingListTableMap::COL_SHIPPING => 11, PackingListTableMap::COL_POL => 12, PackingListTableMap::COL_ETD_SRG => 13, PackingListTableMap::COL_REF_DOC => 14, PackingListTableMap::COL_STATE => 15, PackingListTableMap::COL_TOTAL_QTY => 16, PackingListTableMap::COL_TOTAL_QTY_OF_PACK => 17, PackingListTableMap::COL_TOTAL_CUBIC_DIMENSION => 18, PackingListTableMap::COL_CREATED_AT => 19, PackingListTableMap::COL_UPDATED_AT => 20, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'date' => 2, 'loading_date' => 3, 'customer_id' => 4, 'ocean_vessel' => 5, 'bl_no' => 6, 'goods_description' => 7, 'cntr_no' => 8, 'seal_no' => 9, 'pod' => 10, 'shipping' => 11, 'pol' => 12, 'etd_srg' => 13, 'ref_doc' => 14, 'state' => 15, 'total_qty' => 16, 'total_qty_of_pack' => 17, 'total_cubic_dimension' => 18, 'created_at' => 19, 'updated_at' => 20, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Date' => 2, 'LoadingDate' => 3, 'CustomerId' => 4, 'OceanVessel' => 5, 'BlNo' => 6, 'GoodsDescription' => 7, 'CntrNo' => 8, 'SealNo' => 9, 'Pod' => 10, 'Shipping' => 11, 'Pol' => 12, 'EtdSrg' => 13, 'RefDoc' => 14, 'State' => 15, 'TotalQty' => 16, 'TotalQtyOfPack' => 17, 'TotalCubicDimension' => 18, 'Active' => 19, 'CreatedAt' => 20, 'UpdatedAt' => 21, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'date' => 2, 'loadingDate' => 3, 'customerId' => 4, 'oceanVessel' => 5, 'blNo' => 6, 'goodsDescription' => 7, 'cntrNo' => 8, 'sealNo' => 9, 'pod' => 10, 'shipping' => 11, 'pol' => 12, 'etdSrg' => 13, 'refDoc' => 14, 'state' => 15, 'totalQty' => 16, 'totalQtyOfPack' => 17, 'totalCubicDimension' => 18, 'active' => 19, 'createdAt' => 20, 'updatedAt' => 21, ),
+        self::TYPE_COLNAME       => array(PackingListTableMap::COL_ID => 0, PackingListTableMap::COL_NAME => 1, PackingListTableMap::COL_DATE => 2, PackingListTableMap::COL_LOADING_DATE => 3, PackingListTableMap::COL_CUSTOMER_ID => 4, PackingListTableMap::COL_OCEAN_VESSEL => 5, PackingListTableMap::COL_BL_NO => 6, PackingListTableMap::COL_GOODS_DESCRIPTION => 7, PackingListTableMap::COL_CNTR_NO => 8, PackingListTableMap::COL_SEAL_NO => 9, PackingListTableMap::COL_POD => 10, PackingListTableMap::COL_SHIPPING => 11, PackingListTableMap::COL_POL => 12, PackingListTableMap::COL_ETD_SRG => 13, PackingListTableMap::COL_REF_DOC => 14, PackingListTableMap::COL_STATE => 15, PackingListTableMap::COL_TOTAL_QTY => 16, PackingListTableMap::COL_TOTAL_QTY_OF_PACK => 17, PackingListTableMap::COL_TOTAL_CUBIC_DIMENSION => 18, PackingListTableMap::COL_ACTIVE => 19, PackingListTableMap::COL_CREATED_AT => 20, PackingListTableMap::COL_UPDATED_AT => 21, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'date' => 2, 'loading_date' => 3, 'customer_id' => 4, 'ocean_vessel' => 5, 'bl_no' => 6, 'goods_description' => 7, 'cntr_no' => 8, 'seal_no' => 9, 'pod' => 10, 'shipping' => 11, 'pol' => 12, 'etd_srg' => 13, 'ref_doc' => 14, 'state' => 15, 'total_qty' => 16, 'total_qty_of_pack' => 17, 'total_cubic_dimension' => 18, 'active' => 19, 'created_at' => 20, 'updated_at' => 21, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, )
     );
 
     /**
@@ -245,6 +250,7 @@ class PackingListTableMap extends TableMap
         $this->addColumn('total_qty', 'TotalQty', 'INTEGER', false, null, null);
         $this->addColumn('total_qty_of_pack', 'TotalQtyOfPack', 'INTEGER', false, null, null);
         $this->addColumn('total_cubic_dimension', 'TotalCubicDimension', 'FLOAT', false, null, null);
+        $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -437,6 +443,7 @@ class PackingListTableMap extends TableMap
             $criteria->addSelectColumn(PackingListTableMap::COL_TOTAL_QTY);
             $criteria->addSelectColumn(PackingListTableMap::COL_TOTAL_QTY_OF_PACK);
             $criteria->addSelectColumn(PackingListTableMap::COL_TOTAL_CUBIC_DIMENSION);
+            $criteria->addSelectColumn(PackingListTableMap::COL_ACTIVE);
             $criteria->addSelectColumn(PackingListTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(PackingListTableMap::COL_UPDATED_AT);
         } else {
@@ -459,6 +466,7 @@ class PackingListTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.total_qty');
             $criteria->addSelectColumn($alias . '.total_qty_of_pack');
             $criteria->addSelectColumn($alias . '.total_cubic_dimension');
+            $criteria->addSelectColumn($alias . '.active');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }

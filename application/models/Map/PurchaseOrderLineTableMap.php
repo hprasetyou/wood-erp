@@ -59,7 +59,7 @@ class PurchaseOrderLineTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 11;
+    const NUM_COLUMNS = 12;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class PurchaseOrderLineTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 11;
+    const NUM_HYDRATE_COLUMNS = 12;
 
     /**
      * the column name for the id field
@@ -117,6 +117,11 @@ class PurchaseOrderLineTableMap extends TableMap
     const COL_QTY = 'purchase_order_line.qty';
 
     /**
+     * the column name for the active field
+     */
+    const COL_ACTIVE = 'purchase_order_line.active';
+
+    /**
      * the column name for the created_at field
      */
     const COL_CREATED_AT = 'purchase_order_line.created_at';
@@ -138,11 +143,11 @@ class PurchaseOrderLineTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'PurchaseOrderId', 'ProformaInvoiceLineId', 'ProductId', 'Note', 'Price', 'TotalPrice', 'Qty', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'purchaseOrderId', 'proformaInvoiceLineId', 'productId', 'note', 'price', 'totalPrice', 'qty', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(PurchaseOrderLineTableMap::COL_ID, PurchaseOrderLineTableMap::COL_NAME, PurchaseOrderLineTableMap::COL_PURCHASE_ORDER_ID, PurchaseOrderLineTableMap::COL_PROFORMA_INVOICE_LINE_ID, PurchaseOrderLineTableMap::COL_PRODUCT_ID, PurchaseOrderLineTableMap::COL_NOTE, PurchaseOrderLineTableMap::COL_PRICE, PurchaseOrderLineTableMap::COL_TOTAL_PRICE, PurchaseOrderLineTableMap::COL_QTY, PurchaseOrderLineTableMap::COL_CREATED_AT, PurchaseOrderLineTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'purchase_order_id', 'proforma_invoice_line_id', 'product_id', 'note', 'price', 'total_price', 'qty', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'PurchaseOrderId', 'ProformaInvoiceLineId', 'ProductId', 'Note', 'Price', 'TotalPrice', 'Qty', 'Active', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'purchaseOrderId', 'proformaInvoiceLineId', 'productId', 'note', 'price', 'totalPrice', 'qty', 'active', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(PurchaseOrderLineTableMap::COL_ID, PurchaseOrderLineTableMap::COL_NAME, PurchaseOrderLineTableMap::COL_PURCHASE_ORDER_ID, PurchaseOrderLineTableMap::COL_PROFORMA_INVOICE_LINE_ID, PurchaseOrderLineTableMap::COL_PRODUCT_ID, PurchaseOrderLineTableMap::COL_NOTE, PurchaseOrderLineTableMap::COL_PRICE, PurchaseOrderLineTableMap::COL_TOTAL_PRICE, PurchaseOrderLineTableMap::COL_QTY, PurchaseOrderLineTableMap::COL_ACTIVE, PurchaseOrderLineTableMap::COL_CREATED_AT, PurchaseOrderLineTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'purchase_order_id', 'proforma_invoice_line_id', 'product_id', 'note', 'price', 'total_price', 'qty', 'active', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
     );
 
     /**
@@ -152,11 +157,11 @@ class PurchaseOrderLineTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'PurchaseOrderId' => 2, 'ProformaInvoiceLineId' => 3, 'ProductId' => 4, 'Note' => 5, 'Price' => 6, 'TotalPrice' => 7, 'Qty' => 8, 'CreatedAt' => 9, 'UpdatedAt' => 10, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'purchaseOrderId' => 2, 'proformaInvoiceLineId' => 3, 'productId' => 4, 'note' => 5, 'price' => 6, 'totalPrice' => 7, 'qty' => 8, 'createdAt' => 9, 'updatedAt' => 10, ),
-        self::TYPE_COLNAME       => array(PurchaseOrderLineTableMap::COL_ID => 0, PurchaseOrderLineTableMap::COL_NAME => 1, PurchaseOrderLineTableMap::COL_PURCHASE_ORDER_ID => 2, PurchaseOrderLineTableMap::COL_PROFORMA_INVOICE_LINE_ID => 3, PurchaseOrderLineTableMap::COL_PRODUCT_ID => 4, PurchaseOrderLineTableMap::COL_NOTE => 5, PurchaseOrderLineTableMap::COL_PRICE => 6, PurchaseOrderLineTableMap::COL_TOTAL_PRICE => 7, PurchaseOrderLineTableMap::COL_QTY => 8, PurchaseOrderLineTableMap::COL_CREATED_AT => 9, PurchaseOrderLineTableMap::COL_UPDATED_AT => 10, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'purchase_order_id' => 2, 'proforma_invoice_line_id' => 3, 'product_id' => 4, 'note' => 5, 'price' => 6, 'total_price' => 7, 'qty' => 8, 'created_at' => 9, 'updated_at' => 10, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'PurchaseOrderId' => 2, 'ProformaInvoiceLineId' => 3, 'ProductId' => 4, 'Note' => 5, 'Price' => 6, 'TotalPrice' => 7, 'Qty' => 8, 'Active' => 9, 'CreatedAt' => 10, 'UpdatedAt' => 11, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'purchaseOrderId' => 2, 'proformaInvoiceLineId' => 3, 'productId' => 4, 'note' => 5, 'price' => 6, 'totalPrice' => 7, 'qty' => 8, 'active' => 9, 'createdAt' => 10, 'updatedAt' => 11, ),
+        self::TYPE_COLNAME       => array(PurchaseOrderLineTableMap::COL_ID => 0, PurchaseOrderLineTableMap::COL_NAME => 1, PurchaseOrderLineTableMap::COL_PURCHASE_ORDER_ID => 2, PurchaseOrderLineTableMap::COL_PROFORMA_INVOICE_LINE_ID => 3, PurchaseOrderLineTableMap::COL_PRODUCT_ID => 4, PurchaseOrderLineTableMap::COL_NOTE => 5, PurchaseOrderLineTableMap::COL_PRICE => 6, PurchaseOrderLineTableMap::COL_TOTAL_PRICE => 7, PurchaseOrderLineTableMap::COL_QTY => 8, PurchaseOrderLineTableMap::COL_ACTIVE => 9, PurchaseOrderLineTableMap::COL_CREATED_AT => 10, PurchaseOrderLineTableMap::COL_UPDATED_AT => 11, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'purchase_order_id' => 2, 'proforma_invoice_line_id' => 3, 'product_id' => 4, 'note' => 5, 'price' => 6, 'total_price' => 7, 'qty' => 8, 'active' => 9, 'created_at' => 10, 'updated_at' => 11, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
     );
 
     /**
@@ -185,6 +190,7 @@ class PurchaseOrderLineTableMap extends TableMap
         $this->addColumn('price', 'Price', 'FLOAT', false, null, null);
         $this->addColumn('total_price', 'TotalPrice', 'FLOAT', false, null, null);
         $this->addColumn('qty', 'Qty', 'FLOAT', false, null, null);
+        $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -367,6 +373,7 @@ class PurchaseOrderLineTableMap extends TableMap
             $criteria->addSelectColumn(PurchaseOrderLineTableMap::COL_PRICE);
             $criteria->addSelectColumn(PurchaseOrderLineTableMap::COL_TOTAL_PRICE);
             $criteria->addSelectColumn(PurchaseOrderLineTableMap::COL_QTY);
+            $criteria->addSelectColumn(PurchaseOrderLineTableMap::COL_ACTIVE);
             $criteria->addSelectColumn(PurchaseOrderLineTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(PurchaseOrderLineTableMap::COL_UPDATED_AT);
         } else {
@@ -379,6 +386,7 @@ class PurchaseOrderLineTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.price');
             $criteria->addSelectColumn($alias . '.total_price');
             $criteria->addSelectColumn($alias . '.qty');
+            $criteria->addSelectColumn($alias . '.active');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }

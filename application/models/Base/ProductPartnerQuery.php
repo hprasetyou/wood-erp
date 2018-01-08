@@ -27,6 +27,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductPartnerQuery orderByProductPrice($order = Criteria::ASC) Order by the product_price column
  * @method     ChildProductPartnerQuery orderByDescription($order = Criteria::ASC) Order by the description column
  * @method     ChildProductPartnerQuery orderByType($order = Criteria::ASC) Order by the type column
+ * @method     ChildProductPartnerQuery orderByActive($order = Criteria::ASC) Order by the active column
  * @method     ChildProductPartnerQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildProductPartnerQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -37,6 +38,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductPartnerQuery groupByProductPrice() Group by the product_price column
  * @method     ChildProductPartnerQuery groupByDescription() Group by the description column
  * @method     ChildProductPartnerQuery groupByType() Group by the type column
+ * @method     ChildProductPartnerQuery groupByActive() Group by the active column
  * @method     ChildProductPartnerQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildProductPartnerQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -80,6 +82,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductPartner findOneByProductPrice(int $product_price) Return the first ChildProductPartner filtered by the product_price column
  * @method     ChildProductPartner findOneByDescription(string $description) Return the first ChildProductPartner filtered by the description column
  * @method     ChildProductPartner findOneByType(string $type) Return the first ChildProductPartner filtered by the type column
+ * @method     ChildProductPartner findOneByActive(boolean $active) Return the first ChildProductPartner filtered by the active column
  * @method     ChildProductPartner findOneByCreatedAt(string $created_at) Return the first ChildProductPartner filtered by the created_at column
  * @method     ChildProductPartner findOneByUpdatedAt(string $updated_at) Return the first ChildProductPartner filtered by the updated_at column *
 
@@ -93,6 +96,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductPartner requireOneByProductPrice(int $product_price) Return the first ChildProductPartner filtered by the product_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductPartner requireOneByDescription(string $description) Return the first ChildProductPartner filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductPartner requireOneByType(string $type) Return the first ChildProductPartner filtered by the type column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProductPartner requireOneByActive(boolean $active) Return the first ChildProductPartner filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductPartner requireOneByCreatedAt(string $created_at) Return the first ChildProductPartner filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProductPartner requireOneByUpdatedAt(string $updated_at) Return the first ChildProductPartner filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -104,6 +108,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductPartner[]|ObjectCollection findByProductPrice(int $product_price) Return ChildProductPartner objects filtered by the product_price column
  * @method     ChildProductPartner[]|ObjectCollection findByDescription(string $description) Return ChildProductPartner objects filtered by the description column
  * @method     ChildProductPartner[]|ObjectCollection findByType(string $type) Return ChildProductPartner objects filtered by the type column
+ * @method     ChildProductPartner[]|ObjectCollection findByActive(boolean $active) Return ChildProductPartner objects filtered by the active column
  * @method     ChildProductPartner[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildProductPartner objects filtered by the created_at column
  * @method     ChildProductPartner[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildProductPartner objects filtered by the updated_at column
  * @method     ChildProductPartner[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -204,7 +209,7 @@ abstract class ProductPartnerQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, partner_id, product_id, product_price, description, type, created_at, updated_at FROM product_partner WHERE id = :p0';
+        $sql = 'SELECT id, name, partner_id, product_id, product_price, description, type, active, created_at, updated_at FROM product_partner WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -535,6 +540,33 @@ abstract class ProductPartnerQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProductPartnerTableMap::COL_TYPE, $type, $comparison);
+    }
+
+    /**
+     * Filter the query on the active column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByActive(true); // WHERE active = true
+     * $query->filterByActive('yes'); // WHERE active = true
+     * </code>
+     *
+     * @param     boolean|string $active The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProductPartnerQuery The current query, for fluid interface
+     */
+    public function filterByActive($active = null, $comparison = null)
+    {
+        if (is_string($active)) {
+            $active = in_array(strtolower($active), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(ProductPartnerTableMap::COL_ACTIVE, $active, $comparison);
     }
 
     /**

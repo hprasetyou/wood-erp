@@ -59,7 +59,7 @@ class ComponentProductTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 6;
+    const NUM_COLUMNS = 7;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class ComponentProductTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 6;
+    const NUM_HYDRATE_COLUMNS = 7;
 
     /**
      * the column name for the id field
@@ -90,6 +90,11 @@ class ComponentProductTableMap extends TableMap
      * the column name for the qty field
      */
     const COL_QTY = 'component_product.qty';
+
+    /**
+     * the column name for the active field
+     */
+    const COL_ACTIVE = 'component_product.active';
 
     /**
      * the column name for the created_at field
@@ -113,11 +118,11 @@ class ComponentProductTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'ProductId', 'ComponentId', 'Qty', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'productId', 'componentId', 'qty', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ComponentProductTableMap::COL_ID, ComponentProductTableMap::COL_PRODUCT_ID, ComponentProductTableMap::COL_COMPONENT_ID, ComponentProductTableMap::COL_QTY, ComponentProductTableMap::COL_CREATED_AT, ComponentProductTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'product_id', 'component_id', 'qty', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Id', 'ProductId', 'ComponentId', 'Qty', 'Active', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'productId', 'componentId', 'qty', 'active', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ComponentProductTableMap::COL_ID, ComponentProductTableMap::COL_PRODUCT_ID, ComponentProductTableMap::COL_COMPONENT_ID, ComponentProductTableMap::COL_QTY, ComponentProductTableMap::COL_ACTIVE, ComponentProductTableMap::COL_CREATED_AT, ComponentProductTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'product_id', 'component_id', 'qty', 'active', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -127,11 +132,11 @@ class ComponentProductTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'ProductId' => 1, 'ComponentId' => 2, 'Qty' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'productId' => 1, 'componentId' => 2, 'qty' => 3, 'createdAt' => 4, 'updatedAt' => 5, ),
-        self::TYPE_COLNAME       => array(ComponentProductTableMap::COL_ID => 0, ComponentProductTableMap::COL_PRODUCT_ID => 1, ComponentProductTableMap::COL_COMPONENT_ID => 2, ComponentProductTableMap::COL_QTY => 3, ComponentProductTableMap::COL_CREATED_AT => 4, ComponentProductTableMap::COL_UPDATED_AT => 5, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'product_id' => 1, 'component_id' => 2, 'qty' => 3, 'created_at' => 4, 'updated_at' => 5, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'ProductId' => 1, 'ComponentId' => 2, 'Qty' => 3, 'Active' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'productId' => 1, 'componentId' => 2, 'qty' => 3, 'active' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
+        self::TYPE_COLNAME       => array(ComponentProductTableMap::COL_ID => 0, ComponentProductTableMap::COL_PRODUCT_ID => 1, ComponentProductTableMap::COL_COMPONENT_ID => 2, ComponentProductTableMap::COL_QTY => 3, ComponentProductTableMap::COL_ACTIVE => 4, ComponentProductTableMap::COL_CREATED_AT => 5, ComponentProductTableMap::COL_UPDATED_AT => 6, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'product_id' => 1, 'component_id' => 2, 'qty' => 3, 'active' => 4, 'created_at' => 5, 'updated_at' => 6, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -155,6 +160,7 @@ class ComponentProductTableMap extends TableMap
         $this->addForeignKey('product_id', 'ProductId', 'INTEGER', 'product', 'id', true, null, null);
         $this->addForeignKey('component_id', 'ComponentId', 'INTEGER', 'product', 'id', true, null, null);
         $this->addColumn('qty', 'Qty', 'INTEGER', true, null, null);
+        $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -325,6 +331,7 @@ class ComponentProductTableMap extends TableMap
             $criteria->addSelectColumn(ComponentProductTableMap::COL_PRODUCT_ID);
             $criteria->addSelectColumn(ComponentProductTableMap::COL_COMPONENT_ID);
             $criteria->addSelectColumn(ComponentProductTableMap::COL_QTY);
+            $criteria->addSelectColumn(ComponentProductTableMap::COL_ACTIVE);
             $criteria->addSelectColumn(ComponentProductTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(ComponentProductTableMap::COL_UPDATED_AT);
         } else {
@@ -332,6 +339,7 @@ class ComponentProductTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.product_id');
             $criteria->addSelectColumn($alias . '.component_id');
             $criteria->addSelectColumn($alias . '.qty');
+            $criteria->addSelectColumn($alias . '.active');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }

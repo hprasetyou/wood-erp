@@ -26,6 +26,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildStockMoveQuery orderByDestId($order = Criteria::ASC) Order by the dest_id column
  * @method     ChildStockMoveQuery orderByOperation($order = Criteria::ASC) Order by the operation column
  * @method     ChildStockMoveQuery orderByState($order = Criteria::ASC) Order by the state column
+ * @method     ChildStockMoveQuery orderByActive($order = Criteria::ASC) Order by the active column
  * @method     ChildStockMoveQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildStockMoveQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -35,6 +36,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildStockMoveQuery groupByDestId() Group by the dest_id column
  * @method     ChildStockMoveQuery groupByOperation() Group by the operation column
  * @method     ChildStockMoveQuery groupByState() Group by the state column
+ * @method     ChildStockMoveQuery groupByActive() Group by the active column
  * @method     ChildStockMoveQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildStockMoveQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -87,6 +89,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildStockMove findOneByDestId(int $dest_id) Return the first ChildStockMove filtered by the dest_id column
  * @method     ChildStockMove findOneByOperation(string $operation) Return the first ChildStockMove filtered by the operation column
  * @method     ChildStockMove findOneByState(string $state) Return the first ChildStockMove filtered by the state column
+ * @method     ChildStockMove findOneByActive(boolean $active) Return the first ChildStockMove filtered by the active column
  * @method     ChildStockMove findOneByCreatedAt(string $created_at) Return the first ChildStockMove filtered by the created_at column
  * @method     ChildStockMove findOneByUpdatedAt(string $updated_at) Return the first ChildStockMove filtered by the updated_at column *
 
@@ -99,6 +102,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildStockMove requireOneByDestId(int $dest_id) Return the first ChildStockMove filtered by the dest_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildStockMove requireOneByOperation(string $operation) Return the first ChildStockMove filtered by the operation column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildStockMove requireOneByState(string $state) Return the first ChildStockMove filtered by the state column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildStockMove requireOneByActive(boolean $active) Return the first ChildStockMove filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildStockMove requireOneByCreatedAt(string $created_at) Return the first ChildStockMove filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildStockMove requireOneByUpdatedAt(string $updated_at) Return the first ChildStockMove filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -109,6 +113,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildStockMove[]|ObjectCollection findByDestId(int $dest_id) Return ChildStockMove objects filtered by the dest_id column
  * @method     ChildStockMove[]|ObjectCollection findByOperation(string $operation) Return ChildStockMove objects filtered by the operation column
  * @method     ChildStockMove[]|ObjectCollection findByState(string $state) Return ChildStockMove objects filtered by the state column
+ * @method     ChildStockMove[]|ObjectCollection findByActive(boolean $active) Return ChildStockMove objects filtered by the active column
  * @method     ChildStockMove[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildStockMove objects filtered by the created_at column
  * @method     ChildStockMove[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildStockMove objects filtered by the updated_at column
  * @method     ChildStockMove[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -209,7 +214,7 @@ abstract class StockMoveQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, src_id, dest_id, operation, state, created_at, updated_at FROM stock_move WHERE id = :p0';
+        $sql = 'SELECT id, name, src_id, dest_id, operation, state, active, created_at, updated_at FROM stock_move WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -499,6 +504,33 @@ abstract class StockMoveQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(StockMoveTableMap::COL_STATE, $state, $comparison);
+    }
+
+    /**
+     * Filter the query on the active column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByActive(true); // WHERE active = true
+     * $query->filterByActive('yes'); // WHERE active = true
+     * </code>
+     *
+     * @param     boolean|string $active The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildStockMoveQuery The current query, for fluid interface
+     */
+    public function filterByActive($active = null, $comparison = null)
+    {
+        if (is_string($active)) {
+            $active = in_array(strtolower($active), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(StockMoveTableMap::COL_ACTIVE, $active, $comparison);
     }
 
     /**

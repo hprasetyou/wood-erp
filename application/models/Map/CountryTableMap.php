@@ -59,7 +59,7 @@ class CountryTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 3;
+    const NUM_COLUMNS = 4;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class CountryTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 3;
+    const NUM_HYDRATE_COLUMNS = 4;
 
     /**
      * the column name for the id field
@@ -87,6 +87,11 @@ class CountryTableMap extends TableMap
     const COL_NAME = 'country.name';
 
     /**
+     * the column name for the active field
+     */
+    const COL_ACTIVE = 'country.active';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -98,11 +103,11 @@ class CountryTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Code', 'Name', ),
-        self::TYPE_CAMELNAME     => array('id', 'code', 'name', ),
-        self::TYPE_COLNAME       => array(CountryTableMap::COL_ID, CountryTableMap::COL_CODE, CountryTableMap::COL_NAME, ),
-        self::TYPE_FIELDNAME     => array('id', 'code', 'name', ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id', 'Code', 'Name', 'Active', ),
+        self::TYPE_CAMELNAME     => array('id', 'code', 'name', 'active', ),
+        self::TYPE_COLNAME       => array(CountryTableMap::COL_ID, CountryTableMap::COL_CODE, CountryTableMap::COL_NAME, CountryTableMap::COL_ACTIVE, ),
+        self::TYPE_FIELDNAME     => array('id', 'code', 'name', 'active', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -112,11 +117,11 @@ class CountryTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Code' => 1, 'Name' => 2, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'code' => 1, 'name' => 2, ),
-        self::TYPE_COLNAME       => array(CountryTableMap::COL_ID => 0, CountryTableMap::COL_CODE => 1, CountryTableMap::COL_NAME => 2, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'code' => 1, 'name' => 2, ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Code' => 1, 'Name' => 2, 'Active' => 3, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'code' => 1, 'name' => 2, 'active' => 3, ),
+        self::TYPE_COLNAME       => array(CountryTableMap::COL_ID => 0, CountryTableMap::COL_CODE => 1, CountryTableMap::COL_NAME => 2, CountryTableMap::COL_ACTIVE => 3, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'code' => 1, 'name' => 2, 'active' => 3, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -139,6 +144,7 @@ class CountryTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('code', 'Code', 'VARCHAR', true, 2, null);
         $this->addColumn('name', 'Name', 'VARCHAR', true, 255, null);
+        $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
     } // initialize()
 
     /**
@@ -299,10 +305,12 @@ class CountryTableMap extends TableMap
             $criteria->addSelectColumn(CountryTableMap::COL_ID);
             $criteria->addSelectColumn(CountryTableMap::COL_CODE);
             $criteria->addSelectColumn(CountryTableMap::COL_NAME);
+            $criteria->addSelectColumn(CountryTableMap::COL_ACTIVE);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.code');
             $criteria->addSelectColumn($alias . '.name');
+            $criteria->addSelectColumn($alias . '.active');
         }
     }
 

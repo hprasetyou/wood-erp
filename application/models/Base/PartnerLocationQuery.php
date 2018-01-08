@@ -29,6 +29,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerLocationQuery orderByCity($order = Criteria::ASC) Order by the city column
  * @method     ChildPartnerLocationQuery orderByType($order = Criteria::ASC) Order by the type column
  * @method     ChildPartnerLocationQuery orderByAddress($order = Criteria::ASC) Order by the address column
+ * @method     ChildPartnerLocationQuery orderByActive($order = Criteria::ASC) Order by the active column
  *
  * @method     ChildPartnerLocationQuery groupById() Group by the id column
  * @method     ChildPartnerLocationQuery groupByName() Group by the name column
@@ -39,6 +40,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerLocationQuery groupByCity() Group by the city column
  * @method     ChildPartnerLocationQuery groupByType() Group by the type column
  * @method     ChildPartnerLocationQuery groupByAddress() Group by the address column
+ * @method     ChildPartnerLocationQuery groupByActive() Group by the active column
  *
  * @method     ChildPartnerLocationQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildPartnerLocationQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -111,7 +113,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerLocation findOneByPostal(string $postal) Return the first ChildPartnerLocation filtered by the postal column
  * @method     ChildPartnerLocation findOneByCity(string $city) Return the first ChildPartnerLocation filtered by the city column
  * @method     ChildPartnerLocation findOneByType(string $type) Return the first ChildPartnerLocation filtered by the type column
- * @method     ChildPartnerLocation findOneByAddress(string $address) Return the first ChildPartnerLocation filtered by the address column *
+ * @method     ChildPartnerLocation findOneByAddress(string $address) Return the first ChildPartnerLocation filtered by the address column
+ * @method     ChildPartnerLocation findOneByActive(boolean $active) Return the first ChildPartnerLocation filtered by the active column *
 
  * @method     ChildPartnerLocation requirePk($key, ConnectionInterface $con = null) Return the ChildPartnerLocation by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartnerLocation requireOne(ConnectionInterface $con = null) Return the first ChildPartnerLocation matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -125,6 +128,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerLocation requireOneByCity(string $city) Return the first ChildPartnerLocation filtered by the city column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartnerLocation requireOneByType(string $type) Return the first ChildPartnerLocation filtered by the type column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPartnerLocation requireOneByAddress(string $address) Return the first ChildPartnerLocation filtered by the address column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPartnerLocation requireOneByActive(boolean $active) Return the first ChildPartnerLocation filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildPartnerLocation[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildPartnerLocation objects based on current ModelCriteria
  * @method     ChildPartnerLocation[]|ObjectCollection findById(int $id) Return ChildPartnerLocation objects filtered by the id column
@@ -136,6 +140,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPartnerLocation[]|ObjectCollection findByCity(string $city) Return ChildPartnerLocation objects filtered by the city column
  * @method     ChildPartnerLocation[]|ObjectCollection findByType(string $type) Return ChildPartnerLocation objects filtered by the type column
  * @method     ChildPartnerLocation[]|ObjectCollection findByAddress(string $address) Return ChildPartnerLocation objects filtered by the address column
+ * @method     ChildPartnerLocation[]|ObjectCollection findByActive(boolean $active) Return ChildPartnerLocation objects filtered by the active column
  * @method     ChildPartnerLocation[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -234,7 +239,7 @@ abstract class PartnerLocationQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, description, partner_id, country_id, postal, city, type, address FROM partner_location WHERE id = :p0';
+        $sql = 'SELECT id, name, description, partner_id, country_id, postal, city, type, address, active FROM partner_location WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -599,6 +604,33 @@ abstract class PartnerLocationQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PartnerLocationTableMap::COL_ADDRESS, $address, $comparison);
+    }
+
+    /**
+     * Filter the query on the active column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByActive(true); // WHERE active = true
+     * $query->filterByActive('yes'); // WHERE active = true
+     * </code>
+     *
+     * @param     boolean|string $active The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPartnerLocationQuery The current query, for fluid interface
+     */
+    public function filterByActive($active = null, $comparison = null)
+    {
+        if (is_string($active)) {
+            $active = in_array(strtolower($active), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(PartnerLocationTableMap::COL_ACTIVE, $active, $comparison);
     }
 
     /**

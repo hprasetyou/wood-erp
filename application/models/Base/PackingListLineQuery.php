@@ -29,6 +29,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingListLineQuery orderByQtyOfPack($order = Criteria::ASC) Order by the qty_of_pack column
  * @method     ChildPackingListLineQuery orderByCubicDimension($order = Criteria::ASC) Order by the cubic_dimension column
  * @method     ChildPackingListLineQuery orderByTotalCubicDimension($order = Criteria::ASC) Order by the total_cubic_dimension column
+ * @method     ChildPackingListLineQuery orderByActive($order = Criteria::ASC) Order by the active column
  * @method     ChildPackingListLineQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildPackingListLineQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -41,6 +42,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingListLineQuery groupByQtyOfPack() Group by the qty_of_pack column
  * @method     ChildPackingListLineQuery groupByCubicDimension() Group by the cubic_dimension column
  * @method     ChildPackingListLineQuery groupByTotalCubicDimension() Group by the total_cubic_dimension column
+ * @method     ChildPackingListLineQuery groupByActive() Group by the active column
  * @method     ChildPackingListLineQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildPackingListLineQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -86,6 +88,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingListLine findOneByQtyOfPack(int $qty_of_pack) Return the first ChildPackingListLine filtered by the qty_of_pack column
  * @method     ChildPackingListLine findOneByCubicDimension(double $cubic_dimension) Return the first ChildPackingListLine filtered by the cubic_dimension column
  * @method     ChildPackingListLine findOneByTotalCubicDimension(double $total_cubic_dimension) Return the first ChildPackingListLine filtered by the total_cubic_dimension column
+ * @method     ChildPackingListLine findOneByActive(boolean $active) Return the first ChildPackingListLine filtered by the active column
  * @method     ChildPackingListLine findOneByCreatedAt(string $created_at) Return the first ChildPackingListLine filtered by the created_at column
  * @method     ChildPackingListLine findOneByUpdatedAt(string $updated_at) Return the first ChildPackingListLine filtered by the updated_at column *
 
@@ -101,6 +104,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingListLine requireOneByQtyOfPack(int $qty_of_pack) Return the first ChildPackingListLine filtered by the qty_of_pack column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingListLine requireOneByCubicDimension(double $cubic_dimension) Return the first ChildPackingListLine filtered by the cubic_dimension column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingListLine requireOneByTotalCubicDimension(double $total_cubic_dimension) Return the first ChildPackingListLine filtered by the total_cubic_dimension column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPackingListLine requireOneByActive(boolean $active) Return the first ChildPackingListLine filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingListLine requireOneByCreatedAt(string $created_at) Return the first ChildPackingListLine filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPackingListLine requireOneByUpdatedAt(string $updated_at) Return the first ChildPackingListLine filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -114,6 +118,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPackingListLine[]|ObjectCollection findByQtyOfPack(int $qty_of_pack) Return ChildPackingListLine objects filtered by the qty_of_pack column
  * @method     ChildPackingListLine[]|ObjectCollection findByCubicDimension(double $cubic_dimension) Return ChildPackingListLine objects filtered by the cubic_dimension column
  * @method     ChildPackingListLine[]|ObjectCollection findByTotalCubicDimension(double $total_cubic_dimension) Return ChildPackingListLine objects filtered by the total_cubic_dimension column
+ * @method     ChildPackingListLine[]|ObjectCollection findByActive(boolean $active) Return ChildPackingListLine objects filtered by the active column
  * @method     ChildPackingListLine[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildPackingListLine objects filtered by the created_at column
  * @method     ChildPackingListLine[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildPackingListLine objects filtered by the updated_at column
  * @method     ChildPackingListLine[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -214,7 +219,7 @@ abstract class PackingListLineQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, packing_list_id, proforma_invoice_line_id, net_weight, gross_weight, qty, qty_of_pack, cubic_dimension, total_cubic_dimension, created_at, updated_at FROM packing_list_line WHERE id = :p0';
+        $sql = 'SELECT id, packing_list_id, proforma_invoice_line_id, net_weight, gross_weight, qty, qty_of_pack, cubic_dimension, total_cubic_dimension, active, created_at, updated_at FROM packing_list_line WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -675,6 +680,33 @@ abstract class PackingListLineQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PackingListLineTableMap::COL_TOTAL_CUBIC_DIMENSION, $totalCubicDimension, $comparison);
+    }
+
+    /**
+     * Filter the query on the active column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByActive(true); // WHERE active = true
+     * $query->filterByActive('yes'); // WHERE active = true
+     * </code>
+     *
+     * @param     boolean|string $active The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPackingListLineQuery The current query, for fluid interface
+     */
+    public function filterByActive($active = null, $comparison = null)
+    {
+        if (is_string($active)) {
+            $active = in_array(strtolower($active), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(PackingListLineTableMap::COL_ACTIVE, $active, $comparison);
     }
 
     /**

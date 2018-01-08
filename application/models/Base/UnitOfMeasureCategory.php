@@ -2,22 +2,21 @@
 
 namespace Base;
 
-use \Product as ChildProduct;
-use \ProductQuery as ChildProductQuery;
-use \ProformaInvoiceLine as ChildProformaInvoiceLine;
-use \ProformaInvoiceLineQuery as ChildProformaInvoiceLineQuery;
-use \PurchaseOrder as ChildPurchaseOrder;
-use \PurchaseOrderLineQuery as ChildPurchaseOrderLineQuery;
-use \PurchaseOrderQuery as ChildPurchaseOrderQuery;
+use \UnitOfMeasure as ChildUnitOfMeasure;
+use \UnitOfMeasureCategory as ChildUnitOfMeasureCategory;
+use \UnitOfMeasureCategoryQuery as ChildUnitOfMeasureCategoryQuery;
+use \UnitOfMeasureQuery as ChildUnitOfMeasureQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
-use Map\PurchaseOrderLineTableMap;
+use Map\UnitOfMeasureCategoryTableMap;
+use Map\UnitOfMeasureTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
+use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
@@ -27,18 +26,18 @@ use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'purchase_order_line' table.
+ * Base class that represents a row from the 'unit_of_measure_category' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class PurchaseOrderLine implements ActiveRecordInterface
+abstract class UnitOfMeasureCategory implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Map\\PurchaseOrderLineTableMap';
+    const TABLE_MAP = '\\Map\\UnitOfMeasureCategoryTableMap';
 
 
     /**
@@ -82,63 +81,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
     protected $name;
 
     /**
-     * The value for the purchase_order_id field.
-     *
-     * @var        int
-     */
-    protected $purchase_order_id;
-
-    /**
-     * The value for the proforma_invoice_line_id field.
-     *
-     * @var        int
-     */
-    protected $proforma_invoice_line_id;
-
-    /**
-     * The value for the product_id field.
-     *
-     * @var        int
-     */
-    protected $product_id;
-
-    /**
-     * The value for the note field.
-     *
-     * @var        string
-     */
-    protected $note;
-
-    /**
-     * The value for the price field.
-     *
-     * @var        double
-     */
-    protected $price;
-
-    /**
-     * The value for the total_price field.
-     *
-     * @var        double
-     */
-    protected $total_price;
-
-    /**
-     * The value for the qty field.
-     *
-     * @var        double
-     */
-    protected $qty;
-
-    /**
-     * The value for the active field.
-     *
-     * Note: this column has a database default value of: true
-     * @var        boolean
-     */
-    protected $active;
-
-    /**
      * The value for the created_at field.
      *
      * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
@@ -155,19 +97,10 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
     protected $updated_at;
 
     /**
-     * @var        ChildPurchaseOrder
+     * @var        ObjectCollection|ChildUnitOfMeasure[] Collection to store aggregation of ChildUnitOfMeasure objects.
      */
-    protected $aPurchaseOrder;
-
-    /**
-     * @var        ChildProformaInvoiceLine
-     */
-    protected $aProformaInvoiceLine;
-
-    /**
-     * @var        ChildProduct
-     */
-    protected $aProduct;
+    protected $collUnitOfMeasures;
+    protected $collUnitOfMeasuresPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -178,6 +111,12 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildUnitOfMeasure[]
+     */
+    protected $unitOfMeasuresScheduledForDeletion = null;
+
+    /**
      * Applies default values to this object.
      * This method should be called from the object's constructor (or
      * equivalent initialization method).
@@ -185,11 +124,10 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->active = true;
     }
 
     /**
-     * Initializes internal state of Base\PurchaseOrderLine object.
+     * Initializes internal state of Base\UnitOfMeasureCategory object.
      * @see applyDefaults()
      */
     public function __construct()
@@ -286,9 +224,9 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>PurchaseOrderLine</code> instance.  If
-     * <code>obj</code> is an instance of <code>PurchaseOrderLine</code>, delegates to
-     * <code>equals(PurchaseOrderLine)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>UnitOfMeasureCategory</code> instance.  If
+     * <code>obj</code> is an instance of <code>UnitOfMeasureCategory</code>, delegates to
+     * <code>equals(UnitOfMeasureCategory)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -354,7 +292,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|PurchaseOrderLine The current object, for fluid interface
+     * @return $this|UnitOfMeasureCategory The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -436,96 +374,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
     }
 
     /**
-     * Get the [purchase_order_id] column value.
-     *
-     * @return int
-     */
-    public function getPurchaseOrderId()
-    {
-        return $this->purchase_order_id;
-    }
-
-    /**
-     * Get the [proforma_invoice_line_id] column value.
-     *
-     * @return int
-     */
-    public function getProformaInvoiceLineId()
-    {
-        return $this->proforma_invoice_line_id;
-    }
-
-    /**
-     * Get the [product_id] column value.
-     *
-     * @return int
-     */
-    public function getProductId()
-    {
-        return $this->product_id;
-    }
-
-    /**
-     * Get the [note] column value.
-     *
-     * @return string
-     */
-    public function getNote()
-    {
-        return $this->note;
-    }
-
-    /**
-     * Get the [price] column value.
-     *
-     * @return double
-     */
-    public function getPrice()
-    {
-        return $this->price;
-    }
-
-    /**
-     * Get the [total_price] column value.
-     *
-     * @return double
-     */
-    public function getTotalPrice()
-    {
-        return $this->total_price;
-    }
-
-    /**
-     * Get the [qty] column value.
-     *
-     * @return double
-     */
-    public function getQty()
-    {
-        return $this->qty;
-    }
-
-    /**
-     * Get the [active] column value.
-     *
-     * @return boolean
-     */
-    public function getActive()
-    {
-        return $this->active;
-    }
-
-    /**
-     * Get the [active] column value.
-     *
-     * @return boolean
-     */
-    public function isActive()
-    {
-        return $this->getActive();
-    }
-
-    /**
      * Get the [optionally formatted] temporal [created_at] column value.
      *
      *
@@ -569,7 +417,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param int $v new value
-     * @return $this|\PurchaseOrderLine The current object (for fluent API support)
+     * @return $this|\UnitOfMeasureCategory The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -579,7 +427,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[PurchaseOrderLineTableMap::COL_ID] = true;
+            $this->modifiedColumns[UnitOfMeasureCategoryTableMap::COL_ID] = true;
         }
 
         return $this;
@@ -589,7 +437,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      * Set the value of [name] column.
      *
      * @param string $v new value
-     * @return $this|\PurchaseOrderLine The current object (for fluent API support)
+     * @return $this|\UnitOfMeasureCategory The current object (for fluent API support)
      */
     public function setName($v)
     {
@@ -599,198 +447,18 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
 
         if ($this->name !== $v) {
             $this->name = $v;
-            $this->modifiedColumns[PurchaseOrderLineTableMap::COL_NAME] = true;
+            $this->modifiedColumns[UnitOfMeasureCategoryTableMap::COL_NAME] = true;
         }
 
         return $this;
     } // setName()
 
     /**
-     * Set the value of [purchase_order_id] column.
-     *
-     * @param int $v new value
-     * @return $this|\PurchaseOrderLine The current object (for fluent API support)
-     */
-    public function setPurchaseOrderId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->purchase_order_id !== $v) {
-            $this->purchase_order_id = $v;
-            $this->modifiedColumns[PurchaseOrderLineTableMap::COL_PURCHASE_ORDER_ID] = true;
-        }
-
-        if ($this->aPurchaseOrder !== null && $this->aPurchaseOrder->getId() !== $v) {
-            $this->aPurchaseOrder = null;
-        }
-
-        return $this;
-    } // setPurchaseOrderId()
-
-    /**
-     * Set the value of [proforma_invoice_line_id] column.
-     *
-     * @param int $v new value
-     * @return $this|\PurchaseOrderLine The current object (for fluent API support)
-     */
-    public function setProformaInvoiceLineId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->proforma_invoice_line_id !== $v) {
-            $this->proforma_invoice_line_id = $v;
-            $this->modifiedColumns[PurchaseOrderLineTableMap::COL_PROFORMA_INVOICE_LINE_ID] = true;
-        }
-
-        if ($this->aProformaInvoiceLine !== null && $this->aProformaInvoiceLine->getId() !== $v) {
-            $this->aProformaInvoiceLine = null;
-        }
-
-        return $this;
-    } // setProformaInvoiceLineId()
-
-    /**
-     * Set the value of [product_id] column.
-     *
-     * @param int $v new value
-     * @return $this|\PurchaseOrderLine The current object (for fluent API support)
-     */
-    public function setProductId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->product_id !== $v) {
-            $this->product_id = $v;
-            $this->modifiedColumns[PurchaseOrderLineTableMap::COL_PRODUCT_ID] = true;
-        }
-
-        if ($this->aProduct !== null && $this->aProduct->getId() !== $v) {
-            $this->aProduct = null;
-        }
-
-        return $this;
-    } // setProductId()
-
-    /**
-     * Set the value of [note] column.
-     *
-     * @param string $v new value
-     * @return $this|\PurchaseOrderLine The current object (for fluent API support)
-     */
-    public function setNote($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->note !== $v) {
-            $this->note = $v;
-            $this->modifiedColumns[PurchaseOrderLineTableMap::COL_NOTE] = true;
-        }
-
-        return $this;
-    } // setNote()
-
-    /**
-     * Set the value of [price] column.
-     *
-     * @param double $v new value
-     * @return $this|\PurchaseOrderLine The current object (for fluent API support)
-     */
-    public function setPrice($v)
-    {
-        if ($v !== null) {
-            $v = (double) $v;
-        }
-
-        if ($this->price !== $v) {
-            $this->price = $v;
-            $this->modifiedColumns[PurchaseOrderLineTableMap::COL_PRICE] = true;
-        }
-
-        return $this;
-    } // setPrice()
-
-    /**
-     * Set the value of [total_price] column.
-     *
-     * @param double $v new value
-     * @return $this|\PurchaseOrderLine The current object (for fluent API support)
-     */
-    public function setTotalPrice($v)
-    {
-        if ($v !== null) {
-            $v = (double) $v;
-        }
-
-        if ($this->total_price !== $v) {
-            $this->total_price = $v;
-            $this->modifiedColumns[PurchaseOrderLineTableMap::COL_TOTAL_PRICE] = true;
-        }
-
-        return $this;
-    } // setTotalPrice()
-
-    /**
-     * Set the value of [qty] column.
-     *
-     * @param double $v new value
-     * @return $this|\PurchaseOrderLine The current object (for fluent API support)
-     */
-    public function setQty($v)
-    {
-        if ($v !== null) {
-            $v = (double) $v;
-        }
-
-        if ($this->qty !== $v) {
-            $this->qty = $v;
-            $this->modifiedColumns[PurchaseOrderLineTableMap::COL_QTY] = true;
-        }
-
-        return $this;
-    } // setQty()
-
-    /**
-     * Sets the value of the [active] column.
-     * Non-boolean arguments are converted using the following rules:
-     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     *
-     * @param  boolean|integer|string $v The new value
-     * @return $this|\PurchaseOrderLine The current object (for fluent API support)
-     */
-    public function setActive($v)
-    {
-        if ($v !== null) {
-            if (is_string($v)) {
-                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-            } else {
-                $v = (boolean) $v;
-            }
-        }
-
-        if ($this->active !== $v) {
-            $this->active = $v;
-            $this->modifiedColumns[PurchaseOrderLineTableMap::COL_ACTIVE] = true;
-        }
-
-        return $this;
-    } // setActive()
-
-    /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\PurchaseOrderLine The current object (for fluent API support)
+     * @return $this|\UnitOfMeasureCategory The current object (for fluent API support)
      */
     public function setCreatedAt($v)
     {
@@ -798,7 +466,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
         if ($this->created_at !== null || $dt !== null) {
             if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_at->format("Y-m-d H:i:s.u")) {
                 $this->created_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[PurchaseOrderLineTableMap::COL_CREATED_AT] = true;
+                $this->modifiedColumns[UnitOfMeasureCategoryTableMap::COL_CREATED_AT] = true;
             }
         } // if either are not null
 
@@ -810,7 +478,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\PurchaseOrderLine The current object (for fluent API support)
+     * @return $this|\UnitOfMeasureCategory The current object (for fluent API support)
      */
     public function setUpdatedAt($v)
     {
@@ -818,7 +486,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
         if ($this->updated_at !== null || $dt !== null) {
             if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated_at->format("Y-m-d H:i:s.u")) {
                 $this->updated_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[PurchaseOrderLineTableMap::COL_UPDATED_AT] = true;
+                $this->modifiedColumns[UnitOfMeasureCategoryTableMap::COL_UPDATED_AT] = true;
             }
         } // if either are not null
 
@@ -835,10 +503,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->active !== true) {
-                return false;
-            }
-
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -865,43 +529,19 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : PurchaseOrderLineTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : UnitOfMeasureCategoryTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : PurchaseOrderLineTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : UnitOfMeasureCategoryTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : PurchaseOrderLineTableMap::translateFieldName('PurchaseOrderId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->purchase_order_id = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : PurchaseOrderLineTableMap::translateFieldName('ProformaInvoiceLineId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->proforma_invoice_line_id = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : PurchaseOrderLineTableMap::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->product_id = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : PurchaseOrderLineTableMap::translateFieldName('Note', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->note = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PurchaseOrderLineTableMap::translateFieldName('Price', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->price = (null !== $col) ? (double) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PurchaseOrderLineTableMap::translateFieldName('TotalPrice', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->total_price = (null !== $col) ? (double) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PurchaseOrderLineTableMap::translateFieldName('Qty', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->qty = (null !== $col) ? (double) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PurchaseOrderLineTableMap::translateFieldName('Active', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->active = (null !== $col) ? (boolean) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PurchaseOrderLineTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : UnitOfMeasureCategoryTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : PurchaseOrderLineTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : UnitOfMeasureCategoryTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -914,10 +554,10 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 12; // 12 = PurchaseOrderLineTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = UnitOfMeasureCategoryTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\PurchaseOrderLine'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\UnitOfMeasureCategory'), 0, $e);
         }
     }
 
@@ -936,15 +576,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aPurchaseOrder !== null && $this->purchase_order_id !== $this->aPurchaseOrder->getId()) {
-            $this->aPurchaseOrder = null;
-        }
-        if ($this->aProformaInvoiceLine !== null && $this->proforma_invoice_line_id !== $this->aProformaInvoiceLine->getId()) {
-            $this->aProformaInvoiceLine = null;
-        }
-        if ($this->aProduct !== null && $this->product_id !== $this->aProduct->getId()) {
-            $this->aProduct = null;
-        }
     } // ensureConsistency
 
     /**
@@ -968,13 +599,13 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(PurchaseOrderLineTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(UnitOfMeasureCategoryTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildPurchaseOrderLineQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildUnitOfMeasureCategoryQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -984,9 +615,8 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aPurchaseOrder = null;
-            $this->aProformaInvoiceLine = null;
-            $this->aProduct = null;
+            $this->collUnitOfMeasures = null;
+
         } // if (deep)
     }
 
@@ -996,8 +626,8 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see PurchaseOrderLine::setDeleted()
-     * @see PurchaseOrderLine::isDeleted()
+     * @see UnitOfMeasureCategory::setDeleted()
+     * @see UnitOfMeasureCategory::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -1006,11 +636,11 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PurchaseOrderLineTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UnitOfMeasureCategoryTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildPurchaseOrderLineQuery::create()
+            $deleteQuery = ChildUnitOfMeasureCategoryQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -1045,7 +675,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PurchaseOrderLineTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UnitOfMeasureCategoryTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -1064,7 +694,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                PurchaseOrderLineTableMap::addInstanceToPool($this);
+                UnitOfMeasureCategoryTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -1090,32 +720,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
-            // We call the save method on the following object(s) if they
-            // were passed to this object by their corresponding set
-            // method.  This object relates to these object(s) by a
-            // foreign key reference.
-
-            if ($this->aPurchaseOrder !== null) {
-                if ($this->aPurchaseOrder->isModified() || $this->aPurchaseOrder->isNew()) {
-                    $affectedRows += $this->aPurchaseOrder->save($con);
-                }
-                $this->setPurchaseOrder($this->aPurchaseOrder);
-            }
-
-            if ($this->aProformaInvoiceLine !== null) {
-                if ($this->aProformaInvoiceLine->isModified() || $this->aProformaInvoiceLine->isNew()) {
-                    $affectedRows += $this->aProformaInvoiceLine->save($con);
-                }
-                $this->setProformaInvoiceLine($this->aProformaInvoiceLine);
-            }
-
-            if ($this->aProduct !== null) {
-                if ($this->aProduct->isModified() || $this->aProduct->isNew()) {
-                    $affectedRows += $this->aProduct->save($con);
-                }
-                $this->setProduct($this->aProduct);
-            }
-
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -1125,6 +729,23 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
+            }
+
+            if ($this->unitOfMeasuresScheduledForDeletion !== null) {
+                if (!$this->unitOfMeasuresScheduledForDeletion->isEmpty()) {
+                    \UnitOfMeasureQuery::create()
+                        ->filterByPrimaryKeys($this->unitOfMeasuresScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->unitOfMeasuresScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collUnitOfMeasures !== null) {
+                foreach ($this->collUnitOfMeasures as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             $this->alreadyInSave = false;
@@ -1147,51 +768,27 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[PurchaseOrderLineTableMap::COL_ID] = true;
+        $this->modifiedColumns[UnitOfMeasureCategoryTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . PurchaseOrderLineTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . UnitOfMeasureCategoryTableMap::COL_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_ID)) {
+        if ($this->isColumnModified(UnitOfMeasureCategoryTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_NAME)) {
+        if ($this->isColumnModified(UnitOfMeasureCategoryTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'name';
         }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_PURCHASE_ORDER_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'purchase_order_id';
-        }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_PROFORMA_INVOICE_LINE_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'proforma_invoice_line_id';
-        }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_PRODUCT_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'product_id';
-        }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_NOTE)) {
-            $modifiedColumns[':p' . $index++]  = 'note';
-        }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_PRICE)) {
-            $modifiedColumns[':p' . $index++]  = 'price';
-        }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_TOTAL_PRICE)) {
-            $modifiedColumns[':p' . $index++]  = 'total_price';
-        }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_QTY)) {
-            $modifiedColumns[':p' . $index++]  = 'qty';
-        }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_ACTIVE)) {
-            $modifiedColumns[':p' . $index++]  = 'active';
-        }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_CREATED_AT)) {
+        if ($this->isColumnModified(UnitOfMeasureCategoryTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_UPDATED_AT)) {
+        if ($this->isColumnModified(UnitOfMeasureCategoryTableMap::COL_UPDATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'updated_at';
         }
 
         $sql = sprintf(
-            'INSERT INTO purchase_order_line (%s) VALUES (%s)',
+            'INSERT INTO unit_of_measure_category (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -1205,30 +802,6 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
                         break;
                     case 'name':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
-                        break;
-                    case 'purchase_order_id':
-                        $stmt->bindValue($identifier, $this->purchase_order_id, PDO::PARAM_INT);
-                        break;
-                    case 'proforma_invoice_line_id':
-                        $stmt->bindValue($identifier, $this->proforma_invoice_line_id, PDO::PARAM_INT);
-                        break;
-                    case 'product_id':
-                        $stmt->bindValue($identifier, $this->product_id, PDO::PARAM_INT);
-                        break;
-                    case 'note':
-                        $stmt->bindValue($identifier, $this->note, PDO::PARAM_STR);
-                        break;
-                    case 'price':
-                        $stmt->bindValue($identifier, $this->price, PDO::PARAM_STR);
-                        break;
-                    case 'total_price':
-                        $stmt->bindValue($identifier, $this->total_price, PDO::PARAM_STR);
-                        break;
-                    case 'qty':
-                        $stmt->bindValue($identifier, $this->qty, PDO::PARAM_STR);
-                        break;
-                    case 'active':
-                        $stmt->bindValue($identifier, (int) $this->active, PDO::PARAM_INT);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -1282,7 +855,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = PurchaseOrderLineTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = UnitOfMeasureCategoryTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -1305,33 +878,9 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
                 return $this->getName();
                 break;
             case 2:
-                return $this->getPurchaseOrderId();
-                break;
-            case 3:
-                return $this->getProformaInvoiceLineId();
-                break;
-            case 4:
-                return $this->getProductId();
-                break;
-            case 5:
-                return $this->getNote();
-                break;
-            case 6:
-                return $this->getPrice();
-                break;
-            case 7:
-                return $this->getTotalPrice();
-                break;
-            case 8:
-                return $this->getQty();
-                break;
-            case 9:
-                return $this->getActive();
-                break;
-            case 10:
                 return $this->getCreatedAt();
                 break;
-            case 11:
+            case 3:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1358,31 +907,23 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['PurchaseOrderLine'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['UnitOfMeasureCategory'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['PurchaseOrderLine'][$this->hashCode()] = true;
-        $keys = PurchaseOrderLineTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['UnitOfMeasureCategory'][$this->hashCode()] = true;
+        $keys = UnitOfMeasureCategoryTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
-            $keys[2] => $this->getPurchaseOrderId(),
-            $keys[3] => $this->getProformaInvoiceLineId(),
-            $keys[4] => $this->getProductId(),
-            $keys[5] => $this->getNote(),
-            $keys[6] => $this->getPrice(),
-            $keys[7] => $this->getTotalPrice(),
-            $keys[8] => $this->getQty(),
-            $keys[9] => $this->getActive(),
-            $keys[10] => $this->getCreatedAt(),
-            $keys[11] => $this->getUpdatedAt(),
+            $keys[2] => $this->getCreatedAt(),
+            $keys[3] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[10]] instanceof \DateTimeInterface) {
-            $result[$keys[10]] = $result[$keys[10]]->format('c');
+        if ($result[$keys[2]] instanceof \DateTimeInterface) {
+            $result[$keys[2]] = $result[$keys[2]]->format('c');
         }
 
-        if ($result[$keys[11]] instanceof \DateTimeInterface) {
-            $result[$keys[11]] = $result[$keys[11]]->format('c');
+        if ($result[$keys[3]] instanceof \DateTimeInterface) {
+            $result[$keys[3]] = $result[$keys[3]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1391,50 +932,20 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aPurchaseOrder) {
+            if (null !== $this->collUnitOfMeasures) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'purchaseOrder';
+                        $key = 'unitOfMeasures';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'purchase_order';
+                        $key = 'unit_of_measures';
                         break;
                     default:
-                        $key = 'PurchaseOrder';
+                        $key = 'UnitOfMeasures';
                 }
 
-                $result[$key] = $this->aPurchaseOrder->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->aProformaInvoiceLine) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'proformaInvoiceLine';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'proforma_invoice_line';
-                        break;
-                    default:
-                        $key = 'ProformaInvoiceLine';
-                }
-
-                $result[$key] = $this->aProformaInvoiceLine->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->aProduct) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'product';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'product';
-                        break;
-                    default:
-                        $key = 'Product';
-                }
-
-                $result[$key] = $this->aProduct->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->collUnitOfMeasures->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1450,11 +961,11 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\PurchaseOrderLine
+     * @return $this|\UnitOfMeasureCategory
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = PurchaseOrderLineTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = UnitOfMeasureCategoryTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1465,7 +976,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\PurchaseOrderLine
+     * @return $this|\UnitOfMeasureCategory
      */
     public function setByPosition($pos, $value)
     {
@@ -1477,33 +988,9 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
                 $this->setName($value);
                 break;
             case 2:
-                $this->setPurchaseOrderId($value);
-                break;
-            case 3:
-                $this->setProformaInvoiceLineId($value);
-                break;
-            case 4:
-                $this->setProductId($value);
-                break;
-            case 5:
-                $this->setNote($value);
-                break;
-            case 6:
-                $this->setPrice($value);
-                break;
-            case 7:
-                $this->setTotalPrice($value);
-                break;
-            case 8:
-                $this->setQty($value);
-                break;
-            case 9:
-                $this->setActive($value);
-                break;
-            case 10:
                 $this->setCreatedAt($value);
                 break;
-            case 11:
+            case 3:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1530,7 +1017,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = PurchaseOrderLineTableMap::getFieldNames($keyType);
+        $keys = UnitOfMeasureCategoryTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setId($arr[$keys[0]]);
@@ -1539,34 +1026,10 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
             $this->setName($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setPurchaseOrderId($arr[$keys[2]]);
+            $this->setCreatedAt($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setProformaInvoiceLineId($arr[$keys[3]]);
-        }
-        if (array_key_exists($keys[4], $arr)) {
-            $this->setProductId($arr[$keys[4]]);
-        }
-        if (array_key_exists($keys[5], $arr)) {
-            $this->setNote($arr[$keys[5]]);
-        }
-        if (array_key_exists($keys[6], $arr)) {
-            $this->setPrice($arr[$keys[6]]);
-        }
-        if (array_key_exists($keys[7], $arr)) {
-            $this->setTotalPrice($arr[$keys[7]]);
-        }
-        if (array_key_exists($keys[8], $arr)) {
-            $this->setQty($arr[$keys[8]]);
-        }
-        if (array_key_exists($keys[9], $arr)) {
-            $this->setActive($arr[$keys[9]]);
-        }
-        if (array_key_exists($keys[10], $arr)) {
-            $this->setCreatedAt($arr[$keys[10]]);
-        }
-        if (array_key_exists($keys[11], $arr)) {
-            $this->setUpdatedAt($arr[$keys[11]]);
+            $this->setUpdatedAt($arr[$keys[3]]);
         }
     }
 
@@ -1587,7 +1050,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\PurchaseOrderLine The current object, for fluid interface
+     * @return $this|\UnitOfMeasureCategory The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1607,43 +1070,19 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(PurchaseOrderLineTableMap::DATABASE_NAME);
+        $criteria = new Criteria(UnitOfMeasureCategoryTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_ID)) {
-            $criteria->add(PurchaseOrderLineTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(UnitOfMeasureCategoryTableMap::COL_ID)) {
+            $criteria->add(UnitOfMeasureCategoryTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_NAME)) {
-            $criteria->add(PurchaseOrderLineTableMap::COL_NAME, $this->name);
+        if ($this->isColumnModified(UnitOfMeasureCategoryTableMap::COL_NAME)) {
+            $criteria->add(UnitOfMeasureCategoryTableMap::COL_NAME, $this->name);
         }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_PURCHASE_ORDER_ID)) {
-            $criteria->add(PurchaseOrderLineTableMap::COL_PURCHASE_ORDER_ID, $this->purchase_order_id);
+        if ($this->isColumnModified(UnitOfMeasureCategoryTableMap::COL_CREATED_AT)) {
+            $criteria->add(UnitOfMeasureCategoryTableMap::COL_CREATED_AT, $this->created_at);
         }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_PROFORMA_INVOICE_LINE_ID)) {
-            $criteria->add(PurchaseOrderLineTableMap::COL_PROFORMA_INVOICE_LINE_ID, $this->proforma_invoice_line_id);
-        }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_PRODUCT_ID)) {
-            $criteria->add(PurchaseOrderLineTableMap::COL_PRODUCT_ID, $this->product_id);
-        }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_NOTE)) {
-            $criteria->add(PurchaseOrderLineTableMap::COL_NOTE, $this->note);
-        }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_PRICE)) {
-            $criteria->add(PurchaseOrderLineTableMap::COL_PRICE, $this->price);
-        }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_TOTAL_PRICE)) {
-            $criteria->add(PurchaseOrderLineTableMap::COL_TOTAL_PRICE, $this->total_price);
-        }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_QTY)) {
-            $criteria->add(PurchaseOrderLineTableMap::COL_QTY, $this->qty);
-        }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_ACTIVE)) {
-            $criteria->add(PurchaseOrderLineTableMap::COL_ACTIVE, $this->active);
-        }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_CREATED_AT)) {
-            $criteria->add(PurchaseOrderLineTableMap::COL_CREATED_AT, $this->created_at);
-        }
-        if ($this->isColumnModified(PurchaseOrderLineTableMap::COL_UPDATED_AT)) {
-            $criteria->add(PurchaseOrderLineTableMap::COL_UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(UnitOfMeasureCategoryTableMap::COL_UPDATED_AT)) {
+            $criteria->add(UnitOfMeasureCategoryTableMap::COL_UPDATED_AT, $this->updated_at);
         }
 
         return $criteria;
@@ -1661,8 +1100,8 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildPurchaseOrderLineQuery::create();
-        $criteria->add(PurchaseOrderLineTableMap::COL_ID, $this->id);
+        $criteria = ChildUnitOfMeasureCategoryQuery::create();
+        $criteria->add(UnitOfMeasureCategoryTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1724,7 +1163,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \PurchaseOrderLine (or compatible) type.
+     * @param      object $copyObj An object of \UnitOfMeasureCategory (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1732,16 +1171,22 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setName($this->getName());
-        $copyObj->setPurchaseOrderId($this->getPurchaseOrderId());
-        $copyObj->setProformaInvoiceLineId($this->getProformaInvoiceLineId());
-        $copyObj->setProductId($this->getProductId());
-        $copyObj->setNote($this->getNote());
-        $copyObj->setPrice($this->getPrice());
-        $copyObj->setTotalPrice($this->getTotalPrice());
-        $copyObj->setQty($this->getQty());
-        $copyObj->setActive($this->getActive());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
+
+        if ($deepCopy) {
+            // important: temporarily setNew(false) because this affects the behavior of
+            // the getter/setter methods for fkey referrer objects.
+            $copyObj->setNew(false);
+
+            foreach ($this->getUnitOfMeasures() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addUnitOfMeasure($relObj->copy($deepCopy));
+                }
+            }
+
+        } // if ($deepCopy)
+
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1757,7 +1202,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \PurchaseOrderLine Clone of current object.
+     * @return \UnitOfMeasureCategory Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1770,157 +1215,246 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
         return $copyObj;
     }
 
+
     /**
-     * Declares an association between this object and a ChildPurchaseOrder object.
+     * Initializes a collection based on the name of a relation.
+     * Avoids crafting an 'init[$relationName]s' method name
+     * that wouldn't work when StandardEnglishPluralizer is used.
      *
-     * @param  ChildPurchaseOrder $v
-     * @return $this|\PurchaseOrderLine The current object (for fluent API support)
+     * @param      string $relationName The name of the relation to initialize
+     * @return void
+     */
+    public function initRelation($relationName)
+    {
+        if ('UnitOfMeasure' == $relationName) {
+            $this->initUnitOfMeasures();
+            return;
+        }
+    }
+
+    /**
+     * Clears out the collUnitOfMeasures collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addUnitOfMeasures()
+     */
+    public function clearUnitOfMeasures()
+    {
+        $this->collUnitOfMeasures = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collUnitOfMeasures collection loaded partially.
+     */
+    public function resetPartialUnitOfMeasures($v = true)
+    {
+        $this->collUnitOfMeasuresPartial = $v;
+    }
+
+    /**
+     * Initializes the collUnitOfMeasures collection.
+     *
+     * By default this just sets the collUnitOfMeasures collection to an empty array (like clearcollUnitOfMeasures());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initUnitOfMeasures($overrideExisting = true)
+    {
+        if (null !== $this->collUnitOfMeasures && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = UnitOfMeasureTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collUnitOfMeasures = new $collectionClassName;
+        $this->collUnitOfMeasures->setModel('\UnitOfMeasure');
+    }
+
+    /**
+     * Gets an array of ChildUnitOfMeasure objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildUnitOfMeasureCategory is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildUnitOfMeasure[] List of ChildUnitOfMeasure objects
      * @throws PropelException
      */
-    public function setPurchaseOrder(ChildPurchaseOrder $v = null)
+    public function getUnitOfMeasures(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        if ($v === null) {
-            $this->setPurchaseOrderId(NULL);
-        } else {
-            $this->setPurchaseOrderId($v->getId());
+        $partial = $this->collUnitOfMeasuresPartial && !$this->isNew();
+        if (null === $this->collUnitOfMeasures || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collUnitOfMeasures) {
+                // return empty collection
+                $this->initUnitOfMeasures();
+            } else {
+                $collUnitOfMeasures = ChildUnitOfMeasureQuery::create(null, $criteria)
+                    ->filterByUnitOfMeasureCategory($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collUnitOfMeasuresPartial && count($collUnitOfMeasures)) {
+                        $this->initUnitOfMeasures(false);
+
+                        foreach ($collUnitOfMeasures as $obj) {
+                            if (false == $this->collUnitOfMeasures->contains($obj)) {
+                                $this->collUnitOfMeasures->append($obj);
+                            }
+                        }
+
+                        $this->collUnitOfMeasuresPartial = true;
+                    }
+
+                    return $collUnitOfMeasures;
+                }
+
+                if ($partial && $this->collUnitOfMeasures) {
+                    foreach ($this->collUnitOfMeasures as $obj) {
+                        if ($obj->isNew()) {
+                            $collUnitOfMeasures[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collUnitOfMeasures = $collUnitOfMeasures;
+                $this->collUnitOfMeasuresPartial = false;
+            }
         }
 
-        $this->aPurchaseOrder = $v;
+        return $this->collUnitOfMeasures;
+    }
 
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildPurchaseOrder object, it will not be re-added.
-        if ($v !== null) {
-            $v->addPurchaseOrderLine($this);
+    /**
+     * Sets a collection of ChildUnitOfMeasure objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $unitOfMeasures A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildUnitOfMeasureCategory The current object (for fluent API support)
+     */
+    public function setUnitOfMeasures(Collection $unitOfMeasures, ConnectionInterface $con = null)
+    {
+        /** @var ChildUnitOfMeasure[] $unitOfMeasuresToDelete */
+        $unitOfMeasuresToDelete = $this->getUnitOfMeasures(new Criteria(), $con)->diff($unitOfMeasures);
+
+
+        $this->unitOfMeasuresScheduledForDeletion = $unitOfMeasuresToDelete;
+
+        foreach ($unitOfMeasuresToDelete as $unitOfMeasureRemoved) {
+            $unitOfMeasureRemoved->setUnitOfMeasureCategory(null);
         }
 
+        $this->collUnitOfMeasures = null;
+        foreach ($unitOfMeasures as $unitOfMeasure) {
+            $this->addUnitOfMeasure($unitOfMeasure);
+        }
+
+        $this->collUnitOfMeasures = $unitOfMeasures;
+        $this->collUnitOfMeasuresPartial = false;
 
         return $this;
     }
 
-
     /**
-     * Get the associated ChildPurchaseOrder object
+     * Returns the number of related UnitOfMeasure objects.
      *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildPurchaseOrder The associated ChildPurchaseOrder object.
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related UnitOfMeasure objects.
      * @throws PropelException
      */
-    public function getPurchaseOrder(ConnectionInterface $con = null)
+    public function countUnitOfMeasures(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        if ($this->aPurchaseOrder === null && ($this->purchase_order_id != 0)) {
-            $this->aPurchaseOrder = ChildPurchaseOrderQuery::create()->findPk($this->purchase_order_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aPurchaseOrder->addPurchaseOrderLines($this);
-             */
+        $partial = $this->collUnitOfMeasuresPartial && !$this->isNew();
+        if (null === $this->collUnitOfMeasures || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collUnitOfMeasures) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getUnitOfMeasures());
+            }
+
+            $query = ChildUnitOfMeasureQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByUnitOfMeasureCategory($this)
+                ->count($con);
         }
 
-        return $this->aPurchaseOrder;
+        return count($this->collUnitOfMeasures);
     }
 
     /**
-     * Declares an association between this object and a ChildProformaInvoiceLine object.
+     * Method called to associate a ChildUnitOfMeasure object to this object
+     * through the ChildUnitOfMeasure foreign key attribute.
      *
-     * @param  ChildProformaInvoiceLine $v
-     * @return $this|\PurchaseOrderLine The current object (for fluent API support)
-     * @throws PropelException
+     * @param  ChildUnitOfMeasure $l ChildUnitOfMeasure
+     * @return $this|\UnitOfMeasureCategory The current object (for fluent API support)
      */
-    public function setProformaInvoiceLine(ChildProformaInvoiceLine $v = null)
+    public function addUnitOfMeasure(ChildUnitOfMeasure $l)
     {
-        if ($v === null) {
-            $this->setProformaInvoiceLineId(NULL);
-        } else {
-            $this->setProformaInvoiceLineId($v->getId());
+        if ($this->collUnitOfMeasures === null) {
+            $this->initUnitOfMeasures();
+            $this->collUnitOfMeasuresPartial = true;
         }
 
-        $this->aProformaInvoiceLine = $v;
+        if (!$this->collUnitOfMeasures->contains($l)) {
+            $this->doAddUnitOfMeasure($l);
 
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildProformaInvoiceLine object, it will not be re-added.
-        if ($v !== null) {
-            $v->addPurchaseOrderLine($this);
+            if ($this->unitOfMeasuresScheduledForDeletion and $this->unitOfMeasuresScheduledForDeletion->contains($l)) {
+                $this->unitOfMeasuresScheduledForDeletion->remove($this->unitOfMeasuresScheduledForDeletion->search($l));
+            }
         }
-
 
         return $this;
     }
 
-
     /**
-     * Get the associated ChildProformaInvoiceLine object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildProformaInvoiceLine The associated ChildProformaInvoiceLine object.
-     * @throws PropelException
+     * @param ChildUnitOfMeasure $unitOfMeasure The ChildUnitOfMeasure object to add.
      */
-    public function getProformaInvoiceLine(ConnectionInterface $con = null)
+    protected function doAddUnitOfMeasure(ChildUnitOfMeasure $unitOfMeasure)
     {
-        if ($this->aProformaInvoiceLine === null && ($this->proforma_invoice_line_id != 0)) {
-            $this->aProformaInvoiceLine = ChildProformaInvoiceLineQuery::create()->findPk($this->proforma_invoice_line_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aProformaInvoiceLine->addPurchaseOrderLines($this);
-             */
-        }
-
-        return $this->aProformaInvoiceLine;
+        $this->collUnitOfMeasures[]= $unitOfMeasure;
+        $unitOfMeasure->setUnitOfMeasureCategory($this);
     }
 
     /**
-     * Declares an association between this object and a ChildProduct object.
-     *
-     * @param  ChildProduct $v
-     * @return $this|\PurchaseOrderLine The current object (for fluent API support)
-     * @throws PropelException
+     * @param  ChildUnitOfMeasure $unitOfMeasure The ChildUnitOfMeasure object to remove.
+     * @return $this|ChildUnitOfMeasureCategory The current object (for fluent API support)
      */
-    public function setProduct(ChildProduct $v = null)
+    public function removeUnitOfMeasure(ChildUnitOfMeasure $unitOfMeasure)
     {
-        if ($v === null) {
-            $this->setProductId(NULL);
-        } else {
-            $this->setProductId($v->getId());
+        if ($this->getUnitOfMeasures()->contains($unitOfMeasure)) {
+            $pos = $this->collUnitOfMeasures->search($unitOfMeasure);
+            $this->collUnitOfMeasures->remove($pos);
+            if (null === $this->unitOfMeasuresScheduledForDeletion) {
+                $this->unitOfMeasuresScheduledForDeletion = clone $this->collUnitOfMeasures;
+                $this->unitOfMeasuresScheduledForDeletion->clear();
+            }
+            $this->unitOfMeasuresScheduledForDeletion[]= clone $unitOfMeasure;
+            $unitOfMeasure->setUnitOfMeasureCategory(null);
         }
-
-        $this->aProduct = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildProduct object, it will not be re-added.
-        if ($v !== null) {
-            $v->addPurchaseOrderLine($this);
-        }
-
 
         return $this;
-    }
-
-
-    /**
-     * Get the associated ChildProduct object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildProduct The associated ChildProduct object.
-     * @throws PropelException
-     */
-    public function getProduct(ConnectionInterface $con = null)
-    {
-        if ($this->aProduct === null && ($this->product_id != 0)) {
-            $this->aProduct = ChildProductQuery::create()->findPk($this->product_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aProduct->addPurchaseOrderLines($this);
-             */
-        }
-
-        return $this->aProduct;
     }
 
     /**
@@ -1930,25 +1464,8 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aPurchaseOrder) {
-            $this->aPurchaseOrder->removePurchaseOrderLine($this);
-        }
-        if (null !== $this->aProformaInvoiceLine) {
-            $this->aProformaInvoiceLine->removePurchaseOrderLine($this);
-        }
-        if (null !== $this->aProduct) {
-            $this->aProduct->removePurchaseOrderLine($this);
-        }
         $this->id = null;
         $this->name = null;
-        $this->purchase_order_id = null;
-        $this->proforma_invoice_line_id = null;
-        $this->product_id = null;
-        $this->note = null;
-        $this->price = null;
-        $this->total_price = null;
-        $this->qty = null;
-        $this->active = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;
@@ -1970,11 +1487,14 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collUnitOfMeasures) {
+                foreach ($this->collUnitOfMeasures as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
-        $this->aPurchaseOrder = null;
-        $this->aProformaInvoiceLine = null;
-        $this->aProduct = null;
+        $this->collUnitOfMeasures = null;
     }
 
     /**
@@ -1984,7 +1504,7 @@ abstract class PurchaseOrderLine implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(PurchaseOrderLineTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(UnitOfMeasureCategoryTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**
