@@ -18,7 +18,7 @@ class Auth extends CI_Controller
   function do_login(){
     $login = false;
     if($this->input->post('Username') && $this->input->post('Password')){
-      $user = UserQuery::create()->filterByStatus(true)->findOneByName($this->input->post('Username'));
+      $user = UserQuery::create()->filterByActive(true)->findOneByName($this->input->post('Username'));
       if($user){
         if(password_verify( $this->input->post('Password'), $user->getPassword())){
           $login = true;
