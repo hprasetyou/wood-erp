@@ -190,6 +190,13 @@ class UnitOfMeasureTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'Products', false);
+        $this->addRelation('PurchaseOrderLine', '\\PurchaseOrderLine', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':uom_id',
+    1 => ':id',
+  ),
+), null, null, 'PurchaseOrderLines', false);
     } // buildRelations()
 
     /**

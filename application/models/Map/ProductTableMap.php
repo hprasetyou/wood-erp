@@ -266,7 +266,7 @@ class ProductTableMap extends TableMap
         $this->addColumn('qty_per_pack', 'QtyPerPack', 'INTEGER', false, null, 1);
         $this->addColumn('list_price', 'ListPrice', 'FLOAT', false, null, null);
         $this->addForeignKey('material_id', 'MaterialId', 'INTEGER', 'material', 'id', false, null, null);
-        $this->addForeignKey('uom_id', 'UomId', 'INTEGER', 'unit_of_measure', 'id', false, null, null);
+        $this->addForeignKey('uom_id', 'UomId', 'INTEGER', 'unit_of_measure', 'id', true, null, null);
         $this->addColumn('note', 'Note', 'LONGVARCHAR', false, null, null);
         $this->addColumn('cubic_asb', 'CubicAsb', 'FLOAT', false, null, null);
         $this->addColumn('cubic_kdn', 'CubicKdn', 'FLOAT', false, null, null);

@@ -40,7 +40,7 @@ class Manage_purchaseorderlines extends MY_Controller{
   	$name = $this->input->post('PILineName');
   	$price = $this->input->post('PILinePrice');
     $prods = $this->input->post('ProductId');
-
+    $uom_id = $this->input->post('UomId');
     foreach ($this->input->post('PILineId') as $key => $line) {
       # code...
       $ids = explode("-",$line);
@@ -77,6 +77,9 @@ class Manage_purchaseorderlines extends MY_Controller{
        ),
        'PurchaseOrderId' =>  array(
          'value'=> $po_id
+       ),
+       'UomId' =>  array(
+         'value'=> $uom_id[$key]
        ),
        'ProformaInvoiceLineId'  =>  array(
          'value'=> $ids[0]

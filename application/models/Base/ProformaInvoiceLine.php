@@ -2902,6 +2902,31 @@ abstract class ProformaInvoiceLine implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildPurchaseOrderLine[] List of ChildPurchaseOrderLine objects
      */
+    public function getPurchaseOrderLinesJoinUnitOfMeasure(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildPurchaseOrderLineQuery::create(null, $criteria);
+        $query->joinWith('UnitOfMeasure', $joinBehavior);
+
+        return $this->getPurchaseOrderLines($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this ProformaInvoiceLine is new, it will return
+     * an empty collection; or if this ProformaInvoiceLine has previously
+     * been saved, it will retrieve related PurchaseOrderLines from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in ProformaInvoiceLine.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildPurchaseOrderLine[] List of ChildPurchaseOrderLine objects
+     */
     public function getPurchaseOrderLinesJoinProduct(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildPurchaseOrderLineQuery::create(null, $criteria);

@@ -27,6 +27,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLineQuery orderByProductId($order = Criteria::ASC) Order by the product_id column
  * @method     ChildPurchaseOrderLineQuery orderByNote($order = Criteria::ASC) Order by the note column
  * @method     ChildPurchaseOrderLineQuery orderByPrice($order = Criteria::ASC) Order by the price column
+ * @method     ChildPurchaseOrderLineQuery orderByUomId($order = Criteria::ASC) Order by the uom_id column
  * @method     ChildPurchaseOrderLineQuery orderByTotalPrice($order = Criteria::ASC) Order by the total_price column
  * @method     ChildPurchaseOrderLineQuery orderByQty($order = Criteria::ASC) Order by the qty column
  * @method     ChildPurchaseOrderLineQuery orderByActive($order = Criteria::ASC) Order by the active column
@@ -40,6 +41,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLineQuery groupByProductId() Group by the product_id column
  * @method     ChildPurchaseOrderLineQuery groupByNote() Group by the note column
  * @method     ChildPurchaseOrderLineQuery groupByPrice() Group by the price column
+ * @method     ChildPurchaseOrderLineQuery groupByUomId() Group by the uom_id column
  * @method     ChildPurchaseOrderLineQuery groupByTotalPrice() Group by the total_price column
  * @method     ChildPurchaseOrderLineQuery groupByQty() Group by the qty column
  * @method     ChildPurchaseOrderLineQuery groupByActive() Group by the active column
@@ -64,6 +66,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLineQuery rightJoinWithPurchaseOrder() Adds a RIGHT JOIN clause and with to the query using the PurchaseOrder relation
  * @method     ChildPurchaseOrderLineQuery innerJoinWithPurchaseOrder() Adds a INNER JOIN clause and with to the query using the PurchaseOrder relation
  *
+ * @method     ChildPurchaseOrderLineQuery leftJoinUnitOfMeasure($relationAlias = null) Adds a LEFT JOIN clause to the query using the UnitOfMeasure relation
+ * @method     ChildPurchaseOrderLineQuery rightJoinUnitOfMeasure($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UnitOfMeasure relation
+ * @method     ChildPurchaseOrderLineQuery innerJoinUnitOfMeasure($relationAlias = null) Adds a INNER JOIN clause to the query using the UnitOfMeasure relation
+ *
+ * @method     ChildPurchaseOrderLineQuery joinWithUnitOfMeasure($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the UnitOfMeasure relation
+ *
+ * @method     ChildPurchaseOrderLineQuery leftJoinWithUnitOfMeasure() Adds a LEFT JOIN clause and with to the query using the UnitOfMeasure relation
+ * @method     ChildPurchaseOrderLineQuery rightJoinWithUnitOfMeasure() Adds a RIGHT JOIN clause and with to the query using the UnitOfMeasure relation
+ * @method     ChildPurchaseOrderLineQuery innerJoinWithUnitOfMeasure() Adds a INNER JOIN clause and with to the query using the UnitOfMeasure relation
+ *
  * @method     ChildPurchaseOrderLineQuery leftJoinProformaInvoiceLine($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProformaInvoiceLine relation
  * @method     ChildPurchaseOrderLineQuery rightJoinProformaInvoiceLine($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProformaInvoiceLine relation
  * @method     ChildPurchaseOrderLineQuery innerJoinProformaInvoiceLine($relationAlias = null) Adds a INNER JOIN clause to the query using the ProformaInvoiceLine relation
@@ -84,7 +96,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLineQuery rightJoinWithProduct() Adds a RIGHT JOIN clause and with to the query using the Product relation
  * @method     ChildPurchaseOrderLineQuery innerJoinWithProduct() Adds a INNER JOIN clause and with to the query using the Product relation
  *
- * @method     \PurchaseOrderQuery|\ProformaInvoiceLineQuery|\ProductQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \PurchaseOrderQuery|\UnitOfMeasureQuery|\ProformaInvoiceLineQuery|\ProductQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildPurchaseOrderLine findOne(ConnectionInterface $con = null) Return the first ChildPurchaseOrderLine matching the query
  * @method     ChildPurchaseOrderLine findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPurchaseOrderLine matching the query, or a new ChildPurchaseOrderLine object populated from the query conditions when no match is found
@@ -96,6 +108,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLine findOneByProductId(int $product_id) Return the first ChildPurchaseOrderLine filtered by the product_id column
  * @method     ChildPurchaseOrderLine findOneByNote(string $note) Return the first ChildPurchaseOrderLine filtered by the note column
  * @method     ChildPurchaseOrderLine findOneByPrice(double $price) Return the first ChildPurchaseOrderLine filtered by the price column
+ * @method     ChildPurchaseOrderLine findOneByUomId(int $uom_id) Return the first ChildPurchaseOrderLine filtered by the uom_id column
  * @method     ChildPurchaseOrderLine findOneByTotalPrice(double $total_price) Return the first ChildPurchaseOrderLine filtered by the total_price column
  * @method     ChildPurchaseOrderLine findOneByQty(double $qty) Return the first ChildPurchaseOrderLine filtered by the qty column
  * @method     ChildPurchaseOrderLine findOneByActive(boolean $active) Return the first ChildPurchaseOrderLine filtered by the active column
@@ -112,6 +125,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLine requireOneByProductId(int $product_id) Return the first ChildPurchaseOrderLine filtered by the product_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrderLine requireOneByNote(string $note) Return the first ChildPurchaseOrderLine filtered by the note column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrderLine requireOneByPrice(double $price) Return the first ChildPurchaseOrderLine filtered by the price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPurchaseOrderLine requireOneByUomId(int $uom_id) Return the first ChildPurchaseOrderLine filtered by the uom_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrderLine requireOneByTotalPrice(double $total_price) Return the first ChildPurchaseOrderLine filtered by the total_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrderLine requireOneByQty(double $qty) Return the first ChildPurchaseOrderLine filtered by the qty column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPurchaseOrderLine requireOneByActive(boolean $active) Return the first ChildPurchaseOrderLine filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -126,6 +140,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByProductId(int $product_id) Return ChildPurchaseOrderLine objects filtered by the product_id column
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByNote(string $note) Return ChildPurchaseOrderLine objects filtered by the note column
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByPrice(double $price) Return ChildPurchaseOrderLine objects filtered by the price column
+ * @method     ChildPurchaseOrderLine[]|ObjectCollection findByUomId(int $uom_id) Return ChildPurchaseOrderLine objects filtered by the uom_id column
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByTotalPrice(double $total_price) Return ChildPurchaseOrderLine objects filtered by the total_price column
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByQty(double $qty) Return ChildPurchaseOrderLine objects filtered by the qty column
  * @method     ChildPurchaseOrderLine[]|ObjectCollection findByActive(boolean $active) Return ChildPurchaseOrderLine objects filtered by the active column
@@ -229,7 +244,7 @@ abstract class PurchaseOrderLineQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, purchase_order_id, proforma_invoice_line_id, product_id, note, price, total_price, qty, active, created_at, updated_at FROM purchase_order_line WHERE id = :p0';
+        $sql = 'SELECT id, name, purchase_order_id, proforma_invoice_line_id, product_id, note, price, uom_id, total_price, qty, active, created_at, updated_at FROM purchase_order_line WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -581,6 +596,49 @@ abstract class PurchaseOrderLineQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the uom_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUomId(1234); // WHERE uom_id = 1234
+     * $query->filterByUomId(array(12, 34)); // WHERE uom_id IN (12, 34)
+     * $query->filterByUomId(array('min' => 12)); // WHERE uom_id > 12
+     * </code>
+     *
+     * @see       filterByUnitOfMeasure()
+     *
+     * @param     mixed $uomId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPurchaseOrderLineQuery The current query, for fluid interface
+     */
+    public function filterByUomId($uomId = null, $comparison = null)
+    {
+        if (is_array($uomId)) {
+            $useMinMax = false;
+            if (isset($uomId['min'])) {
+                $this->addUsingAlias(PurchaseOrderLineTableMap::COL_UOM_ID, $uomId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($uomId['max'])) {
+                $this->addUsingAlias(PurchaseOrderLineTableMap::COL_UOM_ID, $uomId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PurchaseOrderLineTableMap::COL_UOM_ID, $uomId, $comparison);
+    }
+
+    /**
      * Filter the query on the total_price column
      *
      * Example usage:
@@ -850,6 +908,83 @@ abstract class PurchaseOrderLineQuery extends ModelCriteria
         return $this
             ->joinPurchaseOrder($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'PurchaseOrder', '\PurchaseOrderQuery');
+    }
+
+    /**
+     * Filter the query by a related \UnitOfMeasure object
+     *
+     * @param \UnitOfMeasure|ObjectCollection $unitOfMeasure The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildPurchaseOrderLineQuery The current query, for fluid interface
+     */
+    public function filterByUnitOfMeasure($unitOfMeasure, $comparison = null)
+    {
+        if ($unitOfMeasure instanceof \UnitOfMeasure) {
+            return $this
+                ->addUsingAlias(PurchaseOrderLineTableMap::COL_UOM_ID, $unitOfMeasure->getId(), $comparison);
+        } elseif ($unitOfMeasure instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(PurchaseOrderLineTableMap::COL_UOM_ID, $unitOfMeasure->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByUnitOfMeasure() only accepts arguments of type \UnitOfMeasure or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the UnitOfMeasure relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildPurchaseOrderLineQuery The current query, for fluid interface
+     */
+    public function joinUnitOfMeasure($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('UnitOfMeasure');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'UnitOfMeasure');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the UnitOfMeasure relation UnitOfMeasure object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \UnitOfMeasureQuery A secondary query class using the current class as primary query
+     */
+    public function useUnitOfMeasureQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinUnitOfMeasure($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'UnitOfMeasure', '\UnitOfMeasureQuery');
     }
 
     /**

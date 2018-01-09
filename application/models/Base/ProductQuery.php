@@ -1567,7 +1567,7 @@ abstract class ProductQuery extends ModelCriteria
      *
      * @return $this|ChildProductQuery The current query, for fluid interface
      */
-    public function joinUnitOfMeasure($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinUnitOfMeasure($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('UnitOfMeasure');
@@ -1602,7 +1602,7 @@ abstract class ProductQuery extends ModelCriteria
      *
      * @return \UnitOfMeasureQuery A secondary query class using the current class as primary query
      */
-    public function useUnitOfMeasureQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useUnitOfMeasureQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
             ->joinUnitOfMeasure($relationAlias, $joinType)

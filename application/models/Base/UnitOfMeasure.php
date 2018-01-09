@@ -4,6 +4,8 @@ namespace Base;
 
 use \Product as ChildProduct;
 use \ProductQuery as ChildProductQuery;
+use \PurchaseOrderLine as ChildPurchaseOrderLine;
+use \PurchaseOrderLineQuery as ChildPurchaseOrderLineQuery;
 use \UnitOfMeasure as ChildUnitOfMeasure;
 use \UnitOfMeasureCategory as ChildUnitOfMeasureCategory;
 use \UnitOfMeasureCategoryQuery as ChildUnitOfMeasureCategoryQuery;
@@ -12,6 +14,7 @@ use \DateTime;
 use \Exception;
 use \PDO;
 use Map\ProductTableMap;
+use Map\PurchaseOrderLineTableMap;
 use Map\UnitOfMeasureTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -139,6 +142,12 @@ abstract class UnitOfMeasure implements ActiveRecordInterface
     protected $collProductsPartial;
 
     /**
+     * @var        ObjectCollection|ChildPurchaseOrderLine[] Collection to store aggregation of ChildPurchaseOrderLine objects.
+     */
+    protected $collPurchaseOrderLines;
+    protected $collPurchaseOrderLinesPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -151,6 +160,12 @@ abstract class UnitOfMeasure implements ActiveRecordInterface
      * @var ObjectCollection|ChildProduct[]
      */
     protected $productsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildPurchaseOrderLine[]
+     */
+    protected $purchaseOrderLinesScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -816,6 +831,8 @@ abstract class UnitOfMeasure implements ActiveRecordInterface
             $this->aUnitOfMeasureCategory = null;
             $this->collProducts = null;
 
+            $this->collPurchaseOrderLines = null;
+
         } // if (deep)
     }
 
@@ -944,16 +961,32 @@ abstract class UnitOfMeasure implements ActiveRecordInterface
 
             if ($this->productsScheduledForDeletion !== null) {
                 if (!$this->productsScheduledForDeletion->isEmpty()) {
-                    foreach ($this->productsScheduledForDeletion as $product) {
-                        // need to save related object because we set the relation to null
-                        $product->save($con);
-                    }
+                    \ProductQuery::create()
+                        ->filterByPrimaryKeys($this->productsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
                     $this->productsScheduledForDeletion = null;
                 }
             }
 
             if ($this->collProducts !== null) {
                 foreach ($this->collProducts as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->purchaseOrderLinesScheduledForDeletion !== null) {
+                if (!$this->purchaseOrderLinesScheduledForDeletion->isEmpty()) {
+                    \PurchaseOrderLineQuery::create()
+                        ->filterByPrimaryKeys($this->purchaseOrderLinesScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->purchaseOrderLinesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collPurchaseOrderLines !== null) {
+                foreach ($this->collPurchaseOrderLines as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1213,6 +1246,21 @@ abstract class UnitOfMeasure implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->collProducts->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collPurchaseOrderLines) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'purchaseOrderLines';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'purchase_order_lines';
+                        break;
+                    default:
+                        $key = 'PurchaseOrderLines';
+                }
+
+                $result[$key] = $this->collPurchaseOrderLines->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1492,6 +1540,12 @@ abstract class UnitOfMeasure implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getPurchaseOrderLines() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addPurchaseOrderLine($relObj->copy($deepCopy));
+                }
+            }
+
         } // if ($deepCopy)
 
         if ($makeNew) {
@@ -1586,6 +1640,10 @@ abstract class UnitOfMeasure implements ActiveRecordInterface
     {
         if ('Product' == $relationName) {
             $this->initProducts();
+            return;
+        }
+        if ('PurchaseOrderLine' == $relationName) {
+            $this->initPurchaseOrderLines();
             return;
         }
     }
@@ -1808,7 +1866,7 @@ abstract class UnitOfMeasure implements ActiveRecordInterface
                 $this->productsScheduledForDeletion = clone $this->collProducts;
                 $this->productsScheduledForDeletion->clear();
             }
-            $this->productsScheduledForDeletion[]= $product;
+            $this->productsScheduledForDeletion[]= clone $product;
             $product->setUnitOfMeasure(null);
         }
 
@@ -1838,6 +1896,306 @@ abstract class UnitOfMeasure implements ActiveRecordInterface
         $query->joinWith('Material', $joinBehavior);
 
         return $this->getProducts($query, $con);
+    }
+
+    /**
+     * Clears out the collPurchaseOrderLines collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addPurchaseOrderLines()
+     */
+    public function clearPurchaseOrderLines()
+    {
+        $this->collPurchaseOrderLines = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collPurchaseOrderLines collection loaded partially.
+     */
+    public function resetPartialPurchaseOrderLines($v = true)
+    {
+        $this->collPurchaseOrderLinesPartial = $v;
+    }
+
+    /**
+     * Initializes the collPurchaseOrderLines collection.
+     *
+     * By default this just sets the collPurchaseOrderLines collection to an empty array (like clearcollPurchaseOrderLines());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initPurchaseOrderLines($overrideExisting = true)
+    {
+        if (null !== $this->collPurchaseOrderLines && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = PurchaseOrderLineTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collPurchaseOrderLines = new $collectionClassName;
+        $this->collPurchaseOrderLines->setModel('\PurchaseOrderLine');
+    }
+
+    /**
+     * Gets an array of ChildPurchaseOrderLine objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildUnitOfMeasure is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildPurchaseOrderLine[] List of ChildPurchaseOrderLine objects
+     * @throws PropelException
+     */
+    public function getPurchaseOrderLines(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPurchaseOrderLinesPartial && !$this->isNew();
+        if (null === $this->collPurchaseOrderLines || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collPurchaseOrderLines) {
+                // return empty collection
+                $this->initPurchaseOrderLines();
+            } else {
+                $collPurchaseOrderLines = ChildPurchaseOrderLineQuery::create(null, $criteria)
+                    ->filterByUnitOfMeasure($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collPurchaseOrderLinesPartial && count($collPurchaseOrderLines)) {
+                        $this->initPurchaseOrderLines(false);
+
+                        foreach ($collPurchaseOrderLines as $obj) {
+                            if (false == $this->collPurchaseOrderLines->contains($obj)) {
+                                $this->collPurchaseOrderLines->append($obj);
+                            }
+                        }
+
+                        $this->collPurchaseOrderLinesPartial = true;
+                    }
+
+                    return $collPurchaseOrderLines;
+                }
+
+                if ($partial && $this->collPurchaseOrderLines) {
+                    foreach ($this->collPurchaseOrderLines as $obj) {
+                        if ($obj->isNew()) {
+                            $collPurchaseOrderLines[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collPurchaseOrderLines = $collPurchaseOrderLines;
+                $this->collPurchaseOrderLinesPartial = false;
+            }
+        }
+
+        return $this->collPurchaseOrderLines;
+    }
+
+    /**
+     * Sets a collection of ChildPurchaseOrderLine objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $purchaseOrderLines A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildUnitOfMeasure The current object (for fluent API support)
+     */
+    public function setPurchaseOrderLines(Collection $purchaseOrderLines, ConnectionInterface $con = null)
+    {
+        /** @var ChildPurchaseOrderLine[] $purchaseOrderLinesToDelete */
+        $purchaseOrderLinesToDelete = $this->getPurchaseOrderLines(new Criteria(), $con)->diff($purchaseOrderLines);
+
+
+        $this->purchaseOrderLinesScheduledForDeletion = $purchaseOrderLinesToDelete;
+
+        foreach ($purchaseOrderLinesToDelete as $purchaseOrderLineRemoved) {
+            $purchaseOrderLineRemoved->setUnitOfMeasure(null);
+        }
+
+        $this->collPurchaseOrderLines = null;
+        foreach ($purchaseOrderLines as $purchaseOrderLine) {
+            $this->addPurchaseOrderLine($purchaseOrderLine);
+        }
+
+        $this->collPurchaseOrderLines = $purchaseOrderLines;
+        $this->collPurchaseOrderLinesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related PurchaseOrderLine objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related PurchaseOrderLine objects.
+     * @throws PropelException
+     */
+    public function countPurchaseOrderLines(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPurchaseOrderLinesPartial && !$this->isNew();
+        if (null === $this->collPurchaseOrderLines || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collPurchaseOrderLines) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getPurchaseOrderLines());
+            }
+
+            $query = ChildPurchaseOrderLineQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByUnitOfMeasure($this)
+                ->count($con);
+        }
+
+        return count($this->collPurchaseOrderLines);
+    }
+
+    /**
+     * Method called to associate a ChildPurchaseOrderLine object to this object
+     * through the ChildPurchaseOrderLine foreign key attribute.
+     *
+     * @param  ChildPurchaseOrderLine $l ChildPurchaseOrderLine
+     * @return $this|\UnitOfMeasure The current object (for fluent API support)
+     */
+    public function addPurchaseOrderLine(ChildPurchaseOrderLine $l)
+    {
+        if ($this->collPurchaseOrderLines === null) {
+            $this->initPurchaseOrderLines();
+            $this->collPurchaseOrderLinesPartial = true;
+        }
+
+        if (!$this->collPurchaseOrderLines->contains($l)) {
+            $this->doAddPurchaseOrderLine($l);
+
+            if ($this->purchaseOrderLinesScheduledForDeletion and $this->purchaseOrderLinesScheduledForDeletion->contains($l)) {
+                $this->purchaseOrderLinesScheduledForDeletion->remove($this->purchaseOrderLinesScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildPurchaseOrderLine $purchaseOrderLine The ChildPurchaseOrderLine object to add.
+     */
+    protected function doAddPurchaseOrderLine(ChildPurchaseOrderLine $purchaseOrderLine)
+    {
+        $this->collPurchaseOrderLines[]= $purchaseOrderLine;
+        $purchaseOrderLine->setUnitOfMeasure($this);
+    }
+
+    /**
+     * @param  ChildPurchaseOrderLine $purchaseOrderLine The ChildPurchaseOrderLine object to remove.
+     * @return $this|ChildUnitOfMeasure The current object (for fluent API support)
+     */
+    public function removePurchaseOrderLine(ChildPurchaseOrderLine $purchaseOrderLine)
+    {
+        if ($this->getPurchaseOrderLines()->contains($purchaseOrderLine)) {
+            $pos = $this->collPurchaseOrderLines->search($purchaseOrderLine);
+            $this->collPurchaseOrderLines->remove($pos);
+            if (null === $this->purchaseOrderLinesScheduledForDeletion) {
+                $this->purchaseOrderLinesScheduledForDeletion = clone $this->collPurchaseOrderLines;
+                $this->purchaseOrderLinesScheduledForDeletion->clear();
+            }
+            $this->purchaseOrderLinesScheduledForDeletion[]= clone $purchaseOrderLine;
+            $purchaseOrderLine->setUnitOfMeasure(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this UnitOfMeasure is new, it will return
+     * an empty collection; or if this UnitOfMeasure has previously
+     * been saved, it will retrieve related PurchaseOrderLines from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in UnitOfMeasure.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildPurchaseOrderLine[] List of ChildPurchaseOrderLine objects
+     */
+    public function getPurchaseOrderLinesJoinPurchaseOrder(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildPurchaseOrderLineQuery::create(null, $criteria);
+        $query->joinWith('PurchaseOrder', $joinBehavior);
+
+        return $this->getPurchaseOrderLines($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this UnitOfMeasure is new, it will return
+     * an empty collection; or if this UnitOfMeasure has previously
+     * been saved, it will retrieve related PurchaseOrderLines from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in UnitOfMeasure.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildPurchaseOrderLine[] List of ChildPurchaseOrderLine objects
+     */
+    public function getPurchaseOrderLinesJoinProformaInvoiceLine(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildPurchaseOrderLineQuery::create(null, $criteria);
+        $query->joinWith('ProformaInvoiceLine', $joinBehavior);
+
+        return $this->getPurchaseOrderLines($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this UnitOfMeasure is new, it will return
+     * an empty collection; or if this UnitOfMeasure has previously
+     * been saved, it will retrieve related PurchaseOrderLines from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in UnitOfMeasure.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildPurchaseOrderLine[] List of ChildPurchaseOrderLine objects
+     */
+    public function getPurchaseOrderLinesJoinProduct(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildPurchaseOrderLineQuery::create(null, $criteria);
+        $query->joinWith('Product', $joinBehavior);
+
+        return $this->getPurchaseOrderLines($query, $con);
     }
 
     /**
@@ -1882,9 +2240,15 @@ abstract class UnitOfMeasure implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collPurchaseOrderLines) {
+                foreach ($this->collPurchaseOrderLines as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         $this->collProducts = null;
+        $this->collPurchaseOrderLines = null;
         $this->aUnitOfMeasureCategory = null;
     }
 

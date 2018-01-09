@@ -66,7 +66,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUnitOfMeasureQuery rightJoinWithProduct() Adds a RIGHT JOIN clause and with to the query using the Product relation
  * @method     ChildUnitOfMeasureQuery innerJoinWithProduct() Adds a INNER JOIN clause and with to the query using the Product relation
  *
- * @method     \UnitOfMeasureCategoryQuery|\ProductQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildUnitOfMeasureQuery leftJoinPurchaseOrderLine($relationAlias = null) Adds a LEFT JOIN clause to the query using the PurchaseOrderLine relation
+ * @method     ChildUnitOfMeasureQuery rightJoinPurchaseOrderLine($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PurchaseOrderLine relation
+ * @method     ChildUnitOfMeasureQuery innerJoinPurchaseOrderLine($relationAlias = null) Adds a INNER JOIN clause to the query using the PurchaseOrderLine relation
+ *
+ * @method     ChildUnitOfMeasureQuery joinWithPurchaseOrderLine($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the PurchaseOrderLine relation
+ *
+ * @method     ChildUnitOfMeasureQuery leftJoinWithPurchaseOrderLine() Adds a LEFT JOIN clause and with to the query using the PurchaseOrderLine relation
+ * @method     ChildUnitOfMeasureQuery rightJoinWithPurchaseOrderLine() Adds a RIGHT JOIN clause and with to the query using the PurchaseOrderLine relation
+ * @method     ChildUnitOfMeasureQuery innerJoinWithPurchaseOrderLine() Adds a INNER JOIN clause and with to the query using the PurchaseOrderLine relation
+ *
+ * @method     \UnitOfMeasureCategoryQuery|\ProductQuery|\PurchaseOrderLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildUnitOfMeasure findOne(ConnectionInterface $con = null) Return the first ChildUnitOfMeasure matching the query
  * @method     ChildUnitOfMeasure findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUnitOfMeasure matching the query, or a new ChildUnitOfMeasure object populated from the query conditions when no match is found
@@ -685,7 +695,7 @@ abstract class UnitOfMeasureQuery extends ModelCriteria
      *
      * @return $this|ChildUnitOfMeasureQuery The current query, for fluid interface
      */
-    public function joinProduct($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinProduct($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('Product');
@@ -720,11 +730,84 @@ abstract class UnitOfMeasureQuery extends ModelCriteria
      *
      * @return \ProductQuery A secondary query class using the current class as primary query
      */
-    public function useProductQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useProductQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
             ->joinProduct($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Product', '\ProductQuery');
+    }
+
+    /**
+     * Filter the query by a related \PurchaseOrderLine object
+     *
+     * @param \PurchaseOrderLine|ObjectCollection $purchaseOrderLine the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUnitOfMeasureQuery The current query, for fluid interface
+     */
+    public function filterByPurchaseOrderLine($purchaseOrderLine, $comparison = null)
+    {
+        if ($purchaseOrderLine instanceof \PurchaseOrderLine) {
+            return $this
+                ->addUsingAlias(UnitOfMeasureTableMap::COL_ID, $purchaseOrderLine->getUomId(), $comparison);
+        } elseif ($purchaseOrderLine instanceof ObjectCollection) {
+            return $this
+                ->usePurchaseOrderLineQuery()
+                ->filterByPrimaryKeys($purchaseOrderLine->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByPurchaseOrderLine() only accepts arguments of type \PurchaseOrderLine or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the PurchaseOrderLine relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildUnitOfMeasureQuery The current query, for fluid interface
+     */
+    public function joinPurchaseOrderLine($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('PurchaseOrderLine');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'PurchaseOrderLine');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the PurchaseOrderLine relation PurchaseOrderLine object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \PurchaseOrderLineQuery A secondary query class using the current class as primary query
+     */
+    public function usePurchaseOrderLineQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinPurchaseOrderLine($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'PurchaseOrderLine', '\PurchaseOrderLineQuery');
     }
 
     /**
