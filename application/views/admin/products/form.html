@@ -140,6 +140,17 @@
 									{% endif %}
 								</div>
 							</div>
+              <div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.uom}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if products %}style="display:none" {% endif %} class="input-wrap">
+                      {{ selection_m2o('UomId','UnitOfMeasure',null,products.UomId) | raw}}
+                  </div>
+									{% if products %}
+									<p class="control-value">{{ products.UnitOfMeasure.Name }}</p>
+									{% endif %}
+								</div>
+							</div>
 
               <div id="FrmMaterial" class="form-group" {% if products.HasComponent %}style="display:none"{%endif%}>
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.material}}</label>

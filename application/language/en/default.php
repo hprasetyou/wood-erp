@@ -193,6 +193,7 @@
 'update_time' => 'Update Time',
 'upload' => 'Upload',
 'url' => 'Url',
+'uom' => 'Unit of Measure',
 'user' => 'User',
 'username' => 'Username',
 'warehouse' => 'Warehouse',

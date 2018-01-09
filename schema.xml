@@ -75,7 +75,7 @@
     <column name="qty_per_pack" phpName="QtyPerPack" type="INTEGER" defaultValue="1"/>
     <column name="list_price" phpName="ListPrice" type="FLOAT"/>
     <column name="material_id" phpName="MaterialId" type="INTEGER"/>
-    <column name="uom_id" phpName="UomId" type="INTEGER"/>
+    <column name="uom_id" phpName="UomId" type="INTEGER" required="true"/>
     <column name="note" phpName="Note" type="LONGVARCHAR"/>
     <column name="cubic_asb" phpName="CubicAsb" type="FLOAT"/>
     <column name="cubic_kdn" phpName="CubicKdn" type="FLOAT"/>
