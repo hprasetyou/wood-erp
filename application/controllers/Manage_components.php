@@ -37,6 +37,7 @@ class Manage_components extends MY_Controller{
   }
 
 	function write($id=null){
+    $this->form['UomId'] = 'UomId';
     if(strlen($this->input->post('Material'))>1){
       $new_mtr = new Material();
       $new_mtr->setName($this->input->post('Material'))

@@ -17,10 +17,10 @@
         <th colspan="5">{{ res.string.subtotal }}</th>
         <th colspan="2">
           <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
-            <input type="text" readonly placeholder="{{ res.string.subtotal }}" id="SubTotal" value="{{ purchaseorders.SubTotal }}" name="SubTotal" class="form-control  col-md-7 col-xs-12">
+            <input data-original-value="{{ purchaseorders.SubTotal }}" data-target="{{purchaseorders.Currency.Code}}" type="text" readonly placeholder="{{ res.string.subtotal }}" id="SubTotal" value="{{ purchaseorders.SubTotal }}" name="SubTotal" class="form-control er col-md-7 col-xs-12">
           </div>
           {% if purchaseorders %}
-          <p class="control-value">{{ purchaseorders.SubTotal }}</p>
+          <p class="control-value er" data-original-value="{{ purchaseorders.SubTotal }}" data-target="{{purchaseorders.Currency.Code}}">{{ purchaseorders.SubTotal }}</p>
           {% endif %}
         </th>
       </tr>
@@ -28,10 +28,10 @@
         <th colspan="5">{{res.string.down_payment}}</th>
         <th colspan="2">
           <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
-            <input type="text" placeholder="{{ res.string.down_payment }}" id="DownPaymentAmount" value="{{ purchaseorders.DownPaymentAmount }}" name="DownPaymentAmount" class="form-control  col-md-7 col-xs-12">
+            <input type="text" placeholder="{{ res.string.down_payment }}" id="DownPaymentAmount" data-target="{{purchaseorders.Currency.Code}}" data-original-value="{{ purchaseorders.DownPaymentAmount }}" name="DownPaymentAmount" class="form-control er col-md-7 col-xs-12">
           </div>
           {% if purchaseorders %}
-          <p class="control-value">{{ purchaseorders.DownPaymentAmount }}</p>
+          <p class="control-value er" data-original-value="{{ purchaseorders.DownPaymentAmount }}" data-target="{{purchaseorders.Currency.Code}}">{{ purchaseorders.DownPaymentAmount }}</p>
           {% endif %}
         </th>
       </tr>
@@ -39,10 +39,10 @@
         <th colspan="5">{{ res.string.total }}</th>
         <th colspan="2">
           <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
-            <input type="text" readonly placeholder="{{ res.string.total }}" id="TotalPrice" value="{{ purchaseorders.TotalPrice }}" name="TotalPrice" class="form-control  col-md-7 col-xs-12">
+            <input type="text" readonly placeholder="{{ res.string.total }}" id="TotalPrice" data-target="{{purchaseorders.Currency.Code}}" data-original-value="{{ purchaseorders.TotalPrice }}" name="TotalPrice" class="form-control er col-md-7 col-xs-12">
           </div>
           {% if purchaseorders %}
-          <p class="control-value">{{ purchaseorders.DownPaymentAmount }}</p>
+          <p class="control-value er" data-original-value="{{ purchaseorders.TotalPrice }}" data-target="{{purchaseorders.Currency.Code}}">{{ purchaseorders.Total }}</p>
           {% endif %}
         </th>
       </tr>

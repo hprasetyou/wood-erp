@@ -45,7 +45,15 @@ class Template {
         $text = ['Name'];
       }
       $objs = "{$model}Query";
-      $data = $objs::create()->find();
+      $data = $objs::create();
+      if($domain){
+        foreach ($domain as $key => $value) {
+          # code...
+          $filfunc = "filterBy$key";
+          $data->$filfunc($value);
+        }
+      }
+      $data->find();
       $o = "<select name=\"$name\" id=\"$id\" class=\"form-control form-select\">";
       foreach ($data as $key => $value) {
         $id = $value->getId();

@@ -46,7 +46,31 @@ $(document).ready(function(){
         }
       })
     })
+update_rate()
 })
+function update_rate(){
+  $.ajax({
+    url:'/index.php/exchange_rate/get_latest',
+    dataType:'JSON'
+  }).done(function(o){
+    console.log(o);
+    var er = o.ExchangeRates
+    $('.er').each(function(){
+      var val = $(this).data('original-value')
+      var target = $(this).data('target')
+      //assummed all source from USD
+      for (var i in er) {
+        if((er[i].Base=="USD") && (er[i].Target==target)){
+          val = Math.round((val*(er[i].Rate))/er[i].Rounding)*er[i].Rounding
+        }
+      }
+      $(this).val(val)
+      $(this).text(val)
+    })
+  })
+}
+
+
 jQuery.fn
 jQuery.fn.loadTableData = function(
   conf = {search:true,

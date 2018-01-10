@@ -14,5 +14,20 @@ use Base\ExchangeRateQuery as BaseExchangeRateQuery;
  */
 class ExchangeRateQuery extends BaseExchangeRateQuery
 {
-
+  function find_latest(){
+    $latest = ExchangeRateQuery::create()
+    ->select(array('Base','Target'))
+    ->groupBy('Base')
+    ->groupBy('Target')
+    ->withColumn('MAX(ExchangeRate.Id)','Id')->find();
+    $ids = [];
+    foreach ($latest as $key => $value) {
+      # code...
+      $ids[] = $value['Id'];
+    }
+    return ExchangeRateQuery::create()
+    ->addJoin('ExchangeRate.Target','currency.code')
+    ->withColumn('currency.Rounding','Rounding')
+    ->withColumn('currency.Symbol','Symbol')->findById($ids);
+  }
 }

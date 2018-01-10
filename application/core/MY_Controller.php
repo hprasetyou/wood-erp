@@ -223,9 +223,9 @@ class MY_Controller extends CI_Controller{
      }
 
    }
-   write_log($obj);
    $obj->save();
    write_log("Writing data. . . . . . . ");
+   write_log($obj);
    $this->loging->add_entry($this->tpl,$obj->getId(),($id?'activity_modify':'activity_create'));
    return $obj;
  }

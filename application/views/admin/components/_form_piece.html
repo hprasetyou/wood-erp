@@ -1,9 +1,9 @@
 <input type="hidden" name="Type" value="component">
 <div class="form-group">
-  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.name}}</label>
+  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.article_number}}</label>
   <div class="col-md-6 col-sm-6 col-xs-12">
     <div {% if components %}style="display:none" {% endif %} class="input-wrap">
-      <input type="text" placeholder="{{ res.string.name }}" id="Name" value="{{ components? components.Name:new_number }}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
+      <input type="text" placeholder="{{ res.string.article_number }}" id="Name" value="{{ components? components.Name:new_number }}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
     </div>
     {% if components %}
     <p class="control-value">{{ components.Name }}</p>
@@ -11,10 +11,10 @@
   </div>
 </div>
 <div class="form-group">
-  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Description">{{res.string.description}}</label>
+  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Description">{{res.string.name}}</label>
   <div class="col-md-6 col-sm-6 col-xs-12">
     <div {% if components %}style="display:none" {% endif %} class="input-wrap">
-      <input type="text" placeholder="{{ res.string.description }}" id="Description" value="{{ components.Description }}" name="Description" class="form-control  col-md-7 col-xs-12">
+      <input type="text" placeholder="{{ res.string.name }}" id="Description" value="{{ components.Description }}" name="Description" class="form-control  col-md-7 col-xs-12">
     </div>
     {% if components %}
     <p class="control-value">{{ components.Description }}</p>
@@ -44,6 +44,17 @@
     <input type="text" style="display:none" name="Material" id="Material" class="form-control" value="">
     {% if components %}
     <p class="control-value">{{ components.Material.Name }}</p>
+    {% endif %}
+  </div>
+</div>
+<div class="form-group">
+  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{res.string.uom}}</label>
+  <div class="col-md-6 col-sm-6 col-xs-12">
+    <div {% if components %}style="display:none" {% endif %} class="input-wrap">
+        {{ selection_m2o('UomId','UnitOfMeasure',{'Type':'reference'},components.UomId) | raw}}
+    </div>
+    {% if components %}
+    <p class="control-value">{{ components.UnitOfMeasure.Name }}</p>
     {% endif %}
   </div>
 </div>

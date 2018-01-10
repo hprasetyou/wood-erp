@@ -1,5 +1,5 @@
 <?php
-
+use Propel\Runtime\Connection\ConnectionInterface;
 use Base\Product as BaseProduct;
 
 /**
@@ -14,5 +14,11 @@ use Base\Product as BaseProduct;
  */
 class Product extends BaseProduct
 {
-
+    public function save(ConnectionInterface $con = null){
+      if(!$this->getUomId()){
+        $unit = UnitOfMeasureQuery::create()->findOneByName(array('Unit','Units'));
+        $this->setUomId($unit->getId());
+      }
+      parent::save();
+    }
 }

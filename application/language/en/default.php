@@ -134,6 +134,7 @@
 'pol' => 'POL',
 'postal' => 'Postal Code',
 'price' => 'Price',
+'unit_price' => 'Unit Price',
 'price_changes_update' => 'Price Changes Update',
 'product' => 'Product',
 'product_finishing' => 'Product Finishing',
