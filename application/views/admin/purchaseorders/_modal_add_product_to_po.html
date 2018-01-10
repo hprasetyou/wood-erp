@@ -38,12 +38,15 @@
           <div class="form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Qty">{{res.string.qty}}</label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-              <div class="input-wrap col-md-6 col-sm-6">
-                <input required type="text" placeholder="{{ res.string.qty }}" id="Qty" name="PILineQty[]" class="form-control  col-md-7 col-xs-12">
+              <div class="row">
+                <div class="input-wrap col-md-4 col-sm-4">
+                  <input required type="text" placeholder="{{ res.string.qty }}" id="Qty" name="PILineQty[]" class="form-control  col-md-7 col-xs-12">
+                </div>
+                <div class="col-md-8 col-sm-8">
+                  {{ selection_m2o('UomId','UnitOfMeasure',null,null) | raw}}
+                </div>
               </div>
-              <div class="col-md-6 col-sm-6">
-                {{ selection_m2o('UomId','UnitOfMeasure',null,null) | raw}}
-              </div>
+
             </div>
           </div>
         </div>

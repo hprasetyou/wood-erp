@@ -13,6 +13,14 @@ class Manage_purchaseorderlines extends MY_Controller{
 		$this->objobj = PurchaseOrderLineQuery::create()
     ->filterByPurchaseOrderId($this->input->get('purchase_order_id'));
     $this->custom_column['product_id'] = "_{Product}_->getDescription()";
+    $this->custom_column['qty'] = "_{Qty}_.\" (\"._{UnitOfMeasure}_->getName().\")\"";
+    $base_currency = "USD";
+    $po = PurchaseOrderQuery::create()->findPk($this->input->get('purchase_order_id'));
+    if($po){
+      $convert_to = $po->getCurrency()->getCode();
+      $this->custom_column['price'] = "exchange_rate(_{Price}_,\"$convert_to\",\"$base_currency\")";
+      $this->custom_column['total_price'] = "exchange_rate(_{TotalPrice}_,\"$convert_to\",\"$base_currency\")";
+    }
     parent::get_json();
   }
 
@@ -35,7 +43,9 @@ class Manage_purchaseorderlines extends MY_Controller{
 
 
 	function write($id=null){
+    $default_cur = 'USD';
     $po_id = $this->input->get('purchase_order');
+    $po = PurchaseOrderQuery::create()->findPk($po_id);
 		$qty = $this->input->post('PILineQty');
   	$name = $this->input->post('PILineName');
   	$price = $this->input->post('PILinePrice');
@@ -47,6 +57,10 @@ class Manage_purchaseorderlines extends MY_Controller{
       $prod_id = $ids[1];
       if(isset($prods[$key])){
         $prod_id=$prods[$key];
+      }
+      //convert price if cur_id not same as default cur_id
+      if($po->getCurrency()->getCode()!=$default_cur){
+        $price[$key] = exchange_rate($price[$key],$default_cur,$po->getCurrency()->getCode());
       }
       $pp = ProductPartnerQuery::create()
       ->orderByCreatedAt('desc')

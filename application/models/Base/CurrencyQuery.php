@@ -26,6 +26,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildCurrencyQuery orderBySymbol($order = Criteria::ASC) Order by the symbol column
  * @method     ChildCurrencyQuery orderByPlacement($order = Criteria::ASC) Order by the placement column
  * @method     ChildCurrencyQuery orderByActive($order = Criteria::ASC) Order by the active column
+ * @method     ChildCurrencyQuery orderByRounding($order = Criteria::ASC) Order by the rounding column
  * @method     ChildCurrencyQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildCurrencyQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -35,6 +36,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildCurrencyQuery groupBySymbol() Group by the symbol column
  * @method     ChildCurrencyQuery groupByPlacement() Group by the placement column
  * @method     ChildCurrencyQuery groupByActive() Group by the active column
+ * @method     ChildCurrencyQuery groupByRounding() Group by the rounding column
  * @method     ChildCurrencyQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildCurrencyQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -77,6 +79,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildCurrency findOneBySymbol(string $symbol) Return the first ChildCurrency filtered by the symbol column
  * @method     ChildCurrency findOneByPlacement(string $placement) Return the first ChildCurrency filtered by the placement column
  * @method     ChildCurrency findOneByActive(boolean $active) Return the first ChildCurrency filtered by the active column
+ * @method     ChildCurrency findOneByRounding(double $rounding) Return the first ChildCurrency filtered by the rounding column
  * @method     ChildCurrency findOneByCreatedAt(string $created_at) Return the first ChildCurrency filtered by the created_at column
  * @method     ChildCurrency findOneByUpdatedAt(string $updated_at) Return the first ChildCurrency filtered by the updated_at column *
 
@@ -89,6 +92,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildCurrency requireOneBySymbol(string $symbol) Return the first ChildCurrency filtered by the symbol column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildCurrency requireOneByPlacement(string $placement) Return the first ChildCurrency filtered by the placement column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildCurrency requireOneByActive(boolean $active) Return the first ChildCurrency filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildCurrency requireOneByRounding(double $rounding) Return the first ChildCurrency filtered by the rounding column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildCurrency requireOneByCreatedAt(string $created_at) Return the first ChildCurrency filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildCurrency requireOneByUpdatedAt(string $updated_at) Return the first ChildCurrency filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -99,6 +103,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildCurrency[]|ObjectCollection findBySymbol(string $symbol) Return ChildCurrency objects filtered by the symbol column
  * @method     ChildCurrency[]|ObjectCollection findByPlacement(string $placement) Return ChildCurrency objects filtered by the placement column
  * @method     ChildCurrency[]|ObjectCollection findByActive(boolean $active) Return ChildCurrency objects filtered by the active column
+ * @method     ChildCurrency[]|ObjectCollection findByRounding(double $rounding) Return ChildCurrency objects filtered by the rounding column
  * @method     ChildCurrency[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildCurrency objects filtered by the created_at column
  * @method     ChildCurrency[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildCurrency objects filtered by the updated_at column
  * @method     ChildCurrency[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -199,7 +204,7 @@ abstract class CurrencyQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, code, symbol, placement, active, created_at, updated_at FROM currency WHERE id = :p0';
+        $sql = 'SELECT id, name, code, symbol, placement, active, rounding, created_at, updated_at FROM currency WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -455,6 +460,47 @@ abstract class CurrencyQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(CurrencyTableMap::COL_ACTIVE, $active, $comparison);
+    }
+
+    /**
+     * Filter the query on the rounding column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByRounding(1234); // WHERE rounding = 1234
+     * $query->filterByRounding(array(12, 34)); // WHERE rounding IN (12, 34)
+     * $query->filterByRounding(array('min' => 12)); // WHERE rounding > 12
+     * </code>
+     *
+     * @param     mixed $rounding The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildCurrencyQuery The current query, for fluid interface
+     */
+    public function filterByRounding($rounding = null, $comparison = null)
+    {
+        if (is_array($rounding)) {
+            $useMinMax = false;
+            if (isset($rounding['min'])) {
+                $this->addUsingAlias(CurrencyTableMap::COL_ROUNDING, $rounding['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($rounding['max'])) {
+                $this->addUsingAlias(CurrencyTableMap::COL_ROUNDING, $rounding['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(CurrencyTableMap::COL_ROUNDING, $rounding, $comparison);
     }
 
     /**

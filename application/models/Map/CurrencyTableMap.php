@@ -59,7 +59,7 @@ class CurrencyTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 8;
+    const NUM_COLUMNS = 9;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class CurrencyTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 8;
+    const NUM_HYDRATE_COLUMNS = 9;
 
     /**
      * the column name for the id field
@@ -102,6 +102,11 @@ class CurrencyTableMap extends TableMap
     const COL_ACTIVE = 'currency.active';
 
     /**
+     * the column name for the rounding field
+     */
+    const COL_ROUNDING = 'currency.rounding';
+
+    /**
      * the column name for the created_at field
      */
     const COL_CREATED_AT = 'currency.created_at';
@@ -123,11 +128,11 @@ class CurrencyTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Code', 'Symbol', 'Placement', 'Active', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'code', 'symbol', 'placement', 'active', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(CurrencyTableMap::COL_ID, CurrencyTableMap::COL_NAME, CurrencyTableMap::COL_CODE, CurrencyTableMap::COL_SYMBOL, CurrencyTableMap::COL_PLACEMENT, CurrencyTableMap::COL_ACTIVE, CurrencyTableMap::COL_CREATED_AT, CurrencyTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'code', 'symbol', 'placement', 'active', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Code', 'Symbol', 'Placement', 'Active', 'Rounding', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'code', 'symbol', 'placement', 'active', 'rounding', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(CurrencyTableMap::COL_ID, CurrencyTableMap::COL_NAME, CurrencyTableMap::COL_CODE, CurrencyTableMap::COL_SYMBOL, CurrencyTableMap::COL_PLACEMENT, CurrencyTableMap::COL_ACTIVE, CurrencyTableMap::COL_ROUNDING, CurrencyTableMap::COL_CREATED_AT, CurrencyTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'code', 'symbol', 'placement', 'active', 'rounding', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -137,11 +142,11 @@ class CurrencyTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Code' => 2, 'Symbol' => 3, 'Placement' => 4, 'Active' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'code' => 2, 'symbol' => 3, 'placement' => 4, 'active' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
-        self::TYPE_COLNAME       => array(CurrencyTableMap::COL_ID => 0, CurrencyTableMap::COL_NAME => 1, CurrencyTableMap::COL_CODE => 2, CurrencyTableMap::COL_SYMBOL => 3, CurrencyTableMap::COL_PLACEMENT => 4, CurrencyTableMap::COL_ACTIVE => 5, CurrencyTableMap::COL_CREATED_AT => 6, CurrencyTableMap::COL_UPDATED_AT => 7, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'code' => 2, 'symbol' => 3, 'placement' => 4, 'active' => 5, 'created_at' => 6, 'updated_at' => 7, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Code' => 2, 'Symbol' => 3, 'Placement' => 4, 'Active' => 5, 'Rounding' => 6, 'CreatedAt' => 7, 'UpdatedAt' => 8, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'code' => 2, 'symbol' => 3, 'placement' => 4, 'active' => 5, 'rounding' => 6, 'createdAt' => 7, 'updatedAt' => 8, ),
+        self::TYPE_COLNAME       => array(CurrencyTableMap::COL_ID => 0, CurrencyTableMap::COL_NAME => 1, CurrencyTableMap::COL_CODE => 2, CurrencyTableMap::COL_SYMBOL => 3, CurrencyTableMap::COL_PLACEMENT => 4, CurrencyTableMap::COL_ACTIVE => 5, CurrencyTableMap::COL_ROUNDING => 6, CurrencyTableMap::COL_CREATED_AT => 7, CurrencyTableMap::COL_UPDATED_AT => 8, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'code' => 2, 'symbol' => 3, 'placement' => 4, 'active' => 5, 'rounding' => 6, 'created_at' => 7, 'updated_at' => 8, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -167,6 +172,7 @@ class CurrencyTableMap extends TableMap
         $this->addColumn('symbol', 'Symbol', 'VARCHAR', true, 3, null);
         $this->addColumn('placement', 'Placement', 'CHAR', true, null, 'before');
         $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
+        $this->addColumn('rounding', 'Rounding', 'FLOAT', false, null, 0);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -339,6 +345,7 @@ class CurrencyTableMap extends TableMap
             $criteria->addSelectColumn(CurrencyTableMap::COL_SYMBOL);
             $criteria->addSelectColumn(CurrencyTableMap::COL_PLACEMENT);
             $criteria->addSelectColumn(CurrencyTableMap::COL_ACTIVE);
+            $criteria->addSelectColumn(CurrencyTableMap::COL_ROUNDING);
             $criteria->addSelectColumn(CurrencyTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(CurrencyTableMap::COL_UPDATED_AT);
         } else {
@@ -348,6 +355,7 @@ class CurrencyTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.symbol');
             $criteria->addSelectColumn($alias . '.placement');
             $criteria->addSelectColumn($alias . '.active');
+            $criteria->addSelectColumn($alias . '.rounding');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }

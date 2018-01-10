@@ -58,3 +58,8 @@ tr.confline{
 body{
   font-size: 1.35em;
 }
+.select2-container--default .select2-selection--single{
+   border: 1px solid #ccc !important;
+   border-radius: 0px !important;
+   height: 33px;
+}

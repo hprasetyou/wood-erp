@@ -54,6 +54,7 @@ class Manage_purchaseorders extends MY_Controller{
     ->leftJoinWith('PurchaseOrder.Supplier')
     ->leftJoinWith('PurchaseOrder.DownPayment')
     ->leftJoinWith('PurchaseOrder.PackingList')
+    ->leftJoinWith('PurchaseOrder.Currency')
     ->withColumn((is_null($polinetotal['Total'])?"1":"'".$polinetotal['Total']."'"),'SubTotal');
     $obj = json_decode($this->objobj->findPk($id)->toJSON());
     if($obj->ProformaInvoiceId){
@@ -68,12 +69,13 @@ class Manage_purchaseorders extends MY_Controller{
     $this->form['PackingListId'] = 'PackingListId';
     $this->form['ProformaInvoiceId'] = 'ProformaInvoiceId';
     $this->form['DownPaymentId'] = 'DownPaymentId';
+    $this->form['CurrencyId'] = 'CurrencyId';
     $this->form['SupplierId'] = 'SupplierId';
     if($this->input->post('DownPaymentAmount')==""){
       if($this->input->post('DownPaymentId')){
         $dpdata = DownPaymentQuery::create()->findPK($this->input->post('DownPaymentId'));
         $autodp = $dpdata->getValue() * $this->input->post('SubTotal');
-        $this->form['DownPaymentAmount']['value'] = $autodp;
+        $this->form['DownPaymentAmount']= array('value'=>$autodp);
         // $this->form['TotalPrice']['value'] = $this->input->post('SubTotal') - $autodp;
       }
     }

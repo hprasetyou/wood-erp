@@ -101,6 +101,18 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
                  {% endif %}
                </div>
              </div>
+             <div class="form-group">
+               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.currency}}</label>
+               <div class="col-md-6 col-sm-6 col-xs-12">
+                 <div {% if purchaseorders %}style="display:none" {% endif %} class="wrap">
+                   {{selection_m2o('CurrencyId','Currency',null,purchaseorders.CurrencyId,'CurrencyId','Name-Symbol')| raw}}
+                 </div>
+                 {% if purchaseorders %}
+                 <p data-fieldname="Date" class="value">{{ purchaseorders.Currency.Name }}</p>
+                 {% endif %}
+               </div>
+             </div>
+
            </div>
          </div>
          <div class="row">
@@ -191,6 +203,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
      $('.cb_pi').prop('checked',$(this).prop('checked'))
    })
    $(document).ready(function(){
+     $("#CurrencyId").trigger('change')
      // $('#DownPaymentId').trigger('change')
      $('#DownPaymentId').change(function(e){
        var d = $(this).find("option:selected").data('value')
@@ -303,7 +316,9 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
        dataType:'JSON'
      })
    }
-
+   $("#CurrencyId").change(function(e){
+     $('.lineCurr').text($("#CurrencyId option:selected").text().split(' - ')[1]);
+   })
    function getdetail(){
      return $.ajax({
        url:location.href,
