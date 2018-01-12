@@ -88,7 +88,7 @@ class Manage_proformainvoicelines extends MY_Controller{
 
       $prod = $line->getProduct();
       $o[$i]['id'] = $line->getId().'-'.$prod->getId();
-      $o[$i]['article_number'] = $line->getProduct()->getName();
+      $o[$i]['article_number'] = $line->getName();
       $o[$i]['description'] = $line->getDescription();
       $o[$i]['has_component'] = $prod->getHasComponent()?$prod->getHasComponent():"Whole Product";
       $o[$i]['price'] = ProductPartnerQuery::create()
@@ -99,7 +99,7 @@ class Manage_proformainvoicelines extends MY_Controller{
       if($prod->getHasComponent()){
         foreach (ComponentProductQuery::create()->findByProductId($prod->getId()) as $prodcomponent) {
           $o[$i]['id'] = $line->getId().'-'.$prodcomponent->getComponent()->getId();
-          $o[$i]['article_number'] = $line->getProduct()->getName();
+          $o[$i]['article_number'] = $line->getName();
           $o[$i]['description'] = $line->getDescription();
           $o[$i]['has_component'] = $prodcomponent->getComponent()->getDescription();
           $o[$i]['price'] = ProductPartnerQuery::create()
@@ -107,6 +107,9 @@ class Manage_proformainvoicelines extends MY_Controller{
           ->filterByPartnerId($this->input->get('supplier'))
           ->get_latest_supplier_price();
           $polines = PurchaseOrderLineQuery::create()
+          ->usePurchaseOrderQuery()
+            ->filterByActive(true)
+          ->endUse()
           ->filterByProformaInvoiceLineId($line->getId())
           ->filterByProductId($prodcomponent->getComponentId())
           ->find();
@@ -129,6 +132,9 @@ class Manage_proformainvoicelines extends MY_Controller{
         }
       }else{
         $polines = PurchaseOrderLineQuery::create()
+        ->usePurchaseOrderQuery()
+          ->filterByActive(true)
+        ->endUse()
         ->filterByProformaInvoiceLineId($line->getId())
         ->filterByProductId($prod->getId())
         ->find();

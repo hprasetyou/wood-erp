@@ -58,7 +58,12 @@ class Manage_purchaseorders extends MY_Controller{
     ->withColumn((is_null($polinetotal['Total'])?"1":"'".$polinetotal['Total']."'"),'SubTotal');
     $obj = json_decode($this->objobj->findPk($id)->toJSON());
     if(!$this->input->is_ajax_request()){
-        $this->template->render("admin/purchaseorders/form".($obj->ProformaInvoiceId?"":"_no_pl"),array('purchaseorders' => $obj ));
+      $o = array('purchaseorders' => $obj );
+      if($render=="html"){
+        $this->template->render("admin/purchaseorders/form".($obj->ProformaInvoiceId?"":"_no_pl"),$o);
+      }else{
+        $this->template->render_pdf("admin/purchaseorders/pdf/report".($obj->ProformaInvoiceId?"":"_no_pl"),$o);
+      }
     }else{
         echo json_encode($obj);
     }

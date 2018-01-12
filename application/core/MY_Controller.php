@@ -77,7 +77,7 @@ class MY_Controller extends CI_Controller{
    } catch (Exception $e) {
 
    }
-
+   $objs->filterByActive(true);
    $offset = ($this->input->get('start')?$this->input->get('start'):0);
    $objs = $objs->paginate(($offset/10)+1, $maxPerPage);
    $o = [];
@@ -235,7 +235,8 @@ class MY_Controller extends CI_Controller{
    $qobj = $this->objname."Query";
    $objs = $qobj::create()->findPk($id);
    if($this->input->post('confirm')){
-     $objs->delete();
+     $objs->setActive(false);
+     $objs->save();
    }
    return $objs;
  }

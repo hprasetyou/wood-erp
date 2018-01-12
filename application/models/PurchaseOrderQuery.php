@@ -1,6 +1,7 @@
 <?php
 
 use Base\PurchaseOrderQuery as BasePurchaseOrderQuery;
+use Propel\Runtime\Connection\ConnectionInterface;
 
 /**
  * Skeleton subclass for performing query and update operations on the 'purchase_order' table.
