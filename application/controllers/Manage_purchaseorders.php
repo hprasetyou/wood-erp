@@ -57,10 +57,10 @@ class Manage_purchaseorders extends MY_Controller{
     ->leftJoinWith('PurchaseOrder.Currency')
     ->withColumn((is_null($polinetotal['Total'])?"1":"'".$polinetotal['Total']."'"),'SubTotal');
     $obj = json_decode($this->objobj->findPk($id)->toJSON());
-    if($obj->ProformaInvoiceId){
-        $this->template->render("admin/purchaseorders/form",array('purchaseorders' => $obj ));
+    if(!$this->input->is_ajax_request()){
+        $this->template->render("admin/purchaseorders/form".($obj->ProformaInvoiceId?"":"_no_pl"),array('purchaseorders' => $obj ));
     }else{
-        $this->template->render("admin/purchaseorders/form_no_pl",array('purchaseorders' => $obj ));
+        echo json_encode($obj);
     }
   }
 

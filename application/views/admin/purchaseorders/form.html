@@ -206,9 +206,12 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
           '<td><input type="number" name="PILineQty[]" required max="'+$(this).parents('tr').children('td:eq(4)').text()+
           '" class="form-control PILineQty" maxlength="4" size="4" value="'+$(this).parents('tr').children('td:eq(4)').text()+'">'+
           '</td>'+
+          '<td>'+
+            '{{ selection_m2o('UomId','UnitOfMeasure',null,null) | raw}}'+
           '<td><input type="number" name="PILinePrice[]" required '+
                    'class="form-control" value="'+$(this).parents('tr').children('td:eq(6)').text()+'">'+
           '</td></tr>');
+          $('#UomId').select2()
         }
       })
       $('#modalAddPOLine').modal('show')
@@ -315,7 +318,9 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
     })
 
     function update_val(){
+      console.log("jajal");
       getdetail().then(function(o){
+        console.log("iki");
         for (var i in o) {
           if (o.hasOwnProperty(i)) {
             $('#'+i).val(o[i])

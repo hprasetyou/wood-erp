@@ -12,15 +12,16 @@ class Manage_purchaseorderlines extends MY_Controller{
   function get_json(){
 		$this->objobj = PurchaseOrderLineQuery::create()
     ->filterByPurchaseOrderId($this->input->get('purchase_order_id'));
+    $this->custom_column['currency_code'] = "_{PurchaseOrder}_->getCurrency()->getCode()";
     $this->custom_column['product_id'] = "_{Product}_->getDescription()";
     $this->custom_column['qty'] = "_{Qty}_.\" (\"._{UnitOfMeasure}_->getName().\")\"";
-    $base_currency = "USD";
-    $po = PurchaseOrderQuery::create()->findPk($this->input->get('purchase_order_id'));
-    if($po){
-      $convert_to = $po->getCurrency()->getCode();
-      $this->custom_column['price'] = "exchange_rate(_{Price}_,\"$convert_to\",\"$base_currency\")";
-      $this->custom_column['total_price'] = "exchange_rate(_{TotalPrice}_,\"$convert_to\",\"$base_currency\")";
-    }
+    // $base_currency = "USD";
+    // $po = PurchaseOrderQuery::create()->findPk($this->input->get('purchase_order_id'));
+    // if($po){
+    //   $convert_to = $po->getCurrency()->getCode();
+    //   $this->custom_column['price'] = "exchange_rate(_{Price}_,\"$convert_to\",\"$base_currency\")";
+    //   $this->custom_column['total_price'] = "exchange_rate(_{TotalPrice}_,\"$convert_to\",\"$base_currency\")";
+    // }
     parent::get_json();
   }
 
@@ -61,6 +62,7 @@ class Manage_purchaseorderlines extends MY_Controller{
       //convert price if cur_id not same as default cur_id
       if($po->getCurrency()->getCode()!=$default_cur){
         $price[$key] = exchange_rate($price[$key],$default_cur,$po->getCurrency()->getCode());
+        write_log("the price is....".$price[$key]);
       }
       $pp = ProductPartnerQuery::create()
       ->orderByCreatedAt('desc')

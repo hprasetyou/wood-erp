@@ -53,19 +53,21 @@ function update_rate(){
     url:'/index.php/exchange_rate/get_latest',
     dataType:'JSON'
   }).done(function(o){
-    console.log(o);
+
     var er = o.ExchangeRates
     $('.er').each(function(){
       var val = $(this).data('original-value')
+      var sym = '$'
       var target = $(this).data('target')
       //assummed all source from USD
       for (var i in er) {
         if((er[i].Base=="USD") && (er[i].Target==target)){
           val = Math.round((val*(er[i].Rate))/er[i].Rounding)*er[i].Rounding
+          sym = er[i].Symbol
         }
       }
       $(this).val(val)
-      $(this).text(val)
+      $(this).text(sym+' '+val)
     })
   })
 }
@@ -142,6 +144,11 @@ jQuery.fn.loadTableData = function(
           ordr = true;
           render_data = new Function("data", "type","row","meta",
            "return data?data.replace(\", \",\"<br>\"):''")
+          break;
+
+        case 'currency_conv':
+        render_data = new Function("data", "type","row","meta",
+         "return '<span class=\"er\"  data-original-value=\"'+data+'\" data-target=\"'+row.currency_code+'\" ><span>'")
           break;
         case 'currency':
         var curdata = $(this).data('currency');
@@ -223,13 +230,39 @@ jQuery.fn.loadTableData = function(
     if(!conf.hasOwnProperty('complete')){
       conf.complete = function(settings, json) {
         tt.css('width','100%')
+        update_rate()
       }
     }
 
     dtconf.initComplete = conf.complete
     dtconf.fnRowCallback = conf.rowCallback
-    dtconf.drawCallback = conf.drawCallback
-    dtconf.columnDefs = conf.columnDefs
+    dtconf.columnDefs = []
+    if(conf.hasOwnProperty('group')){
+      dtconf.columnDefs.push({ "visible": false, "targets": conf.group })
+      dtconf.drawCallback = function(settings){
+            var api = this.api();
+            var rows = api.rows( {page:'current'} ).nodes();
+            var last=null;
+
+            api.column(conf.group, {page:'current'} ).data().each( function ( group, i ) {
+                if ( last !== group ) {
+                    $(rows).eq( i ).before(
+                        '<tr class="group"><td colspan="'+fl.length+'">'+group+'</td></tr>'
+                    );
+
+                    last = group;
+                }
+            } );
+            update_rate()
+        };
+    }else{
+            dtconf.drawCallback = function(settings){
+              update_rate()
+            }
+    }
+    if(conf.hasOwnProperty('columnDefs')){
+      dtconf.columnDefs.push(conf.columnDefs)
+    }
     dtconf.createdRow = function(row, data, index){
       switch (data.state) {
         case 'draft':
@@ -409,7 +442,6 @@ function init_modal_selection(){
         so += $(this).parents('tr').children('td:eq('+didx[i]+')').text()
       }
       $('#'+$(this).parents('table').data('ttext')).val(so)
-      console.log($(this).parents('table').data('ttext'));
       $(this).parents('.modal').modal('hide')
       $('#'+$(this).parents('table').data('thide')).trigger('change')
   })

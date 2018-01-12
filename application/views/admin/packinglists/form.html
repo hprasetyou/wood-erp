@@ -273,29 +273,12 @@ res.string.packinglist }, {'link':'#','text':bc_text }] %} {% block content %}
     paging:false,
     ordering:false,
     button:['edit','delete'],
-    columnDefs:[
-            { "visible": false, "targets": 10 }
-        ],
     rowCallback:function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
           var index = iDisplayIndex +1;
           $('td:eq(0)',nRow).html(index);
           return nRow;
         },
-    drawCallback:function(settings){
-            var api = this.api();
-            var rows = api.rows( {page:'current'} ).nodes();
-            var last=null;
-
-            api.column(10, {page:'current'} ).data().each( function ( group, i ) {
-                if ( last !== group ) {
-                    $(rows).eq( i ).before(
-                        '<tr class="group"><td colspan="11">'+group+'</td></tr>'
-                    );
-
-                    last = group;
-                }
-            } );
-        }
+    group:10
   })
   $(document).ready(function(){
 
@@ -422,6 +405,7 @@ function reload_line(){
       $('#table_PackingListLine').find('.btn-delete').show()
       $('#table_PackingListLine').find('.btn-edit').show()
       reload_data().done(function(o){
+        console.log(o);
         $('#totQtyPiece').text(o.TotalQty)
         $('#totQtyPack').text(o.TotalQtyOfPack)
         $('#totQtyCbm').text(format_cbm(o.TotalCubicDimension))
