@@ -5,22 +5,36 @@ class Manage_productstocks extends MY_Controller{
 
   function __construct(){
     parent::__construct();
-		$this->objname = 'ProductStock';
+		$this->set_objname('ProductStock');
 		$this->tpl = 'productstocks';
 
     $this->authorization->check_authorization('manage_productstocks');
   }
 
-  // function get_json(){
-  //   $this->objname = 'PartnerLocation';
-  //   $this->objobj = PartnerLocationQuery::create()
-  //   ->join('SUM()')
-  //   ->select('PartnerLocation.Id')
-  //   ->withColumn('')
-  //   ->filterByPartnerId(36);
-  //   echo $this->objobj->find()->toJSON();
-  //   // parent::get_json();
-  // }
+	function get_json(){
+		$this->custom_column = array(
+			'product_desc' =>"_{Product}_->getDescription()",
+			'partner_location_id' =>"_{PartnerLocation}_->getName().' - '._{PartnerLocation}_->getDescription()"
+		);
+		parent::get_json();
+	}
 
+	function write($id=null){
+		$this->form['PartnerLocationId'] = 'PartnerLocationId';
+		$this->form['ProductId'] = 'ProductId';
+
+		$data = parent::write($id);
+    if($this->input->is_ajax_request()){
+			echo $data->toJSON();
+		}else{
+			redirect('manage_productstocks/detail/'.$data->getId());
+		}
+	}
+
+  function delete($id){
+		$data = parent::delete($id);
+		redirect('manage_productstocks');
+  }
 
 }
+    

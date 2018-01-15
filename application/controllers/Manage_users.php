@@ -42,11 +42,8 @@ class Manage_users extends CI_Controller{
     foreach ($users as $user) {
 				$o['data'][$i]['id'] = $user->getId();
 				$o['data'][$i]['name'] = $user->getName();
-				$o['data'][$i]['password'] = $user->getPassword();
 				$o['data'][$i]['partner_id'] = $user->getPartner()->getName();
 				$o['data'][$i]['last_login'] = $user->getLastLogin()?date_format($user->getLastLogin(),'d M Y h:i:s'):"";
-				$o['data'][$i]['status'] = $user->getStatus();
-
 				$i++;
     }
 		echo json_encode($o);

@@ -98,9 +98,7 @@ jQuery.fn.loadTableData = function(
     if(!conf.hasOwnProperty('ordering')){
       conf.ordering = true;
     }
-    if(conf.paging){
-      conf.pageLength = 25;
-    }
+
     var fs = conf.backendfunc
   var tt = $(this)
   var c = tt.data('controller')
@@ -226,6 +224,9 @@ jQuery.fn.loadTableData = function(
   }
   if(conf.order){
     dtconf.order = [[conf.order.col, conf.order.order]]
+  }
+  if(conf.paging){
+    dtconf.lengthMenu = [ [25, 50, 100], [25, 50, 100] ]
   }
   if(conf.serverSide){
     dtconf.ajax =  base_url[0]+"index.php/"+c+"/"+fs+params
