@@ -29,6 +29,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceQuery orderByDescription($order = Criteria::ASC) Order by the description column
  * @method     ChildProformaInvoiceQuery orderByTotalCubicDimension($order = Criteria::ASC) Order by the total_cubic_dimension column
  * @method     ChildProformaInvoiceQuery orderByTotalPrice($order = Criteria::ASC) Order by the total_price column
+ * @method     ChildProformaInvoiceQuery orderByDownPaymentId($order = Criteria::ASC) Order by the down_payment_id column
+ * @method     ChildProformaInvoiceQuery orderByDownPaymentAmount($order = Criteria::ASC) Order by the down_payment_amount column
+ * @method     ChildProformaInvoiceQuery orderByDownPaymentDeadline($order = Criteria::ASC) Order by the down_payment_deadline column
  * @method     ChildProformaInvoiceQuery orderByState($order = Criteria::ASC) Order by the state column
  * @method     ChildProformaInvoiceQuery orderByActive($order = Criteria::ASC) Order by the active column
  * @method     ChildProformaInvoiceQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
@@ -43,6 +46,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceQuery groupByDescription() Group by the description column
  * @method     ChildProformaInvoiceQuery groupByTotalCubicDimension() Group by the total_cubic_dimension column
  * @method     ChildProformaInvoiceQuery groupByTotalPrice() Group by the total_price column
+ * @method     ChildProformaInvoiceQuery groupByDownPaymentId() Group by the down_payment_id column
+ * @method     ChildProformaInvoiceQuery groupByDownPaymentAmount() Group by the down_payment_amount column
+ * @method     ChildProformaInvoiceQuery groupByDownPaymentDeadline() Group by the down_payment_deadline column
  * @method     ChildProformaInvoiceQuery groupByState() Group by the state column
  * @method     ChildProformaInvoiceQuery groupByActive() Group by the active column
  * @method     ChildProformaInvoiceQuery groupByCreatedAt() Group by the created_at column
@@ -76,6 +82,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceQuery rightJoinWithCurrency() Adds a RIGHT JOIN clause and with to the query using the Currency relation
  * @method     ChildProformaInvoiceQuery innerJoinWithCurrency() Adds a INNER JOIN clause and with to the query using the Currency relation
  *
+ * @method     ChildProformaInvoiceQuery leftJoinDownPayment($relationAlias = null) Adds a LEFT JOIN clause to the query using the DownPayment relation
+ * @method     ChildProformaInvoiceQuery rightJoinDownPayment($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DownPayment relation
+ * @method     ChildProformaInvoiceQuery innerJoinDownPayment($relationAlias = null) Adds a INNER JOIN clause to the query using the DownPayment relation
+ *
+ * @method     ChildProformaInvoiceQuery joinWithDownPayment($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the DownPayment relation
+ *
+ * @method     ChildProformaInvoiceQuery leftJoinWithDownPayment() Adds a LEFT JOIN clause and with to the query using the DownPayment relation
+ * @method     ChildProformaInvoiceQuery rightJoinWithDownPayment() Adds a RIGHT JOIN clause and with to the query using the DownPayment relation
+ * @method     ChildProformaInvoiceQuery innerJoinWithDownPayment() Adds a INNER JOIN clause and with to the query using the DownPayment relation
+ *
  * @method     ChildProformaInvoiceQuery leftJoinProformaInvoiceLine($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProformaInvoiceLine relation
  * @method     ChildProformaInvoiceQuery rightJoinProformaInvoiceLine($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProformaInvoiceLine relation
  * @method     ChildProformaInvoiceQuery innerJoinProformaInvoiceLine($relationAlias = null) Adds a INNER JOIN clause to the query using the ProformaInvoiceLine relation
@@ -96,7 +112,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceQuery rightJoinWithPurchaseOrder() Adds a RIGHT JOIN clause and with to the query using the PurchaseOrder relation
  * @method     ChildProformaInvoiceQuery innerJoinWithPurchaseOrder() Adds a INNER JOIN clause and with to the query using the PurchaseOrder relation
  *
- * @method     \PartnerQuery|\CurrencyQuery|\ProformaInvoiceLineQuery|\PurchaseOrderQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \PartnerQuery|\CurrencyQuery|\DownPaymentQuery|\ProformaInvoiceLineQuery|\PurchaseOrderQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildProformaInvoice findOne(ConnectionInterface $con = null) Return the first ChildProformaInvoice matching the query
  * @method     ChildProformaInvoice findOneOrCreate(ConnectionInterface $con = null) Return the first ChildProformaInvoice matching the query, or a new ChildProformaInvoice object populated from the query conditions when no match is found
@@ -110,6 +126,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoice findOneByDescription(string $description) Return the first ChildProformaInvoice filtered by the description column
  * @method     ChildProformaInvoice findOneByTotalCubicDimension(double $total_cubic_dimension) Return the first ChildProformaInvoice filtered by the total_cubic_dimension column
  * @method     ChildProformaInvoice findOneByTotalPrice(double $total_price) Return the first ChildProformaInvoice filtered by the total_price column
+ * @method     ChildProformaInvoice findOneByDownPaymentId(int $down_payment_id) Return the first ChildProformaInvoice filtered by the down_payment_id column
+ * @method     ChildProformaInvoice findOneByDownPaymentAmount(double $down_payment_amount) Return the first ChildProformaInvoice filtered by the down_payment_amount column
+ * @method     ChildProformaInvoice findOneByDownPaymentDeadline(string $down_payment_deadline) Return the first ChildProformaInvoice filtered by the down_payment_deadline column
  * @method     ChildProformaInvoice findOneByState(string $state) Return the first ChildProformaInvoice filtered by the state column
  * @method     ChildProformaInvoice findOneByActive(boolean $active) Return the first ChildProformaInvoice filtered by the active column
  * @method     ChildProformaInvoice findOneByCreatedAt(string $created_at) Return the first ChildProformaInvoice filtered by the created_at column
@@ -127,6 +146,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoice requireOneByDescription(string $description) Return the first ChildProformaInvoice filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByTotalCubicDimension(double $total_cubic_dimension) Return the first ChildProformaInvoice filtered by the total_cubic_dimension column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByTotalPrice(double $total_price) Return the first ChildProformaInvoice filtered by the total_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProformaInvoice requireOneByDownPaymentId(int $down_payment_id) Return the first ChildProformaInvoice filtered by the down_payment_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProformaInvoice requireOneByDownPaymentAmount(double $down_payment_amount) Return the first ChildProformaInvoice filtered by the down_payment_amount column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProformaInvoice requireOneByDownPaymentDeadline(string $down_payment_deadline) Return the first ChildProformaInvoice filtered by the down_payment_deadline column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByState(string $state) Return the first ChildProformaInvoice filtered by the state column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByActive(boolean $active) Return the first ChildProformaInvoice filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByCreatedAt(string $created_at) Return the first ChildProformaInvoice filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -142,6 +164,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoice[]|ObjectCollection findByDescription(string $description) Return ChildProformaInvoice objects filtered by the description column
  * @method     ChildProformaInvoice[]|ObjectCollection findByTotalCubicDimension(double $total_cubic_dimension) Return ChildProformaInvoice objects filtered by the total_cubic_dimension column
  * @method     ChildProformaInvoice[]|ObjectCollection findByTotalPrice(double $total_price) Return ChildProformaInvoice objects filtered by the total_price column
+ * @method     ChildProformaInvoice[]|ObjectCollection findByDownPaymentId(int $down_payment_id) Return ChildProformaInvoice objects filtered by the down_payment_id column
+ * @method     ChildProformaInvoice[]|ObjectCollection findByDownPaymentAmount(double $down_payment_amount) Return ChildProformaInvoice objects filtered by the down_payment_amount column
+ * @method     ChildProformaInvoice[]|ObjectCollection findByDownPaymentDeadline(string $down_payment_deadline) Return ChildProformaInvoice objects filtered by the down_payment_deadline column
  * @method     ChildProformaInvoice[]|ObjectCollection findByState(string $state) Return ChildProformaInvoice objects filtered by the state column
  * @method     ChildProformaInvoice[]|ObjectCollection findByActive(boolean $active) Return ChildProformaInvoice objects filtered by the active column
  * @method     ChildProformaInvoice[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildProformaInvoice objects filtered by the created_at column
@@ -244,7 +269,7 @@ abstract class ProformaInvoiceQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, currency_id, customer_id, date, confirm_date, description, total_cubic_dimension, total_price, state, active, created_at, updated_at FROM proforma_invoice WHERE id = :p0';
+        $sql = 'SELECT id, name, currency_id, customer_id, date, confirm_date, description, total_cubic_dimension, total_price, down_payment_id, down_payment_amount, down_payment_deadline, state, active, created_at, updated_at FROM proforma_invoice WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -680,6 +705,133 @@ abstract class ProformaInvoiceQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the down_payment_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDownPaymentId(1234); // WHERE down_payment_id = 1234
+     * $query->filterByDownPaymentId(array(12, 34)); // WHERE down_payment_id IN (12, 34)
+     * $query->filterByDownPaymentId(array('min' => 12)); // WHERE down_payment_id > 12
+     * </code>
+     *
+     * @see       filterByDownPayment()
+     *
+     * @param     mixed $downPaymentId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProformaInvoiceQuery The current query, for fluid interface
+     */
+    public function filterByDownPaymentId($downPaymentId = null, $comparison = null)
+    {
+        if (is_array($downPaymentId)) {
+            $useMinMax = false;
+            if (isset($downPaymentId['min'])) {
+                $this->addUsingAlias(ProformaInvoiceTableMap::COL_DOWN_PAYMENT_ID, $downPaymentId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($downPaymentId['max'])) {
+                $this->addUsingAlias(ProformaInvoiceTableMap::COL_DOWN_PAYMENT_ID, $downPaymentId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProformaInvoiceTableMap::COL_DOWN_PAYMENT_ID, $downPaymentId, $comparison);
+    }
+
+    /**
+     * Filter the query on the down_payment_amount column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDownPaymentAmount(1234); // WHERE down_payment_amount = 1234
+     * $query->filterByDownPaymentAmount(array(12, 34)); // WHERE down_payment_amount IN (12, 34)
+     * $query->filterByDownPaymentAmount(array('min' => 12)); // WHERE down_payment_amount > 12
+     * </code>
+     *
+     * @param     mixed $downPaymentAmount The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProformaInvoiceQuery The current query, for fluid interface
+     */
+    public function filterByDownPaymentAmount($downPaymentAmount = null, $comparison = null)
+    {
+        if (is_array($downPaymentAmount)) {
+            $useMinMax = false;
+            if (isset($downPaymentAmount['min'])) {
+                $this->addUsingAlias(ProformaInvoiceTableMap::COL_DOWN_PAYMENT_AMOUNT, $downPaymentAmount['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($downPaymentAmount['max'])) {
+                $this->addUsingAlias(ProformaInvoiceTableMap::COL_DOWN_PAYMENT_AMOUNT, $downPaymentAmount['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProformaInvoiceTableMap::COL_DOWN_PAYMENT_AMOUNT, $downPaymentAmount, $comparison);
+    }
+
+    /**
+     * Filter the query on the down_payment_deadline column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDownPaymentDeadline('2011-03-14'); // WHERE down_payment_deadline = '2011-03-14'
+     * $query->filterByDownPaymentDeadline('now'); // WHERE down_payment_deadline = '2011-03-14'
+     * $query->filterByDownPaymentDeadline(array('max' => 'yesterday')); // WHERE down_payment_deadline > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $downPaymentDeadline The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProformaInvoiceQuery The current query, for fluid interface
+     */
+    public function filterByDownPaymentDeadline($downPaymentDeadline = null, $comparison = null)
+    {
+        if (is_array($downPaymentDeadline)) {
+            $useMinMax = false;
+            if (isset($downPaymentDeadline['min'])) {
+                $this->addUsingAlias(ProformaInvoiceTableMap::COL_DOWN_PAYMENT_DEADLINE, $downPaymentDeadline['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($downPaymentDeadline['max'])) {
+                $this->addUsingAlias(ProformaInvoiceTableMap::COL_DOWN_PAYMENT_DEADLINE, $downPaymentDeadline['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProformaInvoiceTableMap::COL_DOWN_PAYMENT_DEADLINE, $downPaymentDeadline, $comparison);
+    }
+
+    /**
      * Filter the query on the state column
      *
      * Example usage:
@@ -969,6 +1121,83 @@ abstract class ProformaInvoiceQuery extends ModelCriteria
         return $this
             ->joinCurrency($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Currency', '\CurrencyQuery');
+    }
+
+    /**
+     * Filter the query by a related \DownPayment object
+     *
+     * @param \DownPayment|ObjectCollection $downPayment The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildProformaInvoiceQuery The current query, for fluid interface
+     */
+    public function filterByDownPayment($downPayment, $comparison = null)
+    {
+        if ($downPayment instanceof \DownPayment) {
+            return $this
+                ->addUsingAlias(ProformaInvoiceTableMap::COL_DOWN_PAYMENT_ID, $downPayment->getId(), $comparison);
+        } elseif ($downPayment instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(ProformaInvoiceTableMap::COL_DOWN_PAYMENT_ID, $downPayment->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByDownPayment() only accepts arguments of type \DownPayment or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the DownPayment relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildProformaInvoiceQuery The current query, for fluid interface
+     */
+    public function joinDownPayment($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('DownPayment');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'DownPayment');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the DownPayment relation DownPayment object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \DownPaymentQuery A secondary query class using the current class as primary query
+     */
+    public function useDownPaymentQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinDownPayment($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'DownPayment', '\DownPaymentQuery');
     }
 
     /**

@@ -152,6 +152,13 @@ class DownPaymentTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('ProformaInvoice', '\\ProformaInvoice', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':down_payment_id',
+    1 => ':id',
+  ),
+), null, null, 'ProformaInvoices', false);
         $this->addRelation('PurchaseOrder', '\\PurchaseOrder', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (

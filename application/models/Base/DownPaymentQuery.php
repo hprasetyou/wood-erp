@@ -38,6 +38,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildDownPaymentQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildDownPaymentQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
+ * @method     ChildDownPaymentQuery leftJoinProformaInvoice($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProformaInvoice relation
+ * @method     ChildDownPaymentQuery rightJoinProformaInvoice($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProformaInvoice relation
+ * @method     ChildDownPaymentQuery innerJoinProformaInvoice($relationAlias = null) Adds a INNER JOIN clause to the query using the ProformaInvoice relation
+ *
+ * @method     ChildDownPaymentQuery joinWithProformaInvoice($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ProformaInvoice relation
+ *
+ * @method     ChildDownPaymentQuery leftJoinWithProformaInvoice() Adds a LEFT JOIN clause and with to the query using the ProformaInvoice relation
+ * @method     ChildDownPaymentQuery rightJoinWithProformaInvoice() Adds a RIGHT JOIN clause and with to the query using the ProformaInvoice relation
+ * @method     ChildDownPaymentQuery innerJoinWithProformaInvoice() Adds a INNER JOIN clause and with to the query using the ProformaInvoice relation
+ *
  * @method     ChildDownPaymentQuery leftJoinPurchaseOrder($relationAlias = null) Adds a LEFT JOIN clause to the query using the PurchaseOrder relation
  * @method     ChildDownPaymentQuery rightJoinPurchaseOrder($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PurchaseOrder relation
  * @method     ChildDownPaymentQuery innerJoinPurchaseOrder($relationAlias = null) Adds a INNER JOIN clause to the query using the PurchaseOrder relation
@@ -48,7 +58,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildDownPaymentQuery rightJoinWithPurchaseOrder() Adds a RIGHT JOIN clause and with to the query using the PurchaseOrder relation
  * @method     ChildDownPaymentQuery innerJoinWithPurchaseOrder() Adds a INNER JOIN clause and with to the query using the PurchaseOrder relation
  *
- * @method     \PurchaseOrderQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \ProformaInvoiceQuery|\PurchaseOrderQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildDownPayment findOne(ConnectionInterface $con = null) Return the first ChildDownPayment matching the query
  * @method     ChildDownPayment findOneOrCreate(ConnectionInterface $con = null) Return the first ChildDownPayment matching the query, or a new ChildDownPayment object populated from the query conditions when no match is found
@@ -391,6 +401,79 @@ abstract class DownPaymentQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(DownPaymentTableMap::COL_ACTIVE, $active, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \ProformaInvoice object
+     *
+     * @param \ProformaInvoice|ObjectCollection $proformaInvoice the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDownPaymentQuery The current query, for fluid interface
+     */
+    public function filterByProformaInvoice($proformaInvoice, $comparison = null)
+    {
+        if ($proformaInvoice instanceof \ProformaInvoice) {
+            return $this
+                ->addUsingAlias(DownPaymentTableMap::COL_ID, $proformaInvoice->getDownPaymentId(), $comparison);
+        } elseif ($proformaInvoice instanceof ObjectCollection) {
+            return $this
+                ->useProformaInvoiceQuery()
+                ->filterByPrimaryKeys($proformaInvoice->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByProformaInvoice() only accepts arguments of type \ProformaInvoice or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ProformaInvoice relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildDownPaymentQuery The current query, for fluid interface
+     */
+    public function joinProformaInvoice($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ProformaInvoice');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ProformaInvoice');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ProformaInvoice relation ProformaInvoice object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \ProformaInvoiceQuery A secondary query class using the current class as primary query
+     */
+    public function useProformaInvoiceQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinProformaInvoice($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ProformaInvoice', '\ProformaInvoiceQuery');
     }
 
     /**

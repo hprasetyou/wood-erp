@@ -280,6 +280,9 @@
     <column name="description" phpName="Description" size="255" type="VARCHAR"/>
     <column name="total_cubic_dimension" phpName="TotalCubicDimension" type="FLOAT"/>
     <column name="total_price" phpName="TotalPrice" type="FLOAT"/>
+    <column name="down_payment_id" phpName="DownPaymentId" type="INTEGER"/>
+    <column name="down_payment_amount" phpName="DownPaymentAmount" type="FLOAT"/>
+    <column name="down_payment_deadline" phpName="DownPaymentDeadline" type="DATE"/>
     <column name="state" phpName="State" type="CHAR" sqlType="ENUM('draft','confirm','done','delete')" defaultValue="draft"/>
     <column name="active" phpName="Active" type="BOOLEAN" defaultValue="true"/>
     <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP" />
@@ -289,6 +292,9 @@
     </foreign-key>
     <foreign-key foreignTable="currency">
       <reference local="currency_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="down_payment">
+      <reference local="down_payment_id" foreign="id"/>
     </foreign-key>
   </table>
   <table name="proforma_invoice_line" phpName="ProformaInvoiceLine">

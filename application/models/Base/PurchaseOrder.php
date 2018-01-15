@@ -169,6 +169,13 @@ abstract class PurchaseOrder implements ActiveRecordInterface
     protected $down_payment_deadline;
 
     /**
+     * The value for the type field.
+     *
+     * @var        string
+     */
+    protected $type;
+
+    /**
      * The value for the total_price field.
      *
      * @var        double
@@ -653,6 +660,16 @@ abstract class PurchaseOrder implements ActiveRecordInterface
     }
 
     /**
+     * Get the [type] column value.
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
      * Get the [total_price] column value.
      *
      * @return double
@@ -1013,6 +1030,26 @@ abstract class PurchaseOrder implements ActiveRecordInterface
     } // setDownPaymentDeadline()
 
     /**
+     * Set the value of [type] column.
+     *
+     * @param string $v new value
+     * @return $this|\PurchaseOrder The current object (for fluent API support)
+     */
+    public function setType($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->type !== $v) {
+            $this->type = $v;
+            $this->modifiedColumns[PurchaseOrderTableMap::COL_TYPE] = true;
+        }
+
+        return $this;
+    } // setType()
+
+    /**
      * Set the value of [total_price] column.
      *
      * @param double $v new value
@@ -1216,22 +1253,25 @@ abstract class PurchaseOrder implements ActiveRecordInterface
             }
             $this->down_payment_deadline = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : PurchaseOrderTableMap::translateFieldName('TotalPrice', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : PurchaseOrderTableMap::translateFieldName('Type', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->type = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : PurchaseOrderTableMap::translateFieldName('TotalPrice', TableMap::TYPE_PHPNAME, $indexType)];
             $this->total_price = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : PurchaseOrderTableMap::translateFieldName('State', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : PurchaseOrderTableMap::translateFieldName('State', TableMap::TYPE_PHPNAME, $indexType)];
             $this->state = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : PurchaseOrderTableMap::translateFieldName('Active', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : PurchaseOrderTableMap::translateFieldName('Active', TableMap::TYPE_PHPNAME, $indexType)];
             $this->active = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : PurchaseOrderTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : PurchaseOrderTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : PurchaseOrderTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 18 + $startcol : PurchaseOrderTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -1244,7 +1284,7 @@ abstract class PurchaseOrder implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 18; // 18 = PurchaseOrderTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 19; // 19 = PurchaseOrderTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\PurchaseOrder'), 0, $e);
@@ -1563,6 +1603,9 @@ abstract class PurchaseOrder implements ActiveRecordInterface
         if ($this->isColumnModified(PurchaseOrderTableMap::COL_DOWN_PAYMENT_DEADLINE)) {
             $modifiedColumns[':p' . $index++]  = 'down_payment_deadline';
         }
+        if ($this->isColumnModified(PurchaseOrderTableMap::COL_TYPE)) {
+            $modifiedColumns[':p' . $index++]  = 'type';
+        }
         if ($this->isColumnModified(PurchaseOrderTableMap::COL_TOTAL_PRICE)) {
             $modifiedColumns[':p' . $index++]  = 'total_price';
         }
@@ -1627,6 +1670,9 @@ abstract class PurchaseOrder implements ActiveRecordInterface
                         break;
                     case 'down_payment_deadline':
                         $stmt->bindValue($identifier, $this->down_payment_deadline ? $this->down_payment_deadline->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                        break;
+                    case 'type':
+                        $stmt->bindValue($identifier, $this->type, PDO::PARAM_STR);
                         break;
                     case 'total_price':
                         $stmt->bindValue($identifier, $this->total_price, PDO::PARAM_STR);
@@ -1745,18 +1791,21 @@ abstract class PurchaseOrder implements ActiveRecordInterface
                 return $this->getDownPaymentDeadline();
                 break;
             case 13:
-                return $this->getTotalPrice();
+                return $this->getType();
                 break;
             case 14:
-                return $this->getState();
+                return $this->getTotalPrice();
                 break;
             case 15:
-                return $this->getActive();
+                return $this->getState();
                 break;
             case 16:
-                return $this->getCreatedAt();
+                return $this->getActive();
                 break;
             case 17:
+                return $this->getCreatedAt();
+                break;
+            case 18:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1802,11 +1851,12 @@ abstract class PurchaseOrder implements ActiveRecordInterface
             $keys[10] => $this->getDownPaymentId(),
             $keys[11] => $this->getDownPaymentAmount(),
             $keys[12] => $this->getDownPaymentDeadline(),
-            $keys[13] => $this->getTotalPrice(),
-            $keys[14] => $this->getState(),
-            $keys[15] => $this->getActive(),
-            $keys[16] => $this->getCreatedAt(),
-            $keys[17] => $this->getUpdatedAt(),
+            $keys[13] => $this->getType(),
+            $keys[14] => $this->getTotalPrice(),
+            $keys[15] => $this->getState(),
+            $keys[16] => $this->getActive(),
+            $keys[17] => $this->getCreatedAt(),
+            $keys[18] => $this->getUpdatedAt(),
         );
         if ($result[$keys[7]] instanceof \DateTimeInterface) {
             $result[$keys[7]] = $result[$keys[7]]->format('c');
@@ -1820,12 +1870,12 @@ abstract class PurchaseOrder implements ActiveRecordInterface
             $result[$keys[12]] = $result[$keys[12]]->format('c');
         }
 
-        if ($result[$keys[16]] instanceof \DateTimeInterface) {
-            $result[$keys[16]] = $result[$keys[16]]->format('c');
-        }
-
         if ($result[$keys[17]] instanceof \DateTimeInterface) {
             $result[$keys[17]] = $result[$keys[17]]->format('c');
+        }
+
+        if ($result[$keys[18]] instanceof \DateTimeInterface) {
+            $result[$keys[18]] = $result[$keys[18]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1998,18 +2048,21 @@ abstract class PurchaseOrder implements ActiveRecordInterface
                 $this->setDownPaymentDeadline($value);
                 break;
             case 13:
-                $this->setTotalPrice($value);
+                $this->setType($value);
                 break;
             case 14:
-                $this->setState($value);
+                $this->setTotalPrice($value);
                 break;
             case 15:
-                $this->setActive($value);
+                $this->setState($value);
                 break;
             case 16:
-                $this->setCreatedAt($value);
+                $this->setActive($value);
                 break;
             case 17:
+                $this->setCreatedAt($value);
+                break;
+            case 18:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -2078,19 +2131,22 @@ abstract class PurchaseOrder implements ActiveRecordInterface
             $this->setDownPaymentDeadline($arr[$keys[12]]);
         }
         if (array_key_exists($keys[13], $arr)) {
-            $this->setTotalPrice($arr[$keys[13]]);
+            $this->setType($arr[$keys[13]]);
         }
         if (array_key_exists($keys[14], $arr)) {
-            $this->setState($arr[$keys[14]]);
+            $this->setTotalPrice($arr[$keys[14]]);
         }
         if (array_key_exists($keys[15], $arr)) {
-            $this->setActive($arr[$keys[15]]);
+            $this->setState($arr[$keys[15]]);
         }
         if (array_key_exists($keys[16], $arr)) {
-            $this->setCreatedAt($arr[$keys[16]]);
+            $this->setActive($arr[$keys[16]]);
         }
         if (array_key_exists($keys[17], $arr)) {
-            $this->setUpdatedAt($arr[$keys[17]]);
+            $this->setCreatedAt($arr[$keys[17]]);
+        }
+        if (array_key_exists($keys[18], $arr)) {
+            $this->setUpdatedAt($arr[$keys[18]]);
         }
     }
 
@@ -2171,6 +2227,9 @@ abstract class PurchaseOrder implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PurchaseOrderTableMap::COL_DOWN_PAYMENT_DEADLINE)) {
             $criteria->add(PurchaseOrderTableMap::COL_DOWN_PAYMENT_DEADLINE, $this->down_payment_deadline);
+        }
+        if ($this->isColumnModified(PurchaseOrderTableMap::COL_TYPE)) {
+            $criteria->add(PurchaseOrderTableMap::COL_TYPE, $this->type);
         }
         if ($this->isColumnModified(PurchaseOrderTableMap::COL_TOTAL_PRICE)) {
             $criteria->add(PurchaseOrderTableMap::COL_TOTAL_PRICE, $this->total_price);
@@ -2285,6 +2344,7 @@ abstract class PurchaseOrder implements ActiveRecordInterface
         $copyObj->setDownPaymentId($this->getDownPaymentId());
         $copyObj->setDownPaymentAmount($this->getDownPaymentAmount());
         $copyObj->setDownPaymentDeadline($this->getDownPaymentDeadline());
+        $copyObj->setType($this->getType());
         $copyObj->setTotalPrice($this->getTotalPrice());
         $copyObj->setState($this->getState());
         $copyObj->setActive($this->getActive());
@@ -2939,6 +2999,7 @@ abstract class PurchaseOrder implements ActiveRecordInterface
         $this->down_payment_id = null;
         $this->down_payment_amount = null;
         $this->down_payment_deadline = null;
+        $this->type = null;
         $this->total_price = null;
         $this->state = null;
         $this->active = null;
