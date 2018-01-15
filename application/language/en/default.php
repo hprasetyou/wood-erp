@@ -182,7 +182,7 @@
 'stock_move' => 'Stock Move',
 'supplier' => 'Supplier',
 'supplier_id' => 'Supplier Id',
-'support_component' => 'Support Component',
+'support_component' => 'Support Material',
 'system_setting' => 'System Setting',
 'tax_number' => 'Tax Number',
 'total' => 'Total',

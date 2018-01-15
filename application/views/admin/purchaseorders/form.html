@@ -3,6 +3,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
 {% if purchaseorders %}
 {% set packinglist = purchaseorders.PackingList %}
 {% endif %}
+{% set types = ['Semi Finished Goods','Support Material','Raw Material'] %}
 <div class="row">
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<form id="form_PurchaseOrder" method="post" action="{{base_url}}index.php/manage_purchaseorders/write/{{ purchaseorders.Id }}" data-parsley-validate class="form-horizontal form-label-left">
@@ -13,6 +14,21 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
 				<div class="box-body">
 					<div class="row">
 						<div class="col-sm-6">
+              <div class="form-group">
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProformaInvoiceId">{{res.string.proforma_invoice}}</label>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+                    <select name="Type" class="form-select" id="Type">
+                      {% for type in types%}
+                      <option {% if purchaseorders.Type == type %}selected{% endif %} value="{{type}}">{{type}}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  {% if purchaseorders %}
+									<p class="value">{{ purchaseorders.Name }}</p>
+									{% endif %}
+                </div>
+              </div>
 							<div {% if purchaseorders %}style="display:none"{% endif %} class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.po_number}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">

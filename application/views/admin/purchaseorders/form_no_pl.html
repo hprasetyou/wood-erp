@@ -1,333 +1,369 @@
-{% extends "dashboard.html" %} {% set title=" Purchase Order " %} {% if purchaseorders %} {% set bc_text = purchaseorders.id %} {% else %} {% set bc_text = res.string.new %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_purchaseorders','text':
-res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %}
-{% if purchaseorders %}
-{% set packinglist = purchaseorders.PackingList %}
-{% endif %}
+{% extends "dashboard.html" %} {% set title=" Purchase Order " %} {% if purchaseorders %} {% set bc_text = purchaseorders.id
+%} {% else %} {% set bc_text = res.string.new %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_purchaseorders','text': res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %} {% if purchaseorders %} {% set packinglist = purchaseorders.PackingList %} {% endif %}
+{% set types = ['Support Material','Raw Material','Miscellanious'] %}
+
 <div class="row">
- <div class="col-md-12 col-sm-12 col-xs-12">
-   <form id="form_PurchaseOrder" method="post" action="{{base_url}}index.php/manage_purchaseorders/write/{{ purchaseorders.Id }}" data-parsley-validate class="form-horizontal form-label-left">
-     <div class="box box-info">
-       <div class="box-header with-border">
-         {% include 'common/_form_header.html' with {'back_url':'/index.php/manage_purchaseorders'~back_link, 'title': res.string.purchase_order, 'delete_url':'/index.php/manage_purchaseorders/delete/' ~ purchaseorders.Id, 'object':purchaseorders} %}
-       </div>
-       <div class="box-body">
-         <div class="row">
-           <div class="col-sm-6">
-             <div {% if purchaseorders %}style="display:none"{% endif %} class="form-group">
-               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.po_number}}</label>
-               <div class="col-md-6 col-sm-6 col-xs-12">
-                 <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
-                   <input type="text" readonly placeholder="{{ res.string.po_number }}" id="Name" value="{{ po_number }}" name="Name" required="required" class="form-control  col-md-7 col-xs-12">
-                 </div>
-                 {% if purchaseorders %}
-                 <p class="value">{{ purchaseorders.Name }}</p>
-                 {% endif %}
-               </div>
-             </div>
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <form id="form_PurchaseOrder" method="post" action="{{base_url}}index.php/manage_purchaseorders/write/{{ purchaseorders.Id }}"
+      data-parsley-validate class="form-horizontal form-label-left">
+      <div class="box box-info">
+        <div class="box-header with-border">
+          {% include 'common/_form_header.html' with {'back_url':'/index.php/manage_purchaseorders'~back_link, 'title': res.string.purchase_order,
+          'delete_url':'/index.php/manage_purchaseorders/delete/' ~ purchaseorders.Id, 'object':purchaseorders} %}
+        </div>
+        <div class="box-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <div {% if purchaseorders %}style="display:none" {% endif %} class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProformaInvoiceId">{{res.string.proforma_invoice}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+                    <select name="Type" class="form-select" id="Type">
+                      {% for type in types%}
+                      <option {% if purchaseorders.Type==type %}selected{% endif %} value="{{type}}">{{type}}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  {% if purchaseorders %}
+                  <p class="value">{{ purchaseorders.Name }}</p>
+                  {% endif %}
+                </div>
+              </div>
+              <div {% if purchaseorders %}style="display:none" {% endif %} class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.po_number}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+                    <input type="text" readonly placeholder="{{ res.string.po_number }}" id="Name" value="{{ po_number }}" name="Name" required="required"
+                      class="form-control  col-md-7 col-xs-12">
+                  </div>
+                  {% if purchaseorders %}
+                  <p class="value">{{ purchaseorders.Name }}</p>
+                  {% endif %}
+                </div>
+              </div>
 
-             <input type="hidden" name="Id" id="Id" value="{{ purchaseorders.Id }}">
+              <input type="hidden" name="Id" id="Id" value="{{ purchaseorders.Id }}">
 
-             <div class="form-group">
-               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.deadline}}</label>
-               <div class="col-md-6 col-sm-6 col-xs-12">
-                 <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
-                   <input type="text" placeholder="{{ res.string.deadline }}" id="DeliveryDeadline" value="{{ purchaseorders.DeliveryDeadline  | date('Y/m/d') }}" name="DeliveryDeadline" class="form-control input-date col-md-7 col-xs-12">
-                 </div>
-                 {% if purchaseorders %}
-                 <p class="control-value">{{ purchaseorders.DeliveryDeadline | date('d M Y') }}</p>
-                 {% endif %}
-               </div>
-             </div>
-             <div class="form-group">
-               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="SupplierId">{{res.string.supplier}}</label>
-               <div class="col-md-6 col-sm-6 col-xs-12">
-                 <div {% if purchaseorders %}style="display:none"{% else %} class="input-wrap input-group" {% endif %}>
-                   <input type="hidden" type="text" id="SupplierId" value="{{ purchaseorders.SupplierId }}" name="SupplierId">
-                   <input type="text" required="required" name="displaySupplierId" id="displaySupplierId" placeholder="{{ res.string.supplier_id }}" value="{{ purchaseorders.Supplier.Name }}" class="form-control" />
-                   <span class="input-group-btn">
-               <button class="btn btnModal btn-default" id="btnSupplierId"  data-target="ModalSupplier" type="button">{{res.string.search}}</button>
-             </span>
-                 </div>
-                 {% if purchaseorders %}
-                 <p class="value">{{ purchaseorders.Supplier.Name }}</p>
-                 {% endif %}
-               </div>
-             </div>
-           </div>
-           <div class="col-sm-6">
-             <div class="form-group">
-               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.date}}</label>
-               <div class="col-md-6 col-sm-6 col-xs-12">
-                 <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
-                   <input type="text" placeholder="{{ res.string.date }}" id="Date" value="{{ purchaseorders.Date  | date('Y/m/d') }}" name="Date" class="form-control input-date col-md-7 col-xs-12">
-                 </div>
-                 {% if purchaseorders %}
-                 <p class="control-value">{{ purchaseorders.Date | date('d M Y') }}</p>
-                 {% endif %}
-               </div>
-             </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.deadline}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+                    <input type="text" placeholder="{{ res.string.deadline }}" id="DeliveryDeadline" value="{{ purchaseorders.DeliveryDeadline  | date('Y/m/d') }}"
+                      name="DeliveryDeadline" class="form-control input-date col-md-7 col-xs-12">
+                  </div>
+                  {% if purchaseorders %}
+                  <p class="control-value">{{ purchaseorders.DeliveryDeadline | date('d M Y') }}</p>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="SupplierId">{{res.string.supplier}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if purchaseorders %}style="display:none" {% else %} class="input-wrap input-group" {% endif %}>
+                    <input type="hidden" type="text" id="SupplierId" value="{{ purchaseorders.SupplierId }}" name="SupplierId">
+                    <input type="text" required="required" name="displaySupplierId" id="displaySupplierId" placeholder="{{ res.string.supplier_id }}"
+                      value="{{ purchaseorders.Supplier.Name }}" class="form-control" />
+                    <span class="input-group-btn">
+                      <button class="btn btnModal btn-default" id="btnSupplierId" data-target="ModalSupplier" type="button">{{res.string.search}}</button>
+                    </span>
+                  </div>
+                  {% if purchaseorders %}
+                  <p class="value">{{ purchaseorders.Supplier.Name }}</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.date}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+                    <input type="text" placeholder="{{ res.string.date }}" id="Date" value="{{ purchaseorders.Date  | date('Y/m/d') }}" name="Date"
+                      class="form-control input-date col-md-7 col-xs-12">
+                  </div>
+                  {% if purchaseorders %}
+                  <p class="control-value">{{ purchaseorders.Date | date('d M Y') }}</p>
+                  {% endif %}
+                </div>
+              </div>
 
-             <div class="form-group">
-               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="PaymentTerm">{{res.string.payment_term}}</label>
-               <div class="col-md-6 col-sm-6 col-xs-12">
-                 <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
-                   {{ form_enum('PurchaseOrder.PaymentTerm',purchaseorders.PaymentTerm) | raw }}
-                 </div>
-                 {% if purchaseorders %}
-                 <p class="control-value">{{ purchaseorders.PaymentTerm }}</p>
-                 {% endif %}
-               </div>
-             </div>
-             <div class="form-group">
-               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="DownPaymentId">{{res.string.down_payment}}</label>
-               <div class="col-md-6 col-sm-6 col-xs-12">
-               <div {% if purchaseorders %}style="display:none"{% endif %} class="input-wrap">
-                 {{selection_m2o('DownPaymentId','DownPayment',null,purchaseorders.DownPaymentId?purchaseorders.DownPaymentId:'') | raw}}
-               </div>
-                   {% if purchaseorders %}
-                     <p class="control-value">{{ purchaseorders.DownPayment.Name  }}</p>
-                   {% endif %}
-                 </div>
-               </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="PaymentTerm">{{res.string.payment_term}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+                    {{ form_enum('PurchaseOrder.PaymentTerm',purchaseorders.PaymentTerm) | raw }}
+                  </div>
+                  {% if purchaseorders %}
+                  <p class="control-value">{{ purchaseorders.PaymentTerm }}</p>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="DownPaymentId">{{res.string.down_payment}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+                    {{selection_m2o('DownPaymentId','DownPayment',null,purchaseorders.DownPaymentId?purchaseorders.DownPaymentId:'') | raw}}
+                  </div>
+                  {% if purchaseorders %}
+                  <p class="control-value">{{ purchaseorders.DownPayment.Name }}</p>
+                  {% endif %}
+                </div>
+              </div>
 
-             <div class="form-group">
-               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="DownPaymentDeadline">{{res.string.down_payment_deadline}}</label>
-               <div class="col-md-6 col-sm-6 col-xs-12">
-                 <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
-                   <input type="text" placeholder="{{ res.string.down_payment_deadline }}" id="DownPaymentDeadline" value="{{ purchaseorders.DownPaymentDeadline  | date('Y/m/d') }}" name="DownPaymentDeadline" class="form-control input-date col-md-7 col-xs-12">
-                 </div>
-                 {% if purchaseorders %}
-                 <p class="control-value">{{ purchaseorders.DownPaymentDeadline | date('d M Y') }}</p>
-                 {% endif %}
-               </div>
-             </div>
-             <div class="form-group">
-               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.currency}}</label>
-               <div class="col-md-6 col-sm-6 col-xs-12">
-                 <div {% if purchaseorders %}style="display:none" {% endif %} class="wrap">
-                   {{selection_m2o('CurrencyId','Currency',null,purchaseorders.CurrencyId,'CurrencyId','Name-Symbol')| raw}}
-                 </div>
-                 {% if purchaseorders %}
-                 <p data-fieldname="Date" class="value">{{ purchaseorders.Currency.Name }}</p>
-                 {% endif %}
-               </div>
-             </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="DownPaymentDeadline">{{res.string.down_payment_deadline}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
+                    <input type="text" placeholder="{{ res.string.down_payment_deadline }}" id="DownPaymentDeadline" value="{{ purchaseorders.DownPaymentDeadline  | date('Y/m/d') }}"
+                      name="DownPaymentDeadline" class="form-control input-date col-md-7 col-xs-12">
+                  </div>
+                  {% if purchaseorders %}
+                  <p class="control-value">{{ purchaseorders.DownPaymentDeadline | date('d M Y') }}</p>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.currency}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if purchaseorders %}style="display:none" {% endif %} class="wrap">
+                    {{selection_m2o('CurrencyId','Currency',null,purchaseorders.CurrencyId,'CurrencyId','Name-Symbol')| raw}}
+                  </div>
+                  {% if purchaseorders %}
+                  <p data-fieldname="Date" class="value">{{ purchaseorders.Currency.Name }}</p>
+                  {% endif %}
+                </div>
+              </div>
 
-           </div>
-         </div>
-         <div class="row">
-           <div class="col-sm-12">
-             <div class="nav-tabs-custom">
-               <ul class="nav nav-tabs">
-                 <li class="active">
-                   <a href="#tab_1" data-toggle="tab">{{res.string.purchase_order_line}}</a>
-                 </li>
-                 <li class="">
-                   <a href="#tab_2" data-toggle="tab">{{res.string.note}}</a>
-                 </li>
-               </ul>
-               <div class="tab-content">
-                 <!-- /.tab-pane -->
-                 <div class="tab-pane clearfix active" id="tab_1">
-                   <a href="#" class="btn btn-default " data-toggle="modal" data-target="#modalAddPOLine"> {{res.string.add_po_line}}</a>
-                   {% include "admin/purchaseorders/_purchase_order_line_tab.html"%}
-                 </div>
-                 <div class="tab-pane clearfix" id="tab_2">
-                   {% include "admin/purchaseorders/_note.html"%}
-                 </div>
-               </div>
-             </div>
-           </div>
-         </div>
-       </div>
-   </form>
-   </div>
- </div>
- <!-- Modal -->
- {% include "admin/proformainvoices/_modal.html" %}
- {% include "admin/purchaseorders/_modal_add_product_to_po.html" %}
-  {% include "admin/suppliers/_modal.html" %}
- {% endblock %}
- {% block bottom%}
- {% include "admin/products/_modal.html" %}
- <script type="text/javascript">
- {% if res.query_params.packinglist %}
-   $.ajax({
-     url:'/index.php/manage_proformainvoices/detail/{{res.query_params.proformainvoice}}',
-     method:"GET",
-     dataType:"JSON"
-   }).done(function(o){
-     console.log(o);
-     $('#ProformaInvoiceId').val(o.Id)
-     $('#displayProformaInvoiceId').val(o.Name)
-     $('#txtPINo').text(o.Name)
-     $('#ProformaInvoiceId').trigger('change')
-   })
- {% endif %}
-   $('#table_ProformaInvoiceLine').on('change','.cb_pi',function(e){
-     var is_empty = true;
-     $('#table_ProformaInvoiceLine').find('.cb_pi').each(function(i){
-       if($(this).is(':checked')){
-         is_empty = false
-       }
-     })
-     $('#btnAddPO').toggle(!is_empty)
-   })
-   $('#btnAddPO').click(function(e){
-     e.preventDefault()
-     console.log('hehehehe');
-     $('#tbAddPO').find('tbody').html('')
-     $('#table_ProformaInvoiceLine').find('.cb_pi').each(function(i){
-       if($(this).is(':checked')){
-         console.log($(this).parents('tr').children('td:eq(6)').text());
-         $('#tbAddPO').find('tbody').append('<tr>'+
-         '<td><input type="hidden" name="PILineId[]" value="'+
-         $(this).data('id')+'">'+
-         $(this).parents('tr').children('td:eq(1)').text()+
-         '<input type="hidden" name="PILineName[]" value="'+
-         $(this).parents('tr').children('td:eq(1)').text()+'"></td>'+
-         '<td>'+$(this).parents('tr').children('td:eq(2)').text()+'</td>'+
-         '<td>'+$(this).parents('tr').children('td:eq(3)').text()+'</td>'+
-         '<td><input type="number" name="PILineQty[]" required max="'+$(this).parents('tr').children('td:eq(4)').text()+
-         '" class="form-control PILineQty" maxlength="4" size="4" value="'+$(this).parents('tr').children('td:eq(4)').text()+'">'+
-         '</td>'+
-         '<td><input type="number" name="PILinePrice[]" required '+
-                  'class="form-control" value="'+$(this).parents('tr').children('td:eq(6)').text()+'">'+
-         '</td></tr>');
-       }
-     })
-     $('#modalAddPOLine').modal('show')
-   })
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active">
+                    <a href="#tab_1" data-toggle="tab">{{res.string.purchase_order_line}}</a>
+                  </li>
+                  <li class="">
+                    <a href="#tab_2" data-toggle="tab">{{res.string.note}}</a>
+                  </li>
+                </ul>
+                <div class="tab-content">
+                  <!-- /.tab-pane -->
+                  <div class="tab-pane clearfix active" id="tab_1">
+                    <a href="#" class="btn btn-default " data-toggle="modal" data-target="#modalAddPOLine"> {{res.string.add_po_line}}</a>
+                    {% include "admin/purchaseorders/_purchase_order_line_tab.html"%}
+                  </div>
+                  <div class="tab-pane clearfix" id="tab_2">
+                    {% include "admin/purchaseorders/_note.html"%}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </form>
+    </div>
+  </div>
+  <!-- Modal -->
+  {% include "admin/proformainvoices/_modal.html" %} {% include "admin/purchaseorders/_modal_add_product_to_po.html" %} {%
+  include "admin/suppliers/_modal.html" %} {% endblock %} {% block bottom%} {% include "admin/products/_modal.html" %}
+  <script type="text/javascript">
+    { %
+      if res.query_params.packinglist %
+    }
+    $.ajax({
+      url: '/index.php/manage_proformainvoices/detail/{{res.query_params.proformainvoice}}',
+      method: "GET",
+      dataType: "JSON"
+    }).done(function (o) {
+      console.log(o);
+      $('#ProformaInvoiceId').val(o.Id)
+      $('#displayProformaInvoiceId').val(o.Name)
+      $('#txtPINo').text(o.Name)
+      $('#ProformaInvoiceId').trigger('change')
+    }) { % endif %
+    }
+    $('#table_ProformaInvoiceLine').on('change', '.cb_pi', function (e) {
+      var is_empty = true;
+      $('#table_ProformaInvoiceLine').find('.cb_pi').each(function (i) {
+        if ($(this).is(':checked')) {
+          is_empty = false
+        }
+      })
+      $('#btnAddPO').toggle(!is_empty)
+    })
+    $('#btnAddPO').click(function (e) {
+      e.preventDefault()
+      console.log('hehehehe');
+      $('#tbAddPO').find('tbody').html('')
+      $('#table_ProformaInvoiceLine').find('.cb_pi').each(function (i) {
+        if ($(this).is(':checked')) {
+          console.log($(this).parents('tr').children('td:eq(6)').text());
+          $('#tbAddPO').find('tbody').append('<tr>' +
+            '<td><input type="hidden" name="PILineId[]" value="' +
+            $(this).data('id') + '">' +
+            $(this).parents('tr').children('td:eq(1)').text() +
+            '<input type="hidden" name="PILineName[]" value="' +
+            $(this).parents('tr').children('td:eq(1)').text() + '"></td>' +
+            '<td>' + $(this).parents('tr').children('td:eq(2)').text() + '</td>' +
+            '<td>' + $(this).parents('tr').children('td:eq(3)').text() + '</td>' +
+            '<td><input type="number" name="PILineQty[]" required max="' + $(this).parents('tr').children(
+              'td:eq(4)').text() +
+            '" class="form-control PILineQty" maxlength="4" size="4" value="' + $(this).parents('tr').children(
+              'td:eq(4)').text() + '">' +
+            '</td>' +
+            '<td><input type="number" name="PILinePrice[]" required ' +
+            'class="form-control" value="' + $(this).parents('tr').children('td:eq(6)').text() + '">' +
+            '</td></tr>');
+        }
+      })
+      $('#modalAddPOLine').modal('show')
+    })
 
-   $('#PILineAll').change(function(e){
-     $('.cb_pi').prop('checked',$(this).prop('checked'))
-   })
-   $(document).ready(function(){
-     $("#CurrencyId").trigger('change')
-     // $('#DownPaymentId').trigger('change')
-     $('#DownPaymentId').change(function(e){
-       var d = $(this).find("option:selected").data('value')
-       var dp = $('#SubTotal').val()*d
-       $('#DownPaymentAmount').val(dp)
-       $('#TotalPrice').val($('#SubTotal').val()-dp)
+    $('#PILineAll').change(function (e) {
+      $('.cb_pi').prop('checked', $(this).prop('checked'))
+    })
+    $(document).ready(function () {
+      $("#CurrencyId").trigger('change')
+      // $('#DownPaymentId').trigger('change')
+      $('#DownPaymentId').change(function (e) {
+        var d = $(this).find("option:selected").data('value')
+        var dp = $('#SubTotal').val() * d
+        $('#DownPaymentAmount').val(dp)
+        $('#TotalPrice').val($('#SubTotal').val() - dp)
 
-       console.log(d);
-     })
-     var table_ProformaInvoiceLine = $('#table_ProformaInvoiceLine').DataTable({
-       "processing": true,
-       "serverSide":true,
-       "searching": false,
-       "paging": false,
-       "ordering": false,
-       "ajax": "/index.php/manage_proformainvoicelines/get_pi_component/"+$('#ProformaInvoiceId').val()+'?supplier='+$('#SupplierId').val()+'&packinglist='+$('#PackingListId').val(),
-       "columns":[
-         {"data":"id",
-           "render":function(data){
-             return "<input type=\"checkbox\" data-id=\""+data+"\" class=\"cb_pi\" ></input>"
-           }
-         },
-         {"data":"article_number"},
-         {"data":"description"},
-         {"data":"has_component"},
-         {"data":"qty_needed"},
-         {"data":"qty_on_stock"},
-         {"data":"price",
-       "render":function(data){
-         return '<span style=\"display:none\">'+data+'</span>'
-       }} ],
-       "initComplete" : function(settings, json) {
-           $('#table_ProformaInvoiceLine').css('width','100%')
-           $('#table_ProformaInvoiceLine_info').hide()
-         }
-     })
+        console.log(d);
+      })
+      var table_ProformaInvoiceLine = $('#table_ProformaInvoiceLine').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "searching": false,
+        "paging": false,
+        "ordering": false,
+        "ajax": "/index.php/manage_proformainvoicelines/get_pi_component/" + $('#ProformaInvoiceId').val() +
+          '?supplier=' + $('#SupplierId').val() + '&packinglist=' + $('#PackingListId').val(),
+        "columns": [{
+            "data": "id",
+            "render": function (data) {
+              return "<input type=\"checkbox\" data-id=\"" + data + "\" class=\"cb_pi\" ></input>"
+            }
+          },
+          {
+            "data": "article_number"
+          },
+          {
+            "data": "description"
+          },
+          {
+            "data": "has_component"
+          },
+          {
+            "data": "qty_needed"
+          },
+          {
+            "data": "qty_on_stock"
+          },
+          {
+            "data": "price",
+            "render": function (data) {
+              return '<span style=\"display:none\">' + data + '</span>'
+            }
+          }
+        ],
+        "initComplete": function (settings, json) {
+          $('#table_ProformaInvoiceLine').css('width', '100%')
+          $('#table_ProformaInvoiceLine_info').hide()
+        }
+      })
 
-     $('#tbAddPO').on('change keyup','.PILineQty',function(e){
-       if(($(this).val())*1 > ($(this).prop('max'))*1){
-         $(this).val($(this).prop('max'))
-       }
-       })
-       $('#table_PurchaseOrderLine').on('click','.btn-delete',function(e){
-         e.preventDefault()
-         $.ajax({
-           url:"/index.php/manage_purchaseorderlines/delete/"+$(this).data('id'),
-           method:'POST',
-           data:'confirm=1&confirm=1',
-           dataType:"JSON"
-         }).done(function(o){
-           $('#table_ProformaInvoiceLine').DataTable().ajax.reload()
-           $('#table_PurchaseOrderLine').DataTable().ajax.reload(function(){
-               $('.btn-delete').show()
-               update_val()
-           })
+      $('#tbAddPO').on('change keyup', '.PILineQty', function (e) {
+        if (($(this).val()) * 1 > ($(this).prop('max')) * 1) {
+          $(this).val($(this).prop('max'))
+        }
+      })
+      $('#table_PurchaseOrderLine').on('click', '.btn-delete', function (e) {
+        e.preventDefault()
+        $.ajax({
+          url: "/index.php/manage_purchaseorderlines/delete/" + $(this).data('id'),
+          method: 'POST',
+          data: 'confirm=1&confirm=1',
+          dataType: "JSON"
+        }).done(function (o) {
+          $('#table_ProformaInvoiceLine').DataTable().ajax.reload()
+          $('#table_PurchaseOrderLine').DataTable().ajax.reload(function () {
+            $('.btn-delete').show()
+            update_val()
+          })
 
-         })
-         console.log("delete");
-       })
-     $('#formAddPOLine').submit(function(e){
-       e.preventDefault()
-       if(!$('#Id').val()){
-         submitpo().done(function(o){
-           console.log('po created . . . . . ');
-           submitpoline(o.Id).done(function(lo){
-             window.location = '/index.php/manage_purchaseorders/detail/'+o.Id+'#edit'
-           })
-         })
+        })
+        console.log("delete");
+      })
+      $('#formAddPOLine').submit(function (e) {
+        e.preventDefault()
+        if (!$('#Id').val()) {
+          submitpo().done(function (o) {
+            console.log('po created . . . . . ');
+            submitpoline(o.Id).done(function (lo) {
+              window.location = '/index.php/manage_purchaseorders/detail/' + o.Id + '#edit'
+            })
+          })
 
-       }else{
-         submitpoline($('#Id').val()).done(function(o){
+        } else {
+          submitpoline($('#Id').val()).done(function (o) {
 
-           $('#table_ProformaInvoiceLine').DataTable().ajax.reload()
-           $('#table_PurchaseOrderLine').DataTable().ajax.reload(function(){
-               $('.btn-delete').show()
-               update_val()
-           })
-           $('#modalAddPOLine').modal('hide')
-         })
-       }
-     })
-   })
+            $('#table_ProformaInvoiceLine').DataTable().ajax.reload()
+            $('#table_PurchaseOrderLine').DataTable().ajax.reload(function () {
+              $('.btn-delete').show()
+              update_val()
+            })
+            $('#modalAddPOLine').modal('hide')
+          })
+        }
+      })
+    })
 
-   function update_val(){
-     getdetail().then(function(o){
-       for (var i in o) {
-         if (o.hasOwnProperty(i)) {
-           $('#'+i).val(o[i])
-         }
-       }
-       $('#DownPaymentId').trigger('change')
-       submitpo()
-     })
-   }
+    function update_val() {
+      getdetail().then(function (o) {
+        for (var i in o) {
+          if (o.hasOwnProperty(i)) {
+            $('#' + i).val(o[i])
+          }
+        }
+        $('#DownPaymentId').trigger('change')
+        submitpo()
+      })
+    }
 
-   function submitpoline(po_id){
-     return $.ajax({
-       url:$('#formAddPOLine').prop('action')+'?purchase_order='+po_id,
-       method:'POST',
-       data:$('#formAddPOLine').serialize()+'&PartnerId='+ $('#SupplierId').val(),
-       dataType:'JSON'
-     })
-   }
+    function submitpoline(po_id) {
+      return $.ajax({
+        url: $('#formAddPOLine').prop('action') + '?purchase_order=' + po_id,
+        method: 'POST',
+        data: $('#formAddPOLine').serialize() + '&PartnerId=' + $('#SupplierId').val(),
+        dataType: 'JSON'
+      })
+    }
 
-   function submitpo(){
-     return $.ajax({
-       url:$('#form_PurchaseOrder').prop('action'),
-       method:'POST',
-       data:$('#form_PurchaseOrder').serialize(),
-       dataType:'JSON'
-     })
-   }
-   $("#CurrencyId").change(function(e){
-     $('.lineCurr').text($("#CurrencyId option:selected").text().split(' - ')[1]);
-   })
-   function getdetail(){
-     return $.ajax({
-       url:location.href,
-       method:'GET',
-       dataType:'JSON'
-     })
-   }
-   $('#table_PurchaseOrderLine').loadTableData({
-     'button':["delete"]
-   })
- </script>
- {% endblock %}
+    function submitpo() {
+      return $.ajax({
+        url: $('#form_PurchaseOrder').prop('action'),
+        method: 'POST',
+        data: $('#form_PurchaseOrder').serialize(),
+        dataType: 'JSON'
+      })
+    }
+    $("#CurrencyId").change(function (e) {
+      $('.lineCurr').text($("#CurrencyId option:selected").text().split(' - ')[1]);
+    })
+
+    function getdetail() {
+      return $.ajax({
+        url: location.href,
+        method: 'GET',
+        dataType: 'JSON'
+      })
+    }
+    $('#table_PurchaseOrderLine').loadTableData({
+      'button': ["delete"]
+    })
+  </script>
+  {% endblock %}
