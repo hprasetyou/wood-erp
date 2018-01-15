@@ -98,6 +98,9 @@ jQuery.fn.loadTableData = function(
     if(!conf.hasOwnProperty('ordering')){
       conf.ordering = true;
     }
+    if(conf.paging){
+      conf.pageLength = 25;
+    }
     var fs = conf.backendfunc
   var tt = $(this)
   var c = tt.data('controller')

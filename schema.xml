@@ -378,6 +378,7 @@
     <column name="down_payment_id" phpName="DownPaymentId" type="INTEGER"/>
     <column name="down_payment_amount" phpName="DownPaymentAmount" type="FLOAT"/>
     <column name="down_payment_deadline" phpName="DownPaymentDeadline" type="DATE"/>
+    <column name="type" phpName="Type" type="CHAR" sqlType="ENUM('Semi Finished Goods','Support Material','Raw Material','Miscellanious')"/>
     <!-- total here is total after downpayment and discount and other thing  -->
     <column name="total_price" phpName="TotalPrice" type="FLOAT"/>
     <column name="state" phpName="State" type="CHAR" sqlType="ENUM('draft','confirm','done','delete')" defaultValue="draft"/>

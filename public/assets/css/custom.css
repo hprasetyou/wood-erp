@@ -27,6 +27,9 @@ textarea {
 .nopadding{
   padding: 0 !important;
 }
+.dataTable{
+  font-size: 0.8em !important;
+}
 .sorting::after{
     display: none !important;
 }
