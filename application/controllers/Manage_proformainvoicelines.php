@@ -45,6 +45,7 @@ class Manage_proformainvoicelines extends MY_Controller{
         }
         return \$o;
     }";
+    $this->custom_column['currency_code'] = "_{ProformaInvoice}_->getCurrency()->getCode()";
     $this->custom_column['calc_disc'] ="function() use (_{Price}_,_{Product}_){
       \$o = \"\";
 
@@ -239,24 +240,31 @@ class Manage_proformainvoicelines extends MY_Controller{
     );
     //Should be in USD
     $this->form['TotalPrice'] = array('value' =>
-      $pack_qty*$price
+      $qty*$price
     );
   	$data = parent::write($id);
-    $total = ProformaInvoiceLineQuery::create()
-    ->select('ProformaInvoiceId')
-    ->withColumn('SUM(ProformaInvoiceLine.TotalCubicDimension)','TotalCubicDimension')
-    ->withColumn('SUM(ProformaInvoiceLine.TotalPrice)','TotalPrice')
-    ->filterByProformaInvoice($pi)
-    ->findOne();
-    //set total on pi
-    $pi->setTotalCubicDimension($total['TotalCubicDimension'])
-    ->setTotalPrice($total['TotalPrice'])
-    ->save();
+    $this->piTotal($pi);
+
     echo $data->toJSON();
 }
 
+function piTotal($pi){
+  $total = ProformaInvoiceLineQuery::create()
+  ->select('ProformaInvoiceId')
+  ->withColumn('SUM(ProformaInvoiceLine.TotalCubicDimension)','TotalCubicDimension')
+  ->withColumn('SUM(ProformaInvoiceLine.TotalPrice)','TotalPrice')
+  ->filterByProformaInvoice($pi)
+  ->filterByActive(true)
+  ->findOne();
+  //set total on pi
+  $pi->setTotalCubicDimension($total['TotalCubicDimension'])
+  ->setTotalPrice($total['TotalPrice'])
+  ->save();
+}
+
   function delete($id){
-		$data = parent::delete($id);
+    $data = parent::delete($id);
+    $this->piTotal($data->getProformaInvoice());
 		redirect('manage_proformainvoicelines');
   }
 

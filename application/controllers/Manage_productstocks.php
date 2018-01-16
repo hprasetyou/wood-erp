@@ -14,6 +14,7 @@ class Manage_productstocks extends MY_Controller{
 	function get_json(){
 		$this->custom_column = array(
 			'product_desc' =>"_{Product}_->getDescription()",
+			'qty' =>"_{Qty}_.' '._{Product}_->getUnitOfMeasure()->getName()",
 			'partner_location_id' =>"_{PartnerLocation}_->getName().' - '._{PartnerLocation}_->getDescription()"
 		);
 		parent::get_json();

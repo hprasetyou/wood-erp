@@ -215,14 +215,13 @@ class MY_Controller extends CI_Controller{
          $obj->$func($value?true:false);
        }else{
          if($value){
-         write_log($func);
-         write_log($value);
            $obj->$func($value);
          }
        }
      }
 
    }
+   $obj->setActive(true);
    $obj->save();
    write_log("Writing data. . . . . . . ");
    write_log($obj);

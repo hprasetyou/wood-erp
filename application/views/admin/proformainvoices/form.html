@@ -118,7 +118,6 @@ $('#CustomerId').change(function(e){
 
 function refresh_line(){
   $('#table_ProformaInvoiceLine').DataTable().ajax.reload(function(d){
-      get_total()
       $('#ModalAddProformaInvoiceLine').modal('hide')
       $('#table_ProformaInvoiceLine').find('.btn-delete').show()
       $('#table_ProformaInvoiceLine').find('.btn-edit').show()
@@ -229,7 +228,7 @@ $(document).ready(function(){
       },
       complete:function(settings, json) {
 
-          get_total()
+          // get_total()
         $('#table_ProformaInvoiceLine').css('width','100%')
       }
     })

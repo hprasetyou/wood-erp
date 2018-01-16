@@ -67,7 +67,7 @@ function update_rate(){
         }
       }
       $(this).val(val)
-      $(this).text(sym+' '+val)
+      $(this).text(sym+' '+val.format(0, 3, '.', ''))
     })
   })
 }
@@ -244,6 +244,8 @@ jQuery.fn.loadTableData = function(
     if(conf.hasOwnProperty('group')){
       dtconf.columnDefs.push({ "visible": false, "targets": conf.group })
       dtconf.drawCallback = function(settings){
+            console.log($(this));
+            $(this).parents('.dataTables_wrapper').find('.dataTables_filter').text('hahahahaha')
             var api = this.api();
             var rows = api.rows( {page:'current'} ).nodes();
             var last=null;

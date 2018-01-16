@@ -2,12 +2,12 @@
 {% extends "dashboard.html" %}
 {% set title=" Product Stock " %}
 {% if productstocks %}
-	 {% set bc_text = productstocks.id  %}
+	 {% set bc_text = productstocks.Product.Name  %}
 {% else %}
 	 {% set bc_text = res.string.new %}
 {% endif %}
 {% set breadcrumbs = [
-	{'link': base_url~'index.php/manage_productstocks','text': res.string.productstock },
+	{'link': base_url~'index.php/manage_productstocks','text': res.string.stock },
 	{'link':'#','text':bc_text  }]
 %}
 {% block content %}
@@ -16,26 +16,9 @@
 		<form id="form_ProductStock" method="post" action="{{base_url}}index.php/manage_productstocks/write/{{ productstocks.id }}" data-parsley-validate class="form-horizontal form-label-left">
 			<div class="box box-info">
 				<div class="box-header with-border">
-				{% include 'common/_form_header.html'
-				with {'back_url':'/index.php/manage_productstocks'~back_link,
-				'title': res.string.productstock,
-				'delete_url':'/index.php/manage_productstocks/delete/' ~ productstocks.Id,
-				'object':productstocks} %}
+					<a href="{{base_url}}index.php/manage_productstocks" class="btn btn-default pull-right">{{res.string.back}}</a>
 				</div>
 				<div class="box-body">
-					
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.name}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if productstocks %}style="display:none"{% endif %} class="input-wrap">
-							<input type="text" placeholder="{{ res.string.name }}" id="Name" value="{{ productstocks.Name }}"
-							name="Name"  class="form-control  col-md-7 col-xs-12">
-						</div>
-								{% if productstocks %}
-									<p class="control-value">{{ productstocks.Name  }}</p>
-								{% endif %}
-							</div>
-						</div>
 
 					<div class="form-group">
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="PartnerLocationId">{{res.string.partner_location_id}}</label>
@@ -64,7 +47,7 @@
 							</span>
 						</div>
 								{% if productstocks %}
-									<p class="control-value">{{ productstocks.Product.Name  }}</p>
+									<p class="control-value">[{{productstocks.Product.Name}}] - {{ productstocks.Product.Description  }}</p>
 								{% endif %}
 							</div>
 						</div>
@@ -77,31 +60,15 @@
 							name="Qty" required="required" class="form-control  col-md-7 col-xs-12">
 						</div>
 								{% if productstocks %}
-									<p class="control-value">{{ productstocks.Qty  }}</p>
+									<p class="control-value">{{ productstocks.Qty  }} {{productstocks.Product.UnitOfMeasure.Name}}</p>
 								{% endif %}
 							</div>
 						</div>
-
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Active">{{res.string.active}}</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-						<div {% if productstocks %}style="display:none"{% endif %} class="input-wrap">
-							<input type="checkbox" placeholder="{{ res.string.active }}" id="Active" value="{{ productstocks.Active }}"
-							name="Active"  class="form-control  col-md-7 col-xs-12">
-						</div>
-								{% if productstocks %}
-									<p class="control-value">{{ productstocks.Active  }}</p>
-								{% endif %}
-							</div>
-						</div>
-
 				</div>
 		</form>
 	</div>
 </div>
 <!-- Modal -->
-{% include "admin/partner_locations/_modal.html" %}
-{% include "admin/products/_modal.html" %}
 
 {% endblock %}
 {% block bottom%}

@@ -17,6 +17,7 @@
    ->orderByCreatedAt('desc')
    ->findOne();
    if($target_data->getRounding()>0){
+     $round = $target_data->getRounding();
      return round(round(($val*(($target==$src)?1:$rate->getRate()))/$round)*$round,2);
    }
    return round($val*(($target==$src)?1:$rate->getRate()),2);
