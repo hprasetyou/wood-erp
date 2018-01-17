@@ -1,77 +1,98 @@
  {% extends "dashboard.html" %} {% set title=" Proforma Invoice " %} {% if proformainvoices %} {% set bc_text = proformainvoices.id %} {% else %} {% set bc_text = res.string.new %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_proformainvoices','text':
 res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content %}
 <div class="row">
-	<div class="col-md-12 col-sm-12 col-xs-12">
-		<form id="form_ProformaInvoice" method="post" action="{{base_url}}index.php/manage_proformainvoices/write/{{ proformainvoices.id }}" data-parsley-validate class="form-horizontal form-label-left">
-			<div class="box box-info">
-				<div class="box-header with-border">
-					{% include 'common/_form_header.html' with {'back_url':'/index.php/manage_proformainvoices'~back_link, 'title': res.string.proforma_invoice, 'delete_url':'/index.php/manage_proformainvoices/delete/'~ proformainvoices.Id , 'object':proformainvoices}
-					%}
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <form id="form_ProformaInvoice" method="post" action="{{base_url}}index.php/manage_proformainvoices/write/{{ proformainvoices.id }}" data-parsley-validate class="form-horizontal form-label-left">
+      <div class="box box-info">
+        <div class="box-header with-border">
+          {% include 'common/_form_header.html' with {'back_url':'/index.php/manage_proformainvoices'~back_link, 'title': res.string.proforma_invoice, 'delete_url':'/index.php/manage_proformainvoices/delete/'~ proformainvoices.Id , 'object':proformainvoices} %}
 
 
-				</div>
+        </div>
         <input type="hidden" id="PIId" value="{{ proformainvoices.Id }}">
-				<div class="box-body">
-					<div class="row">
-						<div class="col-sm-6">
-							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.pi_number}}</label>
-								<div class="col-md-6 col-sm-6 col-xs-12">
-                  <div {% if proformainvoices %}style="display:none"{%else%}class="input-wrap "{% endif %}>
-										<input type="text" placeholder="{{ res.string.name }}" value="{{ proformainvoices?proformainvoices.Name:code  }}" name="Name" class="form-control  col-md-7 col-xs-12">
-									</div>
-									{% if proformainvoices %}
-									<p data-fieldname="Name" class="value">{{ proformainvoices.Name }}</p>
-									{% endif %}
-								</div>
-							</div>
+        <div class="box-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.pi_number}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if proformainvoices %}style="display:none" {%else%}class="input-wrap " {% endif %}>
+                    <input type="text" placeholder="{{ res.string.name }}" value="{{ proformainvoices?proformainvoices.Name:code  }}" name="Name" class="form-control  col-md-7 col-xs-12">
+                  </div>
+                  {% if proformainvoices %}
+                  <p data-fieldname="Name" class="value">{{ proformainvoices.Name }}</p>
+                  {% endif %}
+                </div>
+              </div>
 
-							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="CustomerId">{{res.string.customer}}</label>
-								<div class="col-md-6 col-sm-6 col-xs-12">
-									<div {% if proformainvoices %}style="display:none"{%else%}class="input-wrap input-group "{% endif %}>
-										<input type="hidden" type="text" id="CustomerId" value="{{ proformainvoices.CustomerId }}" name="CustomerId">
-										<input type="text" required="required" name="displayCustomerId" id="displayCustomerId" placeholder="{{ res.string.customer }}" value="{{ proformainvoices.Partner.Name }}" class="form-control" />
-										<span class="input-group-btn">
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="CustomerId">{{res.string.customer}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if proformainvoices %}style="display:none" {%else%}class="input-wrap input-group " {% endif %}>
+                    <input type="hidden" type="text" id="CustomerId" value="{{ proformainvoices.CustomerId }}" name="CustomerId">
+                    <input type="text" required="required" name="displayCustomerId" id="displayCustomerId" placeholder="{{ res.string.customer }}" value="{{ proformainvoices.Partner.Name }}" class="form-control" />
+                    <span class="input-group-btn">
     								<button class="btn btnModal btn-default" id="btnCustomerId"  data-target="ModalCustomer" type="button">{{res.string.search}}</button>
     							</span>
-									</div>
-									{% if proformainvoices %}
-									<p data-fieldname="Partner.Name" class="value">{{ proformainvoices.Partner.Name }}</p>
-									{% endif %}
-								</div>
-							</div>
-						</div>
-
-						<div class="col-sm-6">
-							<div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.date_of_issue}}</label>
-								<div class="col-md-6 col-sm-6 col-xs-12">
-									<div {% if proformainvoices %}style="display:none" {% endif %} class="input-wrap">
-										<input type="text" placeholder="{{ res.string.date }}" id="Date" value="{{ proformainvoices.Date  | date('Y/m/d') }}" name="Date" class="form-control input-date col-md-7 col-xs-12">
-									</div>
-									{% if proformainvoices %}
-									<p data-fieldname="Date" class="control-value">{{ proformainvoices.Date | date('d M Y') }}</p>
-									{% endif %}
-								</div>
-							</div>
-						</div>
-          <div class="col-sm-6">
-            <div class="form-group">
-              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.currency}}</label>
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <div {% if proformainvoices %}style="display:none" {% endif %} class="input-wrap">
-                  {{selection_m2o('CurrencyId','Currency',null,proformainvoices.CurrencyId,'CurrencyId','Name-Symbol')| raw}}
+                  </div>
+                  {% if proformainvoices %}
+                  <p data-fieldname="Partner.Name" class="value">{{ proformainvoices.Partner.Name }}</p>
+                  {% endif %}
                 </div>
-                {% if proformainvoices %}
-                <p data-fieldname="Date" class="control-value">{{ proformainvoices.Currency.Name }}</p>
-                {% endif %}
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.date_of_issue}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if proformainvoices %}style="display:none" {% endif %} class="input-wrap">
+                    <input type="text" placeholder="{{ res.string.date }}" id="Date" value="{{ proformainvoices.Date  | date('Y/m/d') }}" name="Date" class="form-control input-date col-md-7 col-xs-12">
+                  </div>
+                  {% if proformainvoices %}
+                  <p data-fieldname="Date" class="control-value">{{ proformainvoices.Date | date('d M Y') }}</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.currency}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if proformainvoices %}style="display:none" {% endif %} class="input-wrap">
+                    {{selection_m2o('CurrencyId','Currency',null, proformainvoices.CurrencyId,'CurrencyId','Name-Symbol')| raw}}
+                  </div>
+                  {% if proformainvoices %}
+                  <p data-fieldname="Date" class="control-value">{{ proformainvoices.Currency.Name }}</p>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="DownPaymentId">{{res.string.down_payment}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if proformainvoices %}style="display:none" {% endif %} class="input-wrap">
+                    {{selection_m2o('DownPaymentId','DownPayment',null,proformainvoices.DownPaymentId?proformainvoices.DownPaymentId:'') | raw}}
+                  </div>
+                  {% if proformainvoices %}
+                  <p class="control-value">{{ proformainvoices.DownPayment.Name }}</p>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="DownPaymentDeadline">{{res.string.down_payment_deadline}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if proformainvoices %}style="display:none" {% endif %} class="input-wrap">
+                    <input type="text" placeholder="{{ res.string.down_payment_deadline }}" id="DownPaymentDeadline" value="{{ proformainvoices.DownPaymentDeadline  | date('Y/m/d') }}"
+                      name="DownPaymentDeadline" class="form-control input-date col-md-7 col-xs-12">
+                  </div>
+                  {% if proformainvoices %}
+                  <p class="control-value">{{ proformainvoices.DownPaymentDeadline | date('d M Y') }}</p>
+                  {% endif %}
+                </div>
               </div>
             </div>
           </div>
-					</div>
 
-            <textarea name="Lines" style="display:none" id="Lines"></textarea>
+          <textarea name="Lines" style="display:none" id="Lines"></textarea>
           <div class="row" id="detail">
             <div class="col-sm-12">
               <div class="nav-tabs-custom">
@@ -92,144 +113,136 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
           </div>
 
         </div>
-			</div>
-		</form>
-	</div>
+      </div>
+    </form>
+  </div>
 </div>
-{% endblock %}
-
-{% block bottom %}
+{% endblock %} {% block bottom %}
 <!-- Modal -->
-{% include "admin/proformainvoices/_modal_add_pi_line.html"%}
-{% include "admin/customers/_modal.html" %}
-{% include "admin/products/_modal.html" %}
-{% include "common/_modal_notice.html" %}
-{% include "common/_modal_info.html" %}
+{% include "admin/proformainvoices/_modal_add_pi_line.html"%} {% include "admin/customers/_modal.html" %} {% include "admin/products/_modal.html" %} {% include "common/_modal_notice.html" %} {% include "common/_modal_info.html" %}
 <script>
-var Lines = [];
-var idx =0;
+  var Lines = [];
+  var idx = 0;
 
-set_back_url('manage_proformainvoices')
+  set_back_url('manage_proformainvoices')
 
-$('#CustomerId').change(function(e){
-  $('#toggleProdCust').data('partner_id',$(this).val())
-  $('#ProdCust').show()
-})
+  $('#CustomerId').change(function(e) {
+    $('#toggleProdCust').data('partner_id', $(this).val())
+    $('#ProdCust').show()
+  })
 
-function refresh_line(){
-  $('#table_ProformaInvoiceLine').DataTable().ajax.reload(function(d){
+  function refresh_line() {
+    $('#table_ProformaInvoiceLine').DataTable().ajax.reload(function(d) {
       $('#ModalAddProformaInvoiceLine').modal('hide')
       $('#table_ProformaInvoiceLine').find('.btn-delete').show()
       $('#table_ProformaInvoiceLine').find('.btn-edit').show()
-  })
-}
+    })
+    refresh_detail()
+  }
 
-$(document).ready(function(){
-  $("#CurrencyId").change(function(e){
+  $(document).ready(function() {
+    $("#CurrencyId").change(function(e) {
+      $('.lineCurr').text($("#CurrencyId option:selected").text().split(' - ')[1]);
+    })
     $('.lineCurr').text($("#CurrencyId option:selected").text().split(' - ')[1]);
-  })
-  $('.lineCurr').text($("#CurrencyId option:selected").text().split(' - ')[1]);
 
-  $('#ModalAddProformaInvoiceLine').on('hidden.bs.modal', function () {
-    $('#ModalAddProformaInvoiceLine').find('input[type=hidden],input[type=text]').val('')
-    $('#ModalAddProformaInvoiceLine').find('inputinput[type=checkbox]').prop('checked',false);
-  })
-  $('#CustomerId').trigger('change')
-  $('#table_ProformaInvoiceLine').on('click','.btn-delete',function(e){
-    $.ajax({
-      url:'/index.php/manage_proformainvoicelines/delete/'+$(this).data('id'),
-      data:'&confirm=1',
-      method:'POST'
-    }).done(function(o){
-      refresh_line()
-      info_popup("Data saved!");
+    $('#ModalAddProformaInvoiceLine').on('hidden.bs.modal', function() {
+      $('#ModalAddProformaInvoiceLine').find('input[type=hidden],input[type=text]').val('')
+      $('#ModalAddProformaInvoiceLine').find('inputinput[type=checkbox]').prop('checked', false);
     })
-  })
-
-  $('#table_ProformaInvoiceLine').on('click','.btn-edit',function(e){
-    $.ajax({
-      url:'/index.php/manage_proformainvoicelines/detail/'+$(this).data('id'),
-      method:'GET',
-      dataType:'JSON'
-    }).done(function(o){
-      console.log(o);
-      $('#LineId').val(o.Id)
-      $('#Finishing').data('value',o.ProductFinishing)
-      $('#ModalAddProformaInvoiceLine').find('input').each(function(i){
-
-        if(o.hasOwnProperty($(this).prop('name'))){
-          switch ($(this).prop('type')) {
-            case 'text':
-              $(this).val(o[$(this).prop('name')])
-              break;
-            case 'hidden':
-              $(this).val(o[$(this).prop('name')])
-              break;
-            case 'number':
-              $(this).val(o[$(this).prop('name')])
-              break;
-            case 'checkbox':
-              $(this).prop('checked', o[$(this).prop('name')])
-              break;
-            default:
-          }
-          $(this).change();
-
-        }else{
-        }
-
-
+    $('#CustomerId').trigger('change')
+    $('#table_ProformaInvoiceLine').on('click', '.btn-delete', function(e) {
+      $.ajax({
+        url: '/index.php/manage_proformainvoicelines/delete/' + $(this).data('id'),
+        data: '&confirm=1',
+        method: 'POST'
+      }).done(function(o) {
+        refresh_line()
+        info_popup("Data saved!");
       })
-
-      $('#ModalAddProformaInvoiceLine').modal('show')
     })
-  })
-  $('#form_ProformaInvoiceLine').submit(function(e){
-    e.preventDefault()
-    if($('#PIId').val()>0){
-          write_line($('#PIId').val()).done(function(o){
-            refresh_line()
-            info_popup("Data saved!");
-          })
-    }else{
-      write_pi().done(function(o){
-        write_line(o.Id).done(function(o){
-          location.reload();
+
+    $('#table_ProformaInvoiceLine').on('click', '.btn-edit', function(e) {
+      $.ajax({
+        url: '/index.php/manage_proformainvoicelines/detail/' + $(this).data('id'),
+        method: 'GET',
+        dataType: 'JSON'
+      }).done(function(o) {
+        console.log(o);
+        $('#LineId').val(o.Id)
+        $('#Finishing').data('value', o.ProductFinishing)
+        $('#ModalAddProformaInvoiceLine').find('input').each(function(i) {
+
+          if (o.hasOwnProperty($(this).prop('name'))) {
+            switch ($(this).prop('type')) {
+              case 'text':
+                $(this).val(o[$(this).prop('name')])
+                break;
+              case 'hidden':
+                $(this).val(o[$(this).prop('name')])
+                break;
+              case 'number':
+                $(this).val(o[$(this).prop('name')])
+                break;
+              case 'checkbox':
+                $(this).prop('checked', o[$(this).prop('name')])
+                break;
+              default:
+            }
+            $(this).change();
+
+          } else {}
+
+
         })
-      })
 
-    }
-  })
-  $('#btnOpenAddLine').click(function(e){
-      if($('#CustomerId').val()>0 ){
+        $('#ModalAddProformaInvoiceLine').modal('show')
+      })
+    })
+    $('#form_ProformaInvoiceLine').submit(function(e) {
+      e.preventDefault()
+      if ($('#PIId').val() > 0) {
+        write_line($('#PIId').val()).done(function(o) {
+          refresh_line()
+          info_popup("Data saved!");
+        })
+      } else {
+        write_pi().done(function(o) {
+          write_line(o.Id).done(function(o) {
+            location.reload();
+          })
+        })
+
+      }
+    })
+    $('#btnOpenAddLine').click(function(e) {
+      if ($('#CustomerId').val() > 0) {
         $('#LineId').val("")
         $('#ModalAddProformaInvoiceLine').modal('show')
-      }else{
+      } else {
         notice_popup('Please specify the customer first')
       }
-  })
-  $('#Price').on('keyup change',function(e){
-    var disc = 0;
-    var price = $(this).val()
-    var normal_price = $('#ListPrice').val()
-    var gap = normal_price - price
-    $('#CalculatedDiscount').val(((gap/normal_price)*100).toFixed(2))
-  })
+    })
+    $('#Price').on('keyup change', function(e) {
+      var disc = 0;
+      var price = $(this).val()
+      var normal_price = $('#ListPrice').val()
+      var gap = normal_price - price
+      $('#CalculatedDiscount').val(((gap / normal_price) * 100).toFixed(2))
+    })
 
     $('#table_ProformaInvoiceLine').loadTableData({
-      button:['edit','delete'],
-      paging:false,
-      ordering:false,
-      search:false,
-      rowCallback:function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-        var index = iDisplayIndex +1;
-        $('td:eq(0)',nRow).html(index);
+      button: ['edit', 'delete'],
+      paging: false,
+      ordering: false,
+      search: false,
+      rowCallback: function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        var index = iDisplayIndex + 1;
+        $('td:eq(0)', nRow).html(index);
         return nRow;
       },
-      complete:function(settings, json) {
-
-          // get_total()
-        $('#table_ProformaInvoiceLine').css('width','100%')
+      complete: function(settings, json) {
+        $('#table_ProformaInvoiceLine').css('width', '100%')
       }
     })
 
@@ -237,113 +250,105 @@ $(document).ready(function(){
     $('.pi_lines').simpleValidation()
   })
 
-  $('#ProductId').change(function(){
-      $.ajax({
-        url:'/index.php/manage_products/get_detail_json/'+$(this).val()+
-        '?customer_id='+$('#CustomerId').val()+'&currency_id='+$('#CurrencyId').val(),
-        dataType:'JSON',
-        success:function(o){
-          var art = o.Name
-          var price = o.ListPrice
-          var desc = o.Description
-          var sdf= []
-          for (var f in o.Finishings) {
-            sdf.push({
-              id:o.Finishings[f].Name,
-              text:o.Finishings[f].Name
-            })
-          }
-          repopulate_select2('#Finishing',sdf)
-          $('#Finishing').val(function(){
-            return $(this).data('value')
-          }).trigger('change');
-          if(o.ProductPartners){
-            price = o.ProductPartners[0].ProductPrice
-            art = o.ProductPartners[0].Name
-            desc = o.ProductPartners[0].Description
-          }
-
-          for (var i in o) {
-            if (o.hasOwnProperty(i)) {
-              var shouldfill = true
-              if($('#LineId').val()>1){
-                if(i != 'ListPrice'){
-                  shouldfill = false
-                }
-              }
-              if(shouldfill){
-              $('#'+i).val(o[i])
-              }
-            }
-          }
-          $('#CubicDimension').val(o.IsKdn?o.CubicKdn:o.CubicAsb)
-
-          if(!($('#LineId').val()>1)){
-            $('#LineName').val(art)
-            $('#Description').val(desc)
-            $('#Price').val(price)
-          }
-          $('#displayProductId').val(o.Name+' - '+ o.Description)
-          $('#Price').trigger('change')
-        }
-      })
-  })
-  function get_total(){
-    var tot= 0;
-    var ctot = 0;
-    $('#table_ProformaInvoiceLine').find('tbody tr').each(function(i){
-      if($(this).find("td").length>9){
-        var stot = $(this).find("td").eq(12).text();
-        var sctot = $(this).find("td").eq(9).text();
-        stot = stot.replace(/[^0-9-,]/g, '')
-        stot = stot.match(/[+-]?\d+(\.\d+)?/g).map(function(v) { return parseFloat(v); });
-        sctot = sctot.match(/[+-]?\d+(\.\d+)?/g).map(function(v) { return parseFloat(v); });
-        tot = tot + (stot[0]>0?(stot[0]*1):0)
-        ctot = ctot +(sctot[0]>0?(sctot[0]*1):0)
+  function refresh_detail() {
+    $.ajax({
+      url: window.location.href,
+      method: 'GET',
+      dataType: 'JSON'
+    }).done(function(o) {
+      for (var i in o) {
+        console.log(i);
+        $('#' + i).val(o[i])
+        $('#' + i).text(o[i])
+        $('#' + i).data('original-value', o[i])
       }
-
+      update_rate()
     })
-    {% if proformainvoices %}
-    $('#TotalCol').text(format_currency(tot,{
-      "symbol":"{{ proformainvoices.Currency.Symbol }}",
-      "rate":"{{ exchange_rate(1,proformainvoices.Currency.Code) }}",
-      "position":"{{ proformainvoices.Currency.Placement }}"}
-    ))
-    {% endif %}
-    $('#TotalCd').text(parseFloat(ctot).toFixed(3) + ' m3')
   }
 
-  $('#table_ProformaInvoiceLine').on( 'click','.btn-delete-row',function(e){
+  $('#ProductId').change(function() {
+    $.ajax({
+      url: '/index.php/manage_products/get_detail_json/' + $(this).val() +
+        '?customer_id=' + $('#CustomerId').val() + '&currency_id=' + $('#CurrencyId').val(),
+      dataType: 'JSON',
+      success: function(o) {
+        var art = o.Name
+        var price = o.ListPrice
+        var desc = o.Description
+        var sdf = []
+        for (var f in o.Finishings) {
+          sdf.push({
+            id: o.Finishings[f].Name,
+            text: o.Finishings[f].Name
+          })
+        }
+        repopulate_select2('#Finishing', sdf)
+        $('#Finishing').val(function() {
+          return $(this).data('value')
+        }).trigger('change');
+        if (o.ProductPartners) {
+          price = o.ProductPartners[0].ProductPrice
+          art = o.ProductPartners[0].Name
+          desc = o.ProductPartners[0].Description
+        }
+
+        for (var i in o) {
+          if (o.hasOwnProperty(i)) {
+            var shouldfill = true
+            if ($('#LineId').val() > 1) {
+              if (i != 'ListPrice') {
+                shouldfill = false
+              }
+            }
+            if (shouldfill) {
+              $('#' + i).val(o[i])
+            }
+          }
+        }
+        $('#CubicDimension').val(o.IsKdn ? o.CubicKdn : o.CubicAsb)
+
+        if (!($('#LineId').val() > 1)) {
+          $('#LineName').val(art)
+          $('#Description').val(desc)
+          $('#Price').val(price)
+        }
+        $('#displayProductId').val(o.Name + ' - ' + o.Description)
+        $('#Price').trigger('change')
+      }
+    })
+  })
+
+  $('#table_ProformaInvoiceLine').on('click', '.btn-delete-row', function(e) {
     e.preventDefault()
     var oidx = $(this).data('index')
     mod_line({
-      id:$(this).data('id'),
-      index:$(this).data('index'),
-      _selector:this
-    },'delete')
+      id: $(this).data('id'),
+      index: $(this).data('index'),
+      _selector: this
+    }, 'delete')
   })
   var edrow = false;
 
 
 
-    function write_pi(){
-      var frm = $('#form_ProformaInvoice')
-      return $.ajax({
-        url:frm.prop('action'),
-        method:'POST',
-        dataType:"JSON",
-        data:frm.serialize()
-      })
-    }
+  function write_pi() {
+    var frm = $('#form_ProformaInvoice')
+    return $.ajax({
+      url: frm.prop('action'),
+      method: 'POST',
+      dataType: "JSON",
+      data: frm.serialize()
+    })
+  }
 
-    function write_line(pi_id,id=''){
-      var frm = $('#form_ProformaInvoiceLine')
-      return $.ajax({
-        url:frm.prop('action')+$('#LineId').val()+"?proforma_invoice_id="+pi_id,
-        method:'POST',
-        dataType:"JSON",
-        data:frm.serialize()+'&ProformaInvoiceId='+pi_id
-      })
-    }
+  function write_line(pi_id, id = '') {
+    var frm = $('#form_ProformaInvoiceLine')
+    return $.ajax({
+      url: frm.prop('action') + $('#LineId').val() + "?proforma_invoice_id=" + pi_id,
+      method: 'POST',
+      dataType: "JSON",
+      data: frm.serialize() + '&ProformaInvoiceId=' + pi_id
+    })
+  }
 </script>
 {% endblock %}

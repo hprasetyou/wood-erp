@@ -6,6 +6,8 @@ Number.prototype.format = function(n, x, s, c) {
     return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
 };
 
+
+
 function format_cbm(data){
   return parseFloat(data/1000000).toFixed(3) + ' m3';
 }
@@ -69,6 +71,10 @@ function update_rate(){
       $(this).val(val)
       $(this).text(sym+' '+val.format(0, 3, '.', ''))
     })
+  })
+
+  $('.cbcm2cbm').text(function(){
+    return format_cbm($(this).data('original-value'))
   })
 }
 

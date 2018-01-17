@@ -1,4 +1,4 @@
- {% extends "dashboard.html" %} {% set title=" Purchase Order " %} {% if purchaseorders %} {% set bc_text = purchaseorders.id %} {% else %} {% set bc_text = res.string.new %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_purchaseorders','text':
+ {% extends "dashboard.html" %} {% set title=" Purchase Order " %} {% if purchaseorders %} {% set bc_text = purchaseorders.Name %} {% else %} {% set bc_text = res.string.new %} {% endif %} {% set breadcrumbs = [ {'link': base_url~'index.php/manage_purchaseorders','text':
 res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %}
 {% if purchaseorders %}
 {% set packinglist = purchaseorders.PackingList %}
@@ -15,7 +15,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
 					<div class="row">
 						<div class="col-sm-6">
               <div class="form-group">
-								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProformaInvoiceId">{{res.string.proforma_invoice}}</label>
+								<label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProformaInvoiceId">{{res.string.type}}</label>
 								<div class="col-md-6 col-sm-6 col-xs-12">
 									<div {% if purchaseorders %}style="display:none" {% endif %} class="input-wrap">
                     <select name="Type" class="form-select" id="Type">
@@ -25,7 +25,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
                     </select>
                   </div>
                   {% if purchaseorders %}
-									<p class="value">{{ purchaseorders.Name }}</p>
+									<p class="control-value">{{ purchaseorders.Type }}</p>
 									{% endif %}
                 </div>
               </div>
@@ -146,6 +146,17 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
 									{% endif %}
 								</div>
 							</div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Date">{{res.string.currency}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if purchaseorders %}style="display:none" {% endif %} class="wrap">
+                    {{selection_m2o('CurrencyId','Currency',null,purchaseorders.CurrencyId,'CurrencyId','Name-Symbol')| raw}}
+                  </div>
+                  {% if purchaseorders %}
+                  <p data-fieldname="Date" class="value">{{ purchaseorders.Currency.Name }}</p>
+                  {% endif %}
+                </div>
+              </div>
 						</div>
 					</div>
 					<div class="row">

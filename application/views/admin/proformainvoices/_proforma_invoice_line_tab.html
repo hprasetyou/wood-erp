@@ -29,12 +29,16 @@
       </thead>
       <tfoot>
         <tr>
-          <td colspan="9">Total</td>
-          <td><span id="TotalCubicDimension">{{proformainvoices.TotalCubicDimension}}</span></td>
+          <td colspan="9"><h4>Total</h4></td>
+          <td><span id="TotalCubicDimension" data-original-value="{{proformainvoices.TotalCubicDimension}}" class="cbcm2cbm"></span></td>
           <td></td>
           <td></td>
           <td colspan="2"><span id="TotalPrice"  data-original-value="{{ proformainvoices.TotalPrice }}" data-target="{{proformainvoices.Currency.Code}}" class="er"></span></td>
         </tr>
+          <tr>
+            <td colspan="12"><h4>{{res.string.down_payment}}</h4></td>
+            <td colspan="2"><span id="DownPaymentAmount"  data-original-value="{{ proformainvoices.DownPaymentAmount }}" data-target="{{proformainvoices.Currency.Code}}" class="er"></span></td>
+          </tr>
       </tfoot>
     </table>
 
