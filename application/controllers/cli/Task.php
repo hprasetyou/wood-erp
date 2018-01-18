@@ -31,10 +31,14 @@ class Task extends CI_Controller
   function execute($type,$content){
     switch ($type) {
       case 'email':
+        $data = json_decode($content);
+        task_run_logger($data->recipient);
         $this->load->library('mailer');
         $this->mailer
-        ->set_recipient('hprasetyou@gmail.com')
-        ->set_body('coba')->send_email();
+        ->set_recipient($data->recipient)
+        ->set_subject($data->subject)
+        ->set_body($this->template->render('mail/layout',
+        array('recipient_name'=>'Komo','message_body'=>'Ini message body {{recipient_name}}'),false))->send_email();
         # code...
         break;
       case 'call_func':
