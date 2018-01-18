@@ -59,13 +59,18 @@ function update_rate(){
     var er = o.ExchangeRates
     $('.er').each(function(){
       var val = $(this).data('original-value')
+      val = parseInt(val)
       var sym = '$'
       var target = $(this).data('target')
+      console.log(target);
+
       //assummed all source from USD
-      for (var i in er) {
-        if((er[i].Base=="USD") && (er[i].Target==target)){
-          val = Math.round((val*(er[i].Rate))/er[i].Rounding)*er[i].Rounding
-          sym = er[i].Symbol
+      if(target != 'USD'){
+        for (var i in er) {
+          if((er[i].Base=="USD") && (er[i].Target==target)){
+            val = Math.round((val*(er[i].Rate))/er[i].Rounding)*er[i].Rounding
+            sym = er[i].Symbol
+          }
         }
       }
       $(this).val(val)

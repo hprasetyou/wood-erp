@@ -69,10 +69,11 @@ class Manage_products extends MY_Controller{
     if($this->input->get('currency_id')){
       //if need to be exchanged to currency_id
       $currency = CurrencyQuery::create()->findPk($this->input->get('currency_id'));
-
-      $p->ListPrice = exchange_rate($p->ListPrice,$currency->getCode());
-      $p->ProductPartners[0]->ProductPrice = exchange_rate($p->ProductPartners[0]->ProductPrice,
-      $currency->getCode());
+      if($currency){
+        $p->ListPrice = exchange_rate($p->ListPrice,$currency->getCode());
+        $p->ProductPartners[0]->ProductPrice = exchange_rate($p->ProductPartners[0]->ProductPrice,
+        $currency->getCode());
+      }
     }
 
     $p->Finishings = json_decode($o->getFinishings()->toJSON())->Finishings;
