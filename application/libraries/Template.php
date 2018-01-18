@@ -178,7 +178,7 @@ class Template {
     }
 
 
-    public function render_pdf($tpl, $data = array() ,$config = array('docname'=>'document','header'=>'nota'))
+    public function render_pdf($tpl, $data = array() ,$config = array('docname'=>'document','header'=>'nota','render'=>true))
     {
         $dompdf = new Dompdf();
         $out = $data;
@@ -191,6 +191,15 @@ class Template {
         $dompdf->render();
         // Output the generated PDF to Browser
         $docname = $config['docname'];
-        $dompdf->stream("$docname.pdf" , array( 'Attachment'=>0 ) );
+        if($config['render']){
+          $dompdf->stream("$docname.pdf" , array( 'Attachment'=>0 ) );
+        }else{
+          $path = "public/.tmp/";
+          $filepath = "$path$docname.pdf";
+          file_put_contents($filepath, $dompdf->output());
+          return array(
+            'name' => "$docname.pdf",
+            'path' => $filepath);
+        }
     }
 }

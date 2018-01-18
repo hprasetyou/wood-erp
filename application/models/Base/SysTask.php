@@ -114,6 +114,7 @@ abstract class SysTask implements ActiveRecordInterface
     /**
      * The value for the scheduled_execution field.
      *
+     * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
      * @var        DateTime
      */
     protected $scheduled_execution;
@@ -126,12 +127,12 @@ abstract class SysTask implements ActiveRecordInterface
     protected $day_repeat;
 
     /**
-     * The value for the is_executed field.
+     * The value for the status field.
      *
-     * Note: this column has a database default value of: false
-     * @var        boolean
+     * Note: this column has a database default value of: 'wait'
+     * @var        string
      */
-    protected $is_executed;
+    protected $status;
 
     /**
      * The value for the last_execution field.
@@ -173,7 +174,7 @@ abstract class SysTask implements ActiveRecordInterface
     public function applyDefaultValues()
     {
         $this->priority = 0;
-        $this->is_executed = false;
+        $this->status = 'wait';
     }
 
     /**
@@ -514,23 +515,13 @@ abstract class SysTask implements ActiveRecordInterface
     }
 
     /**
-     * Get the [is_executed] column value.
+     * Get the [status] column value.
      *
-     * @return boolean
+     * @return string
      */
-    public function getIsExecuted()
+    public function getStatus()
     {
-        return $this->is_executed;
-    }
-
-    /**
-     * Get the [is_executed] column value.
-     *
-     * @return boolean
-     */
-    public function isExecuted()
-    {
-        return $this->getIsExecuted();
+        return $this->status;
     }
 
     /**
@@ -774,32 +765,24 @@ abstract class SysTask implements ActiveRecordInterface
     } // setDayRepeat()
 
     /**
-     * Sets the value of the [is_executed] column.
-     * Non-boolean arguments are converted using the following rules:
-     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * Set the value of [status] column.
      *
-     * @param  boolean|integer|string $v The new value
+     * @param string $v new value
      * @return $this|\SysTask The current object (for fluent API support)
      */
-    public function setIsExecuted($v)
+    public function setStatus($v)
     {
         if ($v !== null) {
-            if (is_string($v)) {
-                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-            } else {
-                $v = (boolean) $v;
-            }
+            $v = (string) $v;
         }
 
-        if ($this->is_executed !== $v) {
-            $this->is_executed = $v;
-            $this->modifiedColumns[SysTaskTableMap::COL_IS_EXECUTED] = true;
+        if ($this->status !== $v) {
+            $this->status = $v;
+            $this->modifiedColumns[SysTaskTableMap::COL_STATUS] = true;
         }
 
         return $this;
-    } // setIsExecuted()
+    } // setStatus()
 
     /**
      * Sets the value of [last_execution] column to a normalized version of the date/time value specified.
@@ -875,7 +858,7 @@ abstract class SysTask implements ActiveRecordInterface
                 return false;
             }
 
-            if ($this->is_executed !== false) {
+            if ($this->status !== 'wait') {
                 return false;
             }
 
@@ -935,8 +918,8 @@ abstract class SysTask implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : SysTaskTableMap::translateFieldName('DayRepeat', TableMap::TYPE_PHPNAME, $indexType)];
             $this->day_repeat = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : SysTaskTableMap::translateFieldName('IsExecuted', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_executed = (null !== $col) ? (boolean) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : SysTaskTableMap::translateFieldName('Status', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->status = (null !== $col) ? (string) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : SysTaskTableMap::translateFieldName('LastExecution', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
@@ -1191,8 +1174,8 @@ abstract class SysTask implements ActiveRecordInterface
         if ($this->isColumnModified(SysTaskTableMap::COL_DAY_REPEAT)) {
             $modifiedColumns[':p' . $index++]  = 'day_repeat';
         }
-        if ($this->isColumnModified(SysTaskTableMap::COL_IS_EXECUTED)) {
-            $modifiedColumns[':p' . $index++]  = 'is_executed';
+        if ($this->isColumnModified(SysTaskTableMap::COL_STATUS)) {
+            $modifiedColumns[':p' . $index++]  = 'status';
         }
         if ($this->isColumnModified(SysTaskTableMap::COL_LAST_EXECUTION)) {
             $modifiedColumns[':p' . $index++]  = 'last_execution';
@@ -1241,8 +1224,8 @@ abstract class SysTask implements ActiveRecordInterface
                     case 'day_repeat':
                         $stmt->bindValue($identifier, $this->day_repeat, PDO::PARAM_STR);
                         break;
-                    case 'is_executed':
-                        $stmt->bindValue($identifier, (int) $this->is_executed, PDO::PARAM_INT);
+                    case 'status':
+                        $stmt->bindValue($identifier, $this->status, PDO::PARAM_STR);
                         break;
                     case 'last_execution':
                         $stmt->bindValue($identifier, $this->last_execution ? $this->last_execution->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -1343,7 +1326,7 @@ abstract class SysTask implements ActiveRecordInterface
                 return $this->getDayRepeat();
                 break;
             case 9:
-                return $this->getIsExecuted();
+                return $this->getStatus();
                 break;
             case 10:
                 return $this->getLastExecution();
@@ -1392,7 +1375,7 @@ abstract class SysTask implements ActiveRecordInterface
             $keys[6] => $this->getTimeExecution(),
             $keys[7] => $this->getScheduledExecution(),
             $keys[8] => $this->getDayRepeat(),
-            $keys[9] => $this->getIsExecuted(),
+            $keys[9] => $this->getStatus(),
             $keys[10] => $this->getLastExecution(),
             $keys[11] => $this->getCreatedAt(),
             $keys[12] => $this->getUpdatedAt(),
@@ -1483,7 +1466,7 @@ abstract class SysTask implements ActiveRecordInterface
                 $this->setDayRepeat($value);
                 break;
             case 9:
-                $this->setIsExecuted($value);
+                $this->setStatus($value);
                 break;
             case 10:
                 $this->setLastExecution($value);
@@ -1548,7 +1531,7 @@ abstract class SysTask implements ActiveRecordInterface
             $this->setDayRepeat($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setIsExecuted($arr[$keys[9]]);
+            $this->setStatus($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
             $this->setLastExecution($arr[$keys[10]]);
@@ -1627,8 +1610,8 @@ abstract class SysTask implements ActiveRecordInterface
         if ($this->isColumnModified(SysTaskTableMap::COL_DAY_REPEAT)) {
             $criteria->add(SysTaskTableMap::COL_DAY_REPEAT, $this->day_repeat);
         }
-        if ($this->isColumnModified(SysTaskTableMap::COL_IS_EXECUTED)) {
-            $criteria->add(SysTaskTableMap::COL_IS_EXECUTED, $this->is_executed);
+        if ($this->isColumnModified(SysTaskTableMap::COL_STATUS)) {
+            $criteria->add(SysTaskTableMap::COL_STATUS, $this->status);
         }
         if ($this->isColumnModified(SysTaskTableMap::COL_LAST_EXECUTION)) {
             $criteria->add(SysTaskTableMap::COL_LAST_EXECUTION, $this->last_execution);
@@ -1733,7 +1716,7 @@ abstract class SysTask implements ActiveRecordInterface
         $copyObj->setTimeExecution($this->getTimeExecution());
         $copyObj->setScheduledExecution($this->getScheduledExecution());
         $copyObj->setDayRepeat($this->getDayRepeat());
-        $copyObj->setIsExecuted($this->getIsExecuted());
+        $copyObj->setStatus($this->getStatus());
         $copyObj->setLastExecution($this->getLastExecution());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
@@ -1781,7 +1764,7 @@ abstract class SysTask implements ActiveRecordInterface
         $this->time_execution = null;
         $this->scheduled_execution = null;
         $this->day_repeat = null;
-        $this->is_executed = null;
+        $this->status = null;
         $this->last_execution = null;
         $this->created_at = null;
         $this->updated_at = null;

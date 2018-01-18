@@ -83,6 +83,13 @@ abstract class StockMove implements ActiveRecordInterface
     protected $name;
 
     /**
+     * The value for the ref field.
+     *
+     * @var        string
+     */
+    protected $ref;
+
+    /**
      * The value for the src_id field.
      *
      * @var        int
@@ -425,6 +432,16 @@ abstract class StockMove implements ActiveRecordInterface
     }
 
     /**
+     * Get the [ref] column value.
+     *
+     * @return string
+     */
+    public function getReference()
+    {
+        return $this->ref;
+    }
+
+    /**
      * Get the [src_id] column value.
      *
      * @return int
@@ -563,6 +580,26 @@ abstract class StockMove implements ActiveRecordInterface
 
         return $this;
     } // setName()
+
+    /**
+     * Set the value of [ref] column.
+     *
+     * @param string $v new value
+     * @return $this|\StockMove The current object (for fluent API support)
+     */
+    public function setReference($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->ref !== $v) {
+            $this->ref = $v;
+            $this->modifiedColumns[StockMoveTableMap::COL_REF] = true;
+        }
+
+        return $this;
+    } // setReference()
 
     /**
      * Set the value of [src_id] column.
@@ -770,28 +807,31 @@ abstract class StockMove implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : StockMoveTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : StockMoveTableMap::translateFieldName('SrcId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : StockMoveTableMap::translateFieldName('Reference', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->ref = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : StockMoveTableMap::translateFieldName('SrcId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->src_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : StockMoveTableMap::translateFieldName('DestId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : StockMoveTableMap::translateFieldName('DestId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->dest_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : StockMoveTableMap::translateFieldName('Operation', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : StockMoveTableMap::translateFieldName('Operation', TableMap::TYPE_PHPNAME, $indexType)];
             $this->operation = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : StockMoveTableMap::translateFieldName('State', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : StockMoveTableMap::translateFieldName('State', TableMap::TYPE_PHPNAME, $indexType)];
             $this->state = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : StockMoveTableMap::translateFieldName('Active', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : StockMoveTableMap::translateFieldName('Active', TableMap::TYPE_PHPNAME, $indexType)];
             $this->active = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : StockMoveTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : StockMoveTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : StockMoveTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : StockMoveTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -804,7 +844,7 @@ abstract class StockMove implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 9; // 9 = StockMoveTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 10; // 10 = StockMoveTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\StockMove'), 0, $e);
@@ -1057,6 +1097,9 @@ abstract class StockMove implements ActiveRecordInterface
         if ($this->isColumnModified(StockMoveTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'name';
         }
+        if ($this->isColumnModified(StockMoveTableMap::COL_REF)) {
+            $modifiedColumns[':p' . $index++]  = 'ref';
+        }
         if ($this->isColumnModified(StockMoveTableMap::COL_SRC_ID)) {
             $modifiedColumns[':p' . $index++]  = 'src_id';
         }
@@ -1094,6 +1137,9 @@ abstract class StockMove implements ActiveRecordInterface
                         break;
                     case 'name':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+                        break;
+                    case 'ref':
+                        $stmt->bindValue($identifier, $this->ref, PDO::PARAM_STR);
                         break;
                     case 'src_id':
                         $stmt->bindValue($identifier, $this->src_id, PDO::PARAM_INT);
@@ -1185,24 +1231,27 @@ abstract class StockMove implements ActiveRecordInterface
                 return $this->getName();
                 break;
             case 2:
-                return $this->getSrcId();
+                return $this->getReference();
                 break;
             case 3:
-                return $this->getDestId();
+                return $this->getSrcId();
                 break;
             case 4:
-                return $this->getOperation();
+                return $this->getDestId();
                 break;
             case 5:
-                return $this->getState();
+                return $this->getOperation();
                 break;
             case 6:
-                return $this->getActive();
+                return $this->getState();
                 break;
             case 7:
-                return $this->getCreatedAt();
+                return $this->getActive();
                 break;
             case 8:
+                return $this->getCreatedAt();
+                break;
+            case 9:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1237,20 +1286,21 @@ abstract class StockMove implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
-            $keys[2] => $this->getSrcId(),
-            $keys[3] => $this->getDestId(),
-            $keys[4] => $this->getOperation(),
-            $keys[5] => $this->getState(),
-            $keys[6] => $this->getActive(),
-            $keys[7] => $this->getCreatedAt(),
-            $keys[8] => $this->getUpdatedAt(),
+            $keys[2] => $this->getReference(),
+            $keys[3] => $this->getSrcId(),
+            $keys[4] => $this->getDestId(),
+            $keys[5] => $this->getOperation(),
+            $keys[6] => $this->getState(),
+            $keys[7] => $this->getActive(),
+            $keys[8] => $this->getCreatedAt(),
+            $keys[9] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[7]] instanceof \DateTimeInterface) {
-            $result[$keys[7]] = $result[$keys[7]]->format('c');
-        }
-
         if ($result[$keys[8]] instanceof \DateTimeInterface) {
             $result[$keys[8]] = $result[$keys[8]]->format('c');
+        }
+
+        if ($result[$keys[9]] instanceof \DateTimeInterface) {
+            $result[$keys[9]] = $result[$keys[9]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1345,24 +1395,27 @@ abstract class StockMove implements ActiveRecordInterface
                 $this->setName($value);
                 break;
             case 2:
-                $this->setSrcId($value);
+                $this->setReference($value);
                 break;
             case 3:
-                $this->setDestId($value);
+                $this->setSrcId($value);
                 break;
             case 4:
-                $this->setOperation($value);
+                $this->setDestId($value);
                 break;
             case 5:
-                $this->setState($value);
+                $this->setOperation($value);
                 break;
             case 6:
-                $this->setActive($value);
+                $this->setState($value);
                 break;
             case 7:
-                $this->setCreatedAt($value);
+                $this->setActive($value);
                 break;
             case 8:
+                $this->setCreatedAt($value);
+                break;
+            case 9:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1398,25 +1451,28 @@ abstract class StockMove implements ActiveRecordInterface
             $this->setName($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setSrcId($arr[$keys[2]]);
+            $this->setReference($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setDestId($arr[$keys[3]]);
+            $this->setSrcId($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setOperation($arr[$keys[4]]);
+            $this->setDestId($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setState($arr[$keys[5]]);
+            $this->setOperation($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setActive($arr[$keys[6]]);
+            $this->setState($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setCreatedAt($arr[$keys[7]]);
+            $this->setActive($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setUpdatedAt($arr[$keys[8]]);
+            $this->setCreatedAt($arr[$keys[8]]);
+        }
+        if (array_key_exists($keys[9], $arr)) {
+            $this->setUpdatedAt($arr[$keys[9]]);
         }
     }
 
@@ -1464,6 +1520,9 @@ abstract class StockMove implements ActiveRecordInterface
         }
         if ($this->isColumnModified(StockMoveTableMap::COL_NAME)) {
             $criteria->add(StockMoveTableMap::COL_NAME, $this->name);
+        }
+        if ($this->isColumnModified(StockMoveTableMap::COL_REF)) {
+            $criteria->add(StockMoveTableMap::COL_REF, $this->ref);
         }
         if ($this->isColumnModified(StockMoveTableMap::COL_SRC_ID)) {
             $criteria->add(StockMoveTableMap::COL_SRC_ID, $this->src_id);
@@ -1573,6 +1632,7 @@ abstract class StockMove implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setName($this->getName());
+        $copyObj->setReference($this->getReference());
         $copyObj->setSrcId($this->getSrcId());
         $copyObj->setDestId($this->getDestId());
         $copyObj->setOperation($this->getOperation());
@@ -2006,6 +2066,7 @@ abstract class StockMove implements ActiveRecordInterface
         }
         $this->id = null;
         $this->name = null;
+        $this->ref = null;
         $this->src_id = null;
         $this->dest_id = null;
         $this->operation = null;

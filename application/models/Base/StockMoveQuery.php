@@ -22,6 +22,7 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildStockMoveQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildStockMoveQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method     ChildStockMoveQuery orderByReference($order = Criteria::ASC) Order by the ref column
  * @method     ChildStockMoveQuery orderBySrcId($order = Criteria::ASC) Order by the src_id column
  * @method     ChildStockMoveQuery orderByDestId($order = Criteria::ASC) Order by the dest_id column
  * @method     ChildStockMoveQuery orderByOperation($order = Criteria::ASC) Order by the operation column
@@ -32,6 +33,7 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildStockMoveQuery groupById() Group by the id column
  * @method     ChildStockMoveQuery groupByName() Group by the name column
+ * @method     ChildStockMoveQuery groupByReference() Group by the ref column
  * @method     ChildStockMoveQuery groupBySrcId() Group by the src_id column
  * @method     ChildStockMoveQuery groupByDestId() Group by the dest_id column
  * @method     ChildStockMoveQuery groupByOperation() Group by the operation column
@@ -85,6 +87,7 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildStockMove findOneById(int $id) Return the first ChildStockMove filtered by the id column
  * @method     ChildStockMove findOneByName(string $name) Return the first ChildStockMove filtered by the name column
+ * @method     ChildStockMove findOneByReference(string $ref) Return the first ChildStockMove filtered by the ref column
  * @method     ChildStockMove findOneBySrcId(int $src_id) Return the first ChildStockMove filtered by the src_id column
  * @method     ChildStockMove findOneByDestId(int $dest_id) Return the first ChildStockMove filtered by the dest_id column
  * @method     ChildStockMove findOneByOperation(string $operation) Return the first ChildStockMove filtered by the operation column
@@ -98,6 +101,7 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildStockMove requireOneById(int $id) Return the first ChildStockMove filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildStockMove requireOneByName(string $name) Return the first ChildStockMove filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildStockMove requireOneByReference(string $ref) Return the first ChildStockMove filtered by the ref column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildStockMove requireOneBySrcId(int $src_id) Return the first ChildStockMove filtered by the src_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildStockMove requireOneByDestId(int $dest_id) Return the first ChildStockMove filtered by the dest_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildStockMove requireOneByOperation(string $operation) Return the first ChildStockMove filtered by the operation column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -109,6 +113,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildStockMove[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildStockMove objects based on current ModelCriteria
  * @method     ChildStockMove[]|ObjectCollection findById(int $id) Return ChildStockMove objects filtered by the id column
  * @method     ChildStockMove[]|ObjectCollection findByName(string $name) Return ChildStockMove objects filtered by the name column
+ * @method     ChildStockMove[]|ObjectCollection findByReference(string $ref) Return ChildStockMove objects filtered by the ref column
  * @method     ChildStockMove[]|ObjectCollection findBySrcId(int $src_id) Return ChildStockMove objects filtered by the src_id column
  * @method     ChildStockMove[]|ObjectCollection findByDestId(int $dest_id) Return ChildStockMove objects filtered by the dest_id column
  * @method     ChildStockMove[]|ObjectCollection findByOperation(string $operation) Return ChildStockMove objects filtered by the operation column
@@ -214,7 +219,7 @@ abstract class StockMoveQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, src_id, dest_id, operation, state, active, created_at, updated_at FROM stock_move WHERE id = :p0';
+        $sql = 'SELECT id, name, ref, src_id, dest_id, operation, state, active, created_at, updated_at FROM stock_move WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -368,6 +373,31 @@ abstract class StockMoveQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(StockMoveTableMap::COL_NAME, $name, $comparison);
+    }
+
+    /**
+     * Filter the query on the ref column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByReference('fooValue');   // WHERE ref = 'fooValue'
+     * $query->filterByReference('%fooValue%', Criteria::LIKE); // WHERE ref LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $reference The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildStockMoveQuery The current query, for fluid interface
+     */
+    public function filterByReference($reference = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($reference)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(StockMoveTableMap::COL_REF, $reference, $comparison);
     }
 
     /**

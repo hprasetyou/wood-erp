@@ -11,6 +11,7 @@ class Mailer
     private $subject;
     private $body;
     private $recipient;
+    private $attachments;
     private $recipient_name;
     // Create the Mailer using your created Transport
     private $mailer;
@@ -39,6 +40,11 @@ class Mailer
         $this->subject = $subject;
         return $this;
     }
+    public function set_attachments($attachments)
+    {
+        $this->attachments = $attachments;
+        return $this;
+    }
 
     public function set_recipient($recipient)
     {
@@ -55,10 +61,14 @@ class Mailer
     {
         $conf = $this->CI->config->item('email');
         $message = (new Swift_Message($this->subject))
-      ->setFrom([$conf['username'] => $conf['sender_name']])
-      ->setTo([$this->recipient => $this->recipient_name])
-      ->setBody($this->body, 'text/html')
-      ->attach(Swift_Attachment::fromPath('public/.tmp/5305.pdf')->setFilename('myfilename.pdf'));
+        ->setFrom([$conf['username'] => $conf['sender_name']])
+        ->setBody($this->body, 'text/html');
+        $message = $message->setTo($this->recipient);
+        foreach ($this->attachments as $key => $value) {
+          $message = $message->attach(
+            Swift_Attachment::fromPath($value->path)
+            ->setFilename($value->name));
+        }
         $result = $this->mailer->send($message);
     }
 }

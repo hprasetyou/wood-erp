@@ -10,10 +10,16 @@ class Task extends CI_Controller
       # code...
       $task_name = $value->getName();
       task_run_logger("executing task $task_name . . . .");
-      $this->execute($value->getType(),$value->getContent());
-      $value->setLastExecution(date("Y-m-d h:i:s"))
-      ->setIsExecuted(true)
-      ->save();
+      $value->setLastExecution(date("Y-m-d H:i:s"));
+      try {
+        $this->execute($value->getType(),$value->getContent());
+        $value->setStatus('done');
+      } catch (Exception $e) {
+        $value->setStatus('fail');
+      }
+      $value->save();
+
+
     }
     //find task by Scheduled Execution
     foreach ($this->get_day_repeat_task() as $key => $value) {
@@ -21,7 +27,7 @@ class Task extends CI_Controller
       $task_name = $value->getName();
       task_run_logger("executing task $task_name . . . .");
       $this->execute($value->getType(),$value->getContent());
-      $value->setLastExecution(date("Y-m-d h:i:s"))
+      $value->setLastExecution(date("Y-m-d H:i:s"))
       ->setIsExecuted(true)
       ->save();
     }
@@ -32,13 +38,14 @@ class Task extends CI_Controller
     switch ($type) {
       case 'email':
         $data = json_decode($content);
-        task_run_logger($data->recipient);
         $this->load->library('mailer');
         $this->mailer
         ->set_recipient($data->recipient)
+        ->set_recipient_name($data->recipient_name)
         ->set_subject($data->subject)
-        ->set_body($this->template->render('mail/layout',
-        array('recipient_name'=>'Komo','message_body'=>'Ini message body {{recipient_name}}'),false))->send_email();
+        ->set_attachments($data->attachments)
+        ->set_body($this->template->render($data->mail_tmpl,
+        json_decode(json_encode($data->mail_tmpl_data),true),false))->send_email();
         # code...
         break;
       case 'call_func':
@@ -70,8 +77,8 @@ class Task extends CI_Controller
     $tasks = SysTaskQuery::create()
     ->filterByDayRepeat(null)
     ->filterByScheduledExecution(
-      array('max'=>date('Y-m-d h:i:s')))
-    ->filterByIsExecuted(false)
+      array('max'=>date('Y-m-d H:i:s')))
+    ->filterByStatus('wait')
     ->find();
     return $tasks;
   }

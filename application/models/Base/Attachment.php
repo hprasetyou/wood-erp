@@ -2,15 +2,13 @@
 
 namespace Base;
 
-use \PartnerLocation as ChildPartnerLocation;
-use \PartnerLocationQuery as ChildPartnerLocationQuery;
+use \AttachmentQuery as ChildAttachmentQuery;
 use \Product as ChildProduct;
 use \ProductQuery as ChildProductQuery;
-use \ProductStockQuery as ChildProductStockQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
-use Map\ProductStockTableMap;
+use Map\AttachmentTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -25,18 +23,18 @@ use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'product_stock' table.
+ * Base class that represents a row from the 'attachment' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class ProductStock implements ActiveRecordInterface
+abstract class Attachment implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Map\\ProductStockTableMap';
+    const TABLE_MAP = '\\Map\\AttachmentTableMap';
 
 
     /**
@@ -80,11 +78,18 @@ abstract class ProductStock implements ActiveRecordInterface
     protected $name;
 
     /**
-     * The value for the partner_location_id field.
+     * The value for the url field.
      *
-     * @var        int
+     * @var        string
      */
-    protected $partner_location_id;
+    protected $url;
+
+    /**
+     * The value for the description field.
+     *
+     * @var        string
+     */
+    protected $description;
 
     /**
      * The value for the product_id field.
@@ -94,11 +99,11 @@ abstract class ProductStock implements ActiveRecordInterface
     protected $product_id;
 
     /**
-     * The value for the qty field.
+     * The value for the model_name field.
      *
-     * @var        int
+     * @var        string
      */
-    protected $qty;
+    protected $model_name;
 
     /**
      * The value for the created_at field.
@@ -115,11 +120,6 @@ abstract class ProductStock implements ActiveRecordInterface
      * @var        DateTime
      */
     protected $updated_at;
-
-    /**
-     * @var        ChildPartnerLocation
-     */
-    protected $aPartnerLocation;
 
     /**
      * @var        ChildProduct
@@ -145,7 +145,7 @@ abstract class ProductStock implements ActiveRecordInterface
     }
 
     /**
-     * Initializes internal state of Base\ProductStock object.
+     * Initializes internal state of Base\Attachment object.
      * @see applyDefaults()
      */
     public function __construct()
@@ -242,9 +242,9 @@ abstract class ProductStock implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>ProductStock</code> instance.  If
-     * <code>obj</code> is an instance of <code>ProductStock</code>, delegates to
-     * <code>equals(ProductStock)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>Attachment</code> instance.  If
+     * <code>obj</code> is an instance of <code>Attachment</code>, delegates to
+     * <code>equals(Attachment)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -310,7 +310,7 @@ abstract class ProductStock implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|ProductStock The current object, for fluid interface
+     * @return $this|Attachment The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -392,13 +392,23 @@ abstract class ProductStock implements ActiveRecordInterface
     }
 
     /**
-     * Get the [partner_location_id] column value.
+     * Get the [url] column value.
      *
-     * @return int
+     * @return string
      */
-    public function getPartnerLocationId()
+    public function getUrl()
     {
-        return $this->partner_location_id;
+        return $this->url;
+    }
+
+    /**
+     * Get the [description] column value.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 
     /**
@@ -412,13 +422,13 @@ abstract class ProductStock implements ActiveRecordInterface
     }
 
     /**
-     * Get the [qty] column value.
+     * Get the [model_name] column value.
      *
-     * @return int
+     * @return string
      */
-    public function getQty()
+    public function getModelName()
     {
-        return $this->qty;
+        return $this->model_name;
     }
 
     /**
@@ -465,7 +475,7 @@ abstract class ProductStock implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param int $v new value
-     * @return $this|\ProductStock The current object (for fluent API support)
+     * @return $this|\Attachment The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -475,7 +485,7 @@ abstract class ProductStock implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[ProductStockTableMap::COL_ID] = true;
+            $this->modifiedColumns[AttachmentTableMap::COL_ID] = true;
         }
 
         return $this;
@@ -485,7 +495,7 @@ abstract class ProductStock implements ActiveRecordInterface
      * Set the value of [name] column.
      *
      * @param string $v new value
-     * @return $this|\ProductStock The current object (for fluent API support)
+     * @return $this|\Attachment The current object (for fluent API support)
      */
     public function setName($v)
     {
@@ -495,41 +505,57 @@ abstract class ProductStock implements ActiveRecordInterface
 
         if ($this->name !== $v) {
             $this->name = $v;
-            $this->modifiedColumns[ProductStockTableMap::COL_NAME] = true;
+            $this->modifiedColumns[AttachmentTableMap::COL_NAME] = true;
         }
 
         return $this;
     } // setName()
 
     /**
-     * Set the value of [partner_location_id] column.
+     * Set the value of [url] column.
      *
-     * @param int $v new value
-     * @return $this|\ProductStock The current object (for fluent API support)
+     * @param string $v new value
+     * @return $this|\Attachment The current object (for fluent API support)
      */
-    public function setPartnerLocationId($v)
+    public function setUrl($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            $v = (string) $v;
         }
 
-        if ($this->partner_location_id !== $v) {
-            $this->partner_location_id = $v;
-            $this->modifiedColumns[ProductStockTableMap::COL_PARTNER_LOCATION_ID] = true;
-        }
-
-        if ($this->aPartnerLocation !== null && $this->aPartnerLocation->getId() !== $v) {
-            $this->aPartnerLocation = null;
+        if ($this->url !== $v) {
+            $this->url = $v;
+            $this->modifiedColumns[AttachmentTableMap::COL_URL] = true;
         }
 
         return $this;
-    } // setPartnerLocationId()
+    } // setUrl()
+
+    /**
+     * Set the value of [description] column.
+     *
+     * @param string $v new value
+     * @return $this|\Attachment The current object (for fluent API support)
+     */
+    public function setDescription($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->description !== $v) {
+            $this->description = $v;
+            $this->modifiedColumns[AttachmentTableMap::COL_DESCRIPTION] = true;
+        }
+
+        return $this;
+    } // setDescription()
 
     /**
      * Set the value of [product_id] column.
      *
      * @param int $v new value
-     * @return $this|\ProductStock The current object (for fluent API support)
+     * @return $this|\Attachment The current object (for fluent API support)
      */
     public function setProductId($v)
     {
@@ -539,7 +565,7 @@ abstract class ProductStock implements ActiveRecordInterface
 
         if ($this->product_id !== $v) {
             $this->product_id = $v;
-            $this->modifiedColumns[ProductStockTableMap::COL_PRODUCT_ID] = true;
+            $this->modifiedColumns[AttachmentTableMap::COL_PRODUCT_ID] = true;
         }
 
         if ($this->aProduct !== null && $this->aProduct->getId() !== $v) {
@@ -550,31 +576,31 @@ abstract class ProductStock implements ActiveRecordInterface
     } // setProductId()
 
     /**
-     * Set the value of [qty] column.
+     * Set the value of [model_name] column.
      *
-     * @param int $v new value
-     * @return $this|\ProductStock The current object (for fluent API support)
+     * @param string $v new value
+     * @return $this|\Attachment The current object (for fluent API support)
      */
-    public function setQty($v)
+    public function setModelName($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            $v = (string) $v;
         }
 
-        if ($this->qty !== $v) {
-            $this->qty = $v;
-            $this->modifiedColumns[ProductStockTableMap::COL_QTY] = true;
+        if ($this->model_name !== $v) {
+            $this->model_name = $v;
+            $this->modifiedColumns[AttachmentTableMap::COL_MODEL_NAME] = true;
         }
 
         return $this;
-    } // setQty()
+    } // setModelName()
 
     /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\ProductStock The current object (for fluent API support)
+     * @return $this|\Attachment The current object (for fluent API support)
      */
     public function setCreatedAt($v)
     {
@@ -582,7 +608,7 @@ abstract class ProductStock implements ActiveRecordInterface
         if ($this->created_at !== null || $dt !== null) {
             if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_at->format("Y-m-d H:i:s.u")) {
                 $this->created_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[ProductStockTableMap::COL_CREATED_AT] = true;
+                $this->modifiedColumns[AttachmentTableMap::COL_CREATED_AT] = true;
             }
         } // if either are not null
 
@@ -594,7 +620,7 @@ abstract class ProductStock implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\ProductStock The current object (for fluent API support)
+     * @return $this|\Attachment The current object (for fluent API support)
      */
     public function setUpdatedAt($v)
     {
@@ -602,7 +628,7 @@ abstract class ProductStock implements ActiveRecordInterface
         if ($this->updated_at !== null || $dt !== null) {
             if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated_at->format("Y-m-d H:i:s.u")) {
                 $this->updated_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[ProductStockTableMap::COL_UPDATED_AT] = true;
+                $this->modifiedColumns[AttachmentTableMap::COL_UPDATED_AT] = true;
             }
         } // if either are not null
 
@@ -645,28 +671,31 @@ abstract class ProductStock implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProductStockTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : AttachmentTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProductStockTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : AttachmentTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProductStockTableMap::translateFieldName('PartnerLocationId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->partner_location_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : AttachmentTableMap::translateFieldName('Url', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->url = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProductStockTableMap::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : AttachmentTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->description = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : AttachmentTableMap::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->product_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProductStockTableMap::translateFieldName('Qty', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->qty = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : AttachmentTableMap::translateFieldName('ModelName', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->model_name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ProductStockTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : AttachmentTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ProductStockTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : AttachmentTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -679,10 +708,10 @@ abstract class ProductStock implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 7; // 7 = ProductStockTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = AttachmentTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\ProductStock'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\Attachment'), 0, $e);
         }
     }
 
@@ -701,9 +730,6 @@ abstract class ProductStock implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aPartnerLocation !== null && $this->partner_location_id !== $this->aPartnerLocation->getId()) {
-            $this->aPartnerLocation = null;
-        }
         if ($this->aProduct !== null && $this->product_id !== $this->aProduct->getId()) {
             $this->aProduct = null;
         }
@@ -730,13 +756,13 @@ abstract class ProductStock implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(ProductStockTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(AttachmentTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildProductStockQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildAttachmentQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -746,7 +772,6 @@ abstract class ProductStock implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aPartnerLocation = null;
             $this->aProduct = null;
         } // if (deep)
     }
@@ -757,8 +782,8 @@ abstract class ProductStock implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see ProductStock::setDeleted()
-     * @see ProductStock::isDeleted()
+     * @see Attachment::setDeleted()
+     * @see Attachment::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -767,11 +792,11 @@ abstract class ProductStock implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductStockTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(AttachmentTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildProductStockQuery::create()
+            $deleteQuery = ChildAttachmentQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -806,7 +831,7 @@ abstract class ProductStock implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductStockTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(AttachmentTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -825,7 +850,7 @@ abstract class ProductStock implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                ProductStockTableMap::addInstanceToPool($this);
+                AttachmentTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -855,13 +880,6 @@ abstract class ProductStock implements ActiveRecordInterface
             // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
-
-            if ($this->aPartnerLocation !== null) {
-                if ($this->aPartnerLocation->isModified() || $this->aPartnerLocation->isNew()) {
-                    $affectedRows += $this->aPartnerLocation->save($con);
-                }
-                $this->setPartnerLocation($this->aPartnerLocation);
-            }
 
             if ($this->aProduct !== null) {
                 if ($this->aProduct->isModified() || $this->aProduct->isNew()) {
@@ -901,36 +919,39 @@ abstract class ProductStock implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[ProductStockTableMap::COL_ID] = true;
+        $this->modifiedColumns[AttachmentTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ProductStockTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . AttachmentTableMap::COL_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(ProductStockTableMap::COL_ID)) {
+        if ($this->isColumnModified(AttachmentTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(ProductStockTableMap::COL_NAME)) {
+        if ($this->isColumnModified(AttachmentTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'name';
         }
-        if ($this->isColumnModified(ProductStockTableMap::COL_PARTNER_LOCATION_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'partner_location_id';
+        if ($this->isColumnModified(AttachmentTableMap::COL_URL)) {
+            $modifiedColumns[':p' . $index++]  = 'url';
         }
-        if ($this->isColumnModified(ProductStockTableMap::COL_PRODUCT_ID)) {
+        if ($this->isColumnModified(AttachmentTableMap::COL_DESCRIPTION)) {
+            $modifiedColumns[':p' . $index++]  = 'description';
+        }
+        if ($this->isColumnModified(AttachmentTableMap::COL_PRODUCT_ID)) {
             $modifiedColumns[':p' . $index++]  = 'product_id';
         }
-        if ($this->isColumnModified(ProductStockTableMap::COL_QTY)) {
-            $modifiedColumns[':p' . $index++]  = 'qty';
+        if ($this->isColumnModified(AttachmentTableMap::COL_MODEL_NAME)) {
+            $modifiedColumns[':p' . $index++]  = 'model_name';
         }
-        if ($this->isColumnModified(ProductStockTableMap::COL_CREATED_AT)) {
+        if ($this->isColumnModified(AttachmentTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
-        if ($this->isColumnModified(ProductStockTableMap::COL_UPDATED_AT)) {
+        if ($this->isColumnModified(AttachmentTableMap::COL_UPDATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'updated_at';
         }
 
         $sql = sprintf(
-            'INSERT INTO product_stock (%s) VALUES (%s)',
+            'INSERT INTO attachment (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -945,14 +966,17 @@ abstract class ProductStock implements ActiveRecordInterface
                     case 'name':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
-                    case 'partner_location_id':
-                        $stmt->bindValue($identifier, $this->partner_location_id, PDO::PARAM_INT);
+                    case 'url':
+                        $stmt->bindValue($identifier, $this->url, PDO::PARAM_STR);
+                        break;
+                    case 'description':
+                        $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
                         break;
                     case 'product_id':
                         $stmt->bindValue($identifier, $this->product_id, PDO::PARAM_INT);
                         break;
-                    case 'qty':
-                        $stmt->bindValue($identifier, $this->qty, PDO::PARAM_INT);
+                    case 'model_name':
+                        $stmt->bindValue($identifier, $this->model_name, PDO::PARAM_STR);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -1006,7 +1030,7 @@ abstract class ProductStock implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = ProductStockTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = AttachmentTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -1029,18 +1053,21 @@ abstract class ProductStock implements ActiveRecordInterface
                 return $this->getName();
                 break;
             case 2:
-                return $this->getPartnerLocationId();
+                return $this->getUrl();
                 break;
             case 3:
-                return $this->getProductId();
+                return $this->getDescription();
                 break;
             case 4:
-                return $this->getQty();
+                return $this->getProductId();
                 break;
             case 5:
-                return $this->getCreatedAt();
+                return $this->getModelName();
                 break;
             case 6:
+                return $this->getCreatedAt();
+                break;
+            case 7:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1067,26 +1094,27 @@ abstract class ProductStock implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['ProductStock'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['Attachment'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['ProductStock'][$this->hashCode()] = true;
-        $keys = ProductStockTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['Attachment'][$this->hashCode()] = true;
+        $keys = AttachmentTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
-            $keys[2] => $this->getPartnerLocationId(),
-            $keys[3] => $this->getProductId(),
-            $keys[4] => $this->getQty(),
-            $keys[5] => $this->getCreatedAt(),
-            $keys[6] => $this->getUpdatedAt(),
+            $keys[2] => $this->getUrl(),
+            $keys[3] => $this->getDescription(),
+            $keys[4] => $this->getProductId(),
+            $keys[5] => $this->getModelName(),
+            $keys[6] => $this->getCreatedAt(),
+            $keys[7] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[5]] instanceof \DateTimeInterface) {
-            $result[$keys[5]] = $result[$keys[5]]->format('c');
-        }
-
         if ($result[$keys[6]] instanceof \DateTimeInterface) {
             $result[$keys[6]] = $result[$keys[6]]->format('c');
+        }
+
+        if ($result[$keys[7]] instanceof \DateTimeInterface) {
+            $result[$keys[7]] = $result[$keys[7]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1095,21 +1123,6 @@ abstract class ProductStock implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aPartnerLocation) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'partnerLocation';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'partner_location';
-                        break;
-                    default:
-                        $key = 'PartnerLocation';
-                }
-
-                $result[$key] = $this->aPartnerLocation->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
             if (null !== $this->aProduct) {
 
                 switch ($keyType) {
@@ -1139,11 +1152,11 @@ abstract class ProductStock implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\ProductStock
+     * @return $this|\Attachment
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = ProductStockTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = AttachmentTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1154,7 +1167,7 @@ abstract class ProductStock implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\ProductStock
+     * @return $this|\Attachment
      */
     public function setByPosition($pos, $value)
     {
@@ -1166,18 +1179,21 @@ abstract class ProductStock implements ActiveRecordInterface
                 $this->setName($value);
                 break;
             case 2:
-                $this->setPartnerLocationId($value);
+                $this->setUrl($value);
                 break;
             case 3:
-                $this->setProductId($value);
+                $this->setDescription($value);
                 break;
             case 4:
-                $this->setQty($value);
+                $this->setProductId($value);
                 break;
             case 5:
-                $this->setCreatedAt($value);
+                $this->setModelName($value);
                 break;
             case 6:
+                $this->setCreatedAt($value);
+                break;
+            case 7:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1204,7 +1220,7 @@ abstract class ProductStock implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = ProductStockTableMap::getFieldNames($keyType);
+        $keys = AttachmentTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setId($arr[$keys[0]]);
@@ -1213,19 +1229,22 @@ abstract class ProductStock implements ActiveRecordInterface
             $this->setName($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setPartnerLocationId($arr[$keys[2]]);
+            $this->setUrl($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setProductId($arr[$keys[3]]);
+            $this->setDescription($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setQty($arr[$keys[4]]);
+            $this->setProductId($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setCreatedAt($arr[$keys[5]]);
+            $this->setModelName($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setUpdatedAt($arr[$keys[6]]);
+            $this->setCreatedAt($arr[$keys[6]]);
+        }
+        if (array_key_exists($keys[7], $arr)) {
+            $this->setUpdatedAt($arr[$keys[7]]);
         }
     }
 
@@ -1246,7 +1265,7 @@ abstract class ProductStock implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\ProductStock The current object, for fluid interface
+     * @return $this|\Attachment The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1266,28 +1285,31 @@ abstract class ProductStock implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(ProductStockTableMap::DATABASE_NAME);
+        $criteria = new Criteria(AttachmentTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(ProductStockTableMap::COL_ID)) {
-            $criteria->add(ProductStockTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(AttachmentTableMap::COL_ID)) {
+            $criteria->add(AttachmentTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(ProductStockTableMap::COL_NAME)) {
-            $criteria->add(ProductStockTableMap::COL_NAME, $this->name);
+        if ($this->isColumnModified(AttachmentTableMap::COL_NAME)) {
+            $criteria->add(AttachmentTableMap::COL_NAME, $this->name);
         }
-        if ($this->isColumnModified(ProductStockTableMap::COL_PARTNER_LOCATION_ID)) {
-            $criteria->add(ProductStockTableMap::COL_PARTNER_LOCATION_ID, $this->partner_location_id);
+        if ($this->isColumnModified(AttachmentTableMap::COL_URL)) {
+            $criteria->add(AttachmentTableMap::COL_URL, $this->url);
         }
-        if ($this->isColumnModified(ProductStockTableMap::COL_PRODUCT_ID)) {
-            $criteria->add(ProductStockTableMap::COL_PRODUCT_ID, $this->product_id);
+        if ($this->isColumnModified(AttachmentTableMap::COL_DESCRIPTION)) {
+            $criteria->add(AttachmentTableMap::COL_DESCRIPTION, $this->description);
         }
-        if ($this->isColumnModified(ProductStockTableMap::COL_QTY)) {
-            $criteria->add(ProductStockTableMap::COL_QTY, $this->qty);
+        if ($this->isColumnModified(AttachmentTableMap::COL_PRODUCT_ID)) {
+            $criteria->add(AttachmentTableMap::COL_PRODUCT_ID, $this->product_id);
         }
-        if ($this->isColumnModified(ProductStockTableMap::COL_CREATED_AT)) {
-            $criteria->add(ProductStockTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(AttachmentTableMap::COL_MODEL_NAME)) {
+            $criteria->add(AttachmentTableMap::COL_MODEL_NAME, $this->model_name);
         }
-        if ($this->isColumnModified(ProductStockTableMap::COL_UPDATED_AT)) {
-            $criteria->add(ProductStockTableMap::COL_UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(AttachmentTableMap::COL_CREATED_AT)) {
+            $criteria->add(AttachmentTableMap::COL_CREATED_AT, $this->created_at);
+        }
+        if ($this->isColumnModified(AttachmentTableMap::COL_UPDATED_AT)) {
+            $criteria->add(AttachmentTableMap::COL_UPDATED_AT, $this->updated_at);
         }
 
         return $criteria;
@@ -1305,8 +1327,8 @@ abstract class ProductStock implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildProductStockQuery::create();
-        $criteria->add(ProductStockTableMap::COL_ID, $this->id);
+        $criteria = ChildAttachmentQuery::create();
+        $criteria->add(AttachmentTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1368,7 +1390,7 @@ abstract class ProductStock implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \ProductStock (or compatible) type.
+     * @param      object $copyObj An object of \Attachment (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1376,9 +1398,10 @@ abstract class ProductStock implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setName($this->getName());
-        $copyObj->setPartnerLocationId($this->getPartnerLocationId());
+        $copyObj->setUrl($this->getUrl());
+        $copyObj->setDescription($this->getDescription());
         $copyObj->setProductId($this->getProductId());
-        $copyObj->setQty($this->getQty());
+        $copyObj->setModelName($this->getModelName());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
         if ($makeNew) {
@@ -1396,7 +1419,7 @@ abstract class ProductStock implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \ProductStock Clone of current object.
+     * @return \Attachment Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1410,61 +1433,10 @@ abstract class ProductStock implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildPartnerLocation object.
-     *
-     * @param  ChildPartnerLocation $v
-     * @return $this|\ProductStock The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setPartnerLocation(ChildPartnerLocation $v = null)
-    {
-        if ($v === null) {
-            $this->setPartnerLocationId(NULL);
-        } else {
-            $this->setPartnerLocationId($v->getId());
-        }
-
-        $this->aPartnerLocation = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildPartnerLocation object, it will not be re-added.
-        if ($v !== null) {
-            $v->addProductStock($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildPartnerLocation object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildPartnerLocation The associated ChildPartnerLocation object.
-     * @throws PropelException
-     */
-    public function getPartnerLocation(ConnectionInterface $con = null)
-    {
-        if ($this->aPartnerLocation === null && ($this->partner_location_id != 0)) {
-            $this->aPartnerLocation = ChildPartnerLocationQuery::create()->findPk($this->partner_location_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aPartnerLocation->addProductStocks($this);
-             */
-        }
-
-        return $this->aPartnerLocation;
-    }
-
-    /**
      * Declares an association between this object and a ChildProduct object.
      *
      * @param  ChildProduct $v
-     * @return $this|\ProductStock The current object (for fluent API support)
+     * @return $this|\Attachment The current object (for fluent API support)
      * @throws PropelException
      */
     public function setProduct(ChildProduct $v = null)
@@ -1480,7 +1452,7 @@ abstract class ProductStock implements ActiveRecordInterface
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildProduct object, it will not be re-added.
         if ($v !== null) {
-            $v->addProductStock($this);
+            $v->addAttachment($this);
         }
 
 
@@ -1504,7 +1476,7 @@ abstract class ProductStock implements ActiveRecordInterface
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aProduct->addProductStocks($this);
+                $this->aProduct->addAttachments($this);
              */
         }
 
@@ -1518,17 +1490,15 @@ abstract class ProductStock implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aPartnerLocation) {
-            $this->aPartnerLocation->removeProductStock($this);
-        }
         if (null !== $this->aProduct) {
-            $this->aProduct->removeProductStock($this);
+            $this->aProduct->removeAttachment($this);
         }
         $this->id = null;
         $this->name = null;
-        $this->partner_location_id = null;
+        $this->url = null;
+        $this->description = null;
         $this->product_id = null;
-        $this->qty = null;
+        $this->model_name = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;
@@ -1552,7 +1522,6 @@ abstract class ProductStock implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aPartnerLocation = null;
         $this->aProduct = null;
     }
 
@@ -1563,7 +1532,7 @@ abstract class ProductStock implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(ProductStockTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(AttachmentTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

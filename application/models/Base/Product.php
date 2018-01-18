@@ -2,6 +2,8 @@
 
 namespace Base;
 
+use \Attachment as ChildAttachment;
+use \AttachmentQuery as ChildAttachmentQuery;
 use \ComponentProduct as ChildComponentProduct;
 use \ComponentProductQuery as ChildComponentProductQuery;
 use \Finishing as ChildFinishing;
@@ -29,6 +31,7 @@ use \UnitOfMeasureQuery as ChildUnitOfMeasureQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
+use Map\AttachmentTableMap;
 use Map\ComponentProductTableMap;
 use Map\ProductFinishingTableMap;
 use Map\ProductImageTableMap;
@@ -332,6 +335,12 @@ abstract class Product implements ActiveRecordInterface
     protected $collProductImagesPartial;
 
     /**
+     * @var        ObjectCollection|ChildAttachment[] Collection to store aggregation of ChildAttachment objects.
+     */
+    protected $collAttachments;
+    protected $collAttachmentsPartial;
+
+    /**
      * @var        ObjectCollection|ChildProformaInvoiceLine[] Collection to store aggregation of ChildProformaInvoiceLine objects.
      */
     protected $collProformaInvoiceLines;
@@ -408,6 +417,12 @@ abstract class Product implements ActiveRecordInterface
      * @var ObjectCollection|ChildProductImage[]
      */
     protected $productImagesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildAttachment[]
+     */
+    protected $attachmentsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -1842,6 +1857,8 @@ abstract class Product implements ActiveRecordInterface
 
             $this->collProductImages = null;
 
+            $this->collAttachments = null;
+
             $this->collProformaInvoiceLines = null;
 
             $this->collPurchaseOrderLines = null;
@@ -2093,6 +2110,23 @@ abstract class Product implements ActiveRecordInterface
 
             if ($this->collProductImages !== null) {
                 foreach ($this->collProductImages as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->attachmentsScheduledForDeletion !== null) {
+                if (!$this->attachmentsScheduledForDeletion->isEmpty()) {
+                    \AttachmentQuery::create()
+                        ->filterByPrimaryKeys($this->attachmentsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->attachmentsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collAttachments !== null) {
+                foreach ($this->collAttachments as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -2686,6 +2720,21 @@ abstract class Product implements ActiveRecordInterface
 
                 $result[$key] = $this->collProductImages->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
+            if (null !== $this->collAttachments) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'attachments';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'attachments';
+                        break;
+                    default:
+                        $key = 'Attachments';
+                }
+
+                $result[$key] = $this->collAttachments->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
             if (null !== $this->collProformaInvoiceLines) {
 
                 switch ($keyType) {
@@ -3238,6 +3287,12 @@ abstract class Product implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getAttachments() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addAttachment($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getProformaInvoiceLines() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addProformaInvoiceLine($relObj->copy($deepCopy));
@@ -3423,6 +3478,10 @@ abstract class Product implements ActiveRecordInterface
         }
         if ('ProductImage' == $relationName) {
             $this->initProductImages();
+            return;
+        }
+        if ('Attachment' == $relationName) {
+            $this->initAttachments();
             return;
         }
         if ('ProformaInvoiceLine' == $relationName) {
@@ -4616,6 +4675,231 @@ abstract class Product implements ActiveRecordInterface
             }
             $this->productImagesScheduledForDeletion[]= clone $productImage;
             $productImage->setProduct(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collAttachments collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addAttachments()
+     */
+    public function clearAttachments()
+    {
+        $this->collAttachments = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collAttachments collection loaded partially.
+     */
+    public function resetPartialAttachments($v = true)
+    {
+        $this->collAttachmentsPartial = $v;
+    }
+
+    /**
+     * Initializes the collAttachments collection.
+     *
+     * By default this just sets the collAttachments collection to an empty array (like clearcollAttachments());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initAttachments($overrideExisting = true)
+    {
+        if (null !== $this->collAttachments && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = AttachmentTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collAttachments = new $collectionClassName;
+        $this->collAttachments->setModel('\Attachment');
+    }
+
+    /**
+     * Gets an array of ChildAttachment objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildProduct is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildAttachment[] List of ChildAttachment objects
+     * @throws PropelException
+     */
+    public function getAttachments(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collAttachmentsPartial && !$this->isNew();
+        if (null === $this->collAttachments || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collAttachments) {
+                // return empty collection
+                $this->initAttachments();
+            } else {
+                $collAttachments = ChildAttachmentQuery::create(null, $criteria)
+                    ->filterByProduct($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collAttachmentsPartial && count($collAttachments)) {
+                        $this->initAttachments(false);
+
+                        foreach ($collAttachments as $obj) {
+                            if (false == $this->collAttachments->contains($obj)) {
+                                $this->collAttachments->append($obj);
+                            }
+                        }
+
+                        $this->collAttachmentsPartial = true;
+                    }
+
+                    return $collAttachments;
+                }
+
+                if ($partial && $this->collAttachments) {
+                    foreach ($this->collAttachments as $obj) {
+                        if ($obj->isNew()) {
+                            $collAttachments[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collAttachments = $collAttachments;
+                $this->collAttachmentsPartial = false;
+            }
+        }
+
+        return $this->collAttachments;
+    }
+
+    /**
+     * Sets a collection of ChildAttachment objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $attachments A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildProduct The current object (for fluent API support)
+     */
+    public function setAttachments(Collection $attachments, ConnectionInterface $con = null)
+    {
+        /** @var ChildAttachment[] $attachmentsToDelete */
+        $attachmentsToDelete = $this->getAttachments(new Criteria(), $con)->diff($attachments);
+
+
+        $this->attachmentsScheduledForDeletion = $attachmentsToDelete;
+
+        foreach ($attachmentsToDelete as $attachmentRemoved) {
+            $attachmentRemoved->setProduct(null);
+        }
+
+        $this->collAttachments = null;
+        foreach ($attachments as $attachment) {
+            $this->addAttachment($attachment);
+        }
+
+        $this->collAttachments = $attachments;
+        $this->collAttachmentsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Attachment objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Attachment objects.
+     * @throws PropelException
+     */
+    public function countAttachments(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collAttachmentsPartial && !$this->isNew();
+        if (null === $this->collAttachments || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collAttachments) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getAttachments());
+            }
+
+            $query = ChildAttachmentQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByProduct($this)
+                ->count($con);
+        }
+
+        return count($this->collAttachments);
+    }
+
+    /**
+     * Method called to associate a ChildAttachment object to this object
+     * through the ChildAttachment foreign key attribute.
+     *
+     * @param  ChildAttachment $l ChildAttachment
+     * @return $this|\Product The current object (for fluent API support)
+     */
+    public function addAttachment(ChildAttachment $l)
+    {
+        if ($this->collAttachments === null) {
+            $this->initAttachments();
+            $this->collAttachmentsPartial = true;
+        }
+
+        if (!$this->collAttachments->contains($l)) {
+            $this->doAddAttachment($l);
+
+            if ($this->attachmentsScheduledForDeletion and $this->attachmentsScheduledForDeletion->contains($l)) {
+                $this->attachmentsScheduledForDeletion->remove($this->attachmentsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildAttachment $attachment The ChildAttachment object to add.
+     */
+    protected function doAddAttachment(ChildAttachment $attachment)
+    {
+        $this->collAttachments[]= $attachment;
+        $attachment->setProduct($this);
+    }
+
+    /**
+     * @param  ChildAttachment $attachment The ChildAttachment object to remove.
+     * @return $this|ChildProduct The current object (for fluent API support)
+     */
+    public function removeAttachment(ChildAttachment $attachment)
+    {
+        if ($this->getAttachments()->contains($attachment)) {
+            $pos = $this->collAttachments->search($attachment);
+            $this->collAttachments->remove($pos);
+            if (null === $this->attachmentsScheduledForDeletion) {
+                $this->attachmentsScheduledForDeletion = clone $this->collAttachments;
+                $this->attachmentsScheduledForDeletion->clear();
+            }
+            $this->attachmentsScheduledForDeletion[]= clone $attachment;
+            $attachment->setProduct(null);
         }
 
         return $this;
@@ -5998,6 +6282,11 @@ abstract class Product implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collAttachments) {
+                foreach ($this->collAttachments as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collProformaInvoiceLines) {
                 foreach ($this->collProformaInvoiceLines as $o) {
                     $o->clearAllReferences($deep);
@@ -6030,6 +6319,7 @@ abstract class Product implements ActiveRecordInterface
         $this->collProductPartners = null;
         $this->collProductFinishings = null;
         $this->collProductImages = null;
+        $this->collAttachments = null;
         $this->collProformaInvoiceLines = null;
         $this->collPurchaseOrderLines = null;
         $this->collProductStocks = null;
