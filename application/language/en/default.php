@@ -1,4 +1,4 @@
-<?php 
+<?php
  return array(
 'access' => 'Access',
 'acount_no' => 'Acount No',
@@ -170,6 +170,7 @@
 'sea_40_h' => 'Sea Freight 20 ft',
 'seal_no' => 'Seal No',
 'search' => 'Search',
+'send_email'=>'Send via Email',
 'select_data' => 'Select data',
 'shipment_term' => 'Shipment Term',
 'shipping_type' => 'Shipping Type',

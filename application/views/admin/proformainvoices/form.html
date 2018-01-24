@@ -5,9 +5,7 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
     <form id="form_ProformaInvoice" method="post" action="{{base_url}}index.php/manage_proformainvoices/write/{{ proformainvoices.id }}" data-parsley-validate class="form-horizontal form-label-left">
       <div class="box box-info">
         <div class="box-header with-border">
-          {% include 'common/_form_header.html' with {'back_url':'/index.php/manage_proformainvoices'~back_link, 'title': res.string.proforma_invoice, 'delete_url':'/index.php/manage_proformainvoices/delete/'~ proformainvoices.Id , 'object':proformainvoices} %}
-
-
+          {% include 'common/_form_header.html' with {'back_url':'/index.php/manage_proformainvoices'~back_link, 'title': res.string.proforma_invoice, 'delete_url':'/index.php/manage_proformainvoices/delete/'~ proformainvoices.Id , 'object':proformainvoices,'email':'/index.php/manage_proformainvoices/send_mail/'~ proformainvoices.Id} %}
         </div>
         <input type="hidden" id="PIId" value="{{ proformainvoices.Id }}">
         <div class="box-body">

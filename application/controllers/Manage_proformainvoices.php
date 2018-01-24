@@ -79,6 +79,7 @@ class Manage_proformainvoices extends MY_Controller
           )
         )
     ));
+    redirect("manage_proformainvoices/detail/$id");
     }
 
     public function create()
