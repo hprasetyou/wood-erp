@@ -25,7 +25,7 @@
   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Name">{{res.string.type}}</label>
   <div class="col-md-6 col-sm-6 col-xs-12">
     <div {% if components %}style="display:none" {% endif %} class="input-wrap">
-      <select class="form-select" value="components.Type" name="Type">
+      <select class="form-select"  name="Type">
         <option {% if components.Type == "component"%} selected{%endif%} value="component">Component</option>
         <option {% if components.Type == "support_component"%} selected{%endif%} value="support_component">Support Component</option>
       </select>

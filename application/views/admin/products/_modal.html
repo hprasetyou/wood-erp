@@ -25,7 +25,6 @@
 									<th data-fieldname="description">{{res.string.description }}</th>
 									<th data-fieldname="material" data-fieldtype="array">{{res.string.material }}</th>
 									<th data-fieldname="list_price">{{res.string.list_price }}</th>
-									<th data-disablesort="true" data-fieldname="dimension">{{res.string.assembled_dimension}}</th>
 								</tr>
 							</thead>
 						</table>
@@ -37,21 +36,23 @@
 </div>
 <!-- New -->
 <div class="modal fade" id="btnNewProd" tabindex="1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
-        {% include "admin/components/_form_piece.html"%}
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<form id="form_Component_modal" method="post" action="{{base_url}}index.php/manage_products/write" class="form-horizontal form-label-left">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">{{res.string.new_data}}</h4>
+				</div>
+				<div class="modal-body">
+					{% include "admin/components/_form_piece.html"%}
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Save changes</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 
 <script type="text/javascript">
@@ -63,5 +64,30 @@
 			url = url + '&partner_id=' + $('#toggleProdCust').data('partner_id')
 		}
 		$('#table_Product').DataTable().ajax.url(url).load();
+	})
+	$('#form_Component_modal').submit(function(e) {
+		e.preventDefault()
+		var comp_form = $(this);
+		comp_form.find('button').attr('disabled');
+		var comp_tb = $('#ModalProduct')
+		$.ajax({
+			url: comp_form.attr('action'),
+			data: comp_form.serialize(),
+			dataType: 'JSON',
+			method: 'POST',
+			success: function(o) {
+				console.log(o);
+				var tb = comp_tb.find('table')
+				var hidInp = tb.data('thide');
+				var shoInp = tb.data('ttext');
+				$('#' + hidInp).val(o.Id);
+				$('#' + shoInp).val(o.Name);
+				tb.DataTable().ajax.reload();
+				comp_form.parents('.modal').modal('hide')
+				comp_form.find('input').val('')
+				comp_form.find('button').removeAttr('disabled');
+				comp_tb.modal('hide')
+			}
+		})
 	})
 </script>

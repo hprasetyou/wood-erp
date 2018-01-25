@@ -54,7 +54,7 @@ class Template {
         }
       }
       $data->find();
-      $o = "<select name=\"$name\" id=\"$id\" class=\"form-control form-select\">";
+      $o = "<select name=\"$name\" id=\"$id\" class=\"form-control form-select\"><option value=\"\">Select</option>";
       foreach ($data as $key => $value) {
         $id = $value->getId();
         $name = "";

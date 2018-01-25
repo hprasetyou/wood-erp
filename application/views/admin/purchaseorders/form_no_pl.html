@@ -1,4 +1,4 @@
-{% extends "dashboard.html" %} {% set title=" Purchase Order " %} {% if purchaseorders %} {% set bc_text = purchaseorders.Name %} {% else %} {% set bc_text = res.string.new %} {% endif %} 
+{% extends "dashboard.html" %} {% set title=" Purchase Order " %} {% if purchaseorders %} {% set bc_text = purchaseorders.Name %} {% else %} {% set bc_text = res.string.new %} {% endif %}
 {% set breadcrumbs = [ {'link': base_url~'index.php/manage_purchaseorders','text': res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %} {% if purchaseorders %} {% set packinglist = purchaseorders.PackingList %} {% endif %}
 {% set types = ['Support Material','Raw Material','Miscellanious'] %}
 
@@ -168,9 +168,7 @@
   {% include "admin/proformainvoices/_modal.html" %} {% include "admin/purchaseorders/_modal_add_product_to_po.html" %} {%
   include "admin/suppliers/_modal.html" %} {% endblock %} {% block bottom%} {% include "admin/products/_modal.html" %}
   <script type="text/javascript">
-    { %
-      if res.query_params.packinglist %
-    }
+    {%  if res.query_params.packinglist %}
     $.ajax({
       url: '/index.php/manage_proformainvoices/detail/{{res.query_params.proformainvoice}}',
       method: "GET",
@@ -181,8 +179,7 @@
       $('#displayProformaInvoiceId').val(o.Name)
       $('#txtPINo').text(o.Name)
       $('#ProformaInvoiceId').trigger('change')
-    }) { % endif %
-    }
+    }) {% endif %}
     $('#table_ProformaInvoiceLine').on('change', '.cb_pi', function (e) {
       var is_empty = true;
       $('#table_ProformaInvoiceLine').find('.cb_pi').each(function (i) {
