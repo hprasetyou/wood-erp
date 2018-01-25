@@ -28,6 +28,7 @@
       <select class="form-select"  name="Type">
         <option {% if components.Type == "component"%} selected{%endif%} value="component">Component</option>
         <option {% if components.Type == "support_component"%} selected{%endif%} value="support_component">Support Component</option>
+        <option {% if components.Type == "misc"%} selected{%endif%} value="misc">Miscellaneous</option>
       </select>
     </div>
     {% if components %}
