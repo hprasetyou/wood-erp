@@ -59,7 +59,7 @@ class ProformaInvoiceTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 16;
+    const NUM_COLUMNS = 18;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class ProformaInvoiceTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 16;
+    const NUM_HYDRATE_COLUMNS = 18;
 
     /**
      * the column name for the id field
@@ -115,6 +115,16 @@ class ProformaInvoiceTableMap extends TableMap
      * the column name for the total_price field
      */
     const COL_TOTAL_PRICE = 'proforma_invoice.total_price';
+
+    /**
+     * the column name for the total field
+     */
+    const COL_TOTAL = 'proforma_invoice.total';
+
+    /**
+     * the column name for the payment_term field
+     */
+    const COL_PAYMENT_TERM = 'proforma_invoice.payment_term';
 
     /**
      * the column name for the down_payment_id field
@@ -163,11 +173,11 @@ class ProformaInvoiceTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'CurrencyId', 'CustomerId', 'Date', 'ConfirmDate', 'Description', 'TotalCubicDimension', 'TotalPrice', 'DownPaymentId', 'DownPaymentAmount', 'DownPaymentDeadline', 'State', 'Active', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'currencyId', 'customerId', 'date', 'confirmDate', 'description', 'totalCubicDimension', 'totalPrice', 'downPaymentId', 'downPaymentAmount', 'downPaymentDeadline', 'state', 'active', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ProformaInvoiceTableMap::COL_ID, ProformaInvoiceTableMap::COL_NAME, ProformaInvoiceTableMap::COL_CURRENCY_ID, ProformaInvoiceTableMap::COL_CUSTOMER_ID, ProformaInvoiceTableMap::COL_DATE, ProformaInvoiceTableMap::COL_CONFIRM_DATE, ProformaInvoiceTableMap::COL_DESCRIPTION, ProformaInvoiceTableMap::COL_TOTAL_CUBIC_DIMENSION, ProformaInvoiceTableMap::COL_TOTAL_PRICE, ProformaInvoiceTableMap::COL_DOWN_PAYMENT_ID, ProformaInvoiceTableMap::COL_DOWN_PAYMENT_AMOUNT, ProformaInvoiceTableMap::COL_DOWN_PAYMENT_DEADLINE, ProformaInvoiceTableMap::COL_STATE, ProformaInvoiceTableMap::COL_ACTIVE, ProformaInvoiceTableMap::COL_CREATED_AT, ProformaInvoiceTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'currency_id', 'customer_id', 'date', 'confirm_date', 'description', 'total_cubic_dimension', 'total_price', 'down_payment_id', 'down_payment_amount', 'down_payment_deadline', 'state', 'active', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'CurrencyId', 'CustomerId', 'Date', 'ConfirmDate', 'Description', 'TotalCubicDimension', 'TotalPrice', 'Total', 'PaymentTerm', 'DownPaymentId', 'DownPaymentAmount', 'DownPaymentDeadline', 'State', 'Active', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'currencyId', 'customerId', 'date', 'confirmDate', 'description', 'totalCubicDimension', 'totalPrice', 'total', 'paymentTerm', 'downPaymentId', 'downPaymentAmount', 'downPaymentDeadline', 'state', 'active', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ProformaInvoiceTableMap::COL_ID, ProformaInvoiceTableMap::COL_NAME, ProformaInvoiceTableMap::COL_CURRENCY_ID, ProformaInvoiceTableMap::COL_CUSTOMER_ID, ProformaInvoiceTableMap::COL_DATE, ProformaInvoiceTableMap::COL_CONFIRM_DATE, ProformaInvoiceTableMap::COL_DESCRIPTION, ProformaInvoiceTableMap::COL_TOTAL_CUBIC_DIMENSION, ProformaInvoiceTableMap::COL_TOTAL_PRICE, ProformaInvoiceTableMap::COL_TOTAL, ProformaInvoiceTableMap::COL_PAYMENT_TERM, ProformaInvoiceTableMap::COL_DOWN_PAYMENT_ID, ProformaInvoiceTableMap::COL_DOWN_PAYMENT_AMOUNT, ProformaInvoiceTableMap::COL_DOWN_PAYMENT_DEADLINE, ProformaInvoiceTableMap::COL_STATE, ProformaInvoiceTableMap::COL_ACTIVE, ProformaInvoiceTableMap::COL_CREATED_AT, ProformaInvoiceTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'currency_id', 'customer_id', 'date', 'confirm_date', 'description', 'total_cubic_dimension', 'total_price', 'total', 'payment_term', 'down_payment_id', 'down_payment_amount', 'down_payment_deadline', 'state', 'active', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, )
     );
 
     /**
@@ -177,11 +187,11 @@ class ProformaInvoiceTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'CurrencyId' => 2, 'CustomerId' => 3, 'Date' => 4, 'ConfirmDate' => 5, 'Description' => 6, 'TotalCubicDimension' => 7, 'TotalPrice' => 8, 'DownPaymentId' => 9, 'DownPaymentAmount' => 10, 'DownPaymentDeadline' => 11, 'State' => 12, 'Active' => 13, 'CreatedAt' => 14, 'UpdatedAt' => 15, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'currencyId' => 2, 'customerId' => 3, 'date' => 4, 'confirmDate' => 5, 'description' => 6, 'totalCubicDimension' => 7, 'totalPrice' => 8, 'downPaymentId' => 9, 'downPaymentAmount' => 10, 'downPaymentDeadline' => 11, 'state' => 12, 'active' => 13, 'createdAt' => 14, 'updatedAt' => 15, ),
-        self::TYPE_COLNAME       => array(ProformaInvoiceTableMap::COL_ID => 0, ProformaInvoiceTableMap::COL_NAME => 1, ProformaInvoiceTableMap::COL_CURRENCY_ID => 2, ProformaInvoiceTableMap::COL_CUSTOMER_ID => 3, ProformaInvoiceTableMap::COL_DATE => 4, ProformaInvoiceTableMap::COL_CONFIRM_DATE => 5, ProformaInvoiceTableMap::COL_DESCRIPTION => 6, ProformaInvoiceTableMap::COL_TOTAL_CUBIC_DIMENSION => 7, ProformaInvoiceTableMap::COL_TOTAL_PRICE => 8, ProformaInvoiceTableMap::COL_DOWN_PAYMENT_ID => 9, ProformaInvoiceTableMap::COL_DOWN_PAYMENT_AMOUNT => 10, ProformaInvoiceTableMap::COL_DOWN_PAYMENT_DEADLINE => 11, ProformaInvoiceTableMap::COL_STATE => 12, ProformaInvoiceTableMap::COL_ACTIVE => 13, ProformaInvoiceTableMap::COL_CREATED_AT => 14, ProformaInvoiceTableMap::COL_UPDATED_AT => 15, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'currency_id' => 2, 'customer_id' => 3, 'date' => 4, 'confirm_date' => 5, 'description' => 6, 'total_cubic_dimension' => 7, 'total_price' => 8, 'down_payment_id' => 9, 'down_payment_amount' => 10, 'down_payment_deadline' => 11, 'state' => 12, 'active' => 13, 'created_at' => 14, 'updated_at' => 15, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'CurrencyId' => 2, 'CustomerId' => 3, 'Date' => 4, 'ConfirmDate' => 5, 'Description' => 6, 'TotalCubicDimension' => 7, 'TotalPrice' => 8, 'Total' => 9, 'PaymentTerm' => 10, 'DownPaymentId' => 11, 'DownPaymentAmount' => 12, 'DownPaymentDeadline' => 13, 'State' => 14, 'Active' => 15, 'CreatedAt' => 16, 'UpdatedAt' => 17, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'currencyId' => 2, 'customerId' => 3, 'date' => 4, 'confirmDate' => 5, 'description' => 6, 'totalCubicDimension' => 7, 'totalPrice' => 8, 'total' => 9, 'paymentTerm' => 10, 'downPaymentId' => 11, 'downPaymentAmount' => 12, 'downPaymentDeadline' => 13, 'state' => 14, 'active' => 15, 'createdAt' => 16, 'updatedAt' => 17, ),
+        self::TYPE_COLNAME       => array(ProformaInvoiceTableMap::COL_ID => 0, ProformaInvoiceTableMap::COL_NAME => 1, ProformaInvoiceTableMap::COL_CURRENCY_ID => 2, ProformaInvoiceTableMap::COL_CUSTOMER_ID => 3, ProformaInvoiceTableMap::COL_DATE => 4, ProformaInvoiceTableMap::COL_CONFIRM_DATE => 5, ProformaInvoiceTableMap::COL_DESCRIPTION => 6, ProformaInvoiceTableMap::COL_TOTAL_CUBIC_DIMENSION => 7, ProformaInvoiceTableMap::COL_TOTAL_PRICE => 8, ProformaInvoiceTableMap::COL_TOTAL => 9, ProformaInvoiceTableMap::COL_PAYMENT_TERM => 10, ProformaInvoiceTableMap::COL_DOWN_PAYMENT_ID => 11, ProformaInvoiceTableMap::COL_DOWN_PAYMENT_AMOUNT => 12, ProformaInvoiceTableMap::COL_DOWN_PAYMENT_DEADLINE => 13, ProformaInvoiceTableMap::COL_STATE => 14, ProformaInvoiceTableMap::COL_ACTIVE => 15, ProformaInvoiceTableMap::COL_CREATED_AT => 16, ProformaInvoiceTableMap::COL_UPDATED_AT => 17, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'currency_id' => 2, 'customer_id' => 3, 'date' => 4, 'confirm_date' => 5, 'description' => 6, 'total_cubic_dimension' => 7, 'total_price' => 8, 'total' => 9, 'payment_term' => 10, 'down_payment_id' => 11, 'down_payment_amount' => 12, 'down_payment_deadline' => 13, 'state' => 14, 'active' => 15, 'created_at' => 16, 'updated_at' => 17, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, )
     );
 
     /**
@@ -210,6 +220,8 @@ class ProformaInvoiceTableMap extends TableMap
         $this->addColumn('description', 'Description', 'VARCHAR', false, 255, null);
         $this->addColumn('total_cubic_dimension', 'TotalCubicDimension', 'FLOAT', false, null, null);
         $this->addColumn('total_price', 'TotalPrice', 'FLOAT', false, null, null);
+        $this->addColumn('total', 'Total', 'FLOAT', false, null, null);
+        $this->addColumn('payment_term', 'PaymentTerm', 'CHAR', false, null, null);
         $this->addForeignKey('down_payment_id', 'DownPaymentId', 'INTEGER', 'down_payment', 'id', false, null, null);
         $this->addColumn('down_payment_amount', 'DownPaymentAmount', 'FLOAT', false, null, null);
         $this->addColumn('down_payment_deadline', 'DownPaymentDeadline', 'DATE', false, null, null);
@@ -411,6 +423,8 @@ class ProformaInvoiceTableMap extends TableMap
             $criteria->addSelectColumn(ProformaInvoiceTableMap::COL_DESCRIPTION);
             $criteria->addSelectColumn(ProformaInvoiceTableMap::COL_TOTAL_CUBIC_DIMENSION);
             $criteria->addSelectColumn(ProformaInvoiceTableMap::COL_TOTAL_PRICE);
+            $criteria->addSelectColumn(ProformaInvoiceTableMap::COL_TOTAL);
+            $criteria->addSelectColumn(ProformaInvoiceTableMap::COL_PAYMENT_TERM);
             $criteria->addSelectColumn(ProformaInvoiceTableMap::COL_DOWN_PAYMENT_ID);
             $criteria->addSelectColumn(ProformaInvoiceTableMap::COL_DOWN_PAYMENT_AMOUNT);
             $criteria->addSelectColumn(ProformaInvoiceTableMap::COL_DOWN_PAYMENT_DEADLINE);
@@ -428,6 +442,8 @@ class ProformaInvoiceTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.description');
             $criteria->addSelectColumn($alias . '.total_cubic_dimension');
             $criteria->addSelectColumn($alias . '.total_price');
+            $criteria->addSelectColumn($alias . '.total');
+            $criteria->addSelectColumn($alias . '.payment_term');
             $criteria->addSelectColumn($alias . '.down_payment_id');
             $criteria->addSelectColumn($alias . '.down_payment_amount');
             $criteria->addSelectColumn($alias . '.down_payment_deadline');

@@ -5,15 +5,10 @@ class Manage_proformainvoices extends MY_Controller
 {
     public function __construct()
     {
-        $this->objname = 'ProformaInvoice';
-        $this->tpl = 'proformainvoices';
 
         parent::__construct();
-        $this->form = array(
-    'Name'=>'Name',
-    'CustomerId'=>'CustomerId',
-    'Date'=>'Date',
-    'Description'=>'Description');
+        $this->tpl = 'proformainvoices';
+        $this->set_objname('ProformaInvoice');
         $this->authorization->check_authorization('manage_proformainvoices');
     }
 
@@ -101,60 +96,8 @@ class Manage_proformainvoices extends MY_Controller
     public function write($id=null)
     {
         $this->form['CurrencyId'] = 'CurrencyId';
+        $this->form['DownPaymentId'] = 'DownPaymentId';
         $data = parent::write($id);
-
-        $lines = json_decode($this->input->post('Lines'));
-
-        foreach ($lines as $key => $line) {
-            # code...is->
-            if ($line->Type == 'write') {
-                $productcust = ProductPartnerQuery::create()
-      ->filterByProductId($line->ProductId)
-      ->filterByPartnerId($data->getCustomerId())
-      ->filterByType('sell')
-      ->orderByCreatedAt('desc')
-      ->findOne();
-                if (!$productcust) {
-                    $productcust = new ProductPartner();
-                    $productcust->setProductId($line->ProductId);
-                    $productcust->setPartnerId($data->getCustomerId());
-                    $productcust->setType('sell');
-                }
-                $productcust->setName($line->Name);
-                $productcust->setDescription($line->Description);
-                $productcust->setProductPrice($line->Price);
-                $productcust->save();
-
-                $cbm = 0;
-                if ($productcust->getProduct()->getIsKdn()) {
-                    $cbm = $productcust->getProduct()->getCubicKdn();
-                } else {
-                    $cbm = $productcust->getProduct()->getCubicAsb();
-                }
-                if ($line->Id>0) {
-                    $proformainvoiceline = ProformaInvoiceLineQuery::create()
-        ->findPk($line->Id);
-                } else {
-                    $proformainvoiceline = new ProformaInvoiceLine;
-                    $proformainvoiceline->setProformaInvoiceId($data->getId());
-                }
-                $proformainvoiceline->setProductPartnerId($productcust->getId());
-                $proformainvoiceline->setQty($line->Qty);
-                $proformainvoiceline->setDescription($line->Description);
-                $proformainvoiceline->setQtyPerPack($line->QtyPerPack);
-                $proformainvoiceline->setCubicDimension($cbm);
-                $proformainvoiceline->setTotalCubicDimension($cbm * $line->Qty);
-                $proformainvoiceline->setPrice($line->Price);
-                $proformainvoiceline->setProductFinishing($line->Finishing);
-                $proformainvoiceline->setTotalPrice($line->Price *$line->Qty);
-                $proformainvoiceline->setIsSample($line->IsSample);
-                $proformainvoiceline->setIsNeedBox($line->IsNeedBox);
-                $proformainvoiceline->save();
-            } elseif ($line->Type == 'delete') {
-                print_r($line);
-                ProformaInvoiceLineQuery::create()->findPk($line->Id)->delete();
-            }
-        }
 
         if ($this->input->is_ajax_request()) {
             echo $data->toJSON();

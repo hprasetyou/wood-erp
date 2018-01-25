@@ -154,16 +154,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery rightJoinWithProductImage() Adds a RIGHT JOIN clause and with to the query using the ProductImage relation
  * @method     ChildProductQuery innerJoinWithProductImage() Adds a INNER JOIN clause and with to the query using the ProductImage relation
  *
- * @method     ChildProductQuery leftJoinAttachment($relationAlias = null) Adds a LEFT JOIN clause to the query using the Attachment relation
- * @method     ChildProductQuery rightJoinAttachment($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Attachment relation
- * @method     ChildProductQuery innerJoinAttachment($relationAlias = null) Adds a INNER JOIN clause to the query using the Attachment relation
- *
- * @method     ChildProductQuery joinWithAttachment($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Attachment relation
- *
- * @method     ChildProductQuery leftJoinWithAttachment() Adds a LEFT JOIN clause and with to the query using the Attachment relation
- * @method     ChildProductQuery rightJoinWithAttachment() Adds a RIGHT JOIN clause and with to the query using the Attachment relation
- * @method     ChildProductQuery innerJoinWithAttachment() Adds a INNER JOIN clause and with to the query using the Attachment relation
- *
  * @method     ChildProductQuery leftJoinProformaInvoiceLine($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProformaInvoiceLine relation
  * @method     ChildProductQuery rightJoinProformaInvoiceLine($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProformaInvoiceLine relation
  * @method     ChildProductQuery innerJoinProformaInvoiceLine($relationAlias = null) Adds a INNER JOIN clause to the query using the ProformaInvoiceLine relation
@@ -204,7 +194,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery rightJoinWithStockMoveLine() Adds a RIGHT JOIN clause and with to the query using the StockMoveLine relation
  * @method     ChildProductQuery innerJoinWithStockMoveLine() Adds a INNER JOIN clause and with to the query using the StockMoveLine relation
  *
- * @method     \MaterialQuery|\UnitOfMeasureQuery|\ComponentProductQuery|\ProductPartnerQuery|\ProductFinishingQuery|\ProductImageQuery|\AttachmentQuery|\ProformaInvoiceLineQuery|\PurchaseOrderLineQuery|\ProductStockQuery|\StockMoveLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \MaterialQuery|\UnitOfMeasureQuery|\ComponentProductQuery|\ProductPartnerQuery|\ProductFinishingQuery|\ProductImageQuery|\ProformaInvoiceLineQuery|\PurchaseOrderLineQuery|\ProductStockQuery|\StockMoveLineQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildProduct findOne(ConnectionInterface $con = null) Return the first ChildProduct matching the query
  * @method     ChildProduct findOneOrCreate(ConnectionInterface $con = null) Return the first ChildProduct matching the query, or a new ChildProduct object populated from the query conditions when no match is found
@@ -1982,79 +1972,6 @@ abstract class ProductQuery extends ModelCriteria
         return $this
             ->joinProductImage($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'ProductImage', '\ProductImageQuery');
-    }
-
-    /**
-     * Filter the query by a related \Attachment object
-     *
-     * @param \Attachment|ObjectCollection $attachment the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildProductQuery The current query, for fluid interface
-     */
-    public function filterByAttachment($attachment, $comparison = null)
-    {
-        if ($attachment instanceof \Attachment) {
-            return $this
-                ->addUsingAlias(ProductTableMap::COL_ID, $attachment->getProductId(), $comparison);
-        } elseif ($attachment instanceof ObjectCollection) {
-            return $this
-                ->useAttachmentQuery()
-                ->filterByPrimaryKeys($attachment->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByAttachment() only accepts arguments of type \Attachment or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the Attachment relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildProductQuery The current query, for fluid interface
-     */
-    public function joinAttachment($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Attachment');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'Attachment');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the Attachment relation Attachment object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \AttachmentQuery A secondary query class using the current class as primary query
-     */
-    public function useAttachmentQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinAttachment($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Attachment', '\AttachmentQuery');
     }
 
     /**

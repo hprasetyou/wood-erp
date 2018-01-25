@@ -92,9 +92,9 @@ class AttachmentTableMap extends TableMap
     const COL_DESCRIPTION = 'attachment.description';
 
     /**
-     * the column name for the product_id field
+     * the column name for the object_id field
      */
-    const COL_PRODUCT_ID = 'attachment.product_id';
+    const COL_OBJECT_ID = 'attachment.object_id';
 
     /**
      * the column name for the model_name field
@@ -123,10 +123,10 @@ class AttachmentTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Url', 'Description', 'ProductId', 'ModelName', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'url', 'description', 'productId', 'modelName', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(AttachmentTableMap::COL_ID, AttachmentTableMap::COL_NAME, AttachmentTableMap::COL_URL, AttachmentTableMap::COL_DESCRIPTION, AttachmentTableMap::COL_PRODUCT_ID, AttachmentTableMap::COL_MODEL_NAME, AttachmentTableMap::COL_CREATED_AT, AttachmentTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'url', 'description', 'product_id', 'model_name', 'created_at', 'updated_at', ),
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Url', 'Description', 'ObjectId', 'ModelName', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'url', 'description', 'objectId', 'modelName', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(AttachmentTableMap::COL_ID, AttachmentTableMap::COL_NAME, AttachmentTableMap::COL_URL, AttachmentTableMap::COL_DESCRIPTION, AttachmentTableMap::COL_OBJECT_ID, AttachmentTableMap::COL_MODEL_NAME, AttachmentTableMap::COL_CREATED_AT, AttachmentTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'url', 'description', 'object_id', 'model_name', 'created_at', 'updated_at', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
@@ -137,10 +137,10 @@ class AttachmentTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Url' => 2, 'Description' => 3, 'ProductId' => 4, 'ModelName' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'url' => 2, 'description' => 3, 'productId' => 4, 'modelName' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
-        self::TYPE_COLNAME       => array(AttachmentTableMap::COL_ID => 0, AttachmentTableMap::COL_NAME => 1, AttachmentTableMap::COL_URL => 2, AttachmentTableMap::COL_DESCRIPTION => 3, AttachmentTableMap::COL_PRODUCT_ID => 4, AttachmentTableMap::COL_MODEL_NAME => 5, AttachmentTableMap::COL_CREATED_AT => 6, AttachmentTableMap::COL_UPDATED_AT => 7, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'url' => 2, 'description' => 3, 'product_id' => 4, 'model_name' => 5, 'created_at' => 6, 'updated_at' => 7, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Url' => 2, 'Description' => 3, 'ObjectId' => 4, 'ModelName' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'url' => 2, 'description' => 3, 'objectId' => 4, 'modelName' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
+        self::TYPE_COLNAME       => array(AttachmentTableMap::COL_ID => 0, AttachmentTableMap::COL_NAME => 1, AttachmentTableMap::COL_URL => 2, AttachmentTableMap::COL_DESCRIPTION => 3, AttachmentTableMap::COL_OBJECT_ID => 4, AttachmentTableMap::COL_MODEL_NAME => 5, AttachmentTableMap::COL_CREATED_AT => 6, AttachmentTableMap::COL_UPDATED_AT => 7, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'url' => 2, 'description' => 3, 'object_id' => 4, 'model_name' => 5, 'created_at' => 6, 'updated_at' => 7, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
@@ -165,7 +165,7 @@ class AttachmentTableMap extends TableMap
         $this->addColumn('name', 'Name', 'VARCHAR', false, 255, null);
         $this->addColumn('url', 'Url', 'LONGVARCHAR', false, null, null);
         $this->addColumn('description', 'Description', 'LONGVARCHAR', false, null, null);
-        $this->addForeignKey('product_id', 'ProductId', 'INTEGER', 'product', 'id', true, null, null);
+        $this->addColumn('object_id', 'ObjectId', 'INTEGER', true, null, null);
         $this->addColumn('model_name', 'ModelName', 'VARCHAR', false, 255, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
@@ -176,13 +176,6 @@ class AttachmentTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Product', '\\Product', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
-    0 => ':product_id',
-    1 => ':id',
-  ),
-), null, null, null, false);
     } // buildRelations()
 
     /**
@@ -330,7 +323,7 @@ class AttachmentTableMap extends TableMap
             $criteria->addSelectColumn(AttachmentTableMap::COL_NAME);
             $criteria->addSelectColumn(AttachmentTableMap::COL_URL);
             $criteria->addSelectColumn(AttachmentTableMap::COL_DESCRIPTION);
-            $criteria->addSelectColumn(AttachmentTableMap::COL_PRODUCT_ID);
+            $criteria->addSelectColumn(AttachmentTableMap::COL_OBJECT_ID);
             $criteria->addSelectColumn(AttachmentTableMap::COL_MODEL_NAME);
             $criteria->addSelectColumn(AttachmentTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(AttachmentTableMap::COL_UPDATED_AT);
@@ -339,7 +332,7 @@ class AttachmentTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.name');
             $criteria->addSelectColumn($alias . '.url');
             $criteria->addSelectColumn($alias . '.description');
-            $criteria->addSelectColumn($alias . '.product_id');
+            $criteria->addSelectColumn($alias . '.object_id');
             $criteria->addSelectColumn($alias . '.model_name');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');

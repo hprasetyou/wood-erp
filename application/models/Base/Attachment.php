@@ -3,8 +3,6 @@
 namespace Base;
 
 use \AttachmentQuery as ChildAttachmentQuery;
-use \Product as ChildProduct;
-use \ProductQuery as ChildProductQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
@@ -92,11 +90,11 @@ abstract class Attachment implements ActiveRecordInterface
     protected $description;
 
     /**
-     * The value for the product_id field.
+     * The value for the object_id field.
      *
      * @var        int
      */
-    protected $product_id;
+    protected $object_id;
 
     /**
      * The value for the model_name field.
@@ -120,11 +118,6 @@ abstract class Attachment implements ActiveRecordInterface
      * @var        DateTime
      */
     protected $updated_at;
-
-    /**
-     * @var        ChildProduct
-     */
-    protected $aProduct;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -412,13 +405,13 @@ abstract class Attachment implements ActiveRecordInterface
     }
 
     /**
-     * Get the [product_id] column value.
+     * Get the [object_id] column value.
      *
      * @return int
      */
-    public function getProductId()
+    public function getObjectId()
     {
-        return $this->product_id;
+        return $this->object_id;
     }
 
     /**
@@ -552,28 +545,24 @@ abstract class Attachment implements ActiveRecordInterface
     } // setDescription()
 
     /**
-     * Set the value of [product_id] column.
+     * Set the value of [object_id] column.
      *
      * @param int $v new value
      * @return $this|\Attachment The current object (for fluent API support)
      */
-    public function setProductId($v)
+    public function setObjectId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->product_id !== $v) {
-            $this->product_id = $v;
-            $this->modifiedColumns[AttachmentTableMap::COL_PRODUCT_ID] = true;
-        }
-
-        if ($this->aProduct !== null && $this->aProduct->getId() !== $v) {
-            $this->aProduct = null;
+        if ($this->object_id !== $v) {
+            $this->object_id = $v;
+            $this->modifiedColumns[AttachmentTableMap::COL_OBJECT_ID] = true;
         }
 
         return $this;
-    } // setProductId()
+    } // setObjectId()
 
     /**
      * Set the value of [model_name] column.
@@ -683,8 +672,8 @@ abstract class Attachment implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : AttachmentTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
             $this->description = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : AttachmentTableMap::translateFieldName('ProductId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->product_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : AttachmentTableMap::translateFieldName('ObjectId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->object_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : AttachmentTableMap::translateFieldName('ModelName', TableMap::TYPE_PHPNAME, $indexType)];
             $this->model_name = (null !== $col) ? (string) $col : null;
@@ -730,9 +719,6 @@ abstract class Attachment implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aProduct !== null && $this->product_id !== $this->aProduct->getId()) {
-            $this->aProduct = null;
-        }
     } // ensureConsistency
 
     /**
@@ -772,7 +758,6 @@ abstract class Attachment implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aProduct = null;
         } // if (deep)
     }
 
@@ -876,18 +861,6 @@ abstract class Attachment implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
-            // We call the save method on the following object(s) if they
-            // were passed to this object by their corresponding set
-            // method.  This object relates to these object(s) by a
-            // foreign key reference.
-
-            if ($this->aProduct !== null) {
-                if ($this->aProduct->isModified() || $this->aProduct->isNew()) {
-                    $affectedRows += $this->aProduct->save($con);
-                }
-                $this->setProduct($this->aProduct);
-            }
-
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -937,8 +910,8 @@ abstract class Attachment implements ActiveRecordInterface
         if ($this->isColumnModified(AttachmentTableMap::COL_DESCRIPTION)) {
             $modifiedColumns[':p' . $index++]  = 'description';
         }
-        if ($this->isColumnModified(AttachmentTableMap::COL_PRODUCT_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'product_id';
+        if ($this->isColumnModified(AttachmentTableMap::COL_OBJECT_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'object_id';
         }
         if ($this->isColumnModified(AttachmentTableMap::COL_MODEL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'model_name';
@@ -972,8 +945,8 @@ abstract class Attachment implements ActiveRecordInterface
                     case 'description':
                         $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
                         break;
-                    case 'product_id':
-                        $stmt->bindValue($identifier, $this->product_id, PDO::PARAM_INT);
+                    case 'object_id':
+                        $stmt->bindValue($identifier, $this->object_id, PDO::PARAM_INT);
                         break;
                     case 'model_name':
                         $stmt->bindValue($identifier, $this->model_name, PDO::PARAM_STR);
@@ -1059,7 +1032,7 @@ abstract class Attachment implements ActiveRecordInterface
                 return $this->getDescription();
                 break;
             case 4:
-                return $this->getProductId();
+                return $this->getObjectId();
                 break;
             case 5:
                 return $this->getModelName();
@@ -1087,11 +1060,10 @@ abstract class Attachment implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
-     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
 
         if (isset($alreadyDumpedObjects['Attachment'][$this->hashCode()])) {
@@ -1104,7 +1076,7 @@ abstract class Attachment implements ActiveRecordInterface
             $keys[1] => $this->getName(),
             $keys[2] => $this->getUrl(),
             $keys[3] => $this->getDescription(),
-            $keys[4] => $this->getProductId(),
+            $keys[4] => $this->getObjectId(),
             $keys[5] => $this->getModelName(),
             $keys[6] => $this->getCreatedAt(),
             $keys[7] => $this->getUpdatedAt(),
@@ -1122,23 +1094,6 @@ abstract class Attachment implements ActiveRecordInterface
             $result[$key] = $virtualColumn;
         }
 
-        if ($includeForeignObjects) {
-            if (null !== $this->aProduct) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'product';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'product';
-                        break;
-                    default:
-                        $key = 'Product';
-                }
-
-                $result[$key] = $this->aProduct->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-        }
 
         return $result;
     }
@@ -1185,7 +1140,7 @@ abstract class Attachment implements ActiveRecordInterface
                 $this->setDescription($value);
                 break;
             case 4:
-                $this->setProductId($value);
+                $this->setObjectId($value);
                 break;
             case 5:
                 $this->setModelName($value);
@@ -1235,7 +1190,7 @@ abstract class Attachment implements ActiveRecordInterface
             $this->setDescription($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setProductId($arr[$keys[4]]);
+            $this->setObjectId($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
             $this->setModelName($arr[$keys[5]]);
@@ -1299,8 +1254,8 @@ abstract class Attachment implements ActiveRecordInterface
         if ($this->isColumnModified(AttachmentTableMap::COL_DESCRIPTION)) {
             $criteria->add(AttachmentTableMap::COL_DESCRIPTION, $this->description);
         }
-        if ($this->isColumnModified(AttachmentTableMap::COL_PRODUCT_ID)) {
-            $criteria->add(AttachmentTableMap::COL_PRODUCT_ID, $this->product_id);
+        if ($this->isColumnModified(AttachmentTableMap::COL_OBJECT_ID)) {
+            $criteria->add(AttachmentTableMap::COL_OBJECT_ID, $this->object_id);
         }
         if ($this->isColumnModified(AttachmentTableMap::COL_MODEL_NAME)) {
             $criteria->add(AttachmentTableMap::COL_MODEL_NAME, $this->model_name);
@@ -1400,7 +1355,7 @@ abstract class Attachment implements ActiveRecordInterface
         $copyObj->setName($this->getName());
         $copyObj->setUrl($this->getUrl());
         $copyObj->setDescription($this->getDescription());
-        $copyObj->setProductId($this->getProductId());
+        $copyObj->setObjectId($this->getObjectId());
         $copyObj->setModelName($this->getModelName());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
@@ -1433,71 +1388,17 @@ abstract class Attachment implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildProduct object.
-     *
-     * @param  ChildProduct $v
-     * @return $this|\Attachment The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setProduct(ChildProduct $v = null)
-    {
-        if ($v === null) {
-            $this->setProductId(NULL);
-        } else {
-            $this->setProductId($v->getId());
-        }
-
-        $this->aProduct = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildProduct object, it will not be re-added.
-        if ($v !== null) {
-            $v->addAttachment($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildProduct object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildProduct The associated ChildProduct object.
-     * @throws PropelException
-     */
-    public function getProduct(ConnectionInterface $con = null)
-    {
-        if ($this->aProduct === null && ($this->product_id != 0)) {
-            $this->aProduct = ChildProductQuery::create()->findPk($this->product_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aProduct->addAttachments($this);
-             */
-        }
-
-        return $this->aProduct;
-    }
-
-    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
-        if (null !== $this->aProduct) {
-            $this->aProduct->removeAttachment($this);
-        }
         $this->id = null;
         $this->name = null;
         $this->url = null;
         $this->description = null;
-        $this->product_id = null;
+        $this->object_id = null;
         $this->model_name = null;
         $this->created_at = null;
         $this->updated_at = null;
@@ -1522,7 +1423,6 @@ abstract class Attachment implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aProduct = null;
     }
 
     /**

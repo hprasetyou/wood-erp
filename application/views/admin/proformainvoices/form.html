@@ -64,6 +64,17 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
                 </div>
               </div>
               <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="PaymentTerm">{{res.string.payment_term}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div {% if proformainvoices %}style="display:none" {% endif %} class="input-wrap">
+                    {{ form_enum('ProformaInvoice.PaymentTerm',proformainvoices.PaymentTerm) | raw }}
+                  </div>
+                  {% if proformainvoices %}
+                  <p class="control-value">{{ proformainvoices.PaymentTerm }}</p>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="DownPaymentId">{{res.string.down_payment}}</label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <div {% if proformainvoices %}style="display:none" {% endif %} class="input-wrap">
@@ -147,6 +158,14 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
     $('#ModalAddProformaInvoiceLine').on('hidden.bs.modal', function() {
       $('#ModalAddProformaInvoiceLine').find('input[type=hidden],input[type=text]').val('')
       $('#ModalAddProformaInvoiceLine').find('inputinput[type=checkbox]').prop('checked', false);
+    })
+    $('#DownPaymentId').change(function(e){
+      var dpp = parseFloat($('option:selected', this).data('value'));
+      var st = parseInt($('#TotalPrice').text().replace(/\D/g,''));
+      console.log(dpp);
+      console.log(st);
+      var dpa = dpp * st;
+      $('#DownPaymentAmount').val(dpa);
     })
     $('#CustomerId').trigger('change')
     $('#table_ProformaInvoiceLine').on('click', '.btn-delete', function(e) {

@@ -140,6 +140,20 @@ abstract class ProformaInvoice implements ActiveRecordInterface
     protected $total_price;
 
     /**
+     * The value for the total field.
+     *
+     * @var        double
+     */
+    protected $total;
+
+    /**
+     * The value for the payment_term field.
+     *
+     * @var        string
+     */
+    protected $payment_term;
+
+    /**
      * The value for the down_payment_id field.
      *
      * @var        int
@@ -590,6 +604,26 @@ abstract class ProformaInvoice implements ActiveRecordInterface
     }
 
     /**
+     * Get the [total] column value.
+     *
+     * @return double
+     */
+    public function getTotal()
+    {
+        return $this->total;
+    }
+
+    /**
+     * Get the [payment_term] column value.
+     *
+     * @return string
+     */
+    public function getPaymentTerm()
+    {
+        return $this->payment_term;
+    }
+
+    /**
      * Get the [down_payment_id] column value.
      *
      * @return int
@@ -888,6 +922,46 @@ abstract class ProformaInvoice implements ActiveRecordInterface
     } // setTotalPrice()
 
     /**
+     * Set the value of [total] column.
+     *
+     * @param double $v new value
+     * @return $this|\ProformaInvoice The current object (for fluent API support)
+     */
+    public function setTotal($v)
+    {
+        if ($v !== null) {
+            $v = (double) $v;
+        }
+
+        if ($this->total !== $v) {
+            $this->total = $v;
+            $this->modifiedColumns[ProformaInvoiceTableMap::COL_TOTAL] = true;
+        }
+
+        return $this;
+    } // setTotal()
+
+    /**
+     * Set the value of [payment_term] column.
+     *
+     * @param string $v new value
+     * @return $this|\ProformaInvoice The current object (for fluent API support)
+     */
+    public function setPaymentTerm($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->payment_term !== $v) {
+            $this->payment_term = $v;
+            $this->modifiedColumns[ProformaInvoiceTableMap::COL_PAYMENT_TERM] = true;
+        }
+
+        return $this;
+    } // setPaymentTerm()
+
+    /**
      * Set the value of [down_payment_id] column.
      *
      * @param int $v new value
@@ -1120,31 +1194,37 @@ abstract class ProformaInvoice implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : ProformaInvoiceTableMap::translateFieldName('TotalPrice', TableMap::TYPE_PHPNAME, $indexType)];
             $this->total_price = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : ProformaInvoiceTableMap::translateFieldName('DownPaymentId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : ProformaInvoiceTableMap::translateFieldName('Total', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->total = (null !== $col) ? (double) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : ProformaInvoiceTableMap::translateFieldName('PaymentTerm', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->payment_term = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : ProformaInvoiceTableMap::translateFieldName('DownPaymentId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->down_payment_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : ProformaInvoiceTableMap::translateFieldName('DownPaymentAmount', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : ProformaInvoiceTableMap::translateFieldName('DownPaymentAmount', TableMap::TYPE_PHPNAME, $indexType)];
             $this->down_payment_amount = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : ProformaInvoiceTableMap::translateFieldName('DownPaymentDeadline', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : ProformaInvoiceTableMap::translateFieldName('DownPaymentDeadline', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00') {
                 $col = null;
             }
             $this->down_payment_deadline = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : ProformaInvoiceTableMap::translateFieldName('State', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : ProformaInvoiceTableMap::translateFieldName('State', TableMap::TYPE_PHPNAME, $indexType)];
             $this->state = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : ProformaInvoiceTableMap::translateFieldName('Active', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : ProformaInvoiceTableMap::translateFieldName('Active', TableMap::TYPE_PHPNAME, $indexType)];
             $this->active = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : ProformaInvoiceTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : ProformaInvoiceTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : ProformaInvoiceTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : ProformaInvoiceTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -1157,7 +1237,7 @@ abstract class ProformaInvoice implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 16; // 16 = ProformaInvoiceTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 18; // 18 = ProformaInvoiceTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\ProformaInvoice'), 0, $e);
@@ -1462,6 +1542,12 @@ abstract class ProformaInvoice implements ActiveRecordInterface
         if ($this->isColumnModified(ProformaInvoiceTableMap::COL_TOTAL_PRICE)) {
             $modifiedColumns[':p' . $index++]  = 'total_price';
         }
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_TOTAL)) {
+            $modifiedColumns[':p' . $index++]  = 'total';
+        }
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_PAYMENT_TERM)) {
+            $modifiedColumns[':p' . $index++]  = 'payment_term';
+        }
         if ($this->isColumnModified(ProformaInvoiceTableMap::COL_DOWN_PAYMENT_ID)) {
             $modifiedColumns[':p' . $index++]  = 'down_payment_id';
         }
@@ -1520,6 +1606,12 @@ abstract class ProformaInvoice implements ActiveRecordInterface
                         break;
                     case 'total_price':
                         $stmt->bindValue($identifier, $this->total_price, PDO::PARAM_STR);
+                        break;
+                    case 'total':
+                        $stmt->bindValue($identifier, $this->total, PDO::PARAM_STR);
+                        break;
+                    case 'payment_term':
+                        $stmt->bindValue($identifier, $this->payment_term, PDO::PARAM_STR);
                         break;
                     case 'down_payment_id':
                         $stmt->bindValue($identifier, $this->down_payment_id, PDO::PARAM_INT);
@@ -1632,24 +1724,30 @@ abstract class ProformaInvoice implements ActiveRecordInterface
                 return $this->getTotalPrice();
                 break;
             case 9:
-                return $this->getDownPaymentId();
+                return $this->getTotal();
                 break;
             case 10:
-                return $this->getDownPaymentAmount();
+                return $this->getPaymentTerm();
                 break;
             case 11:
-                return $this->getDownPaymentDeadline();
+                return $this->getDownPaymentId();
                 break;
             case 12:
-                return $this->getState();
+                return $this->getDownPaymentAmount();
                 break;
             case 13:
-                return $this->getActive();
+                return $this->getDownPaymentDeadline();
                 break;
             case 14:
-                return $this->getCreatedAt();
+                return $this->getState();
                 break;
             case 15:
+                return $this->getActive();
+                break;
+            case 16:
+                return $this->getCreatedAt();
+                break;
+            case 17:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1691,13 +1789,15 @@ abstract class ProformaInvoice implements ActiveRecordInterface
             $keys[6] => $this->getDescription(),
             $keys[7] => $this->getTotalCubicDimension(),
             $keys[8] => $this->getTotalPrice(),
-            $keys[9] => $this->getDownPaymentId(),
-            $keys[10] => $this->getDownPaymentAmount(),
-            $keys[11] => $this->getDownPaymentDeadline(),
-            $keys[12] => $this->getState(),
-            $keys[13] => $this->getActive(),
-            $keys[14] => $this->getCreatedAt(),
-            $keys[15] => $this->getUpdatedAt(),
+            $keys[9] => $this->getTotal(),
+            $keys[10] => $this->getPaymentTerm(),
+            $keys[11] => $this->getDownPaymentId(),
+            $keys[12] => $this->getDownPaymentAmount(),
+            $keys[13] => $this->getDownPaymentDeadline(),
+            $keys[14] => $this->getState(),
+            $keys[15] => $this->getActive(),
+            $keys[16] => $this->getCreatedAt(),
+            $keys[17] => $this->getUpdatedAt(),
         );
         if ($result[$keys[4]] instanceof \DateTimeInterface) {
             $result[$keys[4]] = $result[$keys[4]]->format('c');
@@ -1707,16 +1807,16 @@ abstract class ProformaInvoice implements ActiveRecordInterface
             $result[$keys[5]] = $result[$keys[5]]->format('c');
         }
 
-        if ($result[$keys[11]] instanceof \DateTimeInterface) {
-            $result[$keys[11]] = $result[$keys[11]]->format('c');
+        if ($result[$keys[13]] instanceof \DateTimeInterface) {
+            $result[$keys[13]] = $result[$keys[13]]->format('c');
         }
 
-        if ($result[$keys[14]] instanceof \DateTimeInterface) {
-            $result[$keys[14]] = $result[$keys[14]]->format('c');
+        if ($result[$keys[16]] instanceof \DateTimeInterface) {
+            $result[$keys[16]] = $result[$keys[16]]->format('c');
         }
 
-        if ($result[$keys[15]] instanceof \DateTimeInterface) {
-            $result[$keys[15]] = $result[$keys[15]]->format('c');
+        if ($result[$keys[17]] instanceof \DateTimeInterface) {
+            $result[$keys[17]] = $result[$keys[17]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1862,24 +1962,30 @@ abstract class ProformaInvoice implements ActiveRecordInterface
                 $this->setTotalPrice($value);
                 break;
             case 9:
-                $this->setDownPaymentId($value);
+                $this->setTotal($value);
                 break;
             case 10:
-                $this->setDownPaymentAmount($value);
+                $this->setPaymentTerm($value);
                 break;
             case 11:
-                $this->setDownPaymentDeadline($value);
+                $this->setDownPaymentId($value);
                 break;
             case 12:
-                $this->setState($value);
+                $this->setDownPaymentAmount($value);
                 break;
             case 13:
-                $this->setActive($value);
+                $this->setDownPaymentDeadline($value);
                 break;
             case 14:
-                $this->setCreatedAt($value);
+                $this->setState($value);
                 break;
             case 15:
+                $this->setActive($value);
+                break;
+            case 16:
+                $this->setCreatedAt($value);
+                break;
+            case 17:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1936,25 +2042,31 @@ abstract class ProformaInvoice implements ActiveRecordInterface
             $this->setTotalPrice($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setDownPaymentId($arr[$keys[9]]);
+            $this->setTotal($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setDownPaymentAmount($arr[$keys[10]]);
+            $this->setPaymentTerm($arr[$keys[10]]);
         }
         if (array_key_exists($keys[11], $arr)) {
-            $this->setDownPaymentDeadline($arr[$keys[11]]);
+            $this->setDownPaymentId($arr[$keys[11]]);
         }
         if (array_key_exists($keys[12], $arr)) {
-            $this->setState($arr[$keys[12]]);
+            $this->setDownPaymentAmount($arr[$keys[12]]);
         }
         if (array_key_exists($keys[13], $arr)) {
-            $this->setActive($arr[$keys[13]]);
+            $this->setDownPaymentDeadline($arr[$keys[13]]);
         }
         if (array_key_exists($keys[14], $arr)) {
-            $this->setCreatedAt($arr[$keys[14]]);
+            $this->setState($arr[$keys[14]]);
         }
         if (array_key_exists($keys[15], $arr)) {
-            $this->setUpdatedAt($arr[$keys[15]]);
+            $this->setActive($arr[$keys[15]]);
+        }
+        if (array_key_exists($keys[16], $arr)) {
+            $this->setCreatedAt($arr[$keys[16]]);
+        }
+        if (array_key_exists($keys[17], $arr)) {
+            $this->setUpdatedAt($arr[$keys[17]]);
         }
     }
 
@@ -2023,6 +2135,12 @@ abstract class ProformaInvoice implements ActiveRecordInterface
         }
         if ($this->isColumnModified(ProformaInvoiceTableMap::COL_TOTAL_PRICE)) {
             $criteria->add(ProformaInvoiceTableMap::COL_TOTAL_PRICE, $this->total_price);
+        }
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_TOTAL)) {
+            $criteria->add(ProformaInvoiceTableMap::COL_TOTAL, $this->total);
+        }
+        if ($this->isColumnModified(ProformaInvoiceTableMap::COL_PAYMENT_TERM)) {
+            $criteria->add(ProformaInvoiceTableMap::COL_PAYMENT_TERM, $this->payment_term);
         }
         if ($this->isColumnModified(ProformaInvoiceTableMap::COL_DOWN_PAYMENT_ID)) {
             $criteria->add(ProformaInvoiceTableMap::COL_DOWN_PAYMENT_ID, $this->down_payment_id);
@@ -2139,6 +2257,8 @@ abstract class ProformaInvoice implements ActiveRecordInterface
         $copyObj->setDescription($this->getDescription());
         $copyObj->setTotalCubicDimension($this->getTotalCubicDimension());
         $copyObj->setTotalPrice($this->getTotalPrice());
+        $copyObj->setTotal($this->getTotal());
+        $copyObj->setPaymentTerm($this->getPaymentTerm());
         $copyObj->setDownPaymentId($this->getDownPaymentId());
         $copyObj->setDownPaymentAmount($this->getDownPaymentAmount());
         $copyObj->setDownPaymentDeadline($this->getDownPaymentDeadline());
@@ -2968,6 +3088,8 @@ abstract class ProformaInvoice implements ActiveRecordInterface
         $this->description = null;
         $this->total_cubic_dimension = null;
         $this->total_price = null;
+        $this->total = null;
+        $this->payment_term = null;
         $this->down_payment_id = null;
         $this->down_payment_amount = null;
         $this->down_payment_deadline = null;

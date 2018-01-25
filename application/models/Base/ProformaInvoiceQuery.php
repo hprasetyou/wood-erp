@@ -29,6 +29,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceQuery orderByDescription($order = Criteria::ASC) Order by the description column
  * @method     ChildProformaInvoiceQuery orderByTotalCubicDimension($order = Criteria::ASC) Order by the total_cubic_dimension column
  * @method     ChildProformaInvoiceQuery orderByTotalPrice($order = Criteria::ASC) Order by the total_price column
+ * @method     ChildProformaInvoiceQuery orderByTotal($order = Criteria::ASC) Order by the total column
+ * @method     ChildProformaInvoiceQuery orderByPaymentTerm($order = Criteria::ASC) Order by the payment_term column
  * @method     ChildProformaInvoiceQuery orderByDownPaymentId($order = Criteria::ASC) Order by the down_payment_id column
  * @method     ChildProformaInvoiceQuery orderByDownPaymentAmount($order = Criteria::ASC) Order by the down_payment_amount column
  * @method     ChildProformaInvoiceQuery orderByDownPaymentDeadline($order = Criteria::ASC) Order by the down_payment_deadline column
@@ -46,6 +48,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoiceQuery groupByDescription() Group by the description column
  * @method     ChildProformaInvoiceQuery groupByTotalCubicDimension() Group by the total_cubic_dimension column
  * @method     ChildProformaInvoiceQuery groupByTotalPrice() Group by the total_price column
+ * @method     ChildProformaInvoiceQuery groupByTotal() Group by the total column
+ * @method     ChildProformaInvoiceQuery groupByPaymentTerm() Group by the payment_term column
  * @method     ChildProformaInvoiceQuery groupByDownPaymentId() Group by the down_payment_id column
  * @method     ChildProformaInvoiceQuery groupByDownPaymentAmount() Group by the down_payment_amount column
  * @method     ChildProformaInvoiceQuery groupByDownPaymentDeadline() Group by the down_payment_deadline column
@@ -126,6 +130,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoice findOneByDescription(string $description) Return the first ChildProformaInvoice filtered by the description column
  * @method     ChildProformaInvoice findOneByTotalCubicDimension(double $total_cubic_dimension) Return the first ChildProformaInvoice filtered by the total_cubic_dimension column
  * @method     ChildProformaInvoice findOneByTotalPrice(double $total_price) Return the first ChildProformaInvoice filtered by the total_price column
+ * @method     ChildProformaInvoice findOneByTotal(double $total) Return the first ChildProformaInvoice filtered by the total column
+ * @method     ChildProformaInvoice findOneByPaymentTerm(string $payment_term) Return the first ChildProformaInvoice filtered by the payment_term column
  * @method     ChildProformaInvoice findOneByDownPaymentId(int $down_payment_id) Return the first ChildProformaInvoice filtered by the down_payment_id column
  * @method     ChildProformaInvoice findOneByDownPaymentAmount(double $down_payment_amount) Return the first ChildProformaInvoice filtered by the down_payment_amount column
  * @method     ChildProformaInvoice findOneByDownPaymentDeadline(string $down_payment_deadline) Return the first ChildProformaInvoice filtered by the down_payment_deadline column
@@ -146,6 +152,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoice requireOneByDescription(string $description) Return the first ChildProformaInvoice filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByTotalCubicDimension(double $total_cubic_dimension) Return the first ChildProformaInvoice filtered by the total_cubic_dimension column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByTotalPrice(double $total_price) Return the first ChildProformaInvoice filtered by the total_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProformaInvoice requireOneByTotal(double $total) Return the first ChildProformaInvoice filtered by the total column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProformaInvoice requireOneByPaymentTerm(string $payment_term) Return the first ChildProformaInvoice filtered by the payment_term column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByDownPaymentId(int $down_payment_id) Return the first ChildProformaInvoice filtered by the down_payment_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByDownPaymentAmount(double $down_payment_amount) Return the first ChildProformaInvoice filtered by the down_payment_amount column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildProformaInvoice requireOneByDownPaymentDeadline(string $down_payment_deadline) Return the first ChildProformaInvoice filtered by the down_payment_deadline column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -164,6 +172,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProformaInvoice[]|ObjectCollection findByDescription(string $description) Return ChildProformaInvoice objects filtered by the description column
  * @method     ChildProformaInvoice[]|ObjectCollection findByTotalCubicDimension(double $total_cubic_dimension) Return ChildProformaInvoice objects filtered by the total_cubic_dimension column
  * @method     ChildProformaInvoice[]|ObjectCollection findByTotalPrice(double $total_price) Return ChildProformaInvoice objects filtered by the total_price column
+ * @method     ChildProformaInvoice[]|ObjectCollection findByTotal(double $total) Return ChildProformaInvoice objects filtered by the total column
+ * @method     ChildProformaInvoice[]|ObjectCollection findByPaymentTerm(string $payment_term) Return ChildProformaInvoice objects filtered by the payment_term column
  * @method     ChildProformaInvoice[]|ObjectCollection findByDownPaymentId(int $down_payment_id) Return ChildProformaInvoice objects filtered by the down_payment_id column
  * @method     ChildProformaInvoice[]|ObjectCollection findByDownPaymentAmount(double $down_payment_amount) Return ChildProformaInvoice objects filtered by the down_payment_amount column
  * @method     ChildProformaInvoice[]|ObjectCollection findByDownPaymentDeadline(string $down_payment_deadline) Return ChildProformaInvoice objects filtered by the down_payment_deadline column
@@ -269,7 +279,7 @@ abstract class ProformaInvoiceQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, currency_id, customer_id, date, confirm_date, description, total_cubic_dimension, total_price, down_payment_id, down_payment_amount, down_payment_deadline, state, active, created_at, updated_at FROM proforma_invoice WHERE id = :p0';
+        $sql = 'SELECT id, name, currency_id, customer_id, date, confirm_date, description, total_cubic_dimension, total_price, total, payment_term, down_payment_id, down_payment_amount, down_payment_deadline, state, active, created_at, updated_at FROM proforma_invoice WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -702,6 +712,72 @@ abstract class ProformaInvoiceQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProformaInvoiceTableMap::COL_TOTAL_PRICE, $totalPrice, $comparison);
+    }
+
+    /**
+     * Filter the query on the total column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByTotal(1234); // WHERE total = 1234
+     * $query->filterByTotal(array(12, 34)); // WHERE total IN (12, 34)
+     * $query->filterByTotal(array('min' => 12)); // WHERE total > 12
+     * </code>
+     *
+     * @param     mixed $total The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProformaInvoiceQuery The current query, for fluid interface
+     */
+    public function filterByTotal($total = null, $comparison = null)
+    {
+        if (is_array($total)) {
+            $useMinMax = false;
+            if (isset($total['min'])) {
+                $this->addUsingAlias(ProformaInvoiceTableMap::COL_TOTAL, $total['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($total['max'])) {
+                $this->addUsingAlias(ProformaInvoiceTableMap::COL_TOTAL, $total['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProformaInvoiceTableMap::COL_TOTAL, $total, $comparison);
+    }
+
+    /**
+     * Filter the query on the payment_term column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByPaymentTerm('fooValue');   // WHERE payment_term = 'fooValue'
+     * $query->filterByPaymentTerm('%fooValue%', Criteria::LIKE); // WHERE payment_term LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $paymentTerm The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProformaInvoiceQuery The current query, for fluid interface
+     */
+    public function filterByPaymentTerm($paymentTerm = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($paymentTerm)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProformaInvoiceTableMap::COL_PAYMENT_TERM, $paymentTerm, $comparison);
     }
 
     /**

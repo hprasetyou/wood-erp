@@ -61,4 +61,15 @@ class ProformaInvoice extends BaseProformaInvoice
 
       return $this->collProformaInvoiceLines;
   }
+
+  public function save(ConnectionInterface $con = null)
+  {
+    if($this->getCurrency()->getCode() != "USD"){
+      $this->setDownPaymentAmount(exchange_rate($this->getDownPaymentAmount(),"USD",$this->getCurrency()->getCode()));
+    }
+
+    $total = $this->getTotalPrice() - $this->getDownPaymentAmount();
+    $this->setTotal($total);
+    parent::save();
+  }
 }
