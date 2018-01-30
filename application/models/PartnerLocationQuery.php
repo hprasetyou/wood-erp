@@ -33,4 +33,9 @@ class PartnerLocationQuery extends BasePartnerLocationQuery
       ->where('partner.class_key = ?',$key)
       ->endUse();
   }
+  public function filterByInternalLocation(){
+    return $this->usePartnerQuery()
+      ->filterByClassKey(1)
+    ->endUse();
+  }
 }
