@@ -137,28 +137,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-sm-12">
-              <div class="nav-tabs-custom">
-                <ul class="nav nav-tabs">
-                  <li class="active">
-                    <a href="#tab_1" data-toggle="tab">{{res.string.purchase_order_line}}</a>
-                  </li>
-                  <li class="">
-                    <a href="#tab_2" data-toggle="tab">{{res.string.note}}</a>
-                  </li>
-                </ul>
-                <div class="tab-content">
-                  <!-- /.tab-pane -->
-                  <div class="tab-pane clearfix active" id="tab_1">
-                    <a href="#" class="btn btn-default " id="buttonModalAddPOLine" > {{res.string.add_po_line}}</a>
-                    {% include "admin/purchaseorders/_purchase_order_line_tab.html"%}
-                  </div>
-                  <div class="tab-pane clearfix" id="tab_2">
-                    {% include "admin/purchaseorders/_note.html"%}
-                  </div>
-                </div>
-              </div>
-            </div>
+              {% include "admin/purchaseorders/_tab.html" with {'pi':false} %}
           </div>
         </div>
     </form>
@@ -205,7 +184,8 @@ $('#modalAddPOLine').modal('show')
             $(this).data('id') + '">' +
             $(this).parents('tr').children('td:eq(1)').text() +
             '<input type="hidden" name="PILineName[]" value="' +
-            $(this).parents('tr').children('td:eq(1)').text() + '"></td>' +
+            $(this).parents('tr').children('td:eq(1)').text()+ ' '+
+            $(this).parents('tr').children('td:eq(2)').text() + '"></td>' +
             '<td>' + $(this).parents('tr').children('td:eq(2)').text() + '</td>' +
             '<td>' + $(this).parents('tr').children('td:eq(3)').text() + '</td>' +
             '<td><input type="number" name="PILineQty[]" required max="' + $(this).parents('tr').children(

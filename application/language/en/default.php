@@ -158,6 +158,7 @@
 'qty_ordered' => 'Qty Ordered',
 'qty_per_pack' => 'Qty Per Pack',
 'receipt_move_alias' => 'Supplier to Woodexindo',
+'receive_goods'=>'Receive Goods',
 'ref_code' => 'Ref Code',
 'ref_doc' => 'Ref Doc',
 'remark' => 'Remark',

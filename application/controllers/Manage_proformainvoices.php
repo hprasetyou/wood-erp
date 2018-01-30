@@ -95,6 +95,7 @@ class Manage_proformainvoices extends MY_Controller
 
     public function write($id=null)
     {
+        $this->form['CustomerId'] = 'CustomerId';
         $this->form['CurrencyId'] = 'CurrencyId';
         $this->form['DownPaymentId'] = 'DownPaymentId';
         $data = parent::write($id);

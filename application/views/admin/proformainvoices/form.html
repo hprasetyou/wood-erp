@@ -150,6 +150,9 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
   }
 
   $(document).ready(function() {
+    if(window.location.hash == '#edit'){
+      $('#btn-edit').trigger('click')
+    }
     $("#CurrencyId").change(function(e) {
       $('.lineCurr').text($("#CurrencyId option:selected").text().split(' - ')[1]);
     })
@@ -225,8 +228,8 @@ res.string.proforma_invoice }, {'link':'#','text':bc_text }] %} {% block content
         })
       } else {
         write_pi().done(function(o) {
-          write_line(o.Id).done(function(o) {
-            location.reload();
+          write_line(o.Id).done(function(ol) {
+            window.location.href = '/index.php/manage_proformainvoices/detail/'+o.Id+'#edit';
           })
         })
 

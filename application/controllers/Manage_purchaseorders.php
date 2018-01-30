@@ -51,6 +51,7 @@ class Manage_purchaseorders extends MY_Controller{
     ->findOneByPurchaseOrderId($id);
     $this->objobj = PurchaseOrderQuery::create()
     ->leftJoinWith('PurchaseOrder.ProformaInvoice')
+    ->leftJoinWith('PurchaseOrder.PurchaseOrderLine')
     ->leftJoinWith('PurchaseOrder.Supplier')
     ->leftJoinWith('PurchaseOrder.DownPayment')
     ->leftJoinWith('PurchaseOrder.PackingList')

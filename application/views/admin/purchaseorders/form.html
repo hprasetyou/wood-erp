@@ -160,28 +160,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
 						</div>
 					</div>
 					<div class="row">
-            <div class="col-sm-12">
-              <div class="nav-tabs-custom">
-                <ul class="nav nav-tabs">
-									<li class="active">
-                    <a href="#tab_1" data-toggle="tab">{{res.string.purchase_order_line}}</a>
-                  </li>
-									<li class="">
-                    <a href="#tab_2" data-toggle="tab">{{res.string.note}}</a>
-                  </li>
-                </ul>
-                <div class="tab-content">
-                  <!-- /.tab-pane -->
-                  <div class="tab-pane clearfix active" id="tab_1">
-                    {% include "admin/purchaseorders/_pi_line.html" %}
-                    {% include "admin/purchaseorders/_purchase_order_line_tab.html"%}
-                  </div>
-                  <div class="tab-pane clearfix" id="tab_2">
-                    {% include "admin/purchaseorders/_note.html"%}
-                  </div>
-                </div>
-              </div>
-            </div>
+            {% include "admin/purchaseorders/_tab.html" with {'pi':true} %}
           </div>
 				</div>
 		</form>
@@ -213,6 +192,9 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
           is_empty = false
         }
       })
+      if(parseInt($('#SupplierId').val())<1){
+        is_empty = true
+      }
       $('#btnAddPO').toggle(!is_empty)
     })
     $('#btnAddPO').click(function(e){
@@ -227,7 +209,9 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
           $(this).data('id')+'">'+
           $(this).parents('tr').children('td:eq(1)').text()+
           '<input type="hidden" name="PILineName[]" value="'+
-          $(this).parents('tr').children('td:eq(1)').text()+'"></td>'+
+          $(this).parents('tr').children('td:eq(1)').text()+' '+
+          $(this).parents('tr').children('td:eq(2)').text()+' '+
+          $(this).parents('tr').children('td:eq(3)').text()+'"></td>'+
           '<td>'+$(this).parents('tr').children('td:eq(2)').text()+'</td>'+
           '<td>'+$(this).parents('tr').children('td:eq(3)').text()+'</td>'+
           '<td><input type="number" name="PILineQty[]" required max="'+$(this).parents('tr').children('td:eq(4)').text()+
@@ -248,6 +232,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
       $('.cb_pi').prop('checked',$(this).prop('checked'))
     })
     $(document).ready(function(){
+
       // $('#DownPaymentId').trigger('change')
       $('#DownPaymentId').change(function(e){
         var d = $(this).find("option:selected").data('value')

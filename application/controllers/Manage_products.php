@@ -71,8 +71,9 @@ class Manage_products extends MY_Controller{
       $currency = CurrencyQuery::create()->findPk($this->input->get('currency_id'));
       if($currency){
         $p->ListPrice = exchange_rate($p->ListPrice,$currency->getCode());
-        $p->ProductPartners[0]->ProductPrice = exchange_rate($p->ProductPartners[0]->ProductPrice,
-        $currency->getCode());
+        if(property_exists($p,'ProductPartners')){
+          $p->ProductPartners[0]->ProductPrice = exchange_rate($p->ProductPartners[0]->ProductPrice,$currency->getCode());
+        }
       }
     }
 

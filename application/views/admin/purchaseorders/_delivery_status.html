@@ -1,0 +1,38 @@
+<a href="#" class="btn btn-default pull-right" data-toggle="modal" data-target="#modalReceive"><i class="fa fa-truck "></i> {{res.string.receive_goods}}</a>
+<!-- Modal -->
+<div class="modal fade" id="modalReceive" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">{{res.string.receive_goods}}</h4>
+      </div>
+      <div class="modal-body">
+        <form class="" action="index.html" method="post">
+          <table class="table table-stripped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>{{res.string.product}}</th>
+                <th>{{res.string.qty}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for key, line in purchaseorders.PurchaseOrderLines %}
+                <tr>
+                  <td>{{key}}</td>
+                  <td>{{line.Name}}</td>
+                  <td></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

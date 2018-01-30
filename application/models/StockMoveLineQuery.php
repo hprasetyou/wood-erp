@@ -14,5 +14,9 @@ use Base\StockMoveLineQuery as BaseStockMoveLineQuery;
  */
 class StockMoveLineQuery extends BaseStockMoveLineQuery
 {
-
+  function filterByRef($ref){
+    return $this->useStockMoveQuery()
+      ->filterByRef($ref)
+    ->endUse();
+  }
 }

@@ -43,7 +43,8 @@ class Manage_packinglists extends MY_Controller{
   }
 
 	function write($id=null){
-		$data = parent::write($id);
+    $this->form['CustomerId'] = 'CustomerId';
+  	$data = parent::write($id);
     if($this->input->is_ajax_request()){
         echo $data->toJSON();
     }else{

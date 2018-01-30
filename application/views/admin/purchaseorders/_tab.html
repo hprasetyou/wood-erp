@@ -1,0 +1,38 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="active">
+          <a href="#tab_1" data-toggle="tab">{{res.string.purchase_order_line}}</a>
+        </li>
+        <li class="">
+          <a href="#tab_2" data-toggle="tab">{{res.string.note}}</a>
+        </li>
+        {% if purchaseorders.State == 'confirm' %}
+        <li class="">
+          <a href="#tab_3" data-toggle="tab">{{res.string.receive_goods}}</a>
+        </li>
+        {% endif %}
+      </ul>
+      <div class="tab-content">
+        <!-- /.tab-pane -->
+        <div class="tab-pane clearfix active" id="tab_1">
+          {% if pi %}
+          {% include "admin/purchaseorders/_pi_line.html" %}
+          {% else %}
+          <a href="#" class="btn btn-default " id="buttonModalAddPOLine" > {{res.string.add_po_line}}</a>
+          {% endif %}
+          {% include "admin/purchaseorders/_purchase_order_line_tab.html"%}
+        </div>
+        <div class="tab-pane clearfix" id="tab_2">
+          {% include "admin/purchaseorders/_note.html"%}
+        </div>
+        {% if purchaseorders.State == 'confirm' %}
+        <div class="tab-pane clearfix" id="tab_3">
+          {% include "admin/purchaseorders/_delivery_status.html"%}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
