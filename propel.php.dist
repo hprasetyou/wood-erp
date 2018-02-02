@@ -7,29 +7,60 @@
 //
 // For a complete references see: http://propelorm.org/documentation/reference/configuration-file.html
 
+$dbuser = 'root';
+$dbpassword = '0000000';
+$dbname = 'wdxerp_dev';
+$host = 'localhost';
+$port = 3306;
+
 return [
     'propel' => [
         'paths' => [
             // The directory where Propel expects to find your `schema.xml` file.
-            'schemaDir' => '/var/www/html/travel',
+            'schemaDir' => '/var/www/html/wdxerp',
 
             // The directory where Propel should output generated object model classes.
             'phpDir' => 'application/models',
         ],
-        /*
+
         'database' => [
             'connections' => [
                 'default' => [
                     'adapter' => 'mysql',
-                    'dsn' => 'mysql:host=localhost;port=3306;dbname=travel',
-                    'user' => 'root',
-                    'password' => '',
+                    'dsn' => "mysql:host=$host;port=$port;dbname=$dbname",
+                    'user' => $dbuser,
+                    'password' => $dbpassword,
+                    'classname'  => 'Propel\Runtime\Connection\DebugPDO',
                     'settings' => [
                         'charset' => 'utf8'
                     ]
-                ]
+                ],
+
+                    'test' => [
+                        'adapter' => 'mysql',
+                        'dsn' => 'mysql:host=localhost;port=3306;dbname=wdxerp_test',
+                        'user' => 'root',
+                        'password' => '0000000',
+                        'classname'  => 'Propel\Runtime\Connection\DebugPDO',
+                        'settings' => [
+                            'charset' => 'utf8'
+                        ]
+                    ]
             ]
-        ]
-        */
+        ],
+        'runtime' => [
+                    'log' => [
+                        'defaultLogger' => [
+                            'type' => 'stream',
+                            'path' => './application/logs/embuh.log',
+                            'level' => 300
+                        ],
+                        'default' => [
+                            'type' => 'stream',
+                            'path' => './application/logs/default.log',
+                        ]
+                    ]
+                ]
+
     ]
 ];

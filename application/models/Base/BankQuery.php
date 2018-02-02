@@ -22,14 +22,14 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildBankQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildBankQuery orderByName($order = Criteria::ASC) Order by the name column
- * @method     ChildBankQuery orderByCodeName($order = Criteria::ASC) Order by the ref_code column
+ * @method     ChildBankQuery orderByRefCode($order = Criteria::ASC) Order by the ref_code column
  * @method     ChildBankQuery orderByActive($order = Criteria::ASC) Order by the active column
  * @method     ChildBankQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildBankQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildBankQuery groupById() Group by the id column
  * @method     ChildBankQuery groupByName() Group by the name column
- * @method     ChildBankQuery groupByCodeName() Group by the ref_code column
+ * @method     ChildBankQuery groupByRefCode() Group by the ref_code column
  * @method     ChildBankQuery groupByActive() Group by the active column
  * @method     ChildBankQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildBankQuery groupByUpdatedAt() Group by the updated_at column
@@ -59,7 +59,7 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildBank findOneById(int $id) Return the first ChildBank filtered by the id column
  * @method     ChildBank findOneByName(string $name) Return the first ChildBank filtered by the name column
- * @method     ChildBank findOneByCodeName(string $ref_code) Return the first ChildBank filtered by the ref_code column
+ * @method     ChildBank findOneByRefCode(string $ref_code) Return the first ChildBank filtered by the ref_code column
  * @method     ChildBank findOneByActive(boolean $active) Return the first ChildBank filtered by the active column
  * @method     ChildBank findOneByCreatedAt(string $created_at) Return the first ChildBank filtered by the created_at column
  * @method     ChildBank findOneByUpdatedAt(string $updated_at) Return the first ChildBank filtered by the updated_at column *
@@ -69,7 +69,7 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildBank requireOneById(int $id) Return the first ChildBank filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBank requireOneByName(string $name) Return the first ChildBank filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildBank requireOneByCodeName(string $ref_code) Return the first ChildBank filtered by the ref_code column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildBank requireOneByRefCode(string $ref_code) Return the first ChildBank filtered by the ref_code column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBank requireOneByActive(boolean $active) Return the first ChildBank filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBank requireOneByCreatedAt(string $created_at) Return the first ChildBank filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBank requireOneByUpdatedAt(string $updated_at) Return the first ChildBank filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -77,7 +77,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBank[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildBank objects based on current ModelCriteria
  * @method     ChildBank[]|ObjectCollection findById(int $id) Return ChildBank objects filtered by the id column
  * @method     ChildBank[]|ObjectCollection findByName(string $name) Return ChildBank objects filtered by the name column
- * @method     ChildBank[]|ObjectCollection findByCodeName(string $ref_code) Return ChildBank objects filtered by the ref_code column
+ * @method     ChildBank[]|ObjectCollection findByRefCode(string $ref_code) Return ChildBank objects filtered by the ref_code column
  * @method     ChildBank[]|ObjectCollection findByActive(boolean $active) Return ChildBank objects filtered by the active column
  * @method     ChildBank[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildBank objects filtered by the created_at column
  * @method     ChildBank[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildBank objects filtered by the updated_at column
@@ -340,24 +340,24 @@ abstract class BankQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByCodeName('fooValue');   // WHERE ref_code = 'fooValue'
-     * $query->filterByCodeName('%fooValue%', Criteria::LIKE); // WHERE ref_code LIKE '%fooValue%'
+     * $query->filterByRefCode('fooValue');   // WHERE ref_code = 'fooValue'
+     * $query->filterByRefCode('%fooValue%', Criteria::LIKE); // WHERE ref_code LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $codeName The value to use as filter.
+     * @param     string $refCode The value to use as filter.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBankQuery The current query, for fluid interface
      */
-    public function filterByCodeName($codeName = null, $comparison = null)
+    public function filterByRefCode($refCode = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($codeName)) {
+            if (is_array($refCode)) {
                 $comparison = Criteria::IN;
             }
         }
 
-        return $this->addUsingAlias(BankTableMap::COL_REF_CODE, $codeName, $comparison);
+        return $this->addUsingAlias(BankTableMap::COL_REF_CODE, $refCode, $comparison);
     }
 
     /**

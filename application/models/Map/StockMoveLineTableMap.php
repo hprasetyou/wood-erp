@@ -59,7 +59,7 @@ class StockMoveLineTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 8;
+    const NUM_COLUMNS = 7;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class StockMoveLineTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 8;
+    const NUM_HYDRATE_COLUMNS = 7;
 
     /**
      * the column name for the id field
@@ -97,11 +97,6 @@ class StockMoveLineTableMap extends TableMap
     const COL_QTY = 'stock_move_line.qty';
 
     /**
-     * the column name for the active field
-     */
-    const COL_ACTIVE = 'stock_move_line.active';
-
-    /**
      * the column name for the created_at field
      */
     const COL_CREATED_AT = 'stock_move_line.created_at';
@@ -123,11 +118,11 @@ class StockMoveLineTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'ProductId', 'StockMoveId', 'Qty', 'Active', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'productId', 'stockMoveId', 'qty', 'active', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(StockMoveLineTableMap::COL_ID, StockMoveLineTableMap::COL_NAME, StockMoveLineTableMap::COL_PRODUCT_ID, StockMoveLineTableMap::COL_STOCK_MOVE_ID, StockMoveLineTableMap::COL_QTY, StockMoveLineTableMap::COL_ACTIVE, StockMoveLineTableMap::COL_CREATED_AT, StockMoveLineTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'product_id', 'stock_move_id', 'qty', 'active', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'ProductId', 'StockMoveId', 'Qty', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'productId', 'stockMoveId', 'qty', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(StockMoveLineTableMap::COL_ID, StockMoveLineTableMap::COL_NAME, StockMoveLineTableMap::COL_PRODUCT_ID, StockMoveLineTableMap::COL_STOCK_MOVE_ID, StockMoveLineTableMap::COL_QTY, StockMoveLineTableMap::COL_CREATED_AT, StockMoveLineTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'product_id', 'stock_move_id', 'qty', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -137,11 +132,11 @@ class StockMoveLineTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'ProductId' => 2, 'StockMoveId' => 3, 'Qty' => 4, 'Active' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'productId' => 2, 'stockMoveId' => 3, 'qty' => 4, 'active' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
-        self::TYPE_COLNAME       => array(StockMoveLineTableMap::COL_ID => 0, StockMoveLineTableMap::COL_NAME => 1, StockMoveLineTableMap::COL_PRODUCT_ID => 2, StockMoveLineTableMap::COL_STOCK_MOVE_ID => 3, StockMoveLineTableMap::COL_QTY => 4, StockMoveLineTableMap::COL_ACTIVE => 5, StockMoveLineTableMap::COL_CREATED_AT => 6, StockMoveLineTableMap::COL_UPDATED_AT => 7, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'product_id' => 2, 'stock_move_id' => 3, 'qty' => 4, 'active' => 5, 'created_at' => 6, 'updated_at' => 7, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'ProductId' => 2, 'StockMoveId' => 3, 'Qty' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'productId' => 2, 'stockMoveId' => 3, 'qty' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
+        self::TYPE_COLNAME       => array(StockMoveLineTableMap::COL_ID => 0, StockMoveLineTableMap::COL_NAME => 1, StockMoveLineTableMap::COL_PRODUCT_ID => 2, StockMoveLineTableMap::COL_STOCK_MOVE_ID => 3, StockMoveLineTableMap::COL_QTY => 4, StockMoveLineTableMap::COL_CREATED_AT => 5, StockMoveLineTableMap::COL_UPDATED_AT => 6, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'product_id' => 2, 'stock_move_id' => 3, 'qty' => 4, 'created_at' => 5, 'updated_at' => 6, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -166,7 +161,6 @@ class StockMoveLineTableMap extends TableMap
         $this->addForeignKey('product_id', 'ProductId', 'INTEGER', 'product', 'id', true, null, null);
         $this->addForeignKey('stock_move_id', 'StockMoveId', 'INTEGER', 'stock_move', 'id', true, null, null);
         $this->addColumn('qty', 'Qty', 'INTEGER', true, null, null);
-        $this->addColumn('active', 'Active', 'BOOLEAN', false, 1, true);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     } // initialize()
@@ -338,7 +332,6 @@ class StockMoveLineTableMap extends TableMap
             $criteria->addSelectColumn(StockMoveLineTableMap::COL_PRODUCT_ID);
             $criteria->addSelectColumn(StockMoveLineTableMap::COL_STOCK_MOVE_ID);
             $criteria->addSelectColumn(StockMoveLineTableMap::COL_QTY);
-            $criteria->addSelectColumn(StockMoveLineTableMap::COL_ACTIVE);
             $criteria->addSelectColumn(StockMoveLineTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(StockMoveLineTableMap::COL_UPDATED_AT);
         } else {
@@ -347,7 +340,6 @@ class StockMoveLineTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.product_id');
             $criteria->addSelectColumn($alias . '.stock_move_id');
             $criteria->addSelectColumn($alias . '.qty');
-            $criteria->addSelectColumn($alias . '.active');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }

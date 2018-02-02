@@ -118,7 +118,6 @@ class Manage_purchaseorderlines extends MY_Controller{
 
   function delete($id){
 		$data = parent::delete($id);
-    $data->delete();
     echo json_encode(array('status'=>'ok'));
   }
 

@@ -1,0 +1,1 @@
+[{"id":"1","name":"get currencies","priority":"0","content":"Exchange_rate:get_update","description":null,"type":"call_func","time_execution":"06:00:00","scheduled_execution":null,"day_repeat":"Thu,Tue,Sun,Fri,Mon,Sat,Wed","status":"done","last_execution":"2018-01-18 08:08:06","created_at":"2017-12-06 08:26:56","updated_at":"2018-01-18 16:06:13"}]

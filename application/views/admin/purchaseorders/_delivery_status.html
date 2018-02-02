@@ -8,7 +8,7 @@
         <h4 class="modal-title" id="myModalLabel">{{res.string.receive_goods}}</h4>
       </div>
       <div class="modal-body">
-        <form class="" action="index.html" method="post">
+        <formaction="{{base_url}}index.php/manage_stockmoves/write/{{ purchaseorders.Id }}" class="form-horizontal form-label-left" method="post">
           <table class="table table-stripped">
             <thead>
               <tr>
@@ -20,9 +20,10 @@
             <tbody>
               {% for key, line in purchaseorders.PurchaseOrderLines %}
                 <tr>
-                  <td>{{key}}</td>
-                  <td>{{line.Name}}</td>
-                  <td></td>
+                  <td>{{key+1}}</td>
+                  <td>{{line.Product.Description}}</td>
+                  <input type="hidden" name="Line.ProductId[{{key}}]" value="{{line.ProductId}}">
+                  <td><input type="number" name="Line.Qty[{{key}}]" value="0"></td>
                 </tr>
               {% endfor %}
             </tbody>

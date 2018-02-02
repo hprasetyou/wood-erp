@@ -13,56 +13,73 @@ class Seeder extends CI_Controller
         echo 'Not allowed';
         exit();
       }
-      $this->faker = Faker\Factory::create();
-      $this->faker->addProvider(new Faker\Provider\en_US\PhoneNumber($this->faker));
-      $this->faker->addProvider(new Faker\Provider\Internet($this->faker));
-      $this->faker->addProvider(new Faker\Provider\en_US\Payment($this->faker));
-
-    }
-    private $faker;
-
-    function seed_customer(){
-
-        for ($i=0; $i < 20 ; $i++) {
-            # code...
-            $customer = new Customer();
-            $customer->setName($this->faker->name());
-            $customer->setAddress($this->faker->address());
-            $customer->setPhone($this->faker->phoneNumber());
-            $customer->setWebsite($this->faker->url());
-            $customer->setFax($this->faker->e164PhoneNumber());
-            $customer->setImage($this->faker->imageUrl($width = 640, $height = 480));
-            $customer->setBankDetail($this->input->post('BankDetail'));
-            $customer->setTaxNumber($this->faker->bankAccountNumber());
-            $customer->save();
-        }
 
     }
 
-    function seed_user($count){
-        $options = [
-          'cost' => 12,
-        ];
-        for ($i=0; $i < $count ; $i++) {
-            # code...
-            $employee = new Employee();
-            $employee->setName($this->faker->name());
-            $employee->setEmail($this->faker->freeEmail());
-            $employee->setAddress($this->faker->address());
-            $employee->setPhone($this->faker->phoneNumber());
-            $employee->setFax($this->faker->e164PhoneNumber());
-            $employee->setImage($this->faker->imageUrl($width = 640, $height = 480));
-            $employee->setBankDetail($this->input->post('BankDetail'));
-            $employee->setTaxNumber($this->faker->bankAccountNumber());
-            print_r($employee);
-            $employee->save();
-            $user = new User();
-            $user->setName($this->faker->userName());
-            $user->setPassword(password_hash('0000000', PASSWORD_BCRYPT, $options));
-            $user->setPartner($employee);
-            $user->setStatus(true);
-            $user->save();
-        }
+    private function camelize($input, $separator = '_')
+    {
+        return str_replace($separator, '', ucwords($input, $separator));
+    }
 
+    function seed(){
+      $objs = [
+        'Bank',
+        'Country',
+        'Currency',
+        'DownPayment',
+        'ExchangeRate',
+        'MenuGroup',
+        'Menu',
+        'SysTask',
+        'UnitOfMeasureCategory',
+        'UnitOfMeasure'
+      ];
+      foreach ($objs as $obj) {
+        # code...
+        $path = "application/data/$obj.json";
+        if(file_exists($path)){
+          echo "seeding $obj ";
+          $data = json_decode(file_get_contents($path));
+          $succ = 0;
+          $skip = 0;
+          foreach ($data as $object) {
+            $model = "{$obj}Query";
+            $m = $model::create();
+            if(property_exists($object,'id')){
+              $m = $m->findPk($object->id);
+            }else{
+              foreach ($object as $prop => $val) {
+                # code...
+                $attr = $this->camelize($prop);
+                $f = "filterBy$attr";
+                $m->$f($val);
+              }
+              $m->findOne();
+            }
+            if(!$m){
+              $m = new $obj;
+              foreach ($object as $prop => $val) {
+                # code...
+                $attr = $this->camelize($prop);
+                if($prop != 'id'){
+                  $f = "set$attr";
+                  $m->$f($val);
+                }
+              }
+              $m->save();
+              if(property_exists($object,'id')){
+                $m = $m->setId($object->id);
+                $m->save();
+              }
+              $succ++;
+            }else{
+              $skip++;
+            }
+            echo ".";
+
+          }
+          echo "\n\n Insert $succ data, skip $skip data \n\n";
+        }
+      }
     }
 }

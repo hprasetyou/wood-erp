@@ -6,7 +6,7 @@ res.string.purchase_order }, {'link':'#','text':bc_text }] %} {% block content %
 {% set types = ['Semi Finished Goods','Support Material','Raw Material'] %}
 <div class="row">
 	<div class="col-md-12 col-sm-12 col-xs-12">
-		<form id="form_PurchaseOrder" method="post" action="{{base_url}}index.php/manage_purchaseorders/write/{{ purchaseorders.Id }}" data-parsley-validate class="form-horizontal form-label-left">
+		<form id="form_PurchaseOrder" method="post" action="{{base_url}}index.php/manage_purchaseorders/write/{{ purchaseorders.Id }}" class="form-horizontal form-label-left">
 			<div class="box box-info">
 				<div class="box-header with-border">
 					{% include 'common/_form_header.html' with {'back_url':'/index.php/manage_purchaseorders'~back_link, 'title': res.string.purchase_order, 'delete_url':'/index.php/manage_purchaseorders/delete/' ~ purchaseorders.Id, 'object':purchaseorders} %}

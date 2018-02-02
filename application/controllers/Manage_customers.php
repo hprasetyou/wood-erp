@@ -6,6 +6,7 @@ class Manage_customers extends MY_Controller{
 
   function __construct(){
     $this->tpl = 'customers';
+
     $this->objobj = CustomerQuery::create()
     ->filterByCompanyId(0)
     ->_or()
@@ -28,6 +29,7 @@ class Manage_customers extends MY_Controller{
     if(!$id){
       $this->form['CompanyId']='CompanyId';
     }
+    //multiple email and phone, separated by commas
     $this->form['Phone'] = array('value'=>implode($this->input->post('Phone'),', '));
     $this->form['Email'] = array('value'=>implode($this->input->post('Email'),', '));
     $data = parent::write($id);

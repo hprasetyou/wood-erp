@@ -236,8 +236,12 @@ class MY_Controller extends CI_Controller{
    $qobj = $this->objname."Query";
    $objs = $qobj::create()->findPk($id);
    if($this->input->post('confirm')){
-     $objs->setActive(false);
-     $objs->save();
+     if(method_exists($objs,'setActive')){
+       $objs->setActive(false);
+       $objs->save();
+    }else{
+      $objs->delete();
+    }
    }
    return $objs;
  }

@@ -394,7 +394,7 @@ abstract class Bank implements ActiveRecordInterface
      *
      * @return string
      */
-    public function getCodeName()
+    public function getRefCode()
     {
         return $this->ref_code;
     }
@@ -505,7 +505,7 @@ abstract class Bank implements ActiveRecordInterface
      * @param string $v new value
      * @return $this|\Bank The current object (for fluent API support)
      */
-    public function setCodeName($v)
+    public function setRefCode($v)
     {
         if ($v !== null) {
             $v = (string) $v;
@@ -517,7 +517,7 @@ abstract class Bank implements ActiveRecordInterface
         }
 
         return $this;
-    } // setCodeName()
+    } // setRefCode()
 
     /**
      * Sets the value of the [active] column.
@@ -633,7 +633,7 @@ abstract class Bank implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : BankTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : BankTableMap::translateFieldName('CodeName', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : BankTableMap::translateFieldName('RefCode', TableMap::TYPE_PHPNAME, $indexType)];
             $this->ref_code = (null !== $col) ? (string) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : BankTableMap::translateFieldName('Active', TableMap::TYPE_PHPNAME, $indexType)];
@@ -994,7 +994,7 @@ abstract class Bank implements ActiveRecordInterface
                 return $this->getName();
                 break;
             case 2:
-                return $this->getCodeName();
+                return $this->getRefCode();
                 break;
             case 3:
                 return $this->getActive();
@@ -1037,7 +1037,7 @@ abstract class Bank implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
-            $keys[2] => $this->getCodeName(),
+            $keys[2] => $this->getRefCode(),
             $keys[3] => $this->getActive(),
             $keys[4] => $this->getCreatedAt(),
             $keys[5] => $this->getUpdatedAt(),
@@ -1112,7 +1112,7 @@ abstract class Bank implements ActiveRecordInterface
                 $this->setName($value);
                 break;
             case 2:
-                $this->setCodeName($value);
+                $this->setRefCode($value);
                 break;
             case 3:
                 $this->setActive($value);
@@ -1156,7 +1156,7 @@ abstract class Bank implements ActiveRecordInterface
             $this->setName($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setCodeName($arr[$keys[2]]);
+            $this->setRefCode($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
             $this->setActive($arr[$keys[3]]);
@@ -1313,7 +1313,7 @@ abstract class Bank implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setName($this->getName());
-        $copyObj->setCodeName($this->getCodeName());
+        $copyObj->setRefCode($this->getRefCode());
         $copyObj->setActive($this->getActive());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
