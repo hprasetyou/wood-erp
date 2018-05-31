@@ -5,11 +5,7 @@ const extractCSS = new ExtractTextPlugin('[name].css')
 
 module.exports = {
   entry:  {
-    main: './src/app.js',
-    rec_submission_form: './src/js/pages/back-applicant-manage_towerrecsubmissions-create.js',
-    cellplan_form: './src/js/pages/back-admin-manage_cellplan.js',
-    survey_form: './src/js/pages/back-admin-survey_form.js',
-    front_tower: './src/js/pages/front-towerlist.js'
+    main: './src/app.js'
   },
   module: {
     rules: [{
