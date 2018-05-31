@@ -257,6 +257,7 @@ class MY_Controller extends CI_Controller{
      if($data){
        $data->setState('confirm')
        ->save();
+       $this->loging->add_entry($this->tpl,$data->getId(),'activity_modify');
        echo $data->toJSON();
      }else{
        echo json_encode(array('error','data not found'));
