@@ -36,3 +36,4 @@ public/upload/images/*
 *.stTheme.cache
 *.sublime-workspace
 *.sublime-project
+node_modules
