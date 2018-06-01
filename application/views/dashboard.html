@@ -6,30 +6,8 @@
   <title> {{title?title:'WDX ERP'}}</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <!-- Bootstrap 3.3.7 -->
-  <link rel="stylesheet" href="/public/components/bootstrap/dist/css/bootstrap.min.css">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="/public/components/font-awesome/css/font-awesome.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="/public/assets/css/AdminLTE.min.css">
-    <!-- DataTables -->
-    <link rel="stylesheet" href="/public/components/datatables.net-bs/css/dataTables.bootstrap.min.css">
-
-  <!-- AdminLTE Skins. Choose a skin from the css/skins
-       folder instead of downloading all of them to reduce the load. -->
-  <link rel="stylesheet" href="/public/assets/css/skins/_all-skins.min.css">
-
-  <!-- Daterange picker -->
-  <link rel="stylesheet" href="/public/components/bootstrap-daterangepicker/daterangepicker.css">
-  <link rel="stylesheet" href="/public/components/lightgallery/dist/css/lightgallery.min.css">
-  <link rel="stylesheet" href="/public/components/select2/dist/css/select2.min.css">
-  <link rel="stylesheet" href="/public/components/morris.js/morris.css">
-
-  <link rel="stylesheet" href="/public/assets/css/custom.css">
-
-    <script data-pace-options='{ "ajax": true }' src="/public/components/PACE/pace.min.js"></script>
-    <link href="/public/components/PACE/themes/red/pace-theme-flash.css" rel="stylesheet" />
-  <!-- Google Font -->
+  <link rel="stylesheet" href="/public/assets/main.css">
+ <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
 <body class="hold-transition skin-blue sidebar-mini sidebar-collapse">
@@ -38,9 +16,9 @@
     <!-- Logo -->
     <a href="#" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini">WDX ERP</span>
+      <span class="logo-mini">WOOD ERP</span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>WDX ERP</b></span>
+      <span class="logo-lg"><b>WOOD ERP</b></span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
@@ -130,51 +108,9 @@
 
   <div class="control-sidebar-bg"></div>
 </div>
-<!-- ./wrapper -->
-
-<!-- jQuery 3 -->
-<script src="/public/components/jquery/dist/jquery.min.js"></script>
-<!-- jQuery UI 1.11.4 -->
-<script src="/public/components/jquery-ui/jquery-ui.min.js"></script>
-<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-<script>
-  $.widget.bridge('uibutton', $.ui.button);
-</script>
-<!-- Bootstrap 3.3.7 -->
-<script src="/public/components/bootstrap/dist/js/bootstrap.min.js"></script>
-
-<!-- daterangepicker -->
-<script src="/public/components/moment/min/moment.min.js"></script>
-<script src="/public/components/bootstrap-daterangepicker/daterangepicker.js"></script>
-<!-- Slimscroll -->
-<script src="/public/components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="/public/components/fastclick/lib/fastclick.js"></script>
-<script src="/public/components/select2/dist/js/select2.min.js"></script>
-<!-- AdminLTE App -->
-<script src="/public/assets/js/adminlte.js"></script>
-
-<!-- DataTables -->
-    <script src="/public/components/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="/public/components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-    <script src="/public/components/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="/public/components/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
-    <script src="/public/components/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
-    <script src="/public/components/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="/public/components/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
-    <script src="/public/components/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
-    <script src="/public/components/lightgallery/dist/js/lightgallery.min.js"></script>
-
-    <!-- lightgallery plugins -->
-    <script src="/public/components/lg-thumbnail/dist/lg-thumbnail.min.js"></script>
-    <script src="/public/components/lg-fullscreen/dist/lg-fullscreen.min.js"></script>
-
-<!--morris-->
-<script src="/public/components/morris.js/morris.min.js"></script>
-<script src="/public/components/raphael/raphael.min.js"></script>
+<script src="/public/assets.js"></script>
 
 
-<script src="/public/assets/js/app.js"></script>
 {% include 'common/_delete_modal.html'%}
 {% include 'common/_confirmation_modal.html'%}
 {% block bottom %}
