@@ -37,3 +37,5 @@ public/upload/images/*
 *.sublime-workspace
 *.sublime-project
 node_modules
+
+*.swp
